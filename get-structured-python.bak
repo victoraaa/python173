@@ -52,29 +52,11 @@ structure that you define in python-syntax.rkt
      (PyCompare (get-structured-python left)
                 (map get-structured-python ops)
                 (map get-structured-python comparators))]
-    [(hash-table ('type "Str")
-                 ('s s))
-     (PyStr s)]
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
-    
     [(hash-table ('type "Or"))
      'or]
     [(hash-table ('type "Eq"))
      'eq]
-    [(hash-table ('type "NotEq"))
-     'notEq]
-    [(hash-table ('type "Lt"))
-     'lt]
-    [(hash-table ('type "LtE"))
-     'lte]
-    [(hash-table ('type "Gt"))
-     'gt]
-    [(hash-table ('type "GtE"))
-     'gte]
-    [(hash-table ('type "Is"))
-     'is]
-    [(hash-table ('type "IsNot"))
-     'isNot]
                  
     [_ (begin (display "PARSING: Haven't handled a case yet: \n")
               (pretty-write pyjson)

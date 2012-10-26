@@ -6,7 +6,6 @@
   [PyId (x : symbol)]
   [PyApp (fun : PyExpr) (args : (listof PyExpr))]
   ;;Made by me:
-  [PyStr (s : string)]
   [PyIf (test : PyExpr) (then : (listof PyExpr)) (orelse : (listof PyExpr))]
   [PyBoolop (boolop : symbol) (values : (listof PyExpr))]
   [PyCompare (left : PyExpr) (ops : (listof symbol)) (comparators : (listof PyExpr))]

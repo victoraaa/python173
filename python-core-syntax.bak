@@ -22,7 +22,7 @@ ParselTongue.
   ;;MADE BY ME:
   [CPrim2 (op : symbol) (e1 : CExp) (e2 : CExp)]
   [CFalse]
-  [CNone]
+  [CVoid]
   
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
@@ -33,7 +33,7 @@ ParselTongue.
   [VTrue]
   [VClosure (env : Env) (args : (listof symbol)) (body : CExp)]
   ;;I ADDED;;
-  [VNone]
+  [VVoid]
   [VFalse]
   )
 

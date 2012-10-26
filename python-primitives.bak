@@ -21,7 +21,7 @@ primitives here.
     [VTrue () "True"]
     [VClosure (env args body) (error 'prim "Can't print closures yet")]
     ;;Non-TA code:
-    [VNone () "void"]
+    [VVoid () "void"]
     [VFalse () "False"]
     ))
   

@@ -11,7 +11,6 @@
     [PyNum (n) (CNum n)]
     [PyApp (f args) (CApp (desugar f) (map desugar args))]
     [PyId (x) (CId x)]
-    [PyStr (s) (CStr s)]
     [PyIf (test then orelse)
           (CIf (desugar test) 
                (if (> (length then) 1) (desugar (PySeq then)) (desugar (first then)))
@@ -19,7 +18,7 @@
                    (if (> (length orelse) 1)
                        (desugar (PySeq orelse)) 
                        (desugar (first orelse)))
-                   (CNone)))]
+                   (CVoid)))]
     [PyBoolop (op exprs)
               (case op
                 ['or (foldl (lambda (expr result) (CPrim2 'or result (desugar expr))) (desugar (first exprs)) (rest exprs))]
@@ -36,7 +35,6 @@
                                                 (rest ops)
                                                 (rest comparators)))
                             (CFalse)))))]
-    
 ;|#
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))

@@ -1,0 +1,1 @@
+Racket python-main.rkt --python-path C:\Python32\python.exe --get-syntax < file.txt
