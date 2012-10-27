@@ -15,7 +15,7 @@ ParselTongue.
   [CError (e1 : CExp)]
   [CIf (test : CExp) (then : CExp) (else : CExp)]
   [CId (x : symbol)]
-  [CLet (x : symbol) (bind : CExp) (body : CExp)]
+  [CLet (id : symbol) (scopeType : ScopeType) (bind : CExp) (body : CExp)]
   [CApp (fun : CExp) (args : (listof CExp))]
   [CFunc (args : (listof symbol)) (body : CExp)]
   [CPrim1 (prim : symbol) (arg : CExp)]
@@ -37,5 +37,15 @@ ParselTongue.
   [VFalse]
   )
 
-(define-type-alias Env (hashof symbol CVal))
+(define-type-alias Location number)
+(define-type ScopeType
+  [Local]
+  [NonLocal]
+  [Global])
 
+(define-type-alias SLTuple (ScopeType * number))
+(define-type-alias Env (hashof symbol SLTuple))
+(define-type-alias Store (hashof Location CVal))
+
+(define-type AnswerC
+  [ValueA (value : CVal) (store : Store)])
