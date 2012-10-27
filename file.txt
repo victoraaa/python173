@@ -1,13 +1,7 @@
-x = 'global'
+y = 'y'
+z = 'z'
 def f1():
-  x = 'f1'
-  def f2():
-    global x
-    print(x)
-    def f3():
-      nonlocal x
-      print(x)
-    f3()
-  f2()
-f1()
-print(x)
+  x = 'x'
+  nonlocal y
+  global z
+  return 1
