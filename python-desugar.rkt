@@ -39,6 +39,7 @@
                             (CFalse)))))]
     
     [PyPass () (CNone)]
+    [PyLambda (args body) (CFunc args (desugar body))]
     
 ;|#
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"

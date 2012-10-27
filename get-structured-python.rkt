@@ -57,6 +57,36 @@ structure that you define in python-syntax.rkt
      (PyStr s)]
     [(hash-table ('type "Pass"))
      (PyPass)]
+    #|
+    [(hash-table ('type "FunctionDef")
+                 ('name name) ;identifier
+                 ('args args) ;arguments
+                 ('body body) ;stmt*
+                 ('decorator_list dec_list) ;expr* ;;ignoring
+                 ('returns returns)) ;expr? ;;ignoring
+     (Py
+    |#
+    [(hash-table ('type "Lambda")
+                 ('args args) ;arguments
+                 ('body body)) ;expr
+     (PyLambda (get-structured-python args)
+               (get-structured-python body))]
+    [(hash-table ('type "arguments")
+                 ('args args) ;arg*
+                 ('vararg vararg)
+                 ('varargannotation varargannotation)
+                 ('kwonlyargs kwonlyargs)
+                 ('kwarg kwarg)
+                 ('kwargannotation kwargannotation)
+                 ('defaults defaults)
+                 ('kw_defaults kw_defaults))
+     (map get-structured-python args)]
+    [(hash-table ('type "arg")
+                 ('arg arg)
+                 ('annotation annotation))
+     (string->symbol arg)]
+     
+                 
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     
     [(hash-table ('type "Or"))
