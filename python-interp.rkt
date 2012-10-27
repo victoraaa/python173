@@ -40,7 +40,7 @@
     [some (v) v]))
 
 ;;helper method for our interpreter
-(define (interp-args-CApp [body : ExprC]
+(define (interp-args-CApp [body : CExp]
                           [env : Env]
                           [closEnv : Env]
                           [store : Store]
@@ -67,7 +67,7 @@
 
 ;;puts all the identifiers and values in the environment and the store,
 ;;and applies the body of the closure
-(define (interp-CApp [body : ExprC]
+(define (interp-CApp [body : CExp]
                      [env : Env]
                      [closEnv : Env]
                      [store : Store]
@@ -238,6 +238,14 @@
         [VFalse () (ValueA (VTrue) s)]
         [else (error 'interp-notEq "interp-eq returned a non-boolean value")])]))
 
+
+;; interp-print
+(define (interp-print (arg : CExp) (env : Env) (store : Store)) : AnswerC
+  (type-case AnswerC (interp-env arg env store)
+    [ValueA (v s) (begin (display (pretty v))
+                         (ValueA v s))]))
+
+
 ;; isTruthy returns false if the CVal value is False to python
 ;; and true otherwise
 (define (isTruthy [value : CVal]) : boolean
@@ -250,6 +258,8 @@
               true)]
     [else false]))
 
+
+;; interp-env
 (define (interp-env [expr : CExp] 
                     [env : Env] 
                     [store : Store]) : AnswerC
@@ -287,11 +297,11 @@
                      (interp-args-CApp b   ;;GOTTA CHANGE THIS TO SOMETHING RELATED TO THE NEW SCOPE!!!!!!!!!!!!!!!!
                                        env
                                        e
-                                       s
+                                       sf
                                        a
                                        args
                                        (list))]
-           [else (error 'CApp (string-append "Applied a non-function: " (pretty-value vf)))])])]
+           [else (error 'CApp (string-append "Applied a non-function: " (pretty vf)))])])]
     #|
     (type-case CVal (interp-env fun env)
        [VClosure (env argxs body)
@@ -302,32 +312,37 @@
 
     [CFunc (args body) (ValueA (VClosure env args body) store)] 
 
-    [CPrim1 (prim arg) (python-prim1 prim (interp-env arg env store))]
+    [CPrim1 (prim arg)
+            (case prim
+              ['print (interp-print arg env store)])]
+     
+     ;; (prim arg) (interp-prim1 prim (interp-env arg env store))]
     
     ;;UNDER THIS, WE HAVE NON-TA CODE:
     [CPrim2 (op e1 e2)
             (case op
               ;;boolops
-              ['or
-               (interp-or e1 e2 env)]
+              ['or (interp-or e1 e2 env store)]
               ['and (error 'interp-boolop "not implemented")]
               ;;cmpops
-              ['eq (interp-eq e1 e2 env)]
-              ['notEq (interp-notEq e1 e2 env)]
-              ['lt (interp-lt e1 e2 env)]
-              ['lte (interp-lte e1 e2 env)]
-              ['gt (interp-gt e1 e2 env)]
-              ['gte (interp-gte e1 e2 env)]
-              ['is (interp-is e1 e2 env)]
-              ['isNot (interp-isNot e1 e2 env)]
+              ['eq (interp-eq e1 e2 env store)]
+              ['notEq (interp-notEq e1 e2 env store)]
+              ['lt (interp-lt e1 e2 env store)]
+              ['lte (interp-lte e1 e2 env store)]
+              ['gt (interp-gt e1 e2 env store)]
+              ['gte (interp-gte e1 e2 env store)]
+              ['is (interp-is e1 e2 env store)]
+              ['isNot (interp-isNot e1 e2 env store)]
               )]
     [CIf (i t e)
-         (if (isTruthy (interp-env i env))
-             (interp-env t env)
-             (interp-env e env))]
+         (type-case AnswerC (interp-env i env store)
+           [ValueA (v s)
+                   (if (isTruthy v)
+                       (interp-env t env s)
+                       (interp-env e env s))])]
     [CNone ()
-           (VNone)]
-    [CFalse () (VFalse)]
+           (ValueA (VNone) store)]
+    [CFalse () (ValueA (VFalse) store)]
     [else (error 'interp (string-append "Haven't implemented a case yet:\n"
                                        (to-string expr)))]
     ))
@@ -340,6 +355,12 @@
          (hash-set (bind-args (rest args) (rest vals) env)
                    (first args) (first vals))]))
 
-(define (interp expr)
-  (display (to-string (interp-env expr (hash (list))))))
 
+;; regular interpret
+(define (interp (expr : CExp)) : CVal
+  (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
+    [ValueA (v s) v]))
+
+
+;; basic test cases
+(interp (CTrue))
