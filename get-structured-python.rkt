@@ -55,6 +55,8 @@ structure that you define in python-syntax.rkt
     [(hash-table ('type "Str")
                  ('s s))
      (PyStr s)]
+    [(hash-table ('type "Pass"))
+     (PyPass)]
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     
     [(hash-table ('type "Or"))

@@ -28,8 +28,8 @@
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
                    (CTrue)
-                   (CLet 'left-comp (desugar left)
-                     (CLet 'right-comp (desugar (first comparators))
+                   (CLet 'left-comp (Local) (desugar left)
+                     (CLet 'right-comp (Local) (desugar (first comparators))
                        (CIf (CPrim2 (first ops)
                                     (CId 'left-comp)
                                     (CId 'right-comp))
@@ -37,6 +37,8 @@
                                                 (rest ops)
                                                 (rest comparators)))
                             (CFalse)))))]
+    
+    [PyPass () (CNone)]
     
 ;|#
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"

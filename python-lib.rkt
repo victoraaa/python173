@@ -87,7 +87,7 @@ that calls the primitive `print`.
                   [(cons? libs)
                    (type-case LibBinding (first libs)
                      (bind (name value)
-                           (CLet name value
+                           (CLet name (Local) value
                                  (python-lib/recur (rest libs)))))]))]
     (python-lib/recur lib-functions)))
 
