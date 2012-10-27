@@ -1,0 +1,1174 @@
+(VTrue)
+0 tests succeeded.
+90 tests failed.
+== Output of failed tests ==
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-callable.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-compare-list-dict.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-compare.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-convert.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-float.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-int.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-isinstance.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-math.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-str.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/all.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/any.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/callable.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/filter.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/isinstance.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/len.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-bool.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-clear.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-contains.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-get.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-getitem.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-items.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-keys.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-set-keys.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-update.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-values-set.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-values.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/except-reraise.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/invalid-reraise.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/nested-else.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/nested-reraise.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/nested.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/reraise.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/test-finally-reraise.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/test-try-except-else.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/test-try-except-no-exception.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/test-try-except.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-else-finally-no-exception.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-else-finally.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-else-no-exception.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-finally-no-exception.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-finally.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-finally-no-exception.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-classes.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-comprehensions.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-misc.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-simple.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-stop.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/lists/test_list_identity.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/lists/test_list_simple.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/lists/test_list_truth.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/range/range-errs.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/range/range-list.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/range/range-vars.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/bound-and-free.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/extra-nesting.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/freevar-in-method.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/lambda1.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/lambda2.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/lambda3.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/lambda4.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/locals-class.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/locals-function.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/mixed-freevars-and-cellvars.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nearest-enclosing-scope.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nested-nonlocal.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nesting-global-no-free.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nesting-plus-free-ref-to-global.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nesting-through-class.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nonlocal-class.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nonlocal-function.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nonlocal-method.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/recursion.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/simple-and-rebinding.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/simple-nesting.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/unbound-local.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/super/test-super.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-add.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-constructors.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-length.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-mul.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-truth.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_booleans.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_comparisons.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_div_zero.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_floats.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_simple_string_ops.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_simple_strings.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_string_slices.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/types_truthy1.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/types_truthy2.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: Couldn't parse python file with python-parser.py.  Error was: 
+ racket: exec failed (Permission denied; errno=13)
+

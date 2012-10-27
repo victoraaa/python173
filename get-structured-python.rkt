@@ -85,6 +85,12 @@ structure that you define in python-syntax.rkt
                  ('arg arg)
                  ('annotation annotation))
      (string->symbol arg)]
+    
+    ;; raise
+    [(hash-table ('type "Raise")
+                 ('exc exc)
+                 ('cause cause))
+     (PyRaise exc cause)]
      
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
@@ -107,6 +113,9 @@ structure that you define in python-syntax.rkt
      'is]
     [(hash-table ('type "IsNot"))
      'isNot]
+    
+    
+    
                  
     [_ (begin (display "PARSING: Haven't handled a case yet: \n")
               (pretty-write pyjson)
