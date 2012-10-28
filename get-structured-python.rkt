@@ -89,7 +89,11 @@ structure that you define in python-syntax.rkt
                  ('arg arg)
                  ('annotation annotation))
      (string->symbol arg)]
-    
+    [(hash-table ('type "Assign")
+                 ('targets targets)
+                 ('value value))
+     (PyAssign (map get-structured-python targets)
+               (get-structured-python value))]
     ;; raise
     [(hash-table ('type "Raise")
                  ('exc exc)
