@@ -11,6 +11,19 @@
         (set-box! n (add1 (unbox n)))
         (unbox n)))))
 
+;;newEnvScope returns an environment with the changes needed for a new scope.
+;;It basically changes the local tags to nonlocal ones.
+(define (newEnvScope [env : Env]) : Env
+  (foldl (lambda (key newEnv) 
+           (type-case (optionof SLTuple) (hash-ref env key)
+             [none () (error 'newEnvScope "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
+             [some (v) (local [(define-values (t l) v)]
+                         (cond
+                           [(Local? t) (augmentEnv key (values (NonLocal) l) newEnv)]
+                           [else (augmentEnv key (values t l) newEnv)]))]))
+         (hash (list))
+         (hash-keys env)))
+
 ;;Adds a new identifier to our environment, with its location
 (define (augmentEnv [id : symbol]
                     [sltuple : SLTuple]
@@ -321,7 +334,7 @@
        [else (error 'interp "Not a closure")])]
     |#
 
-    [CFunc (args body) (ValueA (VClosure env args body) store)] 
+    [CFunc (args body) (ValueA (VClosure (newEnvScope env) args body) store)]
 
     [CPrim1 (prim arg)
             (case prim
@@ -376,3 +389,5 @@
 
 ;; basic test cases
 (interp (CTrue))
+
+(define env (hash (list (values 'a (values (Local) 1)) (values 'b (values (NonLocal) 2)) (values 'c (values (Global) 3)))))

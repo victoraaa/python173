@@ -40,6 +40,12 @@
     
     [PyPass () (CNone)]
     [PyLambda (args body) (CFunc args (desugar body))]
+    #|(FuncC args 
+                              (let ([list-vars (get-vars body)])
+                                (cascade-lets list-vars
+                                              (list-undefinedC (length list-vars))
+                                              (desugar body))))]
+|#
     [PyRaise (exc) (CError (desugar exc))]
     
 ;|#

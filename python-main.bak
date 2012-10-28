@@ -25,7 +25,7 @@
 (command-line
   #:once-each
   ("--interp" "Interpret stdin as python"
-   (display (run-python (current-input-port)))
+   (display (run-python (current-input-port))) 
    (display "\n"))
 
   ("--interp-py" "Interpret stdin as python using py-prelude.py"
