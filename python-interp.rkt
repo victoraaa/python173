@@ -159,6 +159,11 @@
                                         (ValueA (VTrue) s2)
                                         (ValueA (VFalse) s2))]
                          [else (error 'interp-lt "comparison not valid for arguments of different types")])]
+       ;     [VStr (n1) (type-case CVal v2
+       ;                  [VStr (n2) (if (string<? n1 n2)
+       ;                                 (ValueA (VTrue) s2)
+       ;                                 (ValueA (VFalse) s2))]
+       ;                  [else (error 'interp-lt "comparison not valid for arguments of different types")])]
             [else (error 'interp-lt "comparison not valid for arguments of this type")])])]))
     
 ;;gt returns true if e1 and e2 are comparable and e1 is greater than
@@ -177,7 +182,12 @@
                                         (ValueA (VTrue) s2)
                                         (ValueA (VFalse) s2))]
                          [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [else (error 'interp-lt "comparison not valid for arguments of this type")])])]))
+       ;     [VStr (n1) (type-case CVal v2
+       ;                  [VStr (n2) (if (string>? n1 n2)
+       ;                                 (ValueA (VTrue) s2)
+       ;                                 (ValueA (VFalse) s2))]
+       ;                  [else (error 'interp-lt "comparison not valid for arguments of different types")])]
+            [else (error 'interp-gt "comparison not valid for arguments of this type")])])]))
 
 ;;lte returns true if e1 and e2 are comparable and e1 is lesser than
 ;; or equal to e2
@@ -195,7 +205,12 @@
                                         (ValueA (VTrue) s2)
                                         (ValueA (VFalse) s2))]
                          [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [else (error 'interp-lt "comparison not valid for arguments of this type")])])]))
+        ;    [VStr (n1) (type-case CVal v2
+        ;                 [VStr (n2) (if (string<=? n1 n2)
+        ;                                (ValueA (VTrue) s2)
+        ;                                (ValueA (VFalse) s2))]
+        ;                 [else (error 'interp-lt "comparison not valid for arguments of different types")])]
+            [else (error 'interp-lte "comparison not valid for arguments of this type")])])]))
 
 ;;gte returns true if e1 and e2 are comparable and e1 is greater than
 ;; or equal to e2
@@ -213,7 +228,12 @@
                                         (ValueA (VTrue) s2)
                                         (ValueA (VFalse) s2))]
                          [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [else (error 'interp-lt "comparison not valid for arguments of this type")])])]))
+       ;     [VStr (n1) (type-case CVal v2
+       ;                  [VStr (n2) (if (string>=? n1 n2)
+       ;                                 (ValueA (VTrue) s2)
+       ;                                 (ValueA (VFalse) s2))]
+       ;                  [else (error 'interp-lt "comparison not valid for arguments of different types")])]
+            [else (error 'interp-gte "comparison not valid for arguments of this type")])])]))
 
 ;;is returns true if e1 and e2 are the same object in python
 (define (interp-is [e1 : CExp]
@@ -230,7 +250,10 @@
                                         (ValueA (VTrue) s2)
                                         (ValueA (VFalse) s2))]
                          [else (ValueA (VFalse) s2)])]
-            [else (error 'interp-lt "comparison not valid for arguments of this type")])])]))
+            [VNone () (type-case CVal v2
+                        [VNone () (ValueA (VTrue) s2)]
+                        [else (ValueA (VFalse) s2)])]
+            [else (error 'interp-is "comparison not valid for arguments of this type")])])]))
 
 ;;'is not' returns true if e1 and e2 are not the same object in python
 (define (interp-isNot [e1 : CExp]
@@ -247,7 +270,8 @@
                                         (ValueA (VFalse) s2)
                                         (ValueA (VTrue) s2))]
                          [else (ValueA (VTrue) s2)])]
-            [else (error 'interp-lt "comparison not valid for arguments of this type")])])]))
+            [else (error 'interp-isNot (string-append "comparison not valid for arguments of this type" 
+                                                   (string-append (to-string v1) (to-string v2))))])])]))
 
 ;;interp-notEq returns the opposite of interp-eq. It is a helper
 ;;for interpreting the NotEq comparison operator
@@ -406,6 +430,6 @@
 
 
 ;; basic test cases
-(interp (CTrue))
+;;(interp (CTrue))
 
 (define env (hash (list (values 'a (values (Local) 1)) (values 'b (values (NonLocal) 2)) (values 'c (values (Global) 3)))))

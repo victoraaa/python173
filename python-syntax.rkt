@@ -12,6 +12,7 @@
   [PyUnaryOp (op : symbol) (arg : PyExpr)]
   [PyCompare (left : PyExpr) (ops : (listof symbol)) (comparators : (listof PyExpr))]
   [PyPass]
+  [PyNone]
   [PyLambda (args : (listof symbol)) (body : PyExpr)]
   [PyRaise (exc : PyExpr)] ;(cause : PyExpr)]
   [PyGlobal (id : symbol)]

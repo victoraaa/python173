@@ -36,7 +36,8 @@
                 (foldl (lambda (a b) (append b a))
                                    (list)
                                    (map (lambda (e) (get-nonlocals e)) comparators)))]
-    [PyPass () (list)]
+    [PyPass () (list)] ;; won't typecheck without this
+    [PyNone () (CNone)]
     [PyLambda (args body) (list)]
     [PyRaise (exc) (get-nonlocals exc)]
     [PyGlobal (id) (list)]
@@ -93,6 +94,7 @@
                             (CFalse)))))]
     
     [PyPass () (CNone)]
+    [PyNone () (CNone)]
     [PyLambda (args body) (CFunc args (desugar body))]
     #|(FuncC args 
                               (let ([list-vars (get-vars body)])
