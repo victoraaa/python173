@@ -50,7 +50,9 @@
                      [store : Store]) : CVal
   (type-case (optionof CVal) (hash-ref store loc)
     [none () (error 'lookupStore "Unbound location error.")]
-    [some (v) v]))
+    [some (v) (type-case CVal v
+                [VUnbound () (error 'lookupStore "Unbound Identifier: using identifier before assignment")]
+                [else v])]))
 
 ;;helper method for our interpreter
 (define (interp-args-CApp [body : CExp]
@@ -339,6 +341,7 @@
                               (augmentStore newLocation 
                                             v
                                             s)))])]
+                         
 
     [CSeq (e1 e2)
       (type-case AnswerC (interp-env e1 env store)
@@ -407,9 +410,9 @@
                    (if (isTruthy v)
                        (interp-env t env s)
                        (interp-env e env s))])]
-    [CNone ()
-           (ValueA (VNone) store)]
+    [CNone () (ValueA (VNone) store)]
     [CFalse () (ValueA (VFalse) store)]
+    [CUnbound () (ValueA (VUnbound) store)]
     [else (error 'interp (string-append "Haven't implemented a case yet:\n"
                                        (to-string expr)))]
     ))

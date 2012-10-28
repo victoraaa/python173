@@ -3,56 +3,74 @@
 (require "python-syntax.rkt"
          "python-core-syntax.rkt")
 
-(define (get-nonlocals [expr : PyExpr]) : (listof symbol)
+;; cascade-lets will build up the nested lets, and use body as the
+;; eventual body, preserving order of evaluation of the expressions
+(define (cascade-lets (ids : (listof symbol))
+                      (sts : (listof ScopeType))
+                      (exprs : (listof CExp))
+                      (body : CExp)) : CExp
+  (cond [(empty? ids) body]
+        [(cons? ids)
+         (CLet (first ids) (first sts) (first exprs) (cascade-lets (rest ids) (rest sts) (rest exprs) body))]))
+
+
+(define (get-vars [expr : PyExpr]) : (listof (ScopeType * symbol))
   (type-case PyExpr expr
-    [PyNonlocal (id) (list id)]
+    [PyNonlocal (id) (list (values (NonLocal) id))]
+    [PyGlobal (id) (list (values (Global) id))]
     [PySeq (es) (foldl (lambda (a b) (append b a))
                        (list)
-                       (map (lambda (e) (get-nonlocals e)) es))]
+                       (map (lambda (e) (get-vars e)) es))]
     [PyNum (n) (list)]
-    [PyApp (f args) (append (get-nonlocals f)
+    [PyApp (f args) (append (get-vars f)
                             (foldl (lambda (a b) (append b a))
                                    (list)
-                                   (map (lambda (e) (get-nonlocals e)) args)))]
+                                   (map (lambda (e) (get-vars e)) args)))]
     [PyId (x) (list)]
     [PyStr (s) (list)]
     [PyIf (test then orelse)
           (append
-           (get-nonlocals test)
+           (get-vars test)
            (append
             (foldl (lambda (a b) (append b a))
                    (list)
-                   (map (lambda (e) (get-nonlocals e)) then))
+                   (map (lambda (e) (get-vars e)) then))
             (foldl (lambda (a b) (append b a))
                    (list)
-                   (map (lambda (e) (get-nonlocals e)) orelse))))]
+                   (map (lambda (e) (get-vars e)) orelse))))]
     [PyBoolop (op exprs)
               (foldl (lambda (a b) (append b a))
                                    (list)
-                                   (map (lambda (e) (get-nonlocals e)) exprs))]
+                                   (map (lambda (e) (get-vars e)) exprs))]
     [PyCompare (left ops comparators)
                (append
-                (get-nonlocals left)
+                (get-vars left)
                 (foldl (lambda (a b) (append b a))
                                    (list)
-                                   (map (lambda (e) (get-nonlocals e)) comparators)))]
+                                   (map (lambda (e) (get-vars e)) comparators)))]
     [PyPass () (list)] ;; won't typecheck without this
     [PyNone () (list)]
     [PyLambda (args body) (list)]
-    [PyRaise (exc) (get-nonlocals exc)]
-    [PyGlobal (id) (list)]
+    [PyRaise (exc) (get-vars exc)]
     [Py-NotExist () (list)]
-    [PyUnaryOp (op arg) (get-nonlocals arg)]
-    [PySet (lhs value) 
+    [PyUnaryOp (op arg) (get-vars arg)]
+    [PySet (lhs value) ;;PySet case may need to change when it starts to get things other than CIds
            (append
-               (get-nonlocals value)
-               (get-nonlocals lhs))]
+               (get-vars value)
+               (type-case PyExpr lhs
+                 [PyId (id) (list (values (Local) id))]
+                 [else (error 'get-vars-PySet "PySet should not be getting non-ids yet")]))]
     [PyAssign (targets value)
               (append
-               (get-nonlocals value)
-                (foldl (lambda (a b) (append b a))
-                                   (list)
-                                   (map (lambda (e) (get-nonlocals e)) targets)))]
+               (get-vars value)
+               (foldl (lambda (a b) (append b a))
+                      (list)
+                      (map (lambda (e) (type-case PyExpr e
+                                         [PyId (id) (list (values (Local) id))]
+                                         [else (error 'get-vars-PyAssign "PyAssign should not be getting non-ids yet")])) 
+                           targets)))]
+    [PyModule (exprs)
+              (get-vars exprs)]
     ))
 
 
@@ -106,11 +124,42 @@
     [PyAssign (targets value) 
               (CLet 'assign-value (Local) (desugar value)
                     (desugar (PySeq (map (lambda (e) (PySet e (PyId 'assign-value))) targets))))]
-    ;[PySet (lhs value) (CSet (desugar lhs) (desugar value))]
+    [PySet (lhs value) (CSet (desugar lhs) (desugar value))]
+    [PyModule (exprs) 
+              (let ([global-vars (get-vars exprs)]) ;GET ALL OF THE ASSIGNMENTS IN THE GLOBAL SCOPE
+                (begin ;(checkGlobalScopes global-vars)  ;CHECKS IF WE DONT HAVE AN ERROR FROM USING global OR nonlocals IN THE GLOBAL SCOPE
+                        ;WE NEED TO PUT THEM IN THE GLOBAL ENVIRONMENT AS WELL
+                       (cascade-lets (get-ids global-vars) ;PUT THEM IN THE ENVIRONMENT AS LOCALS
+                                     (make-item-list (Local) (length global-vars) (list)) 
+                                     (make-item-list (CUnbound) (length global-vars) (list)) 
+                                     (desugar exprs))))] ;EXECUTE THE exprs (desugar exprs)
+                
+
     
 ;|#
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
+
+(define (make-item-list [item : 'a]
+                        [size : number]
+                        [newList : (listof 'a)]) : (listof 'a)
+  (cond 
+    [(>= (length newList) size) newList]
+    [else (make-item-list item size (append (list item) newList))]))
+
+(define (get-ids [vars-list : (listof (ScopeType * symbol))]) : (listof symbol)
+  (foldl (lambda (a b) (append b a))
+                       (list)
+                       (map (lambda (e) (local ([define-values (st id) e])
+                                                      (list id)))
+                              vars-list)))
+
+(define (get-sts [vars-list : (listof (ScopeType * symbol))]) : (listof ScopeType)
+  (foldl (lambda (a b) (append b a))
+                       (list)
+                       (map (lambda (e) (local ([define-values (st id) e])
+                                                      (list st)))
+                              vars-list)))
 
 ;(test (desugar (PyBoolop 'or (list (PyNum 0) (PyNum 1))))
 ;      (CBoolop 'or (CNum 0) (CNum 1)))

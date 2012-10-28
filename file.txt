@@ -1,1 +1,4 @@
-lambda x:  nonlocal y; global z; nonlocal a; return 1;
+a = 1
+b = 2
+c = 3
+d = 4

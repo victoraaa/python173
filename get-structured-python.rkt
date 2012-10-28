@@ -15,7 +15,7 @@ structure that you define in python-syntax.rkt
 (define (get-structured-python pyjson)
   (match pyjson
     [(hash-table ('type "Module") ('body expr-list))
-     (PySeq (map get-structured-python expr-list))]
+     (PyModule (PySeq (map get-structured-python expr-list)))]
     [(hash-table ('type "Expr") ('value expr))
      (get-structured-python expr)]
     [(hash-table ('type "Call")

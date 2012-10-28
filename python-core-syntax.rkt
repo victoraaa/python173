@@ -23,8 +23,9 @@ ParselTongue.
   [CPrim2 (op : symbol) (e1 : CExp) (e2 : CExp)]
   [CFalse]
   [CNone]
-  [CSet (id : CExp)
-        (value : CExp)]
+  [CSet (id : CExp) (value : CExp)]
+  ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.
+  [CUnbound]
   
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
@@ -37,6 +38,7 @@ ParselTongue.
   ;;I ADDED;;
   [VNone]
   [VFalse]
+  [VUnbound]
   )
 
 (define-type-alias Location number)
