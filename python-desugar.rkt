@@ -37,7 +37,7 @@
                                    (list)
                                    (map (lambda (e) (get-nonlocals e)) comparators)))]
     [PyPass () (list)] ;; won't typecheck without this
-    [PyNone () (CNone)]
+    [PyNone () (list)]
     [PyLambda (args body) (list)]
     [PyRaise (exc) (get-nonlocals exc)]
     [PyGlobal (id) (list)]
@@ -106,7 +106,7 @@
     [PyAssign (targets value) 
               (CLet 'assign-value (Local) (desugar value)
                     (desugar (PySeq (map (lambda (e) (PySet e (PyId 'assign-value))) targets))))]
-    [PySet (lhs value) (CSet (desugar lhs) (desugar value))]
+    ;[PySet (lhs value) (CSet (desugar lhs) (desugar value))]
     
 ;|#
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
