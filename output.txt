@@ -157,9 +157,9 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body . (#hasheq((type . "Pass"))))
+#hasheq((type . "FunctionDef")
         (name . "f")
-        (type . "FunctionDef")
+        (body . (#hasheq((type . "Pass"))))
         (args
          .
          #hasheq((type . "arguments")
@@ -190,12 +190,12 @@ PARSING: Haven't handled a case yet:
         (elts
          .
          (#hasheq((type . "Num") (n . 1))
-          #hasheq((s . "hello") (type . "Str"))
+          #hasheq((type . "Str") (s . "hello"))
           #hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
           #hasheq((type . "List")
                   (ctx . #hasheq((type . "Load")))
                   (elts . (#hasheq((type . "Num") (n . 3)))))
-          #hasheq((s . "") (type . "Str"))
+          #hasheq((type . "Str") (s . ""))
           #hasheq((id . "None")
                   (type . "Name")
                   (ctx . #hasheq((type . "Load"))))
@@ -213,9 +213,9 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body . (#hasheq((type . "Pass"))))
+#hasheq((type . "ClassDef")
         (name . "C")
-        (type . "ClassDef")
+        (body . (#hasheq((type . "Pass"))))
         (keywords . ())
         (kwargs . #\nul)
         (starargs . #\nul)
@@ -314,8 +314,8 @@ PARSING: Haven't handled a case yet:
         (type . "Dict")
         (keys
          .
-         (#hasheq((s . "a") (type . "Str"))
-          #hasheq((s . "b") (type . "Str")))))
+         (#hasheq((type . "Str") (s . "a"))
+          #hasheq((type . "Str") (s . "b")))))
 
 === Expected stderr ===
 
@@ -355,6 +355,7 @@ parse: error is described above.
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
 #hasheq((attr . "keys")
+        (type . "Attribute")
         (value
          .
          #hasheq((values
@@ -366,7 +367,6 @@ PARSING: Haven't handled a case yet:
                   .
                   (#hasheq((type . "Num") (n . 1))
                    #hasheq((type . "Num") (n . 2))))))
-        (type . "Attribute")
         (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
@@ -394,6 +394,7 @@ parse: error is described above.
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
 #hasheq((attr . "items")
+        (type . "Attribute")
         (value
          .
          #hasheq((values
@@ -405,7 +406,6 @@ PARSING: Haven't handled a case yet:
                   .
                   (#hasheq((type . "Num") (n . 1))
                    #hasheq((type . "Num") (n . 2))))))
-        (type . "Attribute")
         (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
@@ -432,17 +432,20 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "reraise")
+        (body
          .
-         (#hasheq((orelse . ())
+         (#hasheq((type . "TryExcept")
                   (body
                    .
-                   (#hasheq((exc
+                   (#hasheq((type . "Raise")
+                            (exc
                              .
                              #hasheq((type . "Call")
                                      (args
                                       .
-                                      (#hasheq((s . "foo") (type . "Str"))))
+                                      (#hasheq((type . "Str") (s . "foo"))))
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -453,27 +456,29 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))))
-                            (type . "Raise")
                             (cause . #\nul))))
-                  (type . "TryExcept")
+                  (orelse . ())
                   (handlers
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "ExceptHandler")
+                            (name . #\nul)
+                            (body
                              .
-                             (#hasheq((orelse . ())
+                             (#hasheq((type . "TryExcept")
                                       (body
                                        .
-                                       (#hasheq((exc
+                                       (#hasheq((type . "Raise")
+                                                (exc
                                                  .
                                                  #hasheq((type . "Call")
                                                          (args
                                                           .
-                                                          (#hasheq((s
+                                                          (#hasheq((type
                                                                     .
-                                                                    "caught")
-                                                                   (type
+                                                                    "Str")
+                                                                   (s
                                                                     .
-                                                                    "Str"))))
+                                                                    "caught"))))
                                                          (keywords . ())
                                                          (kwargs . #\nul)
                                                          (starargs . #\nul)
@@ -490,23 +495,20 @@ PARSING: Haven't handled a case yet:
                                                                    #hasheq((type
                                                                             .
                                                                             "Load")))))))
-                                                (type . "Raise")
                                                 (cause . #\nul))))
-                                      (type . "TryExcept")
+                                      (orelse . ())
                                       (handlers
                                        .
-                                       (#hasheq((body
-                                                 .
-                                                 (#hasheq((type . "Pass"))))
+                                       (#hasheq((type . "ExceptHandler")
                                                 (name . #\nul)
-                                                (type . "ExceptHandler")))))
-                              #hasheq((exc . #\nul)
-                                      (type . "Raise")
-                                      (cause . #\nul))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (name . "reraise")
-        (type . "FunctionDef")
+                                                (body
+                                                 .
+                                                 (#hasheq((type
+                                                           .
+                                                           "Pass"))))))))
+                              #hasheq((type . "Raise")
+                                      (exc . #\nul)
+                                      (cause . #\nul))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -532,15 +534,18 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((orelse
+#hasheq((type . "TryExcept")
+        (body . (#hasheq((type . "Raise") (exc . #\nul) (cause . #\nul))))
+        (orelse
          .
-         (#hasheq((value
+         (#hasheq((type . "Expr")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args
                             .
-                            (#hasheq((s . "No exception raised")
-                                     (type . "Str"))))
+                            (#hasheq((type . "Str")
+                                     (s . "No exception raised"))))
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -548,21 +553,21 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "___fail")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))))
-        (body . (#hasheq((exc . #\nul) (type . "Raise") (cause . #\nul))))
-        (type . "TryExcept")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (handlers
          .
-         (#hasheq((body
+         (#hasheq((type . "ExceptHandler")
+                  (name . "e")
+                  (body
                    .
-                   (#hasheq((value
+                   (#hasheq((type . "Expr")
+                            (value
                              .
                              #hasheq((type . "Call")
                                      (args
                                       .
-                                      (#hasheq((s . "No active exception")
-                                               (type . "Str"))
+                                      (#hasheq((type . "Str")
+                                               (s . "No active exception"))
                                        #hasheq((type . "Call")
                                                (args
                                                 .
@@ -594,10 +599,9 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Expr"))))
-                  (name . "e")
-                  (type . "ExceptHandler")))))
+                                               #hasheq((type
+                                                        .
+                                                        "Load"))))))))))))))
 
 === Expected stderr ===
 
@@ -610,32 +614,17 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "TryFinally")
+        (body
          .
-         (#hasheq((orelse
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_else")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
+         (#hasheq((type . "TryExcept")
                   (body
                    .
-                   (#hasheq((orelse
+                   (#hasheq((type . "TryExcept")
+                            (body . (#hasheq((type . "Pass"))))
+                            (orelse
                              .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_inner_else")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
+                             (#hasheq((type . "Assign")
                                       (value
                                        .
                                        #hasheq((id . "True")
@@ -643,24 +632,22 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (body . (#hasheq((type . "Pass"))))
-                            (type . "TryExcept")
+                                      (targets
+                                       .
+                                       (#hasheq((id . "hit_inner_else")
+                                                (type . "Name")
+                                                (ctx
+                                                 .
+                                                 #hasheq((type
+                                                          .
+                                                          "Store")))))))))
                             (handlers
                              .
-                             (#hasheq((body
+                             (#hasheq((type . "ExceptHandler")
+                                      (name . #\nul)
+                                      (body
                                        .
-                                       (#hasheq((targets
-                                                 .
-                                                 (#hasheq((id
-                                                           .
-                                                           "hit_inner_except")
-                                                          (type . "Name")
-                                                          (ctx
-                                                           .
-                                                           #hasheq((type
-                                                                    .
-                                                                    "Store"))))))
+                                       (#hasheq((type . "Assign")
                                                 (value
                                                  .
                                                  #hasheq((id . "True")
@@ -670,16 +657,25 @@ PARSING: Haven't handled a case yet:
                                                           #hasheq((type
                                                                    .
                                                                    "Load")))))
-                                                (type . "Assign"))))
-                                      (name . #\nul)
-                                      (type . "ExceptHandler")))))
-                    #hasheq((exc
+                                                (targets
+                                                 .
+                                                 (#hasheq((id
+                                                           .
+                                                           "hit_inner_except")
+                                                          (type . "Name")
+                                                          (ctx
+                                                           .
+                                                           #hasheq((type
+                                                                    .
+                                                                    "Store")))))))))))))
+                    #hasheq((type . "Raise")
+                            (exc
                              .
                              #hasheq((type . "Call")
                                      (args
                                       .
-                                      (#hasheq((s . "outer exception")
-                                               (type . "Str"))))
+                                      (#hasheq((type . "Str")
+                                               (s . "outer exception"))))
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -690,20 +686,27 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))))
-                            (type . "Raise")
                             (cause . #\nul))))
-                  (type . "TryExcept")
+                  (orelse
+                   .
+                   (#hasheq((type . "Assign")
+                            (value
+                             .
+                             #hasheq((id . "True")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load")))))
+                            (targets
+                             .
+                             (#hasheq((id . "hit_else")
+                                      (type . "Name")
+                                      (ctx . #hasheq((type . "Store")))))))))
                   (handlers
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "ExceptHandler")
+                            (name . #\nul)
+                            (body
                              .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
+                             (#hasheq((type . "Assign")
                                       (value
                                        .
                                        #hasheq((id . "True")
@@ -711,23 +714,28 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
+                                      (targets
+                                       .
+                                       (#hasheq((id . "hit_except")
+                                                (type . "Name")
+                                                (ctx
+                                                 .
+                                                 #hasheq((type
+                                                          .
+                                                          "Store")))))))))))))))
         (finalbody
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((id . "True")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
+                  (targets
+                   .
+                   (#hasheq((id . "hit_finally")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store"))))))))))
 
 === Expected stderr ===
 
@@ -740,9 +748,9 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body . (#hasheq((exc . #\nul) (type . "Raise") (cause . #\nul))))
+#hasheq((type . "FunctionDef")
         (name . "nested_reraise")
-        (type . "FunctionDef")
+        (body . (#hasheq((type . "Raise") (exc . #\nul) (cause . #\nul))))
         (args
          .
          #hasheq((type . "arguments")
@@ -768,22 +776,25 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "TryFinally")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "TryFinally")
+                  (body
                    .
-                   (#hasheq((orelse . ())
+                   (#hasheq((type . "TryExcept")
                             (body
                              .
-                             (#hasheq((exc
+                             (#hasheq((type . "Raise")
+                                      (exc
                                        .
                                        #hasheq((type . "Call")
                                                (args
                                                 .
-                                                (#hasheq((s
+                                                (#hasheq((type . "Str")
+                                                         (s
                                                           .
-                                                          "inner exception")
-                                                         (type . "Str"))))
+                                                          "inner exception"))))
                                                (keywords . ())
                                                (kwargs . #\nul)
                                                (starargs . #\nul)
@@ -796,24 +807,15 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load")))))))
-                                      (type . "Raise")
                                       (cause . #\nul))))
-                            (type . "TryExcept")
+                            (orelse . ())
                             (handlers
                              .
-                             (#hasheq((body
+                             (#hasheq((type . "ExceptHandler")
+                                      (name . #\nul)
+                                      (body
                                        .
-                                       (#hasheq((targets
-                                                 .
-                                                 (#hasheq((id
-                                                           .
-                                                           "hit_inner_except")
-                                                          (type . "Name")
-                                                          (ctx
-                                                           .
-                                                           #hasheq((type
-                                                                    .
-                                                                    "Store"))))))
+                                       (#hasheq((type . "Assign")
                                                 (value
                                                  .
                                                  #hasheq((id . "True")
@@ -823,37 +825,45 @@ PARSING: Haven't handled a case yet:
                                                           #hasheq((type
                                                                    .
                                                                    "Load")))))
-                                                (type . "Assign"))))
-                                      (name . #\nul)
-                                      (type . "ExceptHandler")))))))
-                  (type . "TryFinally")
+                                                (targets
+                                                 .
+                                                 (#hasheq((id
+                                                           .
+                                                           "hit_inner_except")
+                                                          (type . "Name")
+                                                          (ctx
+                                                           .
+                                                           #hasheq((type
+                                                                    .
+                                                                    "Store")))))))))))))))
                   (finalbody
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_inner_finally")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                   (#hasheq((type . "Assign")
                             (value
                              .
                              #hasheq((id . "True")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign")))))))
-        (type . "TryFinally")
+                            (targets
+                             .
+                             (#hasheq((id . "hit_inner_finally")
+                                      (type . "Name")
+                                      (ctx
+                                       .
+                                       #hasheq((type . "Store"))))))))))))
         (finalbody
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((id . "True")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
+                  (targets
+                   .
+                   (#hasheq((id . "hit_finally")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store"))))))))))
 
 === Expected stderr ===
 
@@ -866,30 +876,14 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((orelse
-         .
-         (#hasheq((value
-                   .
-                   #hasheq((type . "Call")
-                           (args
-                            .
-                            (#hasheq((s . "No exception raised")
-                                     (type . "Str"))))
-                           (keywords . ())
-                           (kwargs . #\nul)
-                           (starargs . #\nul)
-                           (func
-                            .
-                            #hasheq((id . "___fail")
-                                    (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))))
+#hasheq((type . "TryExcept")
         (body
          .
-         (#hasheq((orelse . ())
+         (#hasheq((type . "TryExcept")
                   (body
                    .
-                   (#hasheq((exc
+                   (#hasheq((type . "Raise")
+                            (exc
                              .
                              #hasheq((type . "Call")
                                      (args . ())
@@ -903,20 +897,15 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))))
-                            (type . "Raise")
                             (cause . #\nul))))
-                  (type . "TryExcept")
+                  (orelse . ())
                   (handlers
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "ExceptHandler")
+                            (name . "e")
+                            (body
                              .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "exc1")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
+                             (#hasheq((type . "Assign")
                                       (value
                                        .
                                        #hasheq((id . "e")
@@ -924,23 +913,48 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load")))))
-                                      (type . "Assign"))
-                              #hasheq((exc . #\nul)
-                                      (type . "Raise")
-                                      (cause . #\nul))))
-                            (name . "e")
-                            (type . "ExceptHandler")))))))
-        (type . "TryExcept")
+                                      (targets
+                                       .
+                                       (#hasheq((id . "exc1")
+                                                (type . "Name")
+                                                (ctx
+                                                 .
+                                                 #hasheq((type . "Store")))))))
+                              #hasheq((type . "Raise")
+                                      (exc . #\nul)
+                                      (cause . #\nul))))))))))
+        (orelse
+         .
+         (#hasheq((type . "Expr")
+                  (value
+                   .
+                   #hasheq((type . "Call")
+                           (args
+                            .
+                            (#hasheq((type . "Str")
+                                     (s . "No exception raised"))))
+                           (keywords . ())
+                           (kwargs . #\nul)
+                           (starargs . #\nul)
+                           (func
+                            .
+                            #hasheq((id . "___fail")
+                                    (type . "Name")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (handlers
          .
-         (#hasheq((body
+         (#hasheq((type . "ExceptHandler")
+                  (name . "exc2")
+                  (body
                    .
-                   (#hasheq((value
+                   (#hasheq((type . "Expr")
+                            (value
                              .
                              #hasheq((type . "Call")
                                      (args
                                       .
-                                      (#hasheq((left
+                                      (#hasheq((type . "Compare")
+                                               (left
                                                 .
                                                 #hasheq((id . "exc1")
                                                         (type . "Name")
@@ -958,8 +972,7 @@ PARSING: Haven't handled a case yet:
                                                           .
                                                           #hasheq((type
                                                                    .
-                                                                   "Load"))))))
-                                               (type . "Compare"))))
+                                                                   "Load")))))))))
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -969,10 +982,9 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Expr"))))
-                  (name . "exc2")
-                  (type . "ExceptHandler")))))
+                                               #hasheq((type
+                                                        .
+                                                        "Load"))))))))))))))
 
 === Expected stderr ===
 
@@ -985,17 +997,20 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "reraise")
+        (body
          .
-         (#hasheq((orelse . ())
+         (#hasheq((type . "TryExcept")
                   (body
                    .
-                   (#hasheq((exc
+                   (#hasheq((type . "Raise")
+                            (exc
                              .
                              #hasheq((type . "Call")
                                      (args
                                       .
-                                      (#hasheq((s . "foo") (type . "Str"))))
+                                      (#hasheq((type . "Str") (s . "foo"))))
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -1006,26 +1021,29 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))))
-                            (type . "Raise")
                             (cause . #\nul))))
-                  (type . "TryExcept")
+                  (orelse . ())
                   (handlers
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "ExceptHandler")
+                            (name . #\nul)
+                            (body
                              .
-                             (#hasheq((body
+                             (#hasheq((type . "TryFinally")
+                                      (body
                                        .
-                                       (#hasheq((exc
+                                       (#hasheq((type . "Raise")
+                                                (exc
                                                  .
                                                  #hasheq((type . "Call")
                                                          (args
                                                           .
-                                                          (#hasheq((s
+                                                          (#hasheq((type
                                                                     .
-                                                                    "caught")
-                                                                   (type
+                                                                    "Str")
+                                                                   (s
                                                                     .
-                                                                    "Str"))))
+                                                                    "caught"))))
                                                          (keywords . ())
                                                          (kwargs . #\nul)
                                                          (starargs . #\nul)
@@ -1042,18 +1060,12 @@ PARSING: Haven't handled a case yet:
                                                                    #hasheq((type
                                                                             .
                                                                             "Load")))))))
-                                                (type . "Raise")
                                                 (cause . #\nul))))
-                                      (type . "TryFinally")
                                       (finalbody
                                        .
-                                       (#hasheq((exc . #\nul)
-                                                (type . "Raise")
-                                                (cause . #\nul)))))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (name . "reraise")
-        (type . "FunctionDef")
+                                       (#hasheq((type . "Raise")
+                                                (exc . #\nul)
+                                                (cause . #\nul)))))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -1079,25 +1091,14 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((orelse
-         .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_else")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value
-                   .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign"))))
+#hasheq((type . "TryExcept")
         (body
          .
-         (#hasheq((exc
+         (#hasheq((type . "Raise")
+                  (exc
                    .
                    #hasheq((type . "Call")
-                           (args . (#hasheq((s . "foo!") (type . "Str"))))
+                           (args . (#hasheq((type . "Str") (s . "foo!"))))
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -1106,26 +1107,39 @@ PARSING: Haven't handled a case yet:
                             #hasheq((id . "Exception")
                                     (type . "Name")
                                     (ctx . #hasheq((type . "Load")))))))
-                  (type . "Raise")
                   (cause . #\nul))))
-        (type . "TryExcept")
+        (orelse
+         .
+         (#hasheq((type . "Assign")
+                  (value
+                   .
+                   #hasheq((id . "True")
+                           (type . "Name")
+                           (ctx . #hasheq((type . "Load")))))
+                  (targets
+                   .
+                   (#hasheq((id . "hit_else")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store")))))))))
         (handlers
          .
-         (#hasheq((body
+         (#hasheq((type . "ExceptHandler")
+                  (name . #\nul)
+                  (body
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_except")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                   (#hasheq((type . "Assign")
                             (value
                              .
                              #hasheq((id . "True")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (name . #\nul)
-                  (type . "ExceptHandler")))))
+                            (targets
+                             .
+                             (#hasheq((id . "hit_except")
+                                      (type . "Name")
+                                      (ctx
+                                       .
+                                       #hasheq((type . "Store")))))))))))))
 
 === Expected stderr ===
 
@@ -1138,26 +1152,28 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((orelse . ())
+#hasheq((type . "TryExcept")
         (body . (#hasheq((type . "Pass"))))
-        (type . "TryExcept")
+        (orelse . ())
         (handlers
          .
-         (#hasheq((body
+         (#hasheq((type . "ExceptHandler")
+                  (name . #\nul)
+                  (body
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_except")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                   (#hasheq((type . "Assign")
                             (value
                              .
                              #hasheq((id . "True")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (name . #\nul)
-                  (type . "ExceptHandler")))))
+                            (targets
+                             .
+                             (#hasheq((id . "hit_except")
+                                      (type . "Name")
+                                      (ctx
+                                       .
+                                       #hasheq((type . "Store")))))))))))))
 
 === Expected stderr ===
 
@@ -1170,13 +1186,14 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((orelse . ())
+#hasheq((type . "TryExcept")
         (body
          .
-         (#hasheq((exc
+         (#hasheq((type . "Raise")
+                  (exc
                    .
                    #hasheq((type . "Call")
-                           (args . (#hasheq((s . "ahoy!") (type . "Str"))))
+                           (args . (#hasheq((type . "Str") (s . "ahoy!"))))
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -1185,26 +1202,27 @@ PARSING: Haven't handled a case yet:
                             #hasheq((id . "Exception")
                                     (type . "Name")
                                     (ctx . #hasheq((type . "Load")))))))
-                  (type . "Raise")
                   (cause . #\nul))))
-        (type . "TryExcept")
+        (orelse . ())
         (handlers
          .
-         (#hasheq((body
+         (#hasheq((type . "ExceptHandler")
+                  (name . #\nul)
+                  (body
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_except")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                   (#hasheq((type . "Assign")
                             (value
                              .
                              #hasheq((id . "True")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (name . #\nul)
-                  (type . "ExceptHandler")))))
+                            (targets
+                             .
+                             (#hasheq((id . "hit_except")
+                                      (type . "Name")
+                                      (ctx
+                                       .
+                                       #hasheq((type . "Store")))))))))))))
 
 === Expected stderr ===
 
@@ -1217,34 +1235,31 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "TryFinally")
+        (body
          .
-         (#hasheq((orelse
+         (#hasheq((type . "TryExcept")
+                  (body . (#hasheq((type . "Pass"))))
+                  (orelse
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_else")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                   (#hasheq((type . "Assign")
                             (value
                              .
                              #hasheq((id . "True")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (body . (#hasheq((type . "Pass"))))
-                  (type . "TryExcept")
+                            (targets
+                             .
+                             (#hasheq((id . "hit_else")
+                                      (type . "Name")
+                                      (ctx . #hasheq((type . "Store")))))))))
                   (handlers
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "ExceptHandler")
+                            (name . #\nul)
+                            (body
                              .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
+                             (#hasheq((type . "Assign")
                                       (value
                                        .
                                        #hasheq((id . "True")
@@ -1252,23 +1267,28 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
+                                      (targets
+                                       .
+                                       (#hasheq((id . "hit_except")
+                                                (type . "Name")
+                                                (ctx
+                                                 .
+                                                 #hasheq((type
+                                                          .
+                                                          "Store")))))))))))))))
         (finalbody
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((id . "True")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
+                  (targets
+                   .
+                   (#hasheq((id . "hit_finally")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store"))))))))))
 
 === Expected stderr ===
 
@@ -1281,29 +1301,19 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "TryFinally")
+        (body
          .
-         (#hasheq((orelse
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_else")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
+         (#hasheq((type . "TryExcept")
                   (body
                    .
-                   (#hasheq((exc
+                   (#hasheq((type . "Raise")
+                            (exc
                              .
                              #hasheq((type . "Call")
                                      (args
                                       .
-                                      (#hasheq((s . "nyaa!") (type . "Str"))))
+                                      (#hasheq((type . "Str") (s . "nyaa!"))))
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -1314,20 +1324,27 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))))
-                            (type . "Raise")
                             (cause . #\nul))))
-                  (type . "TryExcept")
+                  (orelse
+                   .
+                   (#hasheq((type . "Assign")
+                            (value
+                             .
+                             #hasheq((id . "True")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load")))))
+                            (targets
+                             .
+                             (#hasheq((id . "hit_else")
+                                      (type . "Name")
+                                      (ctx . #hasheq((type . "Store")))))))))
                   (handlers
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "ExceptHandler")
+                            (name . #\nul)
+                            (body
                              .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
+                             (#hasheq((type . "Assign")
                                       (value
                                        .
                                        #hasheq((id . "True")
@@ -1335,23 +1352,28 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
+                                      (targets
+                                       .
+                                       (#hasheq((id . "hit_except")
+                                                (type . "Name")
+                                                (ctx
+                                                 .
+                                                 #hasheq((type
+                                                          .
+                                                          "Store")))))))))))))))
         (finalbody
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((id . "True")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
+                  (targets
+                   .
+                   (#hasheq((id . "hit_finally")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store"))))))))))
 
 === Expected stderr ===
 
@@ -1364,38 +1386,40 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((orelse
+#hasheq((type . "TryExcept")
+        (body . (#hasheq((type . "Pass"))))
+        (orelse
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_else")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((id . "True")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign"))))
-        (body . (#hasheq((type . "Pass"))))
-        (type . "TryExcept")
+                  (targets
+                   .
+                   (#hasheq((id . "hit_else")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store")))))))))
         (handlers
          .
-         (#hasheq((body
+         (#hasheq((type . "ExceptHandler")
+                  (name . #\nul)
+                  (body
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_except")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                   (#hasheq((type . "Assign")
                             (value
                              .
                              #hasheq((id . "True")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (name . #\nul)
-                  (type . "ExceptHandler")))))
+                            (targets
+                             .
+                             (#hasheq((id . "hit_except")
+                                      (type . "Name")
+                                      (ctx
+                                       .
+                                       #hasheq((type . "Store")))))))))))))
 
 === Expected stderr ===
 
@@ -1408,22 +1432,19 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "TryFinally")
+        (body
          .
-         (#hasheq((orelse . ())
+         (#hasheq((type . "TryExcept")
                   (body . (#hasheq((type . "Pass"))))
-                  (type . "TryExcept")
+                  (orelse . ())
                   (handlers
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "ExceptHandler")
+                            (name . #\nul)
+                            (body
                              .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
+                             (#hasheq((type . "Assign")
                                       (value
                                        .
                                        #hasheq((id . "True")
@@ -1431,23 +1452,28 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
+                                      (targets
+                                       .
+                                       (#hasheq((id . "hit_except")
+                                                (type . "Name")
+                                                (ctx
+                                                 .
+                                                 #hasheq((type
+                                                          .
+                                                          "Store")))))))))))))))
         (finalbody
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((id . "True")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
+                  (targets
+                   .
+                   (#hasheq((id . "hit_finally")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store"))))))))))
 
 === Expected stderr ===
 
@@ -1460,17 +1486,19 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "TryFinally")
+        (body
          .
-         (#hasheq((orelse . ())
+         (#hasheq((type . "TryExcept")
                   (body
                    .
-                   (#hasheq((exc
+                   (#hasheq((type . "Raise")
+                            (exc
                              .
                              #hasheq((type . "Call")
                                      (args
                                       .
-                                      (#hasheq((s . "yarr!") (type . "Str"))))
+                                      (#hasheq((type . "Str") (s . "yarr!"))))
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -1481,20 +1509,15 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))))
-                            (type . "Raise")
                             (cause . #\nul))))
-                  (type . "TryExcept")
+                  (orelse . ())
                   (handlers
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "ExceptHandler")
+                            (name . #\nul)
+                            (body
                              .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
+                             (#hasheq((type . "Assign")
                                       (value
                                        .
                                        #hasheq((id . "True")
@@ -1502,23 +1525,28 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
+                                      (targets
+                                       .
+                                       (#hasheq((id . "hit_except")
+                                                (type . "Name")
+                                                (ctx
+                                                 .
+                                                 #hasheq((type
+                                                          .
+                                                          "Store")))))))))))))))
         (finalbody
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((id . "True")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
+                  (targets
+                   .
+                   (#hasheq((id . "hit_finally")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store"))))))))))
 
 === Expected stderr ===
 
@@ -1531,21 +1559,21 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body . (#hasheq((type . "Pass"))))
-        (type . "TryFinally")
+#hasheq((type . "TryFinally")
+        (body . (#hasheq((type . "Pass"))))
         (finalbody
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((id . "True")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
+                  (targets
+                   .
+                   (#hasheq((id . "hit_finally")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store"))))))))))
 
 === Expected stderr ===
 
@@ -1558,31 +1586,24 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "ClassDef")
+        (name . "BasicIterClass")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "FunctionDef")
+                  (name . "__init__")
+                  (body
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((attr . "n")
-                                      (value
-                                       .
-                                       #hasheq((id . "self")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Attribute")
-                                      (ctx . #hasheq((type . "Store"))))))
+                   (#hasheq((type . "Assign")
                             (value
                              .
                              #hasheq((id . "n")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))
-                    #hasheq((targets
+                            (targets
                              .
-                             (#hasheq((attr . "i")
+                             (#hasheq((attr . "n")
+                                      (type . "Attribute")
                                       (value
                                        .
                                        #hasheq((id . "self")
@@ -1590,12 +1611,21 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load")))))
-                                      (type . "Attribute")
-                                      (ctx . #hasheq((type . "Store"))))))
+                                      (ctx . #hasheq((type . "Store")))))))
+                    #hasheq((type . "Assign")
                             (value . #hasheq((type . "Num") (n . 0)))
-                            (type . "Assign"))))
-                  (name . "__init__")
-                  (type . "FunctionDef")
+                            (targets
+                             .
+                             (#hasheq((attr . "i")
+                                      (type . "Attribute")
+                                      (value
+                                       .
+                                       #hasheq((id . "self")
+                                               (type . "Name")
+                                               (ctx
+                                                .
+                                                #hasheq((type . "Load")))))
+                                      (ctx . #hasheq((type . "Store")))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -1616,16 +1646,15 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((body
+          #hasheq((type . "FunctionDef")
+                  (name . "__next__")
+                  (body
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "res")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                   (#hasheq((type . "Assign")
                             (value
                              .
                              #hasheq((attr . "i")
+                                     (type . "Attribute")
                                      (value
                                       .
                                       #hasheq((id . "self")
@@ -1633,24 +1662,17 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))
-                                     (type . "Attribute")
                                      (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))
-                    #hasheq((orelse . ())
-                            (body
+                            (targets
                              .
-                             (#hasheq((exc
-                                       .
-                                       #hasheq((id . "StopIteration")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Raise")
-                                      (cause . #\nul))))
+                             (#hasheq((id . "res")
+                                      (type . "Name")
+                                      (ctx . #hasheq((type . "Store")))))))
+                    #hasheq((type . "If")
                             (test
                              .
-                             #hasheq((left
+                             #hasheq((type . "Compare")
+                                     (left
                                       .
                                       #hasheq((id . "res")
                                               (type . "Name")
@@ -1661,6 +1683,7 @@ PARSING: Haven't handled a case yet:
                                      (comparators
                                       .
                                       (#hasheq((attr . "n")
+                                               (type . "Attribute")
                                                (value
                                                 .
                                                 #hasheq((id . "self")
@@ -1670,27 +1693,26 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load")))))
-                                               (type . "Attribute")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load"))))))
-                                     (type . "Compare")))
-                            (type . "If"))
-                    #hasheq((targets
+                                                #hasheq((type . "Load"))))))))
+                            (body
                              .
-                             (#hasheq((attr . "i")
-                                      (value
+                             (#hasheq((type . "Raise")
+                                      (exc
                                        .
-                                       #hasheq((id . "self")
+                                       #hasheq((id . "StopIteration")
                                                (type . "Name")
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load")))))
-                                      (type . "Attribute")
-                                      (ctx . #hasheq((type . "Store"))))))
+                                      (cause . #\nul))))
+                            (orelse . ()))
+                    #hasheq((type . "Assign")
                             (value
                              .
-                             #hasheq((op . #hasheq((type . "Add")))
+                             #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "res")
@@ -1698,17 +1720,27 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))
-                                     (right . #hasheq((type . "Num") (n . 1)))
-                                     (type . "BinOp")))
-                            (type . "Assign"))
-                    #hasheq((value
+                                     (right
+                                      .
+                                      #hasheq((type . "Num") (n . 1)))))
+                            (targets
+                             .
+                             (#hasheq((attr . "i")
+                                      (type . "Attribute")
+                                      (value
+                                       .
+                                       #hasheq((id . "self")
+                                               (type . "Name")
+                                               (ctx
+                                                .
+                                                #hasheq((type . "Load")))))
+                                      (ctx . #hasheq((type . "Store")))))))
+                    #hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((id . "res")
                                      (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
-                  (name . "__next__")
-                  (type . "FunctionDef")
+                                     (ctx . #hasheq((type . "Load"))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -1726,8 +1758,6 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))))
-        (name . "BasicIterClass")
-        (type . "ClassDef")
         (keywords . ())
         (kwargs . #\nul)
         (starargs . #\nul)
@@ -1950,32 +1980,29 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "check_iterator")
+        (body
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "res")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((type . "List")
                            (ctx . #hasheq((type . "Load")))
                            (elts . ())))
-                  (type . "Assign"))
-          #hasheq((orelse . ())
+                  (targets
+                   .
+                   (#hasheq((id . "res")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store")))))))
+          #hasheq((type . "While")
+                  (test . #hasheq((type . "Num") (n . 1)))
                   (body
                    .
-                   (#hasheq((orelse . ())
+                   (#hasheq((type . "TryExcept")
                             (body
                              .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "val")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
+                             (#hasheq((type . "Assign")
                                       (value
                                        .
                                        #hasheq((type . "Call")
@@ -2000,14 +2027,23 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load")))))))
-                                      (type . "Assign"))))
-                            (type . "TryExcept")
+                                      (targets
+                                       .
+                                       (#hasheq((id . "val")
+                                                (type . "Name")
+                                                (ctx
+                                                 .
+                                                 #hasheq((type
+                                                          .
+                                                          "Store")))))))))
+                            (orelse . ())
                             (handlers
                              .
-                             (#hasheq((body . (#hasheq((type . "Break"))))
+                             (#hasheq((type . "ExceptHandler")
                                       (name . #\nul)
-                                      (type . "ExceptHandler")))))
-                    #hasheq((value
+                                      (body . (#hasheq((type . "Break"))))))))
+                    #hasheq((type . "Expr")
+                            (value
                              .
                              #hasheq((type . "Call")
                                      (args
@@ -2023,6 +2059,7 @@ PARSING: Haven't handled a case yet:
                                      (func
                                       .
                                       #hasheq((attr . "append")
+                                              (type . "Attribute")
                                               (value
                                                .
                                                #hasheq((id . "res")
@@ -2032,14 +2069,12 @@ PARSING: Haven't handled a case yet:
                                                         #hasheq((type
                                                                  .
                                                                  "Load")))))
-                                              (type . "Attribute")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Expr"))))
-                  (test . #hasheq((type . "Num") (n . 1)))
-                  (type . "While"))
-          #hasheq((value
+                                               #hasheq((type . "Load"))))))))))
+                  (orelse . ()))
+          #hasheq((type . "Expr")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args
@@ -2057,10 +2092,7 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "___assertEqual")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))))
-        (name . "check_iterator")
-        (type . "FunctionDef")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -2089,32 +2121,29 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "check_iterator")
+        (body
          .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "res")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((type . "List")
                            (ctx . #hasheq((type . "Load")))
                            (elts . ())))
-                  (type . "Assign"))
-          #hasheq((orelse . ())
+                  (targets
+                   .
+                   (#hasheq((id . "res")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store")))))))
+          #hasheq((type . "While")
+                  (test . #hasheq((type . "Num") (n . 1)))
                   (body
                    .
-                   (#hasheq((orelse . ())
+                   (#hasheq((type . "TryExcept")
                             (body
                              .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "val")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
+                             (#hasheq((type . "Assign")
                                       (value
                                        .
                                        #hasheq((type . "Call")
@@ -2139,14 +2168,23 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load")))))))
-                                      (type . "Assign"))))
-                            (type . "TryExcept")
+                                      (targets
+                                       .
+                                       (#hasheq((id . "val")
+                                                (type . "Name")
+                                                (ctx
+                                                 .
+                                                 #hasheq((type
+                                                          .
+                                                          "Store")))))))))
+                            (orelse . ())
                             (handlers
                              .
-                             (#hasheq((body . (#hasheq((type . "Break"))))
+                             (#hasheq((type . "ExceptHandler")
                                       (name . #\nul)
-                                      (type . "ExceptHandler")))))
-                    #hasheq((value
+                                      (body . (#hasheq((type . "Break"))))))))
+                    #hasheq((type . "Expr")
+                            (value
                              .
                              #hasheq((type . "Call")
                                      (args
@@ -2162,6 +2200,7 @@ PARSING: Haven't handled a case yet:
                                      (func
                                       .
                                       #hasheq((attr . "append")
+                                              (type . "Attribute")
                                               (value
                                                .
                                                #hasheq((id . "res")
@@ -2171,14 +2210,12 @@ PARSING: Haven't handled a case yet:
                                                         #hasheq((type
                                                                  .
                                                                  "Load")))))
-                                              (type . "Attribute")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Expr"))))
-                  (test . #hasheq((type . "Num") (n . 1)))
-                  (type . "While"))
-          #hasheq((value
+                                               #hasheq((type . "Load"))))))))))
+                  (orelse . ()))
+          #hasheq((type . "Expr")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args
@@ -2196,10 +2233,7 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "___assertEqual")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))))
-        (name . "check_iterator")
-        (type . "FunctionDef")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -2229,10 +2263,10 @@ parse: error is described above.
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
 #hasheq((attr . "extend")
+        (type . "Attribute")
         (value
          .
          #hasheq((id . "a") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Attribute")
         (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
@@ -2320,14 +2354,14 @@ PARSING: Haven't handled a case yet:
         (elts
          .
          (#hasheq((id . "a") (type . "Name") (ctx . #hasheq((type . "Load"))))
-          #hasheq((op . #hasheq((type . "Add")))
+          #hasheq((type . "BinOp")
+                  (op . #hasheq((type . "Add")))
                   (left
                    .
                    #hasheq((id . "a")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (right . #hasheq((type . "Num") (n . 1)))
-                  (type . "BinOp")))))
+                  (right . #hasheq((type . "Num") (n . 1)))))))
 
 === Expected stderr ===
 
@@ -2340,22 +2374,26 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "f")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "ClassDef")
+                  (name . "C")
+                  (body
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "FunctionDef")
+                            (name . "m")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((id . "x")
                                                (type . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Return"))))
-                            (name . "m")
-                            (type . "FunctionDef")
+                                                #hasheq((type . "Load"))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -2373,32 +2411,28 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((targets
-                             .
-                             (#hasheq((id . "a")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                    #hasheq((type . "Assign")
                             (value
                              .
                              #hasheq((id . "x")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (name . "C")
-                  (type . "ClassDef")
+                            (targets
+                             .
+                             (#hasheq((id . "a")
+                                      (type . "Name")
+                                      (ctx . #hasheq((type . "Store")))))))))
                   (keywords . ())
                   (kwargs . #\nul)
                   (starargs . #\nul)
                   (decorator_list . ())
                   (bases . ()))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((id . "C")
                            (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Return"))))
-        (name . "f")
-        (type . "FunctionDef")
+                           (ctx . #hasheq((type . "Load"))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -2426,15 +2460,23 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "make_adder2")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "FunctionDef")
+                  (name . "extra")
+                  (body
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "FunctionDef")
+                            (name . "adder")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
-                                       #hasheq((op . #hasheq((type . "Add")))
+                                       #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Add")))
                                                (left
                                                 .
                                                 #hasheq((id . "x")
@@ -2452,11 +2494,7 @@ PARSING: Haven't handled a case yet:
                                                          .
                                                          #hasheq((type
                                                                   .
-                                                                  "Load")))))
-                                               (type . "BinOp")))
-                                      (type . "Return"))))
-                            (name . "adder")
-                            (type . "FunctionDef")
+                                                                  "Load"))))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -2474,14 +2512,12 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((value
+                    #hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((id . "adder")
                                      (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
-                  (name . "extra")
-                  (type . "FunctionDef")
+                                     (ctx . #hasheq((type . "Load"))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -2495,7 +2531,8 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args . ())
@@ -2506,10 +2543,7 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "extra")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Return"))))
-        (name . "make_adder2")
-        (type . "FunctionDef")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -2537,25 +2571,30 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "test")
+        (body
          .
-         (#hasheq((targets
+         (#hasheq((type . "Assign")
+                  (value . #hasheq((type . "Str") (s . "var")))
+                  (targets
                    .
                    (#hasheq((id . "method_and_var")
                             (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value . #hasheq((s . "var") (type . "Str")))
-                  (type . "Assign"))
-          #hasheq((body
+                            (ctx . #hasheq((type . "Store")))))))
+          #hasheq((type . "ClassDef")
+                  (name . "Test")
+                  (body
                    .
-                   (#hasheq((body
-                             .
-                             (#hasheq((value
-                                       .
-                                       #hasheq((s . "method") (type . "Str")))
-                                      (type . "Return"))))
+                   (#hasheq((type . "FunctionDef")
                             (name . "method_and_var")
-                            (type . "FunctionDef")
+                            (body
+                             .
+                             (#hasheq((type . "Return")
+                                      (value
+                                       .
+                                       #hasheq((type . "Str")
+                                               (s . "method"))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -2573,18 +2612,18 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((body
+                    #hasheq((type . "FunctionDef")
+                            (name . "test")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((id . "method_and_var")
                                                (type . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Return"))))
-                            (name . "test")
-                            (type . "FunctionDef")
+                                                #hasheq((type . "Load"))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -2602,15 +2641,18 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((body
+                    #hasheq((type . "FunctionDef")
+                            (name . "actual_global")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((type . "Call")
                                                (args
                                                 .
-                                                (#hasheq((s . "global")
-                                                         (type . "Str"))))
+                                                (#hasheq((type . "Str")
+                                                         (s . "global"))))
                                                (keywords . ())
                                                (kwargs . #\nul)
                                                (starargs . #\nul)
@@ -2622,10 +2664,7 @@ PARSING: Haven't handled a case yet:
                                                          .
                                                          #hasheq((type
                                                                   .
-                                                                  "Load")))))))
-                                      (type . "Return"))))
-                            (name . "actual_global")
-                            (type . "FunctionDef")
+                                                                  "Load"))))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -2643,9 +2682,12 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((body
+                    #hasheq((type . "FunctionDef")
+                            (name . "str")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((type . "Call")
                                                (args
@@ -2668,10 +2710,7 @@ PARSING: Haven't handled a case yet:
                                                          .
                                                          #hasheq((type
                                                                   .
-                                                                  "Load")))))))
-                                      (type . "Return"))))
-                            (name . "str")
-                            (type . "FunctionDef")
+                                                                  "Load"))))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -2689,14 +2728,13 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))))
-                  (name . "Test")
-                  (type . "ClassDef")
                   (keywords . ())
                   (kwargs . #\nul)
                   (starargs . #\nul)
                   (decorator_list . ())
                   (bases . ()))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args . ())
@@ -2707,10 +2745,7 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "Test")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Return"))))
-        (name . "test")
-        (type . "FunctionDef")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -2768,13 +2803,11 @@ got a value
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "Mult"))
-
+got a value
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+
 =====================================================
 =   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/locals-class.py   =
 =====================================================
@@ -2782,29 +2815,33 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "f")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "ClassDef")
+                  (name . "C")
+                  (body
                    .
-                   (#hasheq((targets
+                   (#hasheq((type . "Assign")
+                            (value . #hasheq((type . "Num") (n . 12)))
+                            (targets
                              .
                              (#hasheq((id . "x")
                                       (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value . #hasheq((type . "Num") (n . 12)))
-                            (type . "Assign"))
-                    #hasheq((body
+                                      (ctx . #hasheq((type . "Store")))))))
+                    #hasheq((type . "FunctionDef")
+                            (name . "m")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((id . "x")
                                                (type . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Return"))))
-                            (name . "m")
-                            (type . "FunctionDef")
+                                                #hasheq((type . "Load"))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -2822,7 +2859,8 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((value
+                    #hasheq((type . "Expr")
+                            (value
                              .
                              #hasheq((type . "Call")
                                      (args . ())
@@ -2835,23 +2873,18 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Expr"))))
-                  (name . "C")
-                  (type . "ClassDef")
+                                               #hasheq((type . "Load"))))))))))
                   (keywords . ())
                   (kwargs . #\nul)
                   (starargs . #\nul)
                   (decorator_list . ())
                   (bases . ()))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((id . "C")
                            (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Return"))))
-        (name . "f")
-        (type . "FunctionDef")
+                           (ctx . #hasheq((type . "Load"))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -2879,15 +2912,23 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "f")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "FunctionDef")
+                  (name . "g")
+                  (body
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "FunctionDef")
+                            (name . "h")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
-                                       #hasheq((op . #hasheq((type . "Add")))
+                                       #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Add")))
                                                (left
                                                 .
                                                 #hasheq((id . "y")
@@ -2905,11 +2946,7 @@ PARSING: Haven't handled a case yet:
                                                          .
                                                          #hasheq((type
                                                                   .
-                                                                  "Load")))))
-                                               (type . "BinOp")))
-                                      (type . "Return"))))
-                            (name . "h")
-                            (type . "FunctionDef")
+                                                                  "Load"))))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -2927,14 +2964,11 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((targets
-                             .
-                             (#hasheq((id . "w")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                    #hasheq((type . "Assign")
                             (value
                              .
-                             #hasheq((op . #hasheq((type . "Add")))
+                             #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "x")
@@ -2948,18 +2982,22 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))
-                                     (type . "BinOp")))
-                            (type . "Assign"))
-                    #hasheq((op . #hasheq((type . "Add")))
+                                               #hasheq((type . "Load")))))))
+                            (targets
+                             .
+                             (#hasheq((id . "w")
+                                      (type . "Name")
+                                      (ctx . #hasheq((type . "Store")))))))
+                    #hasheq((type . "AugAssign")
+                            (op . #hasheq((type . "Add")))
                             (value . #hasheq((type . "Num") (n . 3)))
-                            (type . "AugAssign")
                             (target
                              .
                              #hasheq((id . "y")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Store"))))))
-                    #hasheq((value
+                    #hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((type . "Call")
                                      (args . ())
@@ -2972,10 +3010,7 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Return"))))
-                  (name . "g")
-                  (type . "FunctionDef")
+                                               #hasheq((type . "Load"))))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -2993,14 +3028,12 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((id . "g")
                            (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Return"))))
-        (name . "f")
-        (type . "FunctionDef")
+                           (ctx . #hasheq((type . "Load"))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3028,16 +3061,16 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "identity")
+        (body
          .
-         (#hasheq((value
+         (#hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((id . "x")
                            (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Return"))))
-        (name . "identity")
-        (type . "FunctionDef")
+                           (ctx . #hasheq((type . "Load"))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3065,22 +3098,30 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "f")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "FunctionDef")
+                  (name . "g")
+                  (body
                    .
-                   (#hasheq((targets
+                   (#hasheq((type . "Assign")
+                            (value . #hasheq((type . "Num") (n . 42)))
+                            (targets
                              .
                              (#hasheq((id . "x")
                                       (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value . #hasheq((type . "Num") (n . 42)))
-                            (type . "Assign"))
-                    #hasheq((body
+                                      (ctx . #hasheq((type . "Store")))))))
+                    #hasheq((type . "FunctionDef")
+                            (name . "h")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
-                                       #hasheq((op . #hasheq((type . "Add")))
+                                       #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Add")))
                                                (left
                                                 .
                                                 #hasheq((id . "x")
@@ -3098,11 +3139,7 @@ PARSING: Haven't handled a case yet:
                                                          .
                                                          #hasheq((type
                                                                   .
-                                                                  "Load")))))
-                                               (type . "BinOp")))
-                                      (type . "Return"))))
-                            (name . "h")
-                            (type . "FunctionDef")
+                                                                  "Load"))))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -3120,14 +3157,12 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((value
+                    #hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((id . "h")
                                      (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
-                  (name . "g")
-                  (type . "FunctionDef")
+                                     (ctx . #hasheq((type . "Load"))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -3145,7 +3180,8 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args . (#hasheq((type . "Num") (n . 2))))
@@ -3156,10 +3192,7 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "g")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Return"))))
-        (name . "f")
-        (type . "FunctionDef")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3187,25 +3220,31 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "f")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "FunctionDef")
+                  (name . "g")
+                  (body
                    .
                    (#hasheq((type . "Nonlocal") (names . ("x")))
-                    #hasheq((op . #hasheq((type . "Sub")))
+                    #hasheq((type . "AugAssign")
+                            (op . #hasheq((type . "Sub")))
                             (value . #hasheq((type . "Num") (n . 2)))
-                            (type . "AugAssign")
                             (target
                              .
                              #hasheq((id . "x")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Store"))))))
-                    #hasheq((body
+                    #hasheq((type . "FunctionDef")
+                            (name . "h")
+                            (body
                              .
                              (#hasheq((type . "Nonlocal") (names . ("x")))
-                              #hasheq((op . #hasheq((type . "Add")))
+                              #hasheq((type . "AugAssign")
+                                      (op . #hasheq((type . "Add")))
                                       (value . #hasheq((type . "Num") (n . 4)))
-                                      (type . "AugAssign")
                                       (target
                                        .
                                        #hasheq((id . "x")
@@ -3213,16 +3252,14 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Store"))))))
-                              #hasheq((value
+                              #hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((id . "x")
                                                (type . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Return"))))
-                            (name . "h")
-                            (type . "FunctionDef")
+                                                #hasheq((type . "Load"))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -3236,14 +3273,12 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((value
+                    #hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((id . "h")
                                      (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
-                  (name . "g")
-                  (type . "FunctionDef")
+                                     (ctx . #hasheq((type . "Load"))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -3257,14 +3292,12 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((id . "g")
                            (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Return"))))
-        (name . "f")
-        (type . "FunctionDef")
+                           (ctx . #hasheq((type . "Load"))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3292,17 +3325,27 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "make_adder4")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "FunctionDef")
+                  (name . "nest")
+                  (body
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "FunctionDef")
+                            (name . "nest")
+                            (body
                              .
-                             (#hasheq((body
+                             (#hasheq((type . "FunctionDef")
+                                      (name . "adder")
+                                      (body
                                        .
-                                       (#hasheq((value
+                                       (#hasheq((type . "Return")
+                                                (value
                                                  .
-                                                 #hasheq((op
+                                                 #hasheq((type . "BinOp")
+                                                         (op
                                                           .
                                                           #hasheq((type
                                                                    .
@@ -3330,11 +3373,7 @@ PARSING: Haven't handled a case yet:
                                                                    .
                                                                    #hasheq((type
                                                                             .
-                                                                            "Load")))))
-                                                         (type . "BinOp")))
-                                                (type . "Return"))))
-                                      (name . "adder")
-                                      (type . "FunctionDef")
+                                                                            "Load"))))))))))
                                       (args
                                        .
                                        #hasheq((type . "arguments")
@@ -3354,16 +3393,14 @@ PARSING: Haven't handled a case yet:
                                                (kw_defaults . ())))
                                       (decorator_list . ())
                                       (returns . #\nul))
-                              #hasheq((value
+                              #hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((id . "adder")
                                                (type . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Return"))))
-                            (name . "nest")
-                            (type . "FunctionDef")
+                                                #hasheq((type . "Load"))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -3377,7 +3414,8 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((value
+                    #hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((type . "Call")
                                      (args . ())
@@ -3390,10 +3428,7 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Return"))))
-                  (name . "nest")
-                  (type . "FunctionDef")
+                                               #hasheq((type . "Load"))))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -3407,7 +3442,8 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args . ())
@@ -3418,10 +3454,7 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "nest")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Return"))))
-        (name . "make_adder4")
-        (type . "FunctionDef")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3447,14 +3480,20 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "make_adder6")
+        (body
          .
          (#hasheq((type . "Global") (names . ("global_nest_x")))
-          #hasheq((body
+          #hasheq((type . "FunctionDef")
+                  (name . "adder")
+                  (body
                    .
-                   (#hasheq((value
+                   (#hasheq((type . "Return")
+                            (value
                              .
-                             #hasheq((op . #hasheq((type . "Add")))
+                             #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "global_nest_x")
@@ -3468,11 +3507,7 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))
-                                     (type . "BinOp")))
-                            (type . "Return"))))
-                  (name . "adder")
-                  (type . "FunctionDef")
+                                               #hasheq((type . "Load"))))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -3490,25 +3525,23 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((targets
-                   .
-                   (#hasheq((id . "global_nest_x")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+          #hasheq((type . "Assign")
                   (value
                    .
                    #hasheq((id . "x")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign"))
-          #hasheq((value
+                  (targets
+                   .
+                   (#hasheq((id . "global_nest_x")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store")))))))
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((id . "adder")
                            (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Return"))))
-        (name . "make_adder6")
-        (type . "FunctionDef")
+                           (ctx . #hasheq((type . "Load"))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3536,15 +3569,23 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "make_adder5")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "ClassDef")
+                  (name . "Adder")
+                  (body
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "FunctionDef")
+                            (name . "__call__")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
-                                       #hasheq((op . #hasheq((type . "Add")))
+                                       #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Add")))
                                                (left
                                                 .
                                                 #hasheq((id . "x")
@@ -3562,11 +3603,7 @@ PARSING: Haven't handled a case yet:
                                                          .
                                                          #hasheq((type
                                                                   .
-                                                                  "Load")))))
-                                               (type . "BinOp")))
-                                      (type . "Return"))))
-                            (name . "__call__")
-                            (type . "FunctionDef")
+                                                                  "Load"))))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -3587,14 +3624,13 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))))
-                  (name . "Adder")
-                  (type . "ClassDef")
                   (keywords . ())
                   (kwargs . #\nul)
                   (starargs . #\nul)
                   (decorator_list . ())
                   (bases . ()))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args . ())
@@ -3605,10 +3641,7 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "Adder")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Return"))))
-        (name . "make_adder5")
-        (type . "FunctionDef")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3636,31 +3669,35 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "f")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "ClassDef")
+                  (name . "c")
+                  (body
                    .
                    (#hasheq((type . "Nonlocal") (names . ("x")))
-                    #hasheq((op . #hasheq((type . "Add")))
+                    #hasheq((type . "AugAssign")
+                            (op . #hasheq((type . "Add")))
                             (value . #hasheq((type . "Num") (n . 1)))
-                            (type . "AugAssign")
                             (target
                              .
                              #hasheq((id . "x")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Store"))))))
-                    #hasheq((body
+                    #hasheq((type . "FunctionDef")
+                            (name . "get")
+                            (body
                              .
-                             (#hasheq((value
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((id . "x")
                                                (type . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Return"))))
-                            (name . "get")
-                            (type . "FunctionDef")
+                                                #hasheq((type . "Load"))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -3678,14 +3715,13 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))))
-                  (name . "c")
-                  (type . "ClassDef")
                   (keywords . ())
                   (kwargs . #\nul)
                   (starargs . #\nul)
                   (decorator_list . ())
                   (bases . ()))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args . ())
@@ -3696,10 +3732,7 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "c")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Return"))))
-        (name . "f")
-        (type . "FunctionDef")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3727,59 +3760,29 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "f")
+        (body
          .
-         (#hasheq((body
-                   .
-                   (#hasheq((type . "Nonlocal") (names . ("x")))
-                    #hasheq((op . #hasheq((type . "Add")))
-                            (value . #hasheq((type . "Num") (n . 1)))
-                            (type . "AugAssign")
-                            (target
-                             .
-                             #hasheq((id . "x")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Store"))))))
-                    #hasheq((value
-                             .
-                             #hasheq((id . "x")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
+         (#hasheq((type . "FunctionDef")
                   (name . "inc")
-                  (type . "FunctionDef")
-                  (args
-                   .
-                   #hasheq((type . "arguments")
-                           (args . ())
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (decorator_list . ())
-                  (returns . #\nul))
-          #hasheq((body
+                  (body
                    .
                    (#hasheq((type . "Nonlocal") (names . ("x")))
-                    #hasheq((op . #hasheq((type . "Sub")))
+                    #hasheq((type . "AugAssign")
+                            (op . #hasheq((type . "Add")))
                             (value . #hasheq((type . "Num") (n . 1)))
-                            (type . "AugAssign")
                             (target
                              .
                              #hasheq((id . "x")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Store"))))))
-                    #hasheq((value
+                    #hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((id . "x")
                                      (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
-                  (name . "dec")
-                  (type . "FunctionDef")
+                                     (ctx . #hasheq((type . "Load"))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -3793,7 +3796,40 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((value
+          #hasheq((type . "FunctionDef")
+                  (name . "dec")
+                  (body
+                   .
+                   (#hasheq((type . "Nonlocal") (names . ("x")))
+                    #hasheq((type . "AugAssign")
+                            (op . #hasheq((type . "Sub")))
+                            (value . #hasheq((type . "Num") (n . 1)))
+                            (target
+                             .
+                             #hasheq((id . "x")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Store"))))))
+                    #hasheq((type . "Return")
+                            (value
+                             .
+                             #hasheq((id . "x")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load"))))))))
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args . ())
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
+                  (decorator_list . ())
+                  (returns . #\nul))
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((type . "Tuple")
                            (ctx . #hasheq((type . "Load")))
@@ -3804,10 +3840,7 @@ PARSING: Haven't handled a case yet:
                                      (ctx . #hasheq((type . "Load"))))
                              #hasheq((id . "dec")
                                      (type . "Name")
-                                     (ctx . #hasheq((type . "Load"))))))))
-                  (type . "Return"))))
-        (name . "f")
-        (type . "FunctionDef")
+                                     (ctx . #hasheq((type . "Load")))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3835,16 +3868,22 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "f")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "ClassDef")
+                  (name . "c")
+                  (body
                    .
-                   (#hasheq((body
+                   (#hasheq((type . "FunctionDef")
+                            (name . "inc")
+                            (body
                              .
                              (#hasheq((type . "Nonlocal") (names . ("x")))
-                              #hasheq((op . #hasheq((type . "Add")))
+                              #hasheq((type . "AugAssign")
+                                      (op . #hasheq((type . "Add")))
                                       (value . #hasheq((type . "Num") (n . 1)))
-                                      (type . "AugAssign")
                                       (target
                                        .
                                        #hasheq((id . "x")
@@ -3852,16 +3891,14 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Store"))))))
-                              #hasheq((value
+                              #hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((id . "x")
                                                (type . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Return"))))
-                            (name . "inc")
-                            (type . "FunctionDef")
+                                                #hasheq((type . "Load"))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -3879,12 +3916,14 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
-                    #hasheq((body
+                    #hasheq((type . "FunctionDef")
+                            (name . "dec")
+                            (body
                              .
                              (#hasheq((type . "Nonlocal") (names . ("x")))
-                              #hasheq((op . #hasheq((type . "Sub")))
+                              #hasheq((type . "AugAssign")
+                                      (op . #hasheq((type . "Sub")))
                                       (value . #hasheq((type . "Num") (n . 1)))
-                                      (type . "AugAssign")
                                       (target
                                        .
                                        #hasheq((id . "x")
@@ -3892,16 +3931,14 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Store"))))))
-                              #hasheq((value
+                              #hasheq((type . "Return")
+                                      (value
                                        .
                                        #hasheq((id . "x")
                                                (type . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Return"))))
-                            (name . "dec")
-                            (type . "FunctionDef")
+                                                #hasheq((type . "Load"))))))))
                             (args
                              .
                              #hasheq((type . "arguments")
@@ -3919,14 +3956,13 @@ PARSING: Haven't handled a case yet:
                                      (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))))
-                  (name . "c")
-                  (type . "ClassDef")
                   (keywords . ())
                   (kwargs . #\nul)
                   (starargs . #\nul)
                   (decorator_list . ())
                   (bases . ()))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args . ())
@@ -3937,10 +3973,7 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "c")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Return"))))
-        (name . "f")
-        (type . "FunctionDef")
+                                    (ctx . #hasheq((type . "Load"))))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -3968,15 +4001,42 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "f")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "FunctionDef")
+                  (name . "fact")
+                  (body
                    .
-                   (#hasheq((orelse
+                   (#hasheq((type . "If")
+                            (test
                              .
-                             (#hasheq((value
+                             #hasheq((type . "Compare")
+                                     (left
+                                      .
+                                      #hasheq((id . "n")
+                                              (type . "Name")
+                                              (ctx
+                                               .
+                                               #hasheq((type . "Load")))))
+                                     (ops . (#hasheq((type . "Eq"))))
+                                     (comparators
+                                      .
+                                      (#hasheq((type . "Num") (n . 0))))))
+                            (body
+                             .
+                             (#hasheq((type . "Return")
+                                      (value
                                        .
-                                       #hasheq((op . #hasheq((type . "Mult")))
+                                       #hasheq((type . "Num") (n . 1))))))
+                            (orelse
+                             .
+                             (#hasheq((type . "Return")
+                                      (value
+                                       .
+                                       #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Mult")))
                                                (left
                                                 .
                                                 #hasheq((id . "n")
@@ -3991,7 +4051,10 @@ PARSING: Haven't handled a case yet:
                                                 #hasheq((type . "Call")
                                                         (args
                                                          .
-                                                         (#hasheq((op
+                                                         (#hasheq((type
+                                                                   .
+                                                                   "BinOp")
+                                                                  (op
                                                                    .
                                                                    #hasheq((type
                                                                             .
@@ -4016,10 +4079,7 @@ PARSING: Haven't handled a case yet:
                                                                             "Num")
                                                                            (n
                                                                             .
-                                                                            1)))
-                                                                  (type
-                                                                   .
-                                                                   "BinOp"))))
+                                                                            1))))))
                                                         (keywords . ())
                                                         (kwargs . #\nul)
                                                         (starargs . #\nul)
@@ -4033,30 +4093,7 @@ PARSING: Haven't handled a case yet:
                                                                   .
                                                                   #hasheq((type
                                                                            .
-                                                                           "Load")))))))
-                                               (type . "BinOp")))
-                                      (type . "Return"))))
-                            (body
-                             .
-                             (#hasheq((value . #hasheq((type . "Num") (n . 1)))
-                                      (type . "Return"))))
-                            (test
-                             .
-                             #hasheq((left
-                                      .
-                                      #hasheq((id . "n")
-                                              (type . "Name")
-                                              (ctx
-                                               .
-                                               #hasheq((type . "Load")))))
-                                     (ops . (#hasheq((type . "Eq"))))
-                                     (comparators
-                                      .
-                                      (#hasheq((type . "Num") (n . 0))))
-                                     (type . "Compare")))
-                            (type . "If"))))
-                  (name . "fact")
-                  (type . "FunctionDef")
+                                                                           "Load")))))))))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -4074,30 +4111,21 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((orelse
+          #hasheq((type . "If")
+                  (test
                    .
-                   (#hasheq((exc
-                             .
-                             #hasheq((type . "Call")
-                                     (args
-                                      .
-                                      (#hasheq((s . "x must be >= 0")
-                                               (type . "Str"))))
-                                     (keywords . ())
-                                     (kwargs . #\nul)
-                                     (starargs . #\nul)
-                                     (func
-                                      .
-                                      #hasheq((id . "ValueError")
-                                              (type . "Name")
-                                              (ctx
-                                               .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Raise")
-                            (cause . #\nul))))
+                   #hasheq((type . "Compare")
+                           (left
+                            .
+                            #hasheq((id . "x")
+                                    (type . "Name")
+                                    (ctx . #hasheq((type . "Load")))))
+                           (ops . (#hasheq((type . "GtE"))))
+                           (comparators . (#hasheq((type . "Num") (n . 0))))))
                   (body
                    .
-                   (#hasheq((value
+                   (#hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((type . "Call")
                                      (args
@@ -4116,21 +4144,28 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Return"))))
-                  (test
+                                               #hasheq((type . "Load"))))))))))
+                  (orelse
                    .
-                   #hasheq((left
-                            .
-                            #hasheq((id . "x")
-                                    (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))
-                           (ops . (#hasheq((type . "GtE"))))
-                           (comparators . (#hasheq((type . "Num") (n . 0))))
-                           (type . "Compare")))
-                  (type . "If"))))
-        (name . "f")
-        (type . "FunctionDef")
+                   (#hasheq((type . "Raise")
+                            (exc
+                             .
+                             #hasheq((type . "Call")
+                                     (args
+                                      .
+                                      (#hasheq((type . "Str")
+                                               (s . "x must be >= 0"))))
+                                     (keywords . ())
+                                     (kwargs . #\nul)
+                                     (starargs . #\nul)
+                                     (func
+                                      .
+                                      #hasheq((id . "ValueError")
+                                              (type . "Name")
+                                              (ctx
+                                               .
+                                               #hasheq((type . "Load")))))))
+                            (cause . #\nul)))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -4158,13 +4193,19 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "make_adder3")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "FunctionDef")
+                  (name . "adder")
+                  (body
                    .
-                   (#hasheq((value
+                   (#hasheq((type . "Return")
+                            (value
                              .
-                             #hasheq((op . #hasheq((type . "Add")))
+                             #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "x")
@@ -4178,11 +4219,7 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))
-                                     (type . "BinOp")))
-                            (type . "Return"))))
-                  (name . "adder")
-                  (type . "FunctionDef")
+                                               #hasheq((type . "Load"))))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -4200,30 +4237,28 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((targets
-                   .
-                   (#hasheq((id . "x")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+          #hasheq((type . "Assign")
                   (value
                    .
-                   #hasheq((op . #hasheq((type . "Add")))
+                   #hasheq((type . "BinOp")
+                           (op . #hasheq((type . "Add")))
                            (left
                             .
                             #hasheq((id . "x")
                                     (type . "Name")
                                     (ctx . #hasheq((type . "Load")))))
-                           (right . #hasheq((type . "Num") (n . 1)))
-                           (type . "BinOp")))
-                  (type . "Assign"))
-          #hasheq((value
+                           (right . #hasheq((type . "Num") (n . 1)))))
+                  (targets
+                   .
+                   (#hasheq((id . "x")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store")))))))
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((id . "adder")
                            (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Return"))))
-        (name . "make_adder3")
-        (type . "FunctionDef")
+                           (ctx . #hasheq((type . "Load"))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -4251,13 +4286,19 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "make_adder")
+        (body
          .
-         (#hasheq((body
+         (#hasheq((type . "FunctionDef")
+                  (name . "adder")
+                  (body
                    .
-                   (#hasheq((value
+                   (#hasheq((type . "Return")
+                            (value
                              .
-                             #hasheq((op . #hasheq((type . "Add")))
+                             #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "x")
@@ -4271,11 +4312,7 @@ PARSING: Haven't handled a case yet:
                                               (type . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))
-                                     (type . "BinOp")))
-                            (type . "Return"))))
-                  (name . "adder")
-                  (type . "FunctionDef")
+                                               #hasheq((type . "Load"))))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -4293,14 +4330,12 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((value
+          #hasheq((type . "Return")
+                  (value
                    .
                    #hasheq((id . "adder")
                            (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Return"))))
-        (name . "make_adder")
-        (type . "FunctionDef")
+                           (ctx . #hasheq((type . "Load"))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -4328,9 +4363,12 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "FunctionDef")
+        (name . "errorInOuter")
+        (body
          .
-         (#hasheq((value
+         (#hasheq((type . "Expr")
+                  (value
                    .
                    #hasheq((type . "Call")
                            (args
@@ -4345,18 +4383,17 @@ PARSING: Haven't handled a case yet:
                             .
                             #hasheq((id . "print")
                                     (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))
-          #hasheq((body
+                                    (ctx . #hasheq((type . "Load"))))))))
+          #hasheq((type . "FunctionDef")
+                  (name . "inner")
+                  (body
                    .
-                   (#hasheq((value
+                   (#hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((id . "y")
                                      (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
-                  (name . "inner")
-                  (type . "FunctionDef")
+                                     (ctx . #hasheq((type . "Load"))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -4370,15 +4407,13 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((targets
+          #hasheq((type . "Assign")
+                  (value . #hasheq((type . "Num") (n . 1)))
+                  (targets
                    .
                    (#hasheq((id . "y")
                             (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value . #hasheq((type . "Num") (n . 1)))
-                  (type . "Assign"))))
-        (name . "errorInOuter")
-        (type . "FunctionDef")
+                            (ctx . #hasheq((type . "Store")))))))))
         (args
          .
          #hasheq((type . "arguments")
@@ -4404,14 +4439,16 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body
+#hasheq((type . "ClassDef")
+        (name . "A")
+        (body
          .
-         (#hasheq((body
-                   .
-                   (#hasheq((value . #hasheq((s . "A") (type . "Str")))
-                            (type . "Return"))))
+         (#hasheq((type . "FunctionDef")
                   (name . "f")
-                  (type . "FunctionDef")
+                  (body
+                   .
+                   (#hasheq((type . "Return")
+                            (value . #hasheq((type . "Str") (s . "A"))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -4429,9 +4466,12 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
-          #hasheq((body
+          #hasheq((type . "FunctionDef")
+                  (name . "cm")
+                  (body
                    .
-                   (#hasheq((value
+                   (#hasheq((type . "Return")
+                            (value
                              .
                              #hasheq((type . "Tuple")
                                      (ctx . #hasheq((type . "Load")))
@@ -4442,10 +4482,7 @@ PARSING: Haven't handled a case yet:
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load"))))
-                                       #hasheq((s . "A") (type . "Str"))))))
-                            (type . "Return"))))
-                  (name . "cm")
-                  (type . "FunctionDef")
+                                       #hasheq((type . "Str") (s . "A")))))))))
                   (args
                    .
                    #hasheq((type . "arguments")
@@ -4467,8 +4504,6 @@ PARSING: Haven't handled a case yet:
                             (type . "Name")
                             (ctx . #hasheq((type . "Load"))))))
                   (returns . #\nul))))
-        (name . "A")
-        (type . "ClassDef")
         (keywords . ())
         (kwargs . #\nul)
         (starargs . #\nul)
@@ -4581,17 +4616,28 @@ interp-lt: comparison not valid for arguments of this type
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((orelse
+#hasheq((type . "TryExcept")
+        (body
          .
-         (#hasheq((exc
+         (#hasheq((type . "Expr")
+                  (value
+                   .
+                   #hasheq((type . "BinOp")
+                           (op . #hasheq((type . "Div")))
+                           (left . #hasheq((type . "Num") (n . 5.0)))
+                           (right . #hasheq((type . "Num") (n . 0.0))))))))
+        (orelse
+         .
+         (#hasheq((type . "Raise")
+                  (exc
                    .
                    #hasheq((type . "Call")
                            (args
                             .
-                            (#hasheq((s
+                            (#hasheq((type . "Str")
+                                     (s
                                       .
-                                      "5.0 / 0.0 didn't raise ZeroDivisionError")
-                                     (type . "Str"))))
+                                      "5.0 / 0.0 didn't raise ZeroDivisionError"))))
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -4600,23 +4646,12 @@ PARSING: Haven't handled a case yet:
                             #hasheq((id . "Exception")
                                     (type . "Name")
                                     (ctx . #hasheq((type . "Load")))))))
-                  (type . "Raise")
                   (cause . #\nul))))
-        (body
-         .
-         (#hasheq((value
-                   .
-                   #hasheq((op . #hasheq((type . "Div")))
-                           (left . #hasheq((type . "Num") (n . 5.0)))
-                           (right . #hasheq((type . "Num") (n . 0.0)))
-                           (type . "BinOp")))
-                  (type . "Expr"))))
-        (type . "TryExcept")
         (handlers
          .
-         (#hasheq((body . (#hasheq((type . "Pass"))))
+         (#hasheq((type . "ExceptHandler")
                   (name . #\nul)
-                  (type . "ExceptHandler")))))
+                  (body . (#hasheq((type . "Pass"))))))))
 
 === Expected stderr ===
 
@@ -4640,7 +4675,7 @@ got a value
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "Mult"))
+#hasheq((type . "In"))
 
 === Expected stderr ===
 
@@ -4664,10 +4699,10 @@ lookupEnv: Unbound indentifier error: len
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((value
+#hasheq((type . "Subscript")
+        (value
          .
          #hasheq((id . "a") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Subscript")
         (ctx . #hasheq((type . "Load")))
         (slice
          .
@@ -4689,7 +4724,7 @@ parse: error is described above.
 PARSING: Haven't handled a case yet: 
 #hasheq((values . (#hasheq((type . "Num") (n . 1))))
         (type . "Dict")
-        (keys . (#hasheq((s . "x") (type . "Str")))))
+        (keys . (#hasheq((type . "Str") (s . "x")))))
 
 === Expected stderr ===
 
@@ -4702,9 +4737,9 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body . (#hasheq((type . "Pass"))))
+#hasheq((type . "FunctionDef")
         (name . "f")
-        (type . "FunctionDef")
+        (body . (#hasheq((type . "Pass"))))
         (args
          .
          #hasheq((type . "arguments")

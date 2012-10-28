@@ -119,8 +119,16 @@ structure that you define in python-syntax.rkt
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     
+    ;; arithmetic
     [(hash-table ('type "Add"))
      'add]
+    [(hash-table ('type "Sub"))
+     'sub]
+    [(hash-table ('type "Mult"))
+     'mult]
+    [(hash-table ('type "Div"))
+     'div]
+    
     [(hash-table ('type "Or"))
      'or]
     [(hash-table ('type "And"))

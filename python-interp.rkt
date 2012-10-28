@@ -325,6 +325,52 @@
                          [else (error 'interp-add "Cannot add two different types")])]
             [else (error 'interp-gte "Addition not valid for arguments of this type")])])]))
 
+;;interp-sub
+(define (interp-sub [left : CExp] 
+                    [right : CExp] 
+                    [env : Env] 
+                    [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env left env store)
+    [ValueA (v1 s1)
+      (type-case AnswerC (interp-env right env s1)
+        [ValueA (v2 s2)
+          (type-case CVal v1
+            [VNum (n1) (type-case CVal v2
+                         [VNum (n2) (ValueA (VNum (- n1 n2)) s2)]
+                         [else (error 'interp-sub "Cannot subtract two different types")])]
+            [else (error 'interp-gte "Subtraction not valid for arguments of this type")])])]))
+
+;;interp-mult
+(define (interp-mult [left : CExp] 
+                    [right : CExp] 
+                    [env : Env] 
+                    [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env left env store)
+    [ValueA (v1 s1)
+      (type-case AnswerC (interp-env right env s1)
+        [ValueA (v2 s2)
+          (type-case CVal v1
+            [VNum (n1) (type-case CVal v2
+                         [VNum (n2) (ValueA (VNum (* n1 n2)) s2)]
+                         [else (error 'interp-mult "Cannot multiply two different types")])]
+            [else (error 'interp-gte "Multiplication not valid for arguments of this type")])])]))
+
+;;interp-div
+(define (interp-div [left : CExp] 
+                    [right : CExp] 
+                    [env : Env] 
+                    [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env left env store)
+    [ValueA (v1 s1)
+      (type-case AnswerC (interp-env right env s1)
+        [ValueA (v2 s2)
+          (type-case CVal v1
+            [VNum (n1) (type-case CVal v2
+                         [VNum (n2) (if (= n2 0)
+                                        (error 'divide-by-zero "Cannot divide by zero")
+                                        (ValueA (VNum (/ n1 n2)) s2))]
+                         [else (error 'interp-div "Cannot divide two different types")])]
+            [else (error 'interp-gte "Division not valid for arguments of this type")])])]))
 
 ;; isTruthy returns false if the CVal value is False to python
 ;; and true otherwise
@@ -428,6 +474,9 @@
               ['isNot (interp-isNot e1 e2 env store)]
               ;;binops
               ['add (interp-add e1 e2 env store)]
+              ['sub (interp-sub e1 e2 env store)]
+              ['mult (interp-mult e1 e2 env store)]
+              ['div (interp-div e1 e2 env store)]
               [else (error 'interp "Invalid CPrim2 operation")]
               )]
     [CIf (i t e)
@@ -454,11 +503,13 @@
 
 
 ;; regular interpret
-(define (interp (expr : CExp)) : void
+(define (interp (expr : CExp)) : CVal
   (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
-    [ValueA (v s) (if (VPass? v)
-                      (void)
-                      (print v))]))
+    [ValueA (v s) v]))
+            
+            ;;(if (VPass? v)
+                   ;   (void)
+                   ;   (print v))]))
 
 
 ;; basic test cases

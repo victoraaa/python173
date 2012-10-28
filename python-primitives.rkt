@@ -14,7 +14,7 @@ primitives here.
 
 (require (typed-in racket/base [display : (string -> void)]))
 
-(define (pretty arg)
+(define (pretty arg) : string
   (type-case CVal arg
     [VNum (n) (to-string n)]
     [VStr (s) s]

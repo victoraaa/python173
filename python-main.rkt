@@ -2,6 +2,7 @@
 
 (require racket/cmdline
          racket/pretty
+         "python-primitives.rkt"
          "parse-python.rkt"
          "get-structured-python.rkt"
          "python-interp.rkt"
@@ -25,7 +26,7 @@
 (command-line
   #:once-each
   ("--interp" "Interpret stdin as python"
-   (display (run-python (current-input-port)))
+   (display (pretty (run-python (current-input-port))))
    (display "\n"))
 
   ("--interp-py" "Interpret stdin as python using py-prelude.py"
