@@ -24,7 +24,7 @@
     [PyBoolop (op exprs)
               (case op
                 ['or (foldl (lambda (expr result) (CPrim2 'or result (desugar expr))) (desugar (first exprs)) (rest exprs))]
-                ['and (error 'desugar-pyboolop "not implemented yet")])]
+                ['and (foldl (lambda (expr result) (CPrim2 'and result (desugar expr))) (desugar (first exprs)) (rest exprs))])]
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
                    (CTrue)
@@ -40,7 +40,7 @@
     
     [PyPass () (CNone)]
     [PyLambda (args body) (CFunc args (desugar body))]
-    [PyRaise (exc cause) (CError (desugar exc))]
+    [PyRaise (exc) (CError (desugar exc))]
     
 ;|#
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"

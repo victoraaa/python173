@@ -90,13 +90,15 @@ structure that you define in python-syntax.rkt
     [(hash-table ('type "Raise")
                  ('exc exc)
                  ('cause cause))
-     (PyRaise exc cause)]
+     (PyRaise (get-structured-python exc))] ;; (get-structured-python cause))]
      
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     
     [(hash-table ('type "Or"))
      'or]
+    [(hash-table ('type "And"))
+     'and]
     [(hash-table ('type "Eq"))
      'eq]
     [(hash-table ('type "NotEq"))

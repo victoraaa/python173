@@ -20,14 +20,14 @@ that calls the primitive `print`.
 
 (define assert-equal-lambda
   (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'Eq (CId 'e1) (CId 'e2)) 
+    (CIf (CPrim2 'eq (CId 'e1) (CId 'e2)) 
          (CTrue) 
          (CError (CStr "Assert failed: values are not Equal"))
          )))
 
 (define assert-notEqual-lambda
   (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'Eq (CId 'e1) (CId 'e2))  
+    (CIf (CPrim2 'eq (CId 'e1) (CId 'e2))  
          (CError (CStr "Assert failed: values are Equal"))
          (CTrue)
          )))
@@ -42,21 +42,21 @@ that calls the primitive `print`.
 
 (define assert-is-lambda
   (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'Is (CId 'e1) (CId 'e2)) 
+    (CIf (CPrim2 'is (CId 'e1) (CId 'e2)) 
          (CTrue) 
          (CError (CStr "Assert failed: first argument is not second argument"))
          )))
 
 (define assert-in-lambda
   (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'In (CId 'e1) (CId 'e2)) 
+    (CIf (CPrim2 'in (CId 'e1) (CId 'e2)) 
          (CTrue) 
          (CError (CStr "Assert failed: element not found"))
          )))
 
 (define assert-notIn-lambda
   (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'Is (CId 'e1) (CId 'e2)) 
+    (CIf (CPrim2 'is (CId 'e1) (CId 'e2)) 
          (CError (CStr "Assert failed: element found"))
          (CTrue)
          )))

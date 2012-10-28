@@ -105,6 +105,17 @@
                       (ValueA v s)
                       (interp-env e2 env s))]))
 
+;;and returns e1 if its value is not truthy; else, 
+;;returns e2's value
+(define (interp-and [e1 : CExp]
+                   [e2 : CExp]
+                   [env : Env]
+                   [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env e1 env store)
+    [ValueA (v s) (if (not (isTruthy v))
+                      (ValueA v s)
+                      (interp-env e2 env s))]))
+
 ;;eq returns true if both expressions evaluate to the same value
 ;;it uses the equal? racket operator to compare the values
 (define (interp-eq [e1 : CExp]
@@ -323,7 +334,7 @@
             (case op
               ;;boolops
               ['or (interp-or e1 e2 env store)]
-              ['and (error 'interp-boolop "not implemented")]
+              ['and (interp-and e1 e2 env store)]
               ;;cmpops
               ['eq (interp-eq e1 e2 env store)]
               ['notEq (interp-notEq e1 e2 env store)]
@@ -333,6 +344,7 @@
               ['gte (interp-gte e1 e2 env store)]
               ['is (interp-is e1 e2 env store)]
               ['isNot (interp-isNot e1 e2 env store)]
+              [else (error 'interp "Invalid CPrim2 operation")]
               )]
     [CIf (i t e)
          (type-case AnswerC (interp-env i env store)
