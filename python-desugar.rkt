@@ -25,6 +25,8 @@
               (case op
                 ['or (foldl (lambda (expr result) (CPrim2 'or result (desugar expr))) (desugar (first exprs)) (rest exprs))]
                 ['and (foldl (lambda (expr result) (CPrim2 'and result (desugar expr))) (desugar (first exprs)) (rest exprs))])]
+    [PyUnaryOp (op arg)
+               (CPrim1 op (desugar arg))]
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
                    (CTrue)
