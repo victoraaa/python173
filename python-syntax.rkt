@@ -17,6 +17,7 @@
   [PyGlobal (id : symbol)]
   [PyNonlocal (id : symbol)]
   [PyAssign (targets : (listof PyExpr)) (value : PyExpr)]
+  [PySet (lhs : PyExpr) (value : PyExpr)]
   
   [Py-NotExist] ;;THIS IS HERE ONLY SO THAT python-desugar won't complain about having completed all of the expressions
   )

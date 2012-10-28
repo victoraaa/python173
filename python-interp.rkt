@@ -322,11 +322,13 @@
                 (interp-env e2 env s)])]
 
     [CSet (id value)
-          (type-case AnswerC (interp-env value env store)
-             [ValueA (v s)
-                     (ValueA v (augmentStore (lookupEnv id env)
-                                             v
-                                             s))])]
+          (type-case CExp id
+            [CId (id-symbol) (type-case AnswerC (interp-env value env store)
+                               [ValueA (v s)
+                                       (ValueA v (augmentStore (lookupEnv id-symbol env)
+                                                               v
+                                                               s))])]
+            [else (error 'interp-CSet "For now, CSet only support ids that are symbols")])]
     
     [CApp (func args)
      (type-case AnswerC (interp-env func env store)
