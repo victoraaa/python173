@@ -1,4 +1,3 @@
-(VTrue)
 0 tests succeeded.
 90 tests failed.
 == Output of failed tests ==
@@ -46,7 +45,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-interp-lt: comparison not valid for arguments of this type
+interp-is: comparison not valid for arguments of this type
 =====================================================
 =   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-convert.py   =
 =====================================================
@@ -54,9 +53,7 @@ interp-lt: comparison not valid for arguments of this type
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "UnaryOp")
-        (op . #hasheq((type . "USub")))
-        (operand . #hasheq((type . "Num") (n . 1))))
+#hasheq((type . "USub"))
 
 === Expected stderr ===
 
@@ -102,13 +99,7 @@ lookupEnv: Unbound indentifier error: isinstance
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "UnaryOp")
-        (op . #hasheq((type . "UAdd")))
-        (operand
-         .
-         #hasheq((id . "False")
-                 (type . "Name")
-                 (ctx . #hasheq((type . "Load"))))))
+#hasheq((type . "UAdd"))
 
 === Expected stderr ===
 
@@ -177,10 +168,10 @@ parse: error is described above.
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
 #hasheq((type . "BinOp")
+        (op . #hasheq((type . "Add")))
         (left
          .
          #hasheq((id . "x") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (op . #hasheq((type . "Add")))
         (right
          .
          #hasheq((id . "y") (type . "Name") (ctx . #hasheq((type . "Load"))))))
@@ -257,9 +248,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "UnaryOp")
-        (op . #hasheq((type . "Not")))
-        (operand . #hasheq((values . ()) (type . "Dict") (keys . ()))))
+#hasheq((values . ()) (type . "Dict") (keys . ()))
 
 === Expected stderr ===
 
@@ -1347,6 +1336,7 @@ PARSING: Haven't handled a case yet:
                             (value
                              .
                              #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "res")
@@ -1354,7 +1344,6 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))
-                                     (op . #hasheq((type . "Add")))
                                      (right
                                       .
                                       #hasheq((type . "Num") (n . 1)))))
@@ -1927,22 +1916,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "UnaryOp")
-        (op . #hasheq((type . "Not")))
-        (operand
-         .
-         #hasheq((type . "Compare")
-                 (left
-                  .
-                  #hasheq((type . "List")
-                          (ctx . #hasheq((type . "Load")))
-                          (elts . ())))
-                 (ops . (#hasheq((type . "IsNot"))))
-                 (comparators
-                  .
-                  (#hasheq((type . "List")
-                           (ctx . #hasheq((type . "Load")))
-                           (elts . ())))))))
+#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
 
 === Expected stderr ===
 
@@ -1955,33 +1929,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "UnaryOp")
-        (op . #hasheq((type . "Not")))
-        (operand
-         .
-         #hasheq((type . "Compare")
-                 (left
-                  .
-                  #hasheq((type . "Call")
-                          (args
-                           .
-                           (#hasheq((type . "List")
-                                    (ctx . #hasheq((type . "Load")))
-                                    (elts . ()))))
-                          (keywords . ())
-                          (kwargs . #\nul)
-                          (starargs . #\nul)
-                          (func
-                           .
-                           #hasheq((id . "list")
-                                   (type . "Name")
-                                   (ctx . #hasheq((type . "Load")))))))
-                 (ops . (#hasheq((type . "Eq"))))
-                 (comparators
-                  .
-                  (#hasheq((type . "List")
-                           (ctx . #hasheq((type . "Load")))
-                           (elts . ())))))))
+#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
 
 === Expected stderr ===
 
@@ -1994,13 +1942,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "UnaryOp")
-        (op . #hasheq((type . "Not")))
-        (operand
-         .
-         #hasheq((type . "List")
-                 (ctx . #hasheq((type . "Load")))
-                 (elts . ()))))
+#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
 
 === Expected stderr ===
 
@@ -2203,6 +2145,7 @@ PARSING: Haven't handled a case yet:
                                       (value
                                        .
                                        #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Add")))
                                                (left
                                                 .
                                                 #hasheq((id . "x")
@@ -2212,7 +2155,6 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load")))))
-                                               (op . #hasheq((type . "Add")))
                                                (right
                                                 .
                                                 #hasheq((id . "y")
@@ -2499,12 +2441,12 @@ PARSING: Haven't handled a case yet:
                           (body
                            .
                            #hasheq((type . "BinOp")
+                                   (op . #hasheq((type . "Add")))
                                    (left
                                     .
                                     #hasheq((id . "x")
                                             (type . "Name")
                                             (ctx . #hasheq((type . "Load")))))
-                                   (op . #hasheq((type . "Add")))
                                    (right
                                     .
                                     #hasheq((id . "y")
@@ -2592,6 +2534,9 @@ PARSING: Haven't handled a case yet:
                                             (body
                                              .
                                              #hasheq((type . "BinOp")
+                                                     (op
+                                                      .
+                                                      #hasheq((type . "Add")))
                                                      (left
                                                       .
                                                       #hasheq((id . "x")
@@ -2601,9 +2546,6 @@ PARSING: Haven't handled a case yet:
                                                                #hasheq((type
                                                                         .
                                                                         "Load")))))
-                                                     (op
-                                                      .
-                                                      #hasheq((type . "Add")))
                                                      (right
                                                       .
                                                       #hasheq((id . "y")
@@ -2670,12 +2612,12 @@ PARSING: Haven't handled a case yet:
                           (body
                            .
                            #hasheq((type . "BinOp")
+                                   (op . #hasheq((type . "Add")))
                                    (left
                                     .
                                     #hasheq((id . "global_x")
                                             (type . "Name")
                                             (ctx . #hasheq((type . "Load")))))
-                                   (op . #hasheq((type . "Add")))
                                    (right
                                     .
                                     #hasheq((id . "y")
@@ -2766,6 +2708,7 @@ PARSING: Haven't handled a case yet:
                                    (body
                                     .
                                     #hasheq((type . "BinOp")
+                                            (op . #hasheq((type . "Mult")))
                                             (left
                                              .
                                              #hasheq((id . "z")
@@ -2775,10 +2718,12 @@ PARSING: Haven't handled a case yet:
                                                       #hasheq((type
                                                                .
                                                                "Load")))))
-                                            (op . #hasheq((type . "Mult")))
                                             (right
                                              .
                                              #hasheq((type . "BinOp")
+                                                     (op
+                                                      .
+                                                      #hasheq((type . "Add")))
                                                      (left
                                                       .
                                                       #hasheq((id . "b")
@@ -2788,9 +2733,6 @@ PARSING: Haven't handled a case yet:
                                                                #hasheq((type
                                                                         .
                                                                         "Load")))))
-                                                     (op
-                                                      .
-                                                      #hasheq((type . "Add")))
                                                      (right
                                                       .
                                                       #hasheq((id . "y")
@@ -2973,6 +2915,7 @@ PARSING: Haven't handled a case yet:
                                       (value
                                        .
                                        #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Add")))
                                                (left
                                                 .
                                                 #hasheq((id . "y")
@@ -2982,7 +2925,6 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load")))))
-                                               (op . #hasheq((type . "Add")))
                                                (right
                                                 .
                                                 #hasheq((id . "z")
@@ -2998,6 +2940,7 @@ PARSING: Haven't handled a case yet:
                             (value
                              .
                              #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "x")
@@ -3005,7 +2948,6 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))
-                                     (op . #hasheq((type . "Add")))
                                      (right
                                       .
                                       #hasheq((id . "y")
@@ -3166,6 +3108,7 @@ PARSING: Haven't handled a case yet:
                                       (value
                                        .
                                        #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Add")))
                                                (left
                                                 .
                                                 #hasheq((id . "x")
@@ -3175,7 +3118,6 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load")))))
-                                               (op . #hasheq((type . "Add")))
                                                (right
                                                 .
                                                 #hasheq((id . "z")
@@ -3397,6 +3339,11 @@ PARSING: Haven't handled a case yet:
                                                 (value
                                                  .
                                                  #hasheq((type . "BinOp")
+                                                         (op
+                                                          .
+                                                          #hasheq((type
+                                                                   .
+                                                                   "Add")))
                                                          (left
                                                           .
                                                           #hasheq((id
@@ -3410,11 +3357,6 @@ PARSING: Haven't handled a case yet:
                                                                    #hasheq((type
                                                                             .
                                                                             "Load")))))
-                                                         (op
-                                                          .
-                                                          #hasheq((type
-                                                                   .
-                                                                   "Add")))
                                                          (right
                                                           .
                                                           #hasheq((id . "y")
@@ -3523,6 +3465,7 @@ PARSING: Haven't handled a case yet:
                             (value
                              .
                              #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "global_nest_x")
@@ -3530,7 +3473,6 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))
-                                     (op . #hasheq((type . "Add")))
                                      (right
                                       .
                                       #hasheq((id . "y")
@@ -3618,6 +3560,7 @@ PARSING: Haven't handled a case yet:
                                       (value
                                        .
                                        #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Add")))
                                                (left
                                                 .
                                                 #hasheq((id . "x")
@@ -3627,7 +3570,6 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load")))))
-                                               (op . #hasheq((type . "Add")))
                                                (right
                                                 .
                                                 #hasheq((id . "y")
@@ -4060,6 +4002,7 @@ PARSING: Haven't handled a case yet:
                                       (value
                                        .
                                        #hasheq((type . "BinOp")
+                                               (op . #hasheq((type . "Mult")))
                                                (left
                                                 .
                                                 #hasheq((id . "n")
@@ -4069,7 +4012,6 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load")))))
-                                               (op . #hasheq((type . "Mult")))
                                                (right
                                                 .
                                                 #hasheq((type . "Call")
@@ -4078,6 +4020,11 @@ PARSING: Haven't handled a case yet:
                                                          (#hasheq((type
                                                                    .
                                                                    "BinOp")
+                                                                  (op
+                                                                   .
+                                                                   #hasheq((type
+                                                                            .
+                                                                            "Sub")))
                                                                   (left
                                                                    .
                                                                    #hasheq((id
@@ -4091,11 +4038,6 @@ PARSING: Haven't handled a case yet:
                                                                             #hasheq((type
                                                                                      .
                                                                                      "Load")))))
-                                                                  (op
-                                                                   .
-                                                                   #hasheq((type
-                                                                            .
-                                                                            "Sub")))
                                                                   (right
                                                                    .
                                                                    #hasheq((type
@@ -4237,6 +4179,7 @@ PARSING: Haven't handled a case yet:
                             (value
                              .
                              #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "x")
@@ -4244,7 +4187,6 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))
-                                     (op . #hasheq((type . "Add")))
                                      (right
                                       .
                                       #hasheq((id . "y")
@@ -4258,12 +4200,12 @@ PARSING: Haven't handled a case yet:
                   (value
                    .
                    #hasheq((type . "BinOp")
+                           (op . #hasheq((type . "Add")))
                            (left
                             .
                             #hasheq((id . "x")
                                     (type . "Name")
                                     (ctx . #hasheq((type . "Load")))))
-                           (op . #hasheq((type . "Add")))
                            (right . #hasheq((type . "Num") (n . 1)))))
                   (targets
                    .
@@ -4330,6 +4272,7 @@ PARSING: Haven't handled a case yet:
                             (value
                              .
                              #hasheq((type . "BinOp")
+                                     (op . #hasheq((type . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "x")
@@ -4337,7 +4280,6 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))
-                                     (op . #hasheq((type . "Add")))
                                      (right
                                       .
                                       #hasheq((id . "y")
@@ -4603,13 +4545,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "UnaryOp")
-        (op . #hasheq((type . "Not")))
-        (operand
-         .
-         #hasheq((type . "Tuple")
-                 (ctx . #hasheq((type . "Load")))
-                 (elts . ()))))
+#hasheq((type . "Tuple") (ctx . #hasheq((type . "Load"))) (elts . ()))
 
 === Expected stderr ===
 
@@ -4621,26 +4557,22 @@ parse: error is described above.
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "UnaryOp")
-        (op . #hasheq((type . "Not")))
-        (operand . #hasheq((type . "Num") (n . 1))))
-
+got a value
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+
 =====================================================
 =   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_comparisons.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-
+got a value
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: None
+
 =====================================================
 =   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_div_zero.py   =
 =====================================================
@@ -4676,8 +4608,8 @@ PARSING: Haven't handled a case yet:
                   (value
                    .
                    #hasheq((type . "BinOp")
-                           (left . #hasheq((type . "Num") (n . 5.0)))
                            (op . #hasheq((type . "Div")))
+                           (left . #hasheq((type . "Num") (n . 5.0)))
                            (right . #hasheq((type . "Num") (n . 0.0))))))))
         (handlers
          .
@@ -4697,8 +4629,8 @@ parse: error is described above.
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
 #hasheq((type . "BinOp")
-        (left . #hasheq((type . "Num") (n . 12.0)))
         (op . #hasheq((type . "Add")))
+        (left . #hasheq((type . "Num") (n . 12.0)))
         (right . #hasheq((type . "Num") (n . 24.0))))
 
 === Expected stderr ===
@@ -4713,8 +4645,8 @@ parse: error is described above.
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
 #hasheq((type . "BinOp")
-        (left . #hasheq((s . "xyz") (type . "Str")))
         (op . #hasheq((type . "Add")))
+        (left . #hasheq((s . "xyz") (type . "Str")))
         (right . #hasheq((s . "abcde") (type . "Str"))))
 
 === Expected stderr ===
@@ -4758,9 +4690,9 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "UnaryOp")
-        (op . #hasheq((type . "Not")))
-        (operand . #hasheq((type . "Num") (n . 1))))
+#hasheq((values . (#hasheq((type . "Num") (n . 1))))
+        (type . "Dict")
+        (keys . (#hasheq((s . "x") (type . "Str")))))
 
 === Expected stderr ===
 

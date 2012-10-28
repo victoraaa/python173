@@ -26,6 +26,13 @@ structure that you define in python-syntax.rkt
                  ('func func-expr))
      (PyApp (get-structured-python func-expr)
             (map get-structured-python args-list))]
+    
+    ;; Catching None up here, before we hit the identifer case
+    [(hash-table ('type "Name")
+                 ('ctx _)
+                 ('id "None"))
+     (PyNone)]
+    
     [(hash-table ('type "Name")
                  ('ctx _)        ;; ignoring ctx for now
                  ('id id))
@@ -95,7 +102,6 @@ structure that you define in python-syntax.rkt
                  ('exc exc)
                  ('cause cause))
      (PyRaise (get-structured-python exc))] ;; (get-structured-python cause))]
-     
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     

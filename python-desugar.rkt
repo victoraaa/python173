@@ -41,6 +41,7 @@
                             (CFalse)))))]
     
     [PyPass () (CNone)]
+    [PyNone () (CNone)]
     [PyLambda (args body) (CFunc args (desugar body))]
     #|(FuncC args 
                               (let ([list-vars (get-vars body)])
