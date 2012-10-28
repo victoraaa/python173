@@ -1,10 +1,8 @@
-
-C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
 0 tests succeeded.
 90 tests failed.
 == Output of failed tests ==
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\bool\bool-callable.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-callable.py   =
 =====================================================
 === Expected stdout ===
 
@@ -15,7 +13,7 @@ C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: callable
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\bool\bool-compare-list-dict.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-compare-list-dict.py   =
 =====================================================
 === Expected stdout ===
 
@@ -23,14 +21,14 @@ lookupEnv: Unbound indentifier error: callable
 PARSING: Haven't handled a case yet: 
 #hasheq((type . "List")
         (ctx . #hasheq((type . "Load")))
-        (elts . (#hasheq((n . 1) (type . "Num")))))
+        (elts . (#hasheq((type . "Num") (n . 1)))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\bool\bool-compare.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-compare.py   =
 =====================================================
 === Expected stdout ===
 
@@ -41,20 +39,18 @@ parse: error is described above.
 === Actual stderr ===
 interp-is: comparison not valid for arguments of this type
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\bool\bool-convert.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-convert.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "USub"))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+lookupEnv: Unbound indentifier error: bool
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\bool\bool-float.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-float.py   =
 =====================================================
 === Expected stdout ===
 
@@ -65,7 +61,7 @@ parse: error is described above.
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: float
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\bool\bool-int.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-int.py   =
 =====================================================
 === Expected stdout ===
 
@@ -76,7 +72,7 @@ lookupEnv: Unbound indentifier error: float
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: int
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\bool\bool-isinstance.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-isinstance.py   =
 =====================================================
 === Expected stdout ===
 
@@ -87,7 +83,7 @@ lookupEnv: Unbound indentifier error: int
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: isinstance
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\bool\bool-math.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-math.py   =
 =====================================================
 === Expected stdout ===
 
@@ -100,7 +96,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\bool\bool-str.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/bool/bool-str.py   =
 =====================================================
 === Expected stdout ===
 
@@ -111,7 +107,7 @@ parse: error is described above.
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: str
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\builtin\all.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/all.py   =
 =====================================================
 === Expected stdout ===
 
@@ -121,16 +117,16 @@ PARSING: Haven't handled a case yet:
         (ctx . #hasheq((type . "Load")))
         (elts
          .
-         (#hasheq((n . 2) (type . "Num"))
-          #hasheq((n . 4) (type . "Num"))
-          #hasheq((n . 6) (type . "Num")))))
+         (#hasheq((type . "Num") (n . 2))
+          #hasheq((type . "Num") (n . 4))
+          #hasheq((type . "Num") (n . 6)))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\builtin\any.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/any.py   =
 =====================================================
 === Expected stdout ===
 
@@ -155,16 +151,19 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\builtin\callable.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/callable.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body . (#hasheq((type . "Pass"))))
+        (name . "f")
+        (type . "FunctionDef")
+        (args
          .
-         #hasheq((args . ())
-                 (type . "arguments")
+         #hasheq((type . "arguments")
+                 (args . ())
                  (vararg . #\nul)
                  (varargannotation . #\nul)
                  (kwonlyargs . ())
@@ -172,9 +171,6 @@ PARSING: Haven't handled a case yet:
                  (kwargannotation . #\nul)
                  (defaults . ())
                  (kw_defaults . ())))
-        (body . (#hasheq((type . "Pass"))))
-        (name . "f")
-        (type . "FunctionDef")
         (decorator_list . ())
         (returns . #\nul))
 
@@ -183,7 +179,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\builtin\filter.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/filter.py   =
 =====================================================
 === Expected stdout ===
 
@@ -193,25 +189,25 @@ PARSING: Haven't handled a case yet:
         (ctx . #hasheq((type . "Load")))
         (elts
          .
-         (#hasheq((n . 1) (type . "Num"))
+         (#hasheq((type . "Num") (n . 1))
           #hasheq((s . "hello") (type . "Str"))
           #hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
           #hasheq((type . "List")
                   (ctx . #hasheq((type . "Load")))
-                  (elts . (#hasheq((n . 3) (type . "Num")))))
+                  (elts . (#hasheq((type . "Num") (n . 3)))))
           #hasheq((s . "") (type . "Str"))
           #hasheq((id . "None")
                   (type . "Name")
                   (ctx . #hasheq((type . "Load"))))
-          #hasheq((n . 9) (type . "Num"))
-          #hasheq((n . 0) (type . "Num")))))
+          #hasheq((type . "Num") (n . 9))
+          #hasheq((type . "Num") (n . 0)))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\builtin\isinstance.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/isinstance.py   =
 =====================================================
 === Expected stdout ===
 
@@ -231,7 +227,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\builtin\len.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/builtin/len.py   =
 =====================================================
 === Expected stdout ===
 
@@ -244,7 +240,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-bool.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-bool.py   =
 =====================================================
 === Expected stdout ===
 
@@ -257,7 +253,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-clear.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-clear.py   =
 =====================================================
 === Expected stdout ===
 
@@ -265,22 +261,22 @@ parse: error is described above.
 PARSING: Haven't handled a case yet: 
 #hasheq((values
          .
-         (#hasheq((n . 1) (type . "Num"))
-          #hasheq((n . 2) (type . "Num"))
-          #hasheq((n . 3) (type . "Num"))))
+         (#hasheq((type . "Num") (n . 1))
+          #hasheq((type . "Num") (n . 2))
+          #hasheq((type . "Num") (n . 3))))
         (type . "Dict")
         (keys
          .
-         (#hasheq((n . 1) (type . "Num"))
-          #hasheq((n . 2) (type . "Num"))
-          #hasheq((n . 3) (type . "Num")))))
+         (#hasheq((type . "Num") (n . 1))
+          #hasheq((type . "Num") (n . 2))
+          #hasheq((type . "Num") (n . 3)))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-contains.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-contains.py   =
 =====================================================
 === Expected stdout ===
 
@@ -293,7 +289,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-get.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-get.py   =
 =====================================================
 === Expected stdout ===
 
@@ -306,7 +302,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-getitem.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-getitem.py   =
 =====================================================
 === Expected stdout ===
 
@@ -314,7 +310,7 @@ parse: error is described above.
 PARSING: Haven't handled a case yet: 
 #hasheq((values
          .
-         (#hasheq((n . 1) (type . "Num")) #hasheq((n . 2) (type . "Num"))))
+         (#hasheq((type . "Num") (n . 1)) #hasheq((type . "Num") (n . 2))))
         (type . "Dict")
         (keys
          .
@@ -326,7 +322,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-items.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-items.py   =
 =====================================================
 === Expected stdout ===
 
@@ -339,7 +335,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-keys.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-keys.py   =
 =====================================================
 === Expected stdout ===
 
@@ -352,7 +348,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-set-keys.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-set-keys.py   =
 =====================================================
 === Expected stdout ===
 
@@ -363,13 +359,13 @@ PARSING: Haven't handled a case yet:
          .
          #hasheq((values
                   .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))
+                  (#hasheq((type . "Num") (n . 1))
+                   #hasheq((type . "Num") (n . 2))))
                  (type . "Dict")
                  (keys
                   .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))))
+                  (#hasheq((type . "Num") (n . 1))
+                   #hasheq((type . "Num") (n . 2))))))
         (type . "Attribute")
         (ctx . #hasheq((type . "Load"))))
 
@@ -378,7 +374,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-update.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-update.py   =
 =====================================================
 === Expected stdout ===
 
@@ -391,7 +387,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-values-set.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-values-set.py   =
 =====================================================
 === Expected stdout ===
 
@@ -402,13 +398,13 @@ PARSING: Haven't handled a case yet:
          .
          #hasheq((values
                   .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))
+                  (#hasheq((type . "Num") (n . 1))
+                   #hasheq((type . "Num") (n . 2))))
                  (type . "Dict")
                  (keys
                   .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))))
+                  (#hasheq((type . "Num") (n . 1))
+                   #hasheq((type . "Num") (n . 2))))))
         (type . "Attribute")
         (ctx . #hasheq((type . "Load"))))
 
@@ -417,7 +413,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\dict\dict-values.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/dict/dict-values.py   =
 =====================================================
 === Expected stdout ===
 
@@ -430,34 +426,23 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\except-reraise.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/except-reraise.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args . ())
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((orelse . ())
                   (body
                    .
                    (#hasheq((exc
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((s . "foo") (type . "Str"))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -480,7 +465,8 @@ PARSING: Haven't handled a case yet:
                                        .
                                        (#hasheq((exc
                                                  .
-                                                 #hasheq((args
+                                                 #hasheq((type . "Call")
+                                                         (args
                                                           .
                                                           (#hasheq((s
                                                                     .
@@ -488,7 +474,6 @@ PARSING: Haven't handled a case yet:
                                                                    (type
                                                                     .
                                                                     "Str"))))
-                                                         (type . "Call")
                                                          (keywords . ())
                                                          (kwargs . #\nul)
                                                          (starargs . #\nul)
@@ -522,6 +507,17 @@ PARSING: Haven't handled a case yet:
                             (type . "ExceptHandler")))))))
         (name . "reraise")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args . ())
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -530,7 +526,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\invalid-reraise.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/invalid-reraise.py   =
 =====================================================
 === Expected stdout ===
 
@@ -540,11 +536,11 @@ PARSING: Haven't handled a case yet:
          .
          (#hasheq((value
                    .
-                   #hasheq((args
+                   #hasheq((type . "Call")
+                           (args
                             .
                             (#hasheq((s . "No exception raised")
                                      (type . "Str"))))
-                           (type . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -562,11 +558,13 @@ PARSING: Haven't handled a case yet:
                    .
                    (#hasheq((value
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((s . "No active exception")
                                                (type . "Str"))
-                                       #hasheq((args
+                                       #hasheq((type . "Call")
+                                               (args
                                                 .
                                                 (#hasheq((id . "e")
                                                          (type . "Name")
@@ -575,7 +573,6 @@ PARSING: Haven't handled a case yet:
                                                           #hasheq((type
                                                                    .
                                                                    "Load"))))))
-                                               (type . "Call")
                                                (keywords . ())
                                                (kwargs . #\nul)
                                                (starargs . #\nul)
@@ -588,7 +585,6 @@ PARSING: Haven't handled a case yet:
                                                          #hasheq((type
                                                                   .
                                                                   "Load"))))))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -608,7 +604,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\nested-else.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/nested-else.py   =
 =====================================================
 === Expected stdout ===
 
@@ -679,11 +675,11 @@ PARSING: Haven't handled a case yet:
                                       (type . "ExceptHandler")))))
                     #hasheq((exc
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((s . "outer exception")
                                                (type . "Str"))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -738,16 +734,19 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\nested-reraise.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/nested-reraise.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body . (#hasheq((exc . #\nul) (type . "Raise") (cause . #\nul))))
+        (name . "nested_reraise")
+        (type . "FunctionDef")
+        (args
          .
-         #hasheq((args . ())
-                 (type . "arguments")
+         #hasheq((type . "arguments")
+                 (args . ())
                  (vararg . #\nul)
                  (varargannotation . #\nul)
                  (kwonlyargs . ())
@@ -755,9 +754,6 @@ PARSING: Haven't handled a case yet:
                  (kwargannotation . #\nul)
                  (defaults . ())
                  (kw_defaults . ())))
-        (body . (#hasheq((exc . #\nul) (type . "Raise") (cause . #\nul))))
-        (name . "nested_reraise")
-        (type . "FunctionDef")
         (decorator_list . ())
         (returns . #\nul))
 
@@ -766,7 +762,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\nested.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/nested.py   =
 =====================================================
 === Expected stdout ===
 
@@ -781,13 +777,13 @@ PARSING: Haven't handled a case yet:
                              .
                              (#hasheq((exc
                                        .
-                                       #hasheq((args
+                                       #hasheq((type . "Call")
+                                               (args
                                                 .
                                                 (#hasheq((s
                                                           .
                                                           "inner exception")
                                                          (type . "Str"))))
-                                               (type . "Call")
                                                (keywords . ())
                                                (kwargs . #\nul)
                                                (starargs . #\nul)
@@ -864,7 +860,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\reraise.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/reraise.py   =
 =====================================================
 === Expected stdout ===
 
@@ -874,11 +870,11 @@ PARSING: Haven't handled a case yet:
          .
          (#hasheq((value
                    .
-                   #hasheq((args
+                   #hasheq((type . "Call")
+                           (args
                             .
                             (#hasheq((s . "No exception raised")
                                      (type . "Str"))))
-                           (type . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -895,8 +891,8 @@ PARSING: Haven't handled a case yet:
                    .
                    (#hasheq((exc
                              .
-                             #hasheq((args . ())
-                                     (type . "Call")
+                             #hasheq((type . "Call")
+                                     (args . ())
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -941,7 +937,8 @@ PARSING: Haven't handled a case yet:
                    .
                    (#hasheq((value
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((left
                                                 .
@@ -963,7 +960,6 @@ PARSING: Haven't handled a case yet:
                                                                    .
                                                                    "Load"))))))
                                                (type . "Compare"))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -983,34 +979,23 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\test-finally-reraise.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/test-finally-reraise.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args . ())
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((orelse . ())
                   (body
                    .
                    (#hasheq((exc
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((s . "foo") (type . "Str"))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -1032,7 +1017,8 @@ PARSING: Haven't handled a case yet:
                                        .
                                        (#hasheq((exc
                                                  .
-                                                 #hasheq((args
+                                                 #hasheq((type . "Call")
+                                                         (args
                                                           .
                                                           (#hasheq((s
                                                                     .
@@ -1040,7 +1026,6 @@ PARSING: Haven't handled a case yet:
                                                                    (type
                                                                     .
                                                                     "Str"))))
-                                                         (type . "Call")
                                                          (keywords . ())
                                                          (kwargs . #\nul)
                                                          (starargs . #\nul)
@@ -1069,6 +1054,17 @@ PARSING: Haven't handled a case yet:
                             (type . "ExceptHandler")))))))
         (name . "reraise")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args . ())
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -1077,7 +1073,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\test-try-except-else.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/test-try-except-else.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1100,8 +1096,8 @@ PARSING: Haven't handled a case yet:
          .
          (#hasheq((exc
                    .
-                   #hasheq((args . (#hasheq((s . "foo!") (type . "Str"))))
-                           (type . "Call")
+                   #hasheq((type . "Call")
+                           (args . (#hasheq((s . "foo!") (type . "Str"))))
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -1136,7 +1132,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\test-try-except-no-exception.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/test-try-except-no-exception.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1168,7 +1164,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\test-try-except.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/test-try-except.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1179,8 +1175,8 @@ PARSING: Haven't handled a case yet:
          .
          (#hasheq((exc
                    .
-                   #hasheq((args . (#hasheq((s . "ahoy!") (type . "Str"))))
-                           (type . "Call")
+                   #hasheq((type . "Call")
+                           (args . (#hasheq((s . "ahoy!") (type . "Str"))))
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -1215,7 +1211,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\try-except-else-finally-no-exception.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-else-finally-no-exception.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1279,7 +1275,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\try-except-else-finally.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-else-finally.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1304,10 +1300,10 @@ PARSING: Haven't handled a case yet:
                    .
                    (#hasheq((exc
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((s . "nyaa!") (type . "Str"))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -1362,7 +1358,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\try-except-else-no-exception.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-else-no-exception.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1406,7 +1402,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\try-except-finally-no-exception.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-finally-no-exception.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1458,7 +1454,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\try-except-finally.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-except-finally.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1471,10 +1467,10 @@ PARSING: Haven't handled a case yet:
                    .
                    (#hasheq((exc
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((s . "yarr!") (type . "Str"))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -1529,7 +1525,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\exceptions\try-finally-no-exception.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/exceptions/try-finally-no-exception.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1556,7 +1552,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\iter\iter-classes.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-classes.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1564,25 +1560,7 @@ parse: error is described above.
 PARSING: Haven't handled a case yet: 
 #hasheq((body
          .
-         (#hasheq((args
-                   .
-                   #hasheq((args
-                            .
-                            (#hasheq((arg . "self")
-                                     (type . "arg")
-                                     (annotation . #\nul))
-                             #hasheq((arg . "n")
-                                     (type . "arg")
-                                     (annotation . #\nul))))
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+         (#hasheq((body
                    .
                    (#hasheq((targets
                              .
@@ -1614,20 +1592,21 @@ PARSING: Haven't handled a case yet:
                                                 #hasheq((type . "Load")))))
                                       (type . "Attribute")
                                       (ctx . #hasheq((type . "Store"))))))
-                            (value . #hasheq((n . 0) (type . "Num")))
+                            (value . #hasheq((type . "Num") (n . 0)))
                             (type . "Assign"))))
                   (name . "__init__")
                   (type . "FunctionDef")
-                  (decorator_list . ())
-                  (returns . #\nul))
-          #hasheq((args
+                  (args
                    .
-                   #hasheq((args
+                   #hasheq((type . "arguments")
+                           (args
                             .
                             (#hasheq((arg . "self")
                                      (type . "arg")
+                                     (annotation . #\nul))
+                             #hasheq((arg . "n")
+                                     (type . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1635,7 +1614,9 @@ PARSING: Haven't handled a case yet:
                            (kwargannotation . #\nul)
                            (defaults . ())
                            (kw_defaults . ())))
-                  (body
+                  (decorator_list . ())
+                  (returns . #\nul))
+          #hasheq((body
                    .
                    (#hasheq((targets
                              .
@@ -1717,7 +1698,7 @@ PARSING: Haven't handled a case yet:
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))
-                                     (right . #hasheq((n . 1) (type . "Num")))
+                                     (right . #hasheq((type . "Num") (n . 1)))
                                      (type . "BinOp")))
                             (type . "Assign"))
                     #hasheq((value
@@ -1728,6 +1709,21 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "__next__")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args
+                            .
+                            (#hasheq((arg . "self")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))))
         (name . "BasicIterClass")
@@ -1743,7 +1739,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\iter\iter-comprehensions.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-comprehensions.py   =
 =====================================================
 === Expected stdout ===
 
@@ -1757,218 +1753,204 @@ PARSING: Haven't handled a case yet:
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 0)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 1)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 2)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 0)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 1)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 2)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 0)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 1)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 2)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 0)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 1)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 2)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 0)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 1)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 2)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 0)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 1)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 2)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 0)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 1)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 0))
+                    #hasheq((type . "Num") (n . 2)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 0)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 1)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 1))
+                    #hasheq((type . "Num") (n . 2)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 0)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
+                   (#hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 1)))))
           #hasheq((type . "Tuple")
                   (ctx . #hasheq((type . "Load")))
                   (elts
                    .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))))))))
+                   (#hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 2))
+                    #hasheq((type . "Num") (n . 2))))))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\iter\iter-misc.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-misc.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "it") (type . "arg") (annotation . #\nul))
-                   #hasheq((arg . "seq") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((targets
                    .
@@ -1996,7 +1978,8 @@ PARSING: Haven't handled a case yet:
                                                  #hasheq((type . "Store"))))))
                                       (value
                                        .
-                                       #hasheq((args
+                                       #hasheq((type . "Call")
+                                               (args
                                                 .
                                                 (#hasheq((id . "it")
                                                          (type . "Name")
@@ -2005,7 +1988,6 @@ PARSING: Haven't handled a case yet:
                                                           #hasheq((type
                                                                    .
                                                                    "Load"))))))
-                                               (type . "Call")
                                                (keywords . ())
                                                (kwargs . #\nul)
                                                (starargs . #\nul)
@@ -2027,14 +2009,14 @@ PARSING: Haven't handled a case yet:
                                       (type . "ExceptHandler")))))
                     #hasheq((value
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((id . "val")
                                                (type . "Name")
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load"))))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -2055,11 +2037,12 @@ PARSING: Haven't handled a case yet:
                                                .
                                                #hasheq((type . "Load")))))))
                             (type . "Expr"))))
-                  (test . #hasheq((n . 1) (type . "Num")))
+                  (test . #hasheq((type . "Num") (n . 1)))
                   (type . "While"))
           #hasheq((value
                    .
-                   #hasheq((args
+                   #hasheq((type . "Call")
+                           (args
                             .
                             (#hasheq((id . "res")
                                      (type . "Name")
@@ -2067,7 +2050,6 @@ PARSING: Haven't handled a case yet:
                              #hasheq((id . "seq")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load"))))))
-                           (type . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -2079,6 +2061,20 @@ PARSING: Haven't handled a case yet:
                   (type . "Expr"))))
         (name . "check_iterator")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "it") (type . "arg") (annotation . #\nul))
+                   #hasheq((arg . "seq") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -2087,27 +2083,13 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\iter\iter-simple.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-simple.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "it") (type . "arg") (annotation . #\nul))
-                   #hasheq((arg . "seq") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((targets
                    .
@@ -2135,7 +2117,8 @@ PARSING: Haven't handled a case yet:
                                                  #hasheq((type . "Store"))))))
                                       (value
                                        .
-                                       #hasheq((args
+                                       #hasheq((type . "Call")
+                                               (args
                                                 .
                                                 (#hasheq((id . "it")
                                                          (type . "Name")
@@ -2144,7 +2127,6 @@ PARSING: Haven't handled a case yet:
                                                           #hasheq((type
                                                                    .
                                                                    "Load"))))))
-                                               (type . "Call")
                                                (keywords . ())
                                                (kwargs . #\nul)
                                                (starargs . #\nul)
@@ -2166,14 +2148,14 @@ PARSING: Haven't handled a case yet:
                                       (type . "ExceptHandler")))))
                     #hasheq((value
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((id . "val")
                                                (type . "Name")
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load"))))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -2194,11 +2176,12 @@ PARSING: Haven't handled a case yet:
                                                .
                                                #hasheq((type . "Load")))))))
                             (type . "Expr"))))
-                  (test . #hasheq((n . 1) (type . "Num")))
+                  (test . #hasheq((type . "Num") (n . 1)))
                   (type . "While"))
           #hasheq((value
                    .
-                   #hasheq((args
+                   #hasheq((type . "Call")
+                           (args
                             .
                             (#hasheq((id . "res")
                                      (type . "Name")
@@ -2206,7 +2189,6 @@ PARSING: Haven't handled a case yet:
                              #hasheq((id . "seq")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load"))))))
-                           (type . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -2218,6 +2200,20 @@ PARSING: Haven't handled a case yet:
                   (type . "Expr"))))
         (name . "check_iterator")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "it") (type . "arg") (annotation . #\nul))
+                   #hasheq((arg . "seq") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -2226,7 +2222,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\iter\iter-stop.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/iter/iter-stop.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2244,7 +2240,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\lists\test_list_identity.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/lists/test_list_identity.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2257,7 +2253,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\lists\test_list_simple.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/lists/test_list_simple.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2270,7 +2266,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\lists\test_list_truth.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/lists/test_list_truth.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2283,7 +2279,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\range\range-errs.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/range/range-errs.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2294,7 +2290,7 @@ parse: error is described above.
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: ___assertRaises
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\range\range-list.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/range/range-list.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2304,16 +2300,16 @@ PARSING: Haven't handled a case yet:
         (ctx . #hasheq((type . "Load")))
         (elts
          .
-         (#hasheq((n . 0) (type . "Num"))
-          #hasheq((n . 1) (type . "Num"))
-          #hasheq((n . 2) (type . "Num")))))
+         (#hasheq((type . "Num") (n . 0))
+          #hasheq((type . "Num") (n . 1))
+          #hasheq((type . "Num") (n . 2)))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\range\range-vars.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/range/range-vars.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2330,7 +2326,7 @@ PARSING: Haven't handled a case yet:
                    #hasheq((id . "a")
                            (type . "Name")
                            (ctx . #hasheq((type . "Load")))))
-                  (right . #hasheq((n . 1) (type . "Num")))
+                  (right . #hasheq((type . "Num") (n . 1)))
                   (type . "BinOp")))))
 
 === Expected stderr ===
@@ -2338,45 +2334,17 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\bound-and-free.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/bound-and-free.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((body
                    .
-                   (#hasheq((args
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((arg . "self")
-                                               (type . "arg")
-                                               (annotation . #\nul))))
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                   (#hasheq((body
                              .
                              (#hasheq((value
                                        .
@@ -2388,6 +2356,21 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "m")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args
+                                      .
+                                      (#hasheq((arg . "self")
+                                               (type . "arg")
+                                               (annotation . #\nul))))
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
                     #hasheq((targets
@@ -2416,6 +2399,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "f")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -2424,56 +2420,17 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\extra-nesting.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/extra-nesting.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body
          .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
-         .
-         (#hasheq((args
+         (#hasheq((body
                    .
-                   #hasheq((args . ())
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
-                   .
-                   (#hasheq((args
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((arg . "y")
-                                               (type . "arg")
-                                               (annotation . #\nul))))
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                   (#hasheq((body
                              .
                              (#hasheq((value
                                        .
@@ -2500,6 +2457,21 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "adder")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args
+                                      .
+                                      (#hasheq((arg . "y")
+                                               (type . "arg")
+                                               (annotation . #\nul))))
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
                     #hasheq((value
@@ -2510,12 +2482,23 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "extra")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args . ())
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((value
                    .
-                   #hasheq((args . ())
-                           (type . "Call")
+                   #hasheq((type . "Call")
+                           (args . ())
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -2527,6 +2510,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "make_adder2")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -2535,24 +2531,13 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\freevar-in-method.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/freevar-in-method.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args . ())
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((targets
                    .
@@ -2563,22 +2548,7 @@ PARSING: Haven't handled a case yet:
                   (type . "Assign"))
           #hasheq((body
                    .
-                   (#hasheq((args
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((arg . "self")
-                                               (type . "arg")
-                                               (annotation . #\nul))))
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                   (#hasheq((body
                              .
                              (#hasheq((value
                                        .
@@ -2586,16 +2556,14 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "method_and_var")
                             (type . "FunctionDef")
-                            (decorator_list . ())
-                            (returns . #\nul))
-                    #hasheq((args
+                            (args
                              .
-                             #hasheq((args
+                             #hasheq((type . "arguments")
+                                     (args
                                       .
                                       (#hasheq((arg . "self")
                                                (type . "arg")
                                                (annotation . #\nul))))
-                                     (type . "arguments")
                                      (vararg . #\nul)
                                      (varargannotation . #\nul)
                                      (kwonlyargs . ())
@@ -2603,7 +2571,9 @@ PARSING: Haven't handled a case yet:
                                      (kwargannotation . #\nul)
                                      (defaults . ())
                                      (kw_defaults . ())))
-                            (body
+                            (decorator_list . ())
+                            (returns . #\nul))
+                    #hasheq((body
                              .
                              (#hasheq((value
                                        .
@@ -2615,16 +2585,14 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "test")
                             (type . "FunctionDef")
-                            (decorator_list . ())
-                            (returns . #\nul))
-                    #hasheq((args
+                            (args
                              .
-                             #hasheq((args
+                             #hasheq((type . "arguments")
+                                     (args
                                       .
                                       (#hasheq((arg . "self")
                                                (type . "arg")
                                                (annotation . #\nul))))
-                                     (type . "arguments")
                                      (vararg . #\nul)
                                      (varargannotation . #\nul)
                                      (kwonlyargs . ())
@@ -2632,15 +2600,17 @@ PARSING: Haven't handled a case yet:
                                      (kwargannotation . #\nul)
                                      (defaults . ())
                                      (kw_defaults . ())))
-                            (body
+                            (decorator_list . ())
+                            (returns . #\nul))
+                    #hasheq((body
                              .
                              (#hasheq((value
                                        .
-                                       #hasheq((args
+                                       #hasheq((type . "Call")
+                                               (args
                                                 .
                                                 (#hasheq((s . "global")
                                                          (type . "Str"))))
-                                               (type . "Call")
                                                (keywords . ())
                                                (kwargs . #\nul)
                                                (starargs . #\nul)
@@ -2656,16 +2626,14 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "actual_global")
                             (type . "FunctionDef")
-                            (decorator_list . ())
-                            (returns . #\nul))
-                    #hasheq((args
+                            (args
                              .
-                             #hasheq((args
+                             #hasheq((type . "arguments")
+                                     (args
                                       .
                                       (#hasheq((arg . "self")
                                                (type . "arg")
                                                (annotation . #\nul))))
-                                     (type . "arguments")
                                      (vararg . #\nul)
                                      (varargannotation . #\nul)
                                      (kwonlyargs . ())
@@ -2673,11 +2641,14 @@ PARSING: Haven't handled a case yet:
                                      (kwargannotation . #\nul)
                                      (defaults . ())
                                      (kw_defaults . ())))
-                            (body
+                            (decorator_list . ())
+                            (returns . #\nul))
+                    #hasheq((body
                              .
                              (#hasheq((value
                                        .
-                                       #hasheq((args
+                                       #hasheq((type . "Call")
+                                               (args
                                                 .
                                                 (#hasheq((id . "self")
                                                          (type . "Name")
@@ -2686,7 +2657,6 @@ PARSING: Haven't handled a case yet:
                                                           #hasheq((type
                                                                    .
                                                                    "Load"))))))
-                                               (type . "Call")
                                                (keywords . ())
                                                (kwargs . #\nul)
                                                (starargs . #\nul)
@@ -2702,6 +2672,21 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "str")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args
+                                      .
+                                      (#hasheq((arg . "self")
+                                               (type . "arg")
+                                               (annotation . #\nul))))
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))))
                   (name . "Test")
@@ -2713,8 +2698,8 @@ PARSING: Haven't handled a case yet:
                   (bases . ()))
           #hasheq((value
                    .
-                   #hasheq((args . ())
-                           (type . "Call")
+                   #hasheq((type . "Call")
+                           (args . ())
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -2726,6 +2711,17 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "test")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args . ())
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -2734,7 +2730,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\lambda1.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/lambda1.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2745,7 +2741,7 @@ got a value
 === Actual stderr ===
 
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\lambda2.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/lambda2.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2756,7 +2752,7 @@ got a value
 === Actual stderr ===
 
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\lambda3.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/lambda3.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2767,7 +2763,7 @@ got a value
 === Actual stderr ===
 
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\lambda4.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/lambda4.py   =
 =====================================================
 === Expected stdout ===
 
@@ -2780,26 +2776,13 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\locals-class.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/locals-class.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((body
                    .
@@ -2808,24 +2791,9 @@ PARSING: Haven't handled a case yet:
                              (#hasheq((id . "x")
                                       (type . "Name")
                                       (ctx . #hasheq((type . "Store"))))))
-                            (value . #hasheq((n . 12) (type . "Num")))
+                            (value . #hasheq((type . "Num") (n . 12)))
                             (type . "Assign"))
-                    #hasheq((args
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((arg . "self")
-                                               (type . "arg")
-                                               (annotation . #\nul))))
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                    #hasheq((body
                              .
                              (#hasheq((value
                                        .
@@ -2837,12 +2805,27 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "m")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args
+                                      .
+                                      (#hasheq((arg . "self")
+                                               (type . "arg")
+                                               (annotation . #\nul))))
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
                     #hasheq((value
                              .
-                             #hasheq((args . ())
-                                     (type . "Call")
+                             #hasheq((type . "Call")
+                                     (args . ())
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -2869,6 +2852,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "f")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -2877,60 +2873,17 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\locals-function.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/locals-function.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body
          .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
-         .
-         (#hasheq((args
+         (#hasheq((body
                    .
-                   #hasheq((args
-                            .
-                            (#hasheq((arg . "y")
-                                     (type . "arg")
-                                     (annotation . #\nul))))
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
-                   .
-                   (#hasheq((args
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((arg . "z")
-                                               (type . "arg")
-                                               (annotation . #\nul))))
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                   (#hasheq((body
                              .
                              (#hasheq((value
                                        .
@@ -2957,6 +2910,21 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "h")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args
+                                      .
+                                      (#hasheq((arg . "z")
+                                               (type . "arg")
+                                               (annotation . #\nul))))
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
                     #hasheq((targets
@@ -2984,7 +2952,7 @@ PARSING: Haven't handled a case yet:
                                      (type . "BinOp")))
                             (type . "Assign"))
                     #hasheq((op . #hasheq((type . "Add")))
-                            (value . #hasheq((n . 3) (type . "Num")))
+                            (value . #hasheq((type . "Num") (n . 3)))
                             (type . "AugAssign")
                             (target
                              .
@@ -2993,8 +2961,8 @@ PARSING: Haven't handled a case yet:
                                      (ctx . #hasheq((type . "Store"))))))
                     #hasheq((value
                              .
-                             #hasheq((args . ())
-                                     (type . "Call")
+                             #hasheq((type . "Call")
+                                     (args . ())
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -3008,6 +2976,21 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "g")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args
+                            .
+                            (#hasheq((arg . "y")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((value
@@ -3018,6 +3001,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "f")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3026,26 +3022,13 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\mixed-freevars-and-cellvars.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/mixed-freevars-and-cellvars.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((value
                    .
@@ -3055,6 +3038,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "identity")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3063,67 +3059,24 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\nearest-enclosing-scope.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nearest-enclosing-scope.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body
          .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
-         .
-         (#hasheq((args
-                   .
-                   #hasheq((args
-                            .
-                            (#hasheq((arg . "y")
-                                     (type . "arg")
-                                     (annotation . #\nul))))
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+         (#hasheq((body
                    .
                    (#hasheq((targets
                              .
                              (#hasheq((id . "x")
                                       (type . "Name")
                                       (ctx . #hasheq((type . "Store"))))))
-                            (value . #hasheq((n . 42) (type . "Num")))
+                            (value . #hasheq((type . "Num") (n . 42)))
                             (type . "Assign"))
-                    #hasheq((args
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((arg . "z")
-                                               (type . "arg")
-                                               (annotation . #\nul))))
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                    #hasheq((body
                              .
                              (#hasheq((value
                                        .
@@ -3150,6 +3103,21 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "h")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args
+                                      .
+                                      (#hasheq((arg . "z")
+                                               (type . "arg")
+                                               (annotation . #\nul))))
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
                     #hasheq((value
@@ -3160,12 +3128,27 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "g")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args
+                            .
+                            (#hasheq((arg . "y")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((value
                    .
-                   #hasheq((args . (#hasheq((n . 2) (type . "Num"))))
-                           (type . "Call")
+                   #hasheq((type . "Call")
+                           (args . (#hasheq((type . "Num") (n . 2))))
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -3177,6 +3160,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "f")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3185,65 +3181,30 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\nested-nonlocal.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nested-nonlocal.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body
          .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
-         .
-         (#hasheq((args
-                   .
-                   #hasheq((args . ())
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+         (#hasheq((body
                    .
                    (#hasheq((type . "Nonlocal") (names . ("x")))
                     #hasheq((op . #hasheq((type . "Sub")))
-                            (value . #hasheq((n . 2) (type . "Num")))
+                            (value . #hasheq((type . "Num") (n . 2)))
                             (type . "AugAssign")
                             (target
                              .
                              #hasheq((id . "x")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Store"))))))
-                    #hasheq((args
-                             .
-                             #hasheq((args . ())
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                    #hasheq((body
                              .
                              (#hasheq((type . "Nonlocal") (names . ("x")))
                               #hasheq((op . #hasheq((type . "Add")))
-                                      (value . #hasheq((n . 4) (type . "Num")))
+                                      (value . #hasheq((type . "Num") (n . 4)))
                                       (type . "AugAssign")
                                       (target
                                        .
@@ -3262,6 +3223,17 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "h")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args . ())
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
                     #hasheq((value
@@ -3272,6 +3244,17 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "g")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args . ())
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((value
@@ -3282,6 +3265,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "f")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3290,69 +3286,19 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\nesting-global-no-free.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nesting-global-no-free.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body
          .
-         #hasheq((args . ())
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
-         .
-         (#hasheq((args
+         (#hasheq((body
                    .
-                   #hasheq((args . ())
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
-                   .
-                   (#hasheq((args
+                   (#hasheq((body
                              .
-                             #hasheq((args . ())
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
-                             .
-                             (#hasheq((args
-                                       .
-                                       #hasheq((args
-                                                .
-                                                (#hasheq((arg . "y")
-                                                         (type . "arg")
-                                                         (annotation
-                                                          .
-                                                          #\nul))))
-                                               (type . "arguments")
-                                               (vararg . #\nul)
-                                               (varargannotation . #\nul)
-                                               (kwonlyargs . ())
-                                               (kwarg . #\nul)
-                                               (kwargannotation . #\nul)
-                                               (defaults . ())
-                                               (kw_defaults . ())))
-                                      (body
+                             (#hasheq((body
                                        .
                                        (#hasheq((value
                                                  .
@@ -3389,6 +3335,23 @@ PARSING: Haven't handled a case yet:
                                                 (type . "Return"))))
                                       (name . "adder")
                                       (type . "FunctionDef")
+                                      (args
+                                       .
+                                       #hasheq((type . "arguments")
+                                               (args
+                                                .
+                                                (#hasheq((arg . "y")
+                                                         (type . "arg")
+                                                         (annotation
+                                                          .
+                                                          #\nul))))
+                                               (vararg . #\nul)
+                                               (varargannotation . #\nul)
+                                               (kwonlyargs . ())
+                                               (kwarg . #\nul)
+                                               (kwargannotation . #\nul)
+                                               (defaults . ())
+                                               (kw_defaults . ())))
                                       (decorator_list . ())
                                       (returns . #\nul))
                               #hasheq((value
@@ -3401,12 +3364,23 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "nest")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args . ())
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))
                     #hasheq((value
                              .
-                             #hasheq((args . ())
-                                     (type . "Call")
+                             #hasheq((type . "Call")
+                                     (args . ())
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -3420,12 +3394,23 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "nest")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args . ())
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((value
                    .
-                   #hasheq((args . ())
-                           (type . "Call")
+                   #hasheq((type . "Call")
+                           (args . ())
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -3437,6 +3422,17 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "make_adder4")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args . ())
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3445,44 +3441,16 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\nesting-plus-free-ref-to-global.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nesting-plus-free-ref-to-global.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((type . "Global") (names . ("global_nest_x")))
-          #hasheq((args
-                   .
-                   #hasheq((args
-                            .
-                            (#hasheq((arg . "y")
-                                     (type . "arg")
-                                     (annotation . #\nul))))
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+          #hasheq((body
                    .
                    (#hasheq((value
                              .
@@ -3505,6 +3473,21 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "adder")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args
+                            .
+                            (#hasheq((arg . "y")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((targets
@@ -3526,6 +3509,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "make_adder6")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3534,48 +3530,17 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\nesting-through-class.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nesting-through-class.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((body
                    .
-                   (#hasheq((args
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((arg . "self")
-                                               (type . "arg")
-                                               (annotation . #\nul))
-                                       #hasheq((arg . "y")
-                                               (type . "arg")
-                                               (annotation . #\nul))))
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                   (#hasheq((body
                              .
                              (#hasheq((value
                                        .
@@ -3602,6 +3567,24 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "__call__")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args
+                                      .
+                                      (#hasheq((arg . "self")
+                                               (type . "arg")
+                                               (annotation . #\nul))
+                                       #hasheq((arg . "y")
+                                               (type . "arg")
+                                               (annotation . #\nul))))
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))))
                   (name . "Adder")
@@ -3613,8 +3596,8 @@ PARSING: Haven't handled a case yet:
                   (bases . ()))
           #hasheq((value
                    .
-                   #hasheq((args . ())
-                           (type . "Call")
+                   #hasheq((type . "Call")
+                           (args . ())
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -3626,6 +3609,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "make_adder5")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3634,54 +3630,26 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\nonlocal-class.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nonlocal-class.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((body
                    .
                    (#hasheq((type . "Nonlocal") (names . ("x")))
                     #hasheq((op . #hasheq((type . "Add")))
-                            (value . #hasheq((n . 1) (type . "Num")))
+                            (value . #hasheq((type . "Num") (n . 1)))
                             (type . "AugAssign")
                             (target
                              .
                              #hasheq((id . "x")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Store"))))))
-                    #hasheq((args
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((arg . "self")
-                                               (type . "arg")
-                                               (annotation . #\nul))))
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                    #hasheq((body
                              .
                              (#hasheq((value
                                        .
@@ -3693,6 +3661,21 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "get")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args
+                                      .
+                                      (#hasheq((arg . "self")
+                                               (type . "arg")
+                                               (annotation . #\nul))))
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))))
                   (name . "c")
@@ -3704,8 +3687,8 @@ PARSING: Haven't handled a case yet:
                   (bases . ()))
           #hasheq((value
                    .
-                   #hasheq((args . ())
-                           (type . "Call")
+                   #hasheq((type . "Call")
+                           (args . ())
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -3717,6 +3700,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "f")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3725,43 +3721,19 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\nonlocal-function.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nonlocal-function.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body
          .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
-         .
-         (#hasheq((args
-                   .
-                   #hasheq((args . ())
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+         (#hasheq((body
                    .
                    (#hasheq((type . "Nonlocal") (names . ("x")))
                     #hasheq((op . #hasheq((type . "Add")))
-                            (value . #hasheq((n . 1) (type . "Num")))
+                            (value . #hasheq((type . "Num") (n . 1)))
                             (type . "AugAssign")
                             (target
                              .
@@ -3776,12 +3748,10 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "inc")
                   (type . "FunctionDef")
-                  (decorator_list . ())
-                  (returns . #\nul))
-          #hasheq((args
+                  (args
                    .
-                   #hasheq((args . ())
-                           (type . "arguments")
+                   #hasheq((type . "arguments")
+                           (args . ())
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -3789,11 +3759,13 @@ PARSING: Haven't handled a case yet:
                            (kwargannotation . #\nul)
                            (defaults . ())
                            (kw_defaults . ())))
-                  (body
+                  (decorator_list . ())
+                  (returns . #\nul))
+          #hasheq((body
                    .
                    (#hasheq((type . "Nonlocal") (names . ("x")))
                     #hasheq((op . #hasheq((type . "Sub")))
-                            (value . #hasheq((n . 1) (type . "Num")))
+                            (value . #hasheq((type . "Num") (n . 1)))
                             (type . "AugAssign")
                             (target
                              .
@@ -3808,6 +3780,17 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "dec")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args . ())
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((value
@@ -3825,6 +3808,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "f")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3833,49 +3829,21 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\nonlocal-method.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/nonlocal-method.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((body
                    .
-                   (#hasheq((args
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((arg . "self")
-                                               (type . "arg")
-                                               (annotation . #\nul))))
-                                     (type . "arguments")
-                                     (vararg . #\nul)
-                                     (varargannotation . #\nul)
-                                     (kwonlyargs . ())
-                                     (kwarg . #\nul)
-                                     (kwargannotation . #\nul)
-                                     (defaults . ())
-                                     (kw_defaults . ())))
-                            (body
+                   (#hasheq((body
                              .
                              (#hasheq((type . "Nonlocal") (names . ("x")))
                               #hasheq((op . #hasheq((type . "Add")))
-                                      (value . #hasheq((n . 1) (type . "Num")))
+                                      (value . #hasheq((type . "Num") (n . 1)))
                                       (type . "AugAssign")
                                       (target
                                        .
@@ -3894,16 +3862,14 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "inc")
                             (type . "FunctionDef")
-                            (decorator_list . ())
-                            (returns . #\nul))
-                    #hasheq((args
+                            (args
                              .
-                             #hasheq((args
+                             #hasheq((type . "arguments")
+                                     (args
                                       .
                                       (#hasheq((arg . "self")
                                                (type . "arg")
                                                (annotation . #\nul))))
-                                     (type . "arguments")
                                      (vararg . #\nul)
                                      (varargannotation . #\nul)
                                      (kwonlyargs . ())
@@ -3911,11 +3877,13 @@ PARSING: Haven't handled a case yet:
                                      (kwargannotation . #\nul)
                                      (defaults . ())
                                      (kw_defaults . ())))
-                            (body
+                            (decorator_list . ())
+                            (returns . #\nul))
+                    #hasheq((body
                              .
                              (#hasheq((type . "Nonlocal") (names . ("x")))
                               #hasheq((op . #hasheq((type . "Sub")))
-                                      (value . #hasheq((n . 1) (type . "Num")))
+                                      (value . #hasheq((type . "Num") (n . 1)))
                                       (type . "AugAssign")
                                       (target
                                        .
@@ -3934,6 +3902,21 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (name . "dec")
                             (type . "FunctionDef")
+                            (args
+                             .
+                             #hasheq((type . "arguments")
+                                     (args
+                                      .
+                                      (#hasheq((arg . "self")
+                                               (type . "arg")
+                                               (annotation . #\nul))))
+                                     (vararg . #\nul)
+                                     (varargannotation . #\nul)
+                                     (kwonlyargs . ())
+                                     (kwarg . #\nul)
+                                     (kwargannotation . #\nul)
+                                     (defaults . ())
+                                     (kw_defaults . ())))
                             (decorator_list . ())
                             (returns . #\nul))))
                   (name . "c")
@@ -3945,8 +3928,8 @@ PARSING: Haven't handled a case yet:
                   (bases . ()))
           #hasheq((value
                    .
-                   #hasheq((args . ())
-                           (type . "Call")
+                   #hasheq((type . "Call")
+                           (args . ())
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -3958,6 +3941,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "f")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -3966,43 +3962,15 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\recursion.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/recursion.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body
          .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
-         .
-         (#hasheq((args
-                   .
-                   #hasheq((args
-                            .
-                            (#hasheq((arg . "n")
-                                     (type . "arg")
-                                     (annotation . #\nul))))
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+         (#hasheq((body
                    .
                    (#hasheq((orelse
                              .
@@ -4020,7 +3988,8 @@ PARSING: Haven't handled a case yet:
                                                                   "Load")))))
                                                (right
                                                 .
-                                                #hasheq((args
+                                                #hasheq((type . "Call")
+                                                        (args
                                                          .
                                                          (#hasheq((op
                                                                    .
@@ -4042,16 +4011,15 @@ PARSING: Haven't handled a case yet:
                                                                                      "Load")))))
                                                                   (right
                                                                    .
-                                                                   #hasheq((n
+                                                                   #hasheq((type
                                                                             .
-                                                                            1)
-                                                                           (type
+                                                                            "Num")
+                                                                           (n
                                                                             .
-                                                                            "Num")))
+                                                                            1)))
                                                                   (type
                                                                    .
                                                                    "BinOp"))))
-                                                        (type . "Call")
                                                         (keywords . ())
                                                         (kwargs . #\nul)
                                                         (starargs . #\nul)
@@ -4070,7 +4038,7 @@ PARSING: Haven't handled a case yet:
                                       (type . "Return"))))
                             (body
                              .
-                             (#hasheq((value . #hasheq((n . 1) (type . "Num")))
+                             (#hasheq((value . #hasheq((type . "Num") (n . 1)))
                                       (type . "Return"))))
                             (test
                              .
@@ -4084,22 +4052,37 @@ PARSING: Haven't handled a case yet:
                                      (ops . (#hasheq((type . "Eq"))))
                                      (comparators
                                       .
-                                      (#hasheq((n . 0) (type . "Num"))))
+                                      (#hasheq((type . "Num") (n . 0))))
                                      (type . "Compare")))
                             (type . "If"))))
                   (name . "fact")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args
+                            .
+                            (#hasheq((arg . "n")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((orelse
                    .
                    (#hasheq((exc
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((s . "x must be >= 0")
                                                (type . "Str"))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -4116,14 +4099,14 @@ PARSING: Haven't handled a case yet:
                    .
                    (#hasheq((value
                              .
-                             #hasheq((args
+                             #hasheq((type . "Call")
+                                     (args
                                       .
                                       (#hasheq((id . "x")
                                                (type . "Name")
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load"))))))
-                                     (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
@@ -4143,11 +4126,24 @@ PARSING: Haven't handled a case yet:
                                     (type . "Name")
                                     (ctx . #hasheq((type . "Load")))))
                            (ops . (#hasheq((type . "GtE"))))
-                           (comparators . (#hasheq((n . 0) (type . "Num"))))
+                           (comparators . (#hasheq((type . "Num") (n . 0))))
                            (type . "Compare")))
                   (type . "If"))))
         (name . "f")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -4156,43 +4152,15 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\simple-and-rebinding.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/simple-and-rebinding.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body
          .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
-         .
-         (#hasheq((args
-                   .
-                   #hasheq((args
-                            .
-                            (#hasheq((arg . "y")
-                                     (type . "arg")
-                                     (annotation . #\nul))))
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+         (#hasheq((body
                    .
                    (#hasheq((value
                              .
@@ -4215,6 +4183,21 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "adder")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args
+                            .
+                            (#hasheq((arg . "y")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((targets
@@ -4230,7 +4213,7 @@ PARSING: Haven't handled a case yet:
                             #hasheq((id . "x")
                                     (type . "Name")
                                     (ctx . #hasheq((type . "Load")))))
-                           (right . #hasheq((n . 1) (type . "Num")))
+                           (right . #hasheq((type . "Num") (n . 1)))
                            (type . "BinOp")))
                   (type . "Assign"))
           #hasheq((value
@@ -4241,6 +4224,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "make_adder3")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -4249,43 +4245,15 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\simple-nesting.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/simple-nesting.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body
          .
-         #hasheq((args
-                  .
-                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
-         .
-         (#hasheq((args
-                   .
-                   #hasheq((args
-                            .
-                            (#hasheq((arg . "y")
-                                     (type . "arg")
-                                     (annotation . #\nul))))
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+         (#hasheq((body
                    .
                    (#hasheq((value
                              .
@@ -4308,6 +4276,21 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "adder")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args
+                            .
+                            (#hasheq((arg . "y")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((value
@@ -4318,6 +4301,19 @@ PARSING: Haven't handled a case yet:
                   (type . "Return"))))
         (name . "make_adder")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args
+                  .
+                  (#hasheq((arg . "x") (type . "arg") (annotation . #\nul))))
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -4326,33 +4322,22 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\scope\unbound-local.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/scope/unbound-local.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
-         .
-         #hasheq((args . ())
-                 (type . "arguments")
-                 (vararg . #\nul)
-                 (varargannotation . #\nul)
-                 (kwonlyargs . ())
-                 (kwarg . #\nul)
-                 (kwargannotation . #\nul)
-                 (defaults . ())
-                 (kw_defaults . ())))
-        (body
+#hasheq((body
          .
          (#hasheq((value
                    .
-                   #hasheq((args
+                   #hasheq((type . "Call")
+                           (args
                             .
                             (#hasheq((id . "y")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load"))))))
-                           (type . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -4362,18 +4347,7 @@ PARSING: Haven't handled a case yet:
                                     (type . "Name")
                                     (ctx . #hasheq((type . "Load")))))))
                   (type . "Expr"))
-          #hasheq((args
-                   .
-                   #hasheq((args . ())
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+          #hasheq((body
                    .
                    (#hasheq((value
                              .
@@ -4383,6 +4357,17 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "inner")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args . ())
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list . ())
                   (returns . #\nul))
           #hasheq((targets
@@ -4390,10 +4375,21 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((id . "y")
                             (type . "Name")
                             (ctx . #hasheq((type . "Store"))))))
-                  (value . #hasheq((n . 1) (type . "Num")))
+                  (value . #hasheq((type . "Num") (n . 1)))
                   (type . "Assign"))))
         (name . "errorInOuter")
         (type . "FunctionDef")
+        (args
+         .
+         #hasheq((type . "arguments")
+                 (args . ())
+                 (vararg . #\nul)
+                 (varargannotation . #\nul)
+                 (kwonlyargs . ())
+                 (kwarg . #\nul)
+                 (kwargannotation . #\nul)
+                 (defaults . ())
+                 (kw_defaults . ())))
         (decorator_list . ())
         (returns . #\nul))
 
@@ -4402,7 +4398,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\super\test-super.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/super/test-super.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4410,37 +4406,20 @@ parse: error is described above.
 PARSING: Haven't handled a case yet: 
 #hasheq((body
          .
-         (#hasheq((args
-                   .
-                   #hasheq((args
-                            .
-                            (#hasheq((arg . "self")
-                                     (type . "arg")
-                                     (annotation . #\nul))))
-                           (type . "arguments")
-                           (vararg . #\nul)
-                           (varargannotation . #\nul)
-                           (kwonlyargs . ())
-                           (kwarg . #\nul)
-                           (kwargannotation . #\nul)
-                           (defaults . ())
-                           (kw_defaults . ())))
-                  (body
+         (#hasheq((body
                    .
                    (#hasheq((value . #hasheq((s . "A") (type . "Str")))
                             (type . "Return"))))
                   (name . "f")
                   (type . "FunctionDef")
-                  (decorator_list . ())
-                  (returns . #\nul))
-          #hasheq((args
+                  (args
                    .
-                   #hasheq((args
+                   #hasheq((type . "arguments")
+                           (args
                             .
-                            (#hasheq((arg . "cls")
+                            (#hasheq((arg . "self")
                                      (type . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -4448,7 +4427,9 @@ PARSING: Haven't handled a case yet:
                            (kwargannotation . #\nul)
                            (defaults . ())
                            (kw_defaults . ())))
-                  (body
+                  (decorator_list . ())
+                  (returns . #\nul))
+          #hasheq((body
                    .
                    (#hasheq((value
                              .
@@ -4465,6 +4446,21 @@ PARSING: Haven't handled a case yet:
                             (type . "Return"))))
                   (name . "cm")
                   (type . "FunctionDef")
+                  (args
+                   .
+                   #hasheq((type . "arguments")
+                           (args
+                            .
+                            (#hasheq((arg . "cls")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (decorator_list
                    .
                    (#hasheq((id . "classmethod")
@@ -4484,7 +4480,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\tuple\tuple-add.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-add.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4494,14 +4490,14 @@ PARSING: Haven't handled a case yet:
         (ctx . #hasheq((type . "Load")))
         (elts
          .
-         (#hasheq((n . 0) (type . "Num")) #hasheq((n . 1) (type . "Num")))))
+         (#hasheq((type . "Num") (n . 0)) #hasheq((type . "Num") (n . 1)))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\tuple\tuple-constructors.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-constructors.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4514,7 +4510,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\tuple\tuple-length.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-length.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4527,7 +4523,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\tuple\tuple-mul.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-mul.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4537,14 +4533,14 @@ PARSING: Haven't handled a case yet:
         (ctx . #hasheq((type . "Load")))
         (elts
          .
-         (#hasheq((n . 0) (type . "Num")) #hasheq((n . 1) (type . "Num")))))
+         (#hasheq((type . "Num") (n . 0)) #hasheq((type . "Num") (n . 1)))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\tuple\tuple-truth.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/tuple/tuple-truth.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4557,7 +4553,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\types\test_booleans.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_booleans.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4568,7 +4564,7 @@ got a value
 === Actual stderr ===
 
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\types\test_comparisons.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_comparisons.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4579,7 +4575,7 @@ got a value
 === Actual stderr ===
 interp-lt: comparison not valid for arguments of this type
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\types\test_div_zero.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_div_zero.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4589,13 +4585,13 @@ PARSING: Haven't handled a case yet:
          .
          (#hasheq((exc
                    .
-                   #hasheq((args
+                   #hasheq((type . "Call")
+                           (args
                             .
                             (#hasheq((s
                                       .
                                       "5.0 / 0.0 didn't raise ZeroDivisionError")
                                      (type . "Str"))))
-                           (type . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -4611,8 +4607,8 @@ PARSING: Haven't handled a case yet:
          (#hasheq((value
                    .
                    #hasheq((op . #hasheq((type . "Div")))
-                           (left . #hasheq((n . 5.0) (type . "Num")))
-                           (right . #hasheq((n . 0.0) (type . "Num")))
+                           (left . #hasheq((type . "Num") (n . 5.0)))
+                           (right . #hasheq((type . "Num") (n . 0.0)))
                            (type . "BinOp")))
                   (type . "Expr"))))
         (type . "TryExcept")
@@ -4627,31 +4623,18 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\types\test_floats.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_floats.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "USub"))
-
+got a value
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
-=====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\types\test_simple_strings.py   =
-=====================================================
-=== Expected stdout ===
 
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: len
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\types\test_simple_string_ops.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_simple_string_ops.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4664,7 +4647,18 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\types\test_string_slices.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_simple_strings.py   =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound indentifier error: len
+=====================================================
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/test_string_slices.py   =
 =====================================================
 === Expected stdout ===
 
@@ -4687,13 +4681,13 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\types\types_truthy1.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/types_truthy1.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((values . (#hasheq((n . 1) (type . "Num"))))
+#hasheq((values . (#hasheq((type . "Num") (n . 1))))
         (type . "Dict")
         (keys . (#hasheq((s . "x") (type . "Str")))))
 
@@ -4702,16 +4696,19 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-=   Results for C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\types\types_truthy2.py   =
+=   Results for /gpfs/main/home/kcjackso/course/cs173/python/python173/python-reference/types/types_truthy2.py   =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((args
+#hasheq((body . (#hasheq((type . "Pass"))))
+        (name . "f")
+        (type . "FunctionDef")
+        (args
          .
-         #hasheq((args . ())
-                 (type . "arguments")
+         #hasheq((type . "arguments")
+                 (args . ())
                  (vararg . #\nul)
                  (varargannotation . #\nul)
                  (kwonlyargs . ())
@@ -4719,9 +4716,6 @@ PARSING: Haven't handled a case yet:
                  (kwargannotation . #\nul)
                  (defaults . ())
                  (kw_defaults . ())))
-        (body . (#hasheq((type . "Pass"))))
-        (name . "f")
-        (type . "FunctionDef")
         (decorator_list . ())
         (returns . #\nul))
 

@@ -77,6 +77,8 @@ structure that you define in python-syntax.rkt
                  ('returns returns)) ;expr? ;;ignoring
      (Py
     |#
+    
+    
     [(hash-table ('type "Lambda")
                  ('args args) ;arguments
                  ('body body)) ;expr
@@ -143,6 +145,8 @@ structure that you define in python-syntax.rkt
     ;; Unary (kechpaja)
     [(hash-table ('type "Not"))
      'not]
+    [(hash-table ('type "USub"))
+     'negative]
     
     
     

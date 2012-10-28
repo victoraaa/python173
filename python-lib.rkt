@@ -21,7 +21,7 @@ that calls the primitive `print`.
 (define assert-equal-lambda
   (CFunc (list 'e1 'e2)
     (CIf (CPrim2 'eq (CId 'e1) (CId 'e2)) 
-         (CTrue) 
+         (CPass) 
          (CError (CStr "Assert failed: values are not Equal"))
          )))
 
@@ -29,28 +29,28 @@ that calls the primitive `print`.
   (CFunc (list 'e1 'e2)
     (CIf (CPrim2 'eq (CId 'e1) (CId 'e2))  
          (CError (CStr "Assert failed: values are Equal"))
-         (CTrue)
+         (CPass)
          )))
 
 (define assert-true-lambda
   (CFunc (list 'check-true)
-    (CIf (CId 'check-true) (CTrue) (CError (CStr "Assert failed: value is False")))))
+    (CIf (CId 'check-true) (CPass) (CError (CStr "Assert failed: value is False")))))
 
 (define assert-false-lambda
   (CFunc (list 'check-false)
-    (CIf (CId 'check-false) (CError (CStr "Assert failed: value is True")) (CTrue) )))
+    (CIf (CId 'check-false) (CError (CStr "Assert failed: value is True")) (CPass) )))
 
 (define assert-is-lambda
   (CFunc (list 'e1 'e2)
     (CIf (CPrim2 'is (CId 'e1) (CId 'e2)) 
-         (CTrue) 
+         (CPass) 
          (CError (CStr "Assert failed: first argument is not second argument"))
          )))
 
 (define assert-in-lambda
   (CFunc (list 'e1 'e2)
     (CIf (CPrim2 'in (CId 'e1) (CId 'e2)) 
-         (CTrue) 
+         (CPass) 
          (CError (CStr "Assert failed: element not found"))
          )))
 
@@ -58,7 +58,7 @@ that calls the primitive `print`.
   (CFunc (list 'e1 'e2)
     (CIf (CPrim2 'is (CId 'e1) (CId 'e2)) 
          (CError (CStr "Assert failed: element found"))
-         (CTrue)
+         (CPass)
          )))
 
 (define true-val

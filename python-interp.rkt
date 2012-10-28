@@ -303,6 +303,13 @@
                       (ValueA (VFalse) s)
                       (ValueA (VTrue) s))]))
 
+;; interp-negative
+(define (interp-negative (arg : CExp) (env : Env) (store : Store)) : AnswerC
+  (type-case AnswerC (interp-env arg env store)
+    [ValueA (v s) (type-case CVal v
+                    [VNum (n) (ValueA (VNum (- 0 n)) s)] ;; gotta be a better way...
+                    [else (error 'interp "Tried to negate a non-number")])]))
+
 ;;interp-add
 (define (interp-add [left : CExp] 
                     [right : CExp] 
@@ -399,7 +406,8 @@
     [CPrim1 (prim arg)
             (case prim
               ['print (interp-print arg env store)]
-              ['not (interp-not arg env store)])]
+              ['not (interp-not arg env store)]
+              ['negative (interp-negative arg env store)])]
      
      ;; (prim arg) (interp-prim1 prim (interp-env arg env store))]
     
@@ -429,7 +437,8 @@
                        (interp-env t env s)
                        (interp-env e env s))])]
     [CNone () (ValueA (VNone) store)]
-    [CFalse () (ValueA (VFalse) store)]
+    [CFalse () (ValueA (VFalse) store)] 
+    [CPass () (ValueA (VPass) store)] ;; doing nothing. We need a case for that...
     [CUnbound () (ValueA (VUnbound) store)]
     [else (error 'interp (string-append "Haven't implemented a case yet:\n"
                                        (to-string expr)))]
@@ -445,9 +454,11 @@
 
 
 ;; regular interpret
-(define (interp (expr : CExp)) : CVal
+(define (interp (expr : CExp)) : void
   (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
-    [ValueA (v s) v]))
+    [ValueA (v s) (if (VPass? v)
+                      (void)
+                      (print v))]))
 
 
 ;; basic test cases

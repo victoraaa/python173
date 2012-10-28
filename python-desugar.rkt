@@ -75,6 +75,8 @@
                            targets)))]
     [PyModule (exprs)
               (get-vars exprs)]
+    
+;;    [else (error 'desugar "Case not implemented")]
     ))
 
 
@@ -95,7 +97,7 @@
                    (if (> (length orelse) 1)
                        (desugar (PySeq orelse)) 
                        (desugar (first orelse)))
-                   (CNone)))]
+                   (CPass)))]
     [PyBoolop (op exprs)
               (case op
                 ['or (foldl (lambda (expr result) (CPrim2 'or result (desugar expr))) (desugar (first exprs)) (rest exprs))]
@@ -117,7 +119,7 @@
                                                 (rest comparators)))
                             (CFalse)))))]
     
-    [PyPass () (CNone)]
+    [PyPass () (CPass)]
     [PyNone () (CNone)]
     [PyLambda (args body) (CFunc args (desugar body))]
     #|(FuncC args 

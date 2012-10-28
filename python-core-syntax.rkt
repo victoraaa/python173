@@ -23,7 +23,9 @@ ParselTongue.
   [CPrim2 (op : symbol) (e1 : CExp) (e2 : CExp)]
   [CFalse]
   [CNone]
+  [CPass]
   [CSet (id : CExp) (value : CExp)]
+  
   ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.
   [CUnbound]
   
@@ -38,6 +40,7 @@ ParselTongue.
   ;;I ADDED;;
   [VNone]
   [VFalse]
+  [VPass]
   [VUnbound]
   )
 
