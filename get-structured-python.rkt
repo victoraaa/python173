@@ -45,6 +45,10 @@ structure that you define in python-syntax.rkt
                  ('op op) ;boolop
                  ('values values)) ;expr-list
      (PyBoolop (get-structured-python op) (map get-structured-python values))]
+    [(hash-table ('type "UnaryOp")
+                 ('op op)
+                 ('operand operand))
+     (PyUnaryOp (get-structured-python op) (get-structured-python operand))]
     [(hash-table ('type "Compare")
                  ('left left) ;expr
                  ('ops ops) ;cmpop*
@@ -115,6 +119,10 @@ structure that you define in python-syntax.rkt
      'is]
     [(hash-table ('type "IsNot"))
      'isNot]
+    
+    ;; Unary (kechpaja)
+    [(hash-table ('type "Not"))
+     'not]
     
     
     

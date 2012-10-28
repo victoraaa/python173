@@ -270,6 +270,14 @@
                          (ValueA v s))]))
 
 
+;; interp-not
+(define (interp-not (arg : CExp) (env : Env) (store : Store)) : AnswerC
+  (type-case AnswerC (interp-env arg env store)
+    [ValueA (v s) (if (isTruthy v)
+                      (ValueA (VFalse) s)
+                      (ValueA (VTrue) s))]))
+
+
 ;; isTruthy returns false if the CVal value is False to python
 ;; and true otherwise
 (define (isTruthy [value : CVal]) : boolean
@@ -338,7 +346,8 @@
 
     [CPrim1 (prim arg)
             (case prim
-              ['print (interp-print arg env store)])]
+              ['print (interp-print arg env store)]
+              ['not (interp-not arg env store)])]
      
      ;; (prim arg) (interp-prim1 prim (interp-env arg env store))]
     

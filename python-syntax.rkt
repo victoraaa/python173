@@ -9,6 +9,7 @@
   [PyStr (s : string)]
   [PyIf (test : PyExpr) (then : (listof PyExpr)) (orelse : (listof PyExpr))]
   [PyBoolop (boolop : symbol) (values : (listof PyExpr))]
+  [PyUnaryOp (op : symbol) (arg : PyExpr)]
   [PyCompare (left : PyExpr) (ops : (listof symbol)) (comparators : (listof PyExpr))]
   [PyPass]
   [PyLambda (args : (listof symbol)) (body : PyExpr)]
