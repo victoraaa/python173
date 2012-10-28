@@ -41,6 +41,13 @@
     [PyRaise (exc) (get-nonlocals exc)]
     [PyGlobal (id) (list)]
     [Py-NotExist () (list)]
+    [PyUnaryOp (op arg) (get-nonlocals arg)]
+    [PyAssign (targets value)
+              (append
+               (get-nonlocals value)
+                (foldl (lambda (a b) (append b a))
+                                   (list)
+                                   (map (lambda (e) (get-nonlocals e)) targets)))]
     ))
 
 
@@ -90,7 +97,7 @@
                                               (desugar body))))]
 |#
     [PyRaise (exc) (CError (desugar exc))]
-    [PyAssign (targets value)]
+    ;[PyAssign (targets value) ]
     
 ;|#
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
