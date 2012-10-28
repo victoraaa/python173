@@ -33,6 +33,10 @@ structure that you define in python-syntax.rkt
                  ('id "None"))
      (PyNone)]
     
+    ;; Should these cases be in lib? This is something to ask at design check...   
+    ;; Alternatively, they could be handled in desugaring. This is a decision we need to make
+    ;; before we can proceed. I vote for desugaring. 
+    
     [(hash-table ('type "Name")
                  ('ctx _)        ;; ignoring ctx for now
                  ('id id))
@@ -149,6 +153,9 @@ structure that you define in python-syntax.rkt
      'is]
     [(hash-table ('type "IsNot"))
      'isNot]
+    [(hash-table ('type "In"))
+     'in]
+
     
     ;; Unary (kechpaja)
     [(hash-table ('type "Not"))
