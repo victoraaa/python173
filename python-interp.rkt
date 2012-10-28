@@ -303,6 +303,21 @@
                       (ValueA (VFalse) s)
                       (ValueA (VTrue) s))]))
 
+;;interp-add
+(define (interp-add [left : CExp] 
+                    [right : CExp] 
+                    [env : Env] 
+                    [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env left env store)
+    [ValueA (v1 s1)
+      (type-case AnswerC (interp-env right env s1)
+        [ValueA (v2 s2)
+          (type-case CVal v1
+            [VNum (n1) (type-case CVal v2
+                         [VNum (n2) (ValueA (VNum (+ n1 n2)) s2)]
+                         [else (error 'interp-add "Cannot add two different types")])]
+            [else (error 'interp-gte "Addition not valid for arguments of this type")])])]))
+
 
 ;; isTruthy returns false if the CVal value is False to python
 ;; and true otherwise
@@ -329,7 +344,8 @@
     [CError (e) (error 'interp (to-string (interp-env e env store)))]
     
 
-    [CId (x) (ValueA (lookupStore (lookupEnv x env) store) store)]
+    [CId (x) 
+         (ValueA (lookupStore (lookupEnv x env) store) store)]
 
     [CLet (id scopeType bind body)
       ;(interp-env body (hash-set env id (interp-env bind env)))]
@@ -402,6 +418,8 @@
               ['gte (interp-gte e1 e2 env store)]
               ['is (interp-is e1 e2 env store)]
               ['isNot (interp-isNot e1 e2 env store)]
+              ;;binops
+              ['add (interp-add e1 e2 env store)]
               [else (error 'interp "Invalid CPrim2 operation")]
               )]
     [CIf (i t e)

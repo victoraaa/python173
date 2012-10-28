@@ -28,6 +28,10 @@
                                    (map (lambda (e) (get-vars e)) args)))]
     [PyId (x) (list)]
     [PyStr (s) (list)]
+    [PyBinOp (op left right)
+             (append
+              (get-vars left)
+              (get-vars right))]
     [PyIf (test then orelse)
           (append
            (get-vars test)
@@ -54,7 +58,7 @@
     [PyRaise (exc) (get-vars exc)]
     [Py-NotExist () (list)]
     [PyUnaryOp (op arg) (get-vars arg)]
-    [PySet (lhs value) ;;PySet case may need to change when it starts to get things other than CIds
+    [PySet (lhs value) ;;PySet case may need to change, because it never actually appears since it only exists from use in PyAssign
            (append
                (get-vars value)
                (type-case PyExpr lhs
@@ -78,7 +82,7 @@
 (define (desugar expr)
   (type-case PyExpr expr
  ;   #|
-    [PySeq (es) (foldr (lambda (e1 e2) (CSeq e2 (desugar e1))) (desugar (first es)) (rest es))]
+    [PySeq (es) (foldl (lambda (e1 e2) (CSeq e2 (desugar e1))) (desugar (first es)) (rest es))]
     [PyNum (n) (CNum n)]
     [PyApp (f args) (CApp (desugar f) (map desugar args))]
     [PyId (x) (CId x)]
@@ -98,6 +102,8 @@
                 ['and (foldl (lambda (expr result) (CPrim2 'and result (desugar expr))) (desugar (first exprs)) (rest exprs))])]
     [PyUnaryOp (op arg)
                (CPrim1 op (desugar arg))]
+    [PyBinOp (op left right)
+             (CPrim2 op (desugar left) (desugar right))]
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
                    (CTrue)
@@ -124,7 +130,8 @@
     [PyAssign (targets value) 
               (CLet 'assign-value (Local) (desugar value)
                     (desugar (PySeq (map (lambda (e) (PySet e (PyId 'assign-value))) targets))))]
-    [PySet (lhs value) (CSet (desugar lhs) (desugar value))]
+    [PySet (lhs value) 
+           (CSet (desugar lhs) (desugar value))]
     [PyModule (exprs) 
               (let ([global-vars (get-vars exprs)]) ;GET ALL OF THE ASSIGNMENTS IN THE GLOBAL SCOPE
                 (begin ;(checkGlobalScopes global-vars)  ;CHECKS IF WE DONT HAVE AN ERROR FROM USING global OR nonlocals IN THE GLOBAL SCOPE

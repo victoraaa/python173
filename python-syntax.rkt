@@ -10,6 +10,7 @@
   [PyIf (test : PyExpr) (then : (listof PyExpr)) (orelse : (listof PyExpr))]
   [PyBoolop (boolop : symbol) (values : (listof PyExpr))]
   [PyUnaryOp (op : symbol) (arg : PyExpr)]
+  [PyBinOp (op : symbol) (left : PyExpr) (right : PyExpr)]
   [PyCompare (left : PyExpr) (ops : (listof symbol)) (comparators : (listof PyExpr))]
   [PyPass]
   [PyNone]

@@ -106,9 +106,19 @@ structure that you define in python-syntax.rkt
                  ('exc exc)
                  ('cause cause))
      (PyRaise (get-structured-python exc))] ;; (get-structured-python cause))]
+    [(hash-table ('type "BinOp")
+                 ('left left) ;expr
+                 ('op op) ;operator
+                 ('right right)) ;expr
+     (PyBinOp (get-structured-python op)
+              (get-structured-python left)
+              (get-structured-python right))]
+    
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     
+    [(hash-table ('type "Add"))
+     'add]
     [(hash-table ('type "Or"))
      'or]
     [(hash-table ('type "And"))
