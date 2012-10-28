@@ -3,10 +3,58 @@
 (require "python-syntax.rkt"
          "python-core-syntax.rkt")
 
+(define (get-nonlocals [expr : PyExpr]) : (listof symbol)
+  (type-case PyExpr expr
+    [PyNonlocal (id) (list id)]
+    [PySeq (es) (foldl (lambda (a b) (append b a))
+                       (list)
+                       (map (lambda (e) (get-nonlocals e)) es))]
+    [PyNum (n) (list)]
+    [PyApp (f args) (append (get-nonlocals f)
+                            (foldl (lambda (a b) (append b a))
+                                   (list)
+                                   (map (lambda (e) (get-nonlocals e)) args)))]
+    [PyId (x) (list)]
+    [PyStr (s) (list)]
+    [PyIf (test then orelse)
+          (append
+           (get-nonlocals test)
+           (append
+            (foldl (lambda (a b) (append b a))
+                   (list)
+                   (map (lambda (e) (get-nonlocals e)) then))
+            (foldl (lambda (a b) (append b a))
+                   (list)
+                   (map (lambda (e) (get-nonlocals e)) orelse))))]
+    [PyBoolop (op exprs)
+              (foldl (lambda (a b) (append b a))
+                                   (list)
+                                   (map (lambda (e) (get-nonlocals e)) exprs))]
+    [PyCompare (left ops comparators)
+               (append
+                (get-nonlocals left)
+                (foldl (lambda (a b) (append b a))
+                                   (list)
+                                   (map (lambda (e) (get-nonlocals e)) comparators)))]
+    [PyPass () (list)]
+    [PyLambda (args body) (list)]
+    [PyRaise (exc) (get-nonlocals exc)]
+    [PyGlobal (id) (list)]
+    [Py-NotExist () (list)]
+    [PyUnaryOp (op arg) (get-nonlocals arg)]
+    [PyAssign (targets value)
+              (append
+               (get-nonlocals value)
+                (foldl (lambda (a b) (append b a))
+                                   (list)
+                                   (map (lambda (e) (get-nonlocals e)) targets)))]
+    ))
+
+
 
 (define (desugar expr)
   (type-case PyExpr expr
-;    #|
+ ;   #|
     [PySeq (es) (foldr (lambda (e1 e2) (CSeq e2 (desugar e1))) (desugar (first es)) (rest es))]
     [PyNum (n) (CNum n)]
     [PyApp (f args) (CApp (desugar f) (map desugar args))]
@@ -50,6 +98,7 @@
                                               (desugar body))))]
 |#
     [PyRaise (exc) (CError (desugar exc))]
+    ;[PyAssign (targets value) ]
     
 ;|#
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"

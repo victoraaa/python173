@@ -1,7 +1,1 @@
-y = 'y'
-z = 'z'
-def f1():
-  x = 'x'
-  nonlocal y
-  global z
-  return 1
+lambda x:  nonlocal y; global z; nonlocal a; return 1;

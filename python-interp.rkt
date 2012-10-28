@@ -345,6 +345,13 @@
         [ValueA (v s)
                 (interp-env e2 env s)])]
 
+    [CSet (id value)
+          (type-case AnswerC (interp-env value env store)
+             [ValueA (v s)
+                     (ValueA v (augmentStore (lookupEnv id env)
+                                             v
+                                             s))])]
+    
     [CApp (func args)
      (type-case AnswerC (interp-env func env store)
        [ValueA (vf sf)
