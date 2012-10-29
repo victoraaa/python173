@@ -514,7 +514,7 @@
                        (interp-env e env s))])]
     [CNone () (ValueA (VNone) store)]
     [CFalse () (ValueA (VFalse) store)] 
-    [CPass () (ValueA (VPass) store)] ;; doing nothing. We need a case for that...
+    [CPass () (ValueA (VNone) store)] ;; doing nothing. We need a case for that...
     [CUnbound () (ValueA (VUnbound) store)]
     [else (error 'interp (string-append "Haven't implemented a case yet:\n"
                                        (to-string expr)))]

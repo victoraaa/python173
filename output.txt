@@ -4643,4 +4643,4 @@ PARSING: Haven't handled a case yet:
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above. 
+parse: error is described above.
