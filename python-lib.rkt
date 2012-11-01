@@ -47,6 +47,13 @@ that calls the primitive `print`.
          (CError (CStr "Assert failed: first argument is not second argument"))
          )))
 
+(define assert-isNot-lambda
+  (CFunc (list 'e-1 'e-2)
+    (CIf (CPrim2 'is (CId 'e-1) (CId 'e-2)) 
+         (CError (CStr "Assert failed: first argument is second argument"))
+         (CPass) 
+         )))
+
 (define assert-in-lambda
   (CFunc (list 'e-1 'e-2)
     (CIf (CPrim2 'in (CId 'e-1) (CId 'e-2)) 
@@ -108,6 +115,96 @@ that calls the primitive `print`.
                         (CError (CStr "/: Not supported for this type."))))
               (CError (CStr "/: Types do not match.")))))
 
+(define python-lt
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                   (CPrim2 'num-lt (CId 'e-1) (CId 'e-2))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+                        (CPrim2 'num-lt (CId 'e-1) (CId 'e-2))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+                             (CPrim2 'string-lt (CId 'e-1) (CId 'e-2))
+                             (CError (CStr "<: Not supported for this type.")))))
+              (CError (CStr "<: Types do not match.")))))
+
+(define python-lte
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                   (CPrim2 'num-lte (CId 'e-1) (CId 'e-2))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+                        (CPrim2 'num-lte (CId 'e-1) (CId 'e-2))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+                             (CPrim2 'string-lte (CId 'e-1) (CId 'e-2))
+                             (CError (CStr "<=: Not supported for this type.")))))
+              (CError (CStr "<=: Types do not match.")))))
+
+(define python-gt
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                   (CPrim2 'num-gt (CId 'e-1) (CId 'e-2))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+                        (CPrim2 'num-gt (CId 'e-1) (CId 'e-2))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+                             (CPrim2 'string-gt (CId 'e-1) (CId 'e-2))
+                             (CError (CStr ">: Not supported for this type.")))))
+              (CError (CStr ">: Types do not match.")))))
+
+(define python-gte
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                   (CPrim2 'num-gte (CId 'e-1) (CId 'e-2))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+                        (CPrim2 'num-gte (CId 'e-1) (CId 'e-2))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+                             (CPrim2 'string-gte (CId 'e-1) (CId 'e-2))
+                             (CError (CStr ">=: Not supported for this type.")))))
+              (CError (CStr ">=: Types do not match.")))))
+
+(define python-eq
+  (CFunc (list 'e-1 'e-2)
+         (CPrim2 'eq (CId 'e-1) (CId 'e-2))))
+
+(define python-notEq
+  (CFunc (list 'e-1 'e-2)
+         (CPrim2 'notEq (CId 'e-1) (CId 'e-2))))
+
+(define python-is
+  (CFunc (list 'e-1 'e-2)
+         (CPrim2 'is (CId 'e-1) (CId 'e-2))))
+
+(define python-isNot
+  (CFunc (list 'e-1 'e-2)
+         (CPrim2 'isNot (CId 'e-1) (CId 'e-2))))
+
+(define python-in
+  (CFunc (list 'e-1 'e-2)
+         (CPrim2 'in (CId 'e-1) (CId 'e-2))))
+
+(define len 
+  (CFunc (list 'e-1)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+              (CPrim1 'length (CId 'e-1))
+              (CError (CStr "len: Argument must be a string.")))))
+
+(define bool ;; needs to handle arbitrary-arity input
+  (CFunc (list 'e-1)
+         (CPrim1 'to-bool (CId 'e-1))))
+
+(define str
+  (CFunc (list 'e-1)
+         (CPrim1 'to-string (CId 'e-1))))
+
+(define float
+  (CFunc (list 'e-1)
+         (CPrim1 'to-float (CId 'e-1))))
+
+(define int
+  (CFunc (list 'e-1)
+         (CPrim1 'to-int (CId 'e-1))))
+
 (define create-global-env
   (CFunc (list)
          (CGlobalEnv)))
@@ -130,10 +227,27 @@ that calls the primitive `print`.
         (bind '___assertEqual assert-equal-lambda)
         (bind '___assertNotEqual assert-notEqual-lambda)
         (bind '___assertIs assert-is-lambda)
+        (bind '___assertIsNot assert-isNot-lambda)
         (bind 'python-add python-add)
         (bind 'python-sub python-sub)
         (bind 'python-mult python-mult)
         (bind 'python-div python-div)
+        (bind 'python-lt python-lt)
+        (bind 'python-lte python-lte)
+        (bind 'python-gt python-gt)
+        (bind 'python-gte python-gte)
+        (bind 'python-eq python-eq)
+        (bind 'python-notEq python-notEq)
+        (bind 'python-is python-is)
+        (bind 'python-isNot python-isNot)
+        (bind 'python-in python-in)
+        (bind 'len len)
+        (bind 'bool bool)
+        (bind 'str str)
+        (bind 'float float)
+        (bind 'int int)
+        (bind 'True (CTrue)) ;; not entirely sure these should be here, but we're passing more tests now...
+        (bind 'False (CFalse))
         (bind 'create-global-env create-global-env)
 
 ))

@@ -140,23 +140,23 @@ structure that you define in python-syntax.rkt
     [(hash-table ('type "And"))
      'and]
     [(hash-table ('type "Eq"))
-     'eq]
+     'python-eq]
     [(hash-table ('type "NotEq"))
-     'notEq]
+     'python-notEq]
     [(hash-table ('type "Lt"))
-     'lt]
+     'python-lt]
     [(hash-table ('type "LtE"))
-     'lte]
+     'python-lte]
     [(hash-table ('type "Gt"))
-     'gt]
+     'python-gt]
     [(hash-table ('type "GtE"))
-     'gte]
+     'python-gte]
     [(hash-table ('type "Is"))
-     'is]
+     'python-is]
     [(hash-table ('type "IsNot"))
-     'isNot]
+     'python-isNot]
     [(hash-table ('type "In"))
-     'in]
+     'python-in]
 
     
     ;; Unary (kechpaja)

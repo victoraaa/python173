@@ -1,5 +1,5 @@
-6 tests succeeded.
-84 tests failed.
+12 tests succeeded.
+78 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-callable.py =
@@ -28,17 +28,6 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for bool-compare.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-handle-op: case not implemented
-=====================================================
 = Results for bool-convert.py =
 =====================================================
 === Expected stdout ===
@@ -48,29 +37,7 @@ handle-op: case not implemented
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: bool
-=====================================================
-= Results for bool-float.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: float
-=====================================================
-= Results for bool-int.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: int
+interp-AppC: Application failed with arity mismatch
 =====================================================
 = Results for bool-isinstance.py =
 =====================================================
@@ -95,17 +62,6 @@ PARSING: Haven't handled a case yet:
 
 === Actual stderr ===
 parse: error is described above.
-=====================================================
-= Results for bool-str.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: str
 =====================================================
 = Results for all.py =
 =====================================================
@@ -4507,17 +4463,6 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for test_comparisons.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-handle-op: case not implemented
-=====================================================
 = Results for test_div_zero.py =
 =====================================================
 === Expected stdout ===
@@ -4578,17 +4523,6 @@ PARSING: Haven't handled a case yet:
 
 === Actual stderr ===
 parse: error is described above.
-=====================================================
-= Results for test_simple_strings.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: len
 =====================================================
 = Results for test_string_slices.py =
 =====================================================
