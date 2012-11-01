@@ -19,15 +19,15 @@ that calls the primitive `print`.
     (CPrim1 'print (CId 'to-print))))
 
 (define assert-equal-lambda
-  (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'eq (CId 'e1) (CId 'e2)) 
+  (CFunc (list 'e-1 'e-2)
+    (CIf (CPrim2 'eq (CId 'e-1) (CId 'e-2)) 
          (CPass) 
          (CError (CStr "Assert failed: values are not Equal"))
          )))
 
 (define assert-notEqual-lambda
-  (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'eq (CId 'e1) (CId 'e2))  
+  (CFunc (list 'e-1 'e-2)
+    (CIf (CPrim2 'eq (CId 'e-1) (CId 'e-2))  
          (CError (CStr "Assert failed: values are Equal"))
          (CPass)
          )))
@@ -41,25 +41,37 @@ that calls the primitive `print`.
     (CIf (CId 'check-false) (CError (CStr "Assert failed: value is True")) (CPass) )))
 
 (define assert-is-lambda
-  (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'is (CId 'e1) (CId 'e2)) 
+  (CFunc (list 'e-1 'e-2)
+    (CIf (CPrim2 'is (CId 'e-1) (CId 'e-2)) 
          (CPass) 
          (CError (CStr "Assert failed: first argument is not second argument"))
          )))
 
 (define assert-in-lambda
-  (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'in (CId 'e1) (CId 'e2)) 
+  (CFunc (list 'e-1 'e-2)
+    (CIf (CPrim2 'in (CId 'e-1) (CId 'e-2)) 
          (CPass) 
          (CError (CStr "Assert failed: element not found"))
          )))
 
 (define assert-notIn-lambda
-  (CFunc (list 'e1 'e2)
-    (CIf (CPrim2 'is (CId 'e1) (CId 'e2)) 
+  (CFunc (list 'e-1 'e-2)
+    (CIf (CPrim2 'is (CId 'e-1) (CId 'e-2)) 
          (CError (CStr "Assert failed: element found"))
          (CPass)
          )))
+
+(define python-add
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                   (CPrim2 'num+ (CId 'e-1) (CId 'e-2))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+                        (CPrim2 'num+ (CId 'e-1) (CId 'e-2))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+                             (CPrim2 'string+ (CId 'e-1) (CId 'e-2))
+                             (CError (CStr "Add not supported for this type")))))
+              (CError (CStr "Types do not match.")))))
 
 (define true-val
   (CTrue))
@@ -78,6 +90,7 @@ that calls the primitive `print`.
         (bind '___assertEqual assert-equal-lambda)
         (bind '___assertNotEqual assert-notEqual-lambda)
         (bind '___assertIs assert-is-lambda)
+        (bind 'python-add python-add)
 
 ))
 

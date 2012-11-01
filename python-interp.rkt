@@ -113,6 +113,103 @@
                        (rest args)))]))
 
 
+;; tagof wrapper
+(define (interp-tagof [arg : CExp] [env : Env] [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env arg env store)
+    [ValueA (v s) (ValueA (VStr (get-tag v)) s)]))
+
+
+;; This is the tagof operator that we will need later...
+(define (get-tag [val : CVal]) : string
+  (type-case CVal val
+    [VNum (n) "int"] ;; this really should distinguish ints from floats...
+          ;(cond
+              ;  [(fixnum? n) "int"]
+              ;  [(flonum? n) "float"])]
+    [VStr (s) "string"]
+    [VClosure (e a b) "function"]
+    [VTrue () "bool"]
+    [VFalse () "bool"]
+    [VNone () "NoneType"] ;; TODO this looks like a class name. Maybe we should make it so?
+    [VPass () "pass"] ;; should never be reached. 
+    [VUnbound () "unbound"])) ;; should never be reached. 
+
+
+;; This is going to be an interp function that works on arbitrary CExps.
+;; interp-binop
+(define (interp-binop [op : symbol] [e1 : CExp] [e2 : CExp] [env : Env] [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env e1 env store)
+             [ValueA (v1 s1) (type-case AnswerC (interp-env e2 env s1)
+                               [ValueA (v2 s2) (ValueA (handle-op op v1 v2) s2)])]))
+
+
+
+;; this function handles binary operations
+;; it does NO TYPE CHECKING! We will need to check types in library functions. 
+; another case for the library functions: where else do we put the errors? 
+;; if we have regular exceptions, we will need to throw them higher up...
+;; Need a "tagof" unary operator. Doesn't python have "type"?
+
+;; Also, this function should be in the "primitives" file. 
+(define (handle-op [op : symbol] [v1 : CVal] [v2 : CVal]) : CVal
+  (case op
+    ['eq (if (equal? v1 v2) (VTrue) (VFalse))]
+    ['notEq (if (equal? v1 v2) (VFalse) (VTrue))]
+    ['num+ (VNum (+ (VNum-n v1) (VNum-n v2)))]
+    ['string+ (VStr (string-append (VStr-s v1) (VStr-s v2)))]
+    ['lt (type-case CVal v1
+            [VNum (n1) (type-case CVal v2
+                         [VNum (n2) (if (< n1 n2) (VTrue) (VFalse))]
+                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
+            [VStr (n1) (type-case CVal v2
+                         [VStr (n2) (if (string<? n1 n2) (VTrue) (VFalse))]
+                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
+            [else (error 'interp-lt "comparison not valid for arguments of this type")])]
+    ['lte (type-case CVal v1
+            [VNum (n1) (type-case CVal v2
+                         [VNum (n2) (if (<= n1 n2) (VTrue) (VFalse))]
+                         [else (error 'interp-lte "comparison not valid for arguments of different types")])]
+            [VStr (n1) (type-case CVal v2
+                         [VStr (n2) (if (string<=? n1 n2) (VTrue) (VFalse))]
+                         [else (error 'interp-lte "comparison not valid for arguments of different types")])]
+            [else (error 'interp-lte "comparison not valid for arguments of this type")])]
+    ['gt (type-case CVal v1
+            [VNum (n1) (type-case CVal v2
+                         [VNum (n2) (if (> n1 n2) (VTrue) (VFalse))]
+                         [else (error 'interp-gt "comparison not valid for arguments of different types")])]
+            [VStr (n1) (type-case CVal v2
+                         [VStr (n2) (if (string>? n1 n2) (VTrue) (VFalse))]
+                         [else (error 'interp-gt "comparison not valid for arguments of different types")])]
+            [else (error 'interp-gt "comparison not valid for arguments of this type")])]
+    ['gte (type-case CVal v1
+            [VNum (n1) (type-case CVal v2
+                         [VNum (n2) (if (>= n1 n2) (VTrue) (VFalse))]
+                         [else (error 'interp-gte "comparison not valid for arguments of different types")])]
+            [VStr (n1) (type-case CVal v2
+                         [VStr (n2) (if (string>=? n1 n2) (VTrue) (VFalse))]
+                         [else (error 'interp-gte "comparison not valid for arguments of different types")])]
+            [else (error 'interp-gte "comparison not valid for arguments of this type")])]
+    [else (error 'handle-op "case not implemented")]))
+
+
+      ;;        ['eq (interp-eq e1 e2 env store)]
+      ;        ['notEq (interp-notEq e1 e2 env store)]
+      ;        ['lt (interp-lt e1 e2 env store)]
+      ;        ['lte (interp-lte e1 e2 env store)]
+      ;        ['gt (interp-gt e1 e2 env store)]
+      ;        ['gte (interp-gte e1 e2 env store)]
+      ;        ['is (interp-is e1 e2 env store)]
+      ;        ['isNot (interp-isNot e1 e2 env store)]
+      ;        ['in (interp-in e1 e2 env store)]
+      ;        ;;binops
+      ;        ['add (interp-add e1 e2 env store)]
+      ;        ['sub (interp-sub e1 e2 env store)]
+      ;        ['mult (interp-mult e1 e2 env store)]
+      ;        ['div (interp-div e1 e2 env store)]
+       ;       [else (error 'interp "Invalid CPrim2 operation")]
+       ;       )]
+
+
 
 ;;or returns e1 if its value is truthy; if not, 
 ;;returns e2's value
@@ -216,7 +313,7 @@
                          [VStr (n2) (if (string<=? n1 n2)
                                         (ValueA (VTrue) s2)
                                         (ValueA (VFalse) s2))]
-                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
+                         [else (error 'interp-lte "comparison not valid for arguments of different types")])]
             [else (error 'interp-lte "comparison not valid for arguments of this type")])])]))
 
 ;;gte returns true if e1 and e2 are comparable and e1 is greater than
@@ -479,7 +576,8 @@
             (case prim
               ['print (interp-print arg env store)]
               ['not (interp-not arg env store)]
-              ['negative (interp-negative arg env store)])]
+              ['negative (interp-negative arg env store)]
+              ['tagof (interp-tagof arg env store)])]
      
      ;; (prim arg) (interp-prim1 prim (interp-env arg env store))]
     
@@ -487,25 +585,27 @@
     [CPrim2 (op e1 e2)
             (case op
               ;;boolops
+              ;; These short-circuit, and so need their own system...
               ['or (interp-or e1 e2 env store)]
               ['and (interp-and e1 e2 env store)]
-              ;;cmpops
-              ['eq (interp-eq e1 e2 env store)]
-              ['notEq (interp-notEq e1 e2 env store)]
-              ['lt (interp-lt e1 e2 env store)]
-              ['lte (interp-lte e1 e2 env store)]
-              ['gt (interp-gt e1 e2 env store)]
-              ['gte (interp-gte e1 e2 env store)]
-              ['is (interp-is e1 e2 env store)]
-              ['isNot (interp-isNot e1 e2 env store)]
-              ['in (interp-in e1 e2 env store)]
-              ;;binops
-              ['add (interp-add e1 e2 env store)]
-              ['sub (interp-sub e1 e2 env store)]
-              ['mult (interp-mult e1 e2 env store)]
-              ['div (interp-div e1 e2 env store)]
-              [else (error 'interp "Invalid CPrim2 operation")]
-              )]
+              [else (interp-binop op e1 e2 env store)])]
+      ;        ;;cmpops
+      ;;        ['eq (interp-eq e1 e2 env store)]
+      ;        ['notEq (interp-notEq e1 e2 env store)]
+      ;        ['lt (interp-lt e1 e2 env store)]
+      ;        ['lte (interp-lte e1 e2 env store)]
+      ;        ['gt (interp-gt e1 e2 env store)]
+      ;        ['gte (interp-gte e1 e2 env store)]
+      ;        ['is (interp-is e1 e2 env store)]
+      ;        ['isNot (interp-isNot e1 e2 env store)]
+      ;        ['in (interp-in e1 e2 env store)]
+      ;        ;;binops
+      ;        ['add (interp-add e1 e2 env store)]
+      ;        ['sub (interp-sub e1 e2 env store)]
+      ;        ['mult (interp-mult e1 e2 env store)]
+      ;        ['div (interp-div e1 e2 env store)]
+       ;       [else (error 'interp "Invalid CPrim2 operation")]
+       ;       )]
     [CIf (i t e)
          (type-case AnswerC (interp-env i env store)
            [ValueA (v s)

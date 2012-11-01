@@ -1,5 +1,5 @@
-7 tests succeeded.
-83 tests failed.
+5 tests succeeded.
+85 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-callable.py =
@@ -37,7 +37,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: False
+handle-op: case not implemented
 =====================================================
 = Results for bool-convert.py =
 =====================================================
@@ -2730,6 +2730,17 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
+= Results for lambda4.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+handle-op: case not implemented
+=====================================================
 = Results for locals-class.py =
 =====================================================
 === Expected stdout ===
@@ -4506,6 +4517,17 @@ PARSING: Haven't handled a case yet:
 
 === Actual stderr ===
 parse: error is described above.
+=====================================================
+= Results for test_comparisons.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+handle-op: case not implemented
 =====================================================
 = Results for test_div_zero.py =
 =====================================================

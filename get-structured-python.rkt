@@ -125,7 +125,7 @@ structure that you define in python-syntax.rkt
     
     ;; arithmetic
     [(hash-table ('type "Add"))
-     'add]
+     'python-add]
     [(hash-table ('type "Sub"))
      'sub]
     [(hash-table ('type "Mult"))

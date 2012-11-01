@@ -105,7 +105,9 @@
     [PyUnaryOp (op arg)
                (CPrim1 op (desugar arg))]
     [PyBinOp (op left right)
-             (CPrim2 op (desugar left) (desugar right))]
+             (if (equal? op 'python-add)
+                 (CApp (CId op) (list (desugar left) (desugar right)))
+                 (CPrim2 op (desugar left) (desugar right)))]
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
                    (CTrue)
