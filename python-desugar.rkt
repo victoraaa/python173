@@ -140,10 +140,13 @@
               (let ([global-vars (get-vars exprs)]) ;GET ALL OF THE ASSIGNMENTS IN THE GLOBAL SCOPE
                 (begin ;(checkGlobalScopes global-vars)  ;CHECKS IF WE DONT HAVE AN ERROR FROM USING global OR nonlocals IN THE GLOBAL SCOPE
                         ;WE NEED TO PUT THEM IN THE GLOBAL ENVIRONMENT AS WELL
+                  (display (get-ids global-vars))
                        (cascade-lets (get-ids global-vars) ;PUT THEM IN THE ENVIRONMENT AS LOCALS
                                      (make-item-list (Local) (length global-vars) (list)) 
                                      (make-item-list (CUnbound) (length global-vars) (list)) 
-                                     (desugar exprs))))] ;EXECUTE THE exprs (desugar exprs)
+                                     (desugar (PySeq (append 
+                                                      (list (PyApp (PyId 'create-global-env) (list)))
+                                                      (list exprs)))))))] ;EXECUTE THE exprs (desugar exprs)
                 
 
     
@@ -172,5 +175,20 @@
                                                       (list st)))
                               vars-list)))
 
+;; Implement this method when we have exceptions.
+;; I dont know if I should throw an exception or not. I probably should.
+;; This is going to go over the list and, if we have anything that is not a Local,
+;; we should throw the Exception.
+#|
+(define (checkGlobalScopeErrors [vars : (listof (ScopeType * symbol))]) : AnswerC
+  (foldl (lambda (list-el result) (local ([define-values (st id) e])
+                                    (if (Local? st)
+                                        (or result true)
+|# 
+
 ;(test (desugar (PyBoolop 'or (list (PyNum 0) (PyNum 1))))
 ;      (CBoolop 'or (CNum 0) (CNum 1)))
+
+
+
+
