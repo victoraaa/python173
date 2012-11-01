@@ -73,6 +73,11 @@ that calls the primitive `print`.
                              (CError (CStr "Add not supported for this type")))))
               (CError (CStr "Types do not match.")))))
 
+(define create-global-env
+  (CFunc (list)
+         (CGlobalEnv)))
+         
+
 (define true-val
   (CTrue))
 
@@ -91,6 +96,7 @@ that calls the primitive `print`.
         (bind '___assertNotEqual assert-notEqual-lambda)
         (bind '___assertIs assert-is-lambda)
         (bind 'python-add python-add)
+        (bind 'create-global-env create-global-env)
 
 ))
 

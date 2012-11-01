@@ -16,6 +16,22 @@
         (set-box! n (add1 (unbox n)))
         (unbox n)))))
 
+;;
+(define globalEnv
+  (hash (list)))
+   
+;;this should be called only once, at the beggining of the interpretation, 
+;;to copy the initial environment and create the global one
+(define (createGlobalEnv [env : Env]) : Env
+  (foldl (lambda (key newEnv) 
+           (type-case (optionof SLTuple) (hash-ref env key)
+             [none () (error 'createGlobalScope "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
+             [some (v) (local [(define-values (t l) v)]
+                         (augmentEnv key (values (Global) l) newEnv))]))
+         (hash (list))
+         (hash-keys env)))
+   
+   
 ;;newEnvScope returns an environment with the changes needed for a new scope.
 ;;It basically changes the local tags to nonlocal ones.
 (define (newEnvScope [env : Env]) : Env
@@ -28,7 +44,7 @@
                            [else (augmentEnv key (values t l) newEnv)]))]))
          (hash (list))
          (hash-keys env)))
-
+      
 ;;Adds a new identifier to our environment, with its location
 (define (augmentEnv [id : symbol]
                     [sltuple : SLTuple]
@@ -583,12 +599,13 @@
     
     ;;UNDER THIS, WE HAVE NON-TA CODE:
     [CPrim2 (op e1 e2)
+            (begin (display env)
             (case op
               ;;boolops
               ;; These short-circuit, and so need their own system...
               ['or (interp-or e1 e2 env store)]
               ['and (interp-and e1 e2 env store)]
-              [else (interp-binop op e1 e2 env store)])]
+              [else (interp-binop op e1 e2 env store)]))]
       ;        ;;cmpops
       ;;        ['eq (interp-eq e1 e2 env store)]
       ;        ['notEq (interp-notEq e1 e2 env store)]
@@ -616,6 +633,10 @@
     [CFalse () (ValueA (VFalse) store)] 
     [CPass () (ValueA (VNone) store)] ;; doing nothing. We need a case for that...
     [CUnbound () (ValueA (VUnbound) store)]
+    [CGlobalEnv () 
+                (begin
+                  (set! globalEnv (createGlobalEnv env))
+                  (ValueA (VNone) store))]
     [else (error 'interp (string-append "Haven't implemented a case yet:\n"
                                        (to-string expr)))]
     ))
