@@ -127,11 +127,11 @@ structure that you define in python-syntax.rkt
     [(hash-table ('type "Add"))
      'python-add]
     [(hash-table ('type "Sub"))
-     'sub]
+     'python-sub]
     [(hash-table ('type "Mult"))
-     'mult]
+     'python-mult]
     [(hash-table ('type "Div"))
-     'div]
+     'python-div]
     
     [(hash-table ('type "Or"))
      'or]
