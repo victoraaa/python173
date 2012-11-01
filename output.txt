@@ -1,5 +1,5 @@
-5 tests succeeded.
-85 tests failed.
+6 tests succeeded.
+84 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-callable.py =
@@ -2729,17 +2729,6 @@ PARSING: Haven't handled a case yet:
 
 === Actual stderr ===
 parse: error is described above.
-=====================================================
-= Results for lambda4.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-handle-op: case not implemented
 =====================================================
 = Results for locals-class.py =
 =====================================================

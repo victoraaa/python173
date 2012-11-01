@@ -61,6 +61,7 @@ that calls the primitive `print`.
          (CPass)
          )))
 
+;; handles addition
 (define python-add
   (CFunc (list 'e-1 'e-2)
          (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
@@ -70,8 +71,42 @@ that calls the primitive `print`.
                         (CPrim2 'num+ (CId 'e-1) (CId 'e-2))
                         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
                              (CPrim2 'string+ (CId 'e-1) (CId 'e-2))
-                             (CError (CStr "Add not supported for this type")))))
-              (CError (CStr "Types do not match.")))))
+                             (CError (CStr "+: Not supported for this type.")))))
+              (CError (CStr "+: Types do not match.")))))
+
+(define python-sub
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                   (CPrim2 'num- (CId 'e-1) (CId 'e-2))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+                        (CPrim2 'num- (CId 'e-1) (CId 'e-2))
+                        (CError (CStr "-: Not supported for this type."))))
+              (CError (CStr "-: Types do not match.")))))
+
+(define python-mult ;; eventaully, this has to work for strings and integers too...
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                   (CPrim2 'num* (CId 'e-1) (CId 'e-2))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+                        (CPrim2 'num* (CId 'e-1) (CId 'e-2))
+                        (CError (CStr "*: Not supported for this type."))))
+              (CError (CStr "*: Types do not match.")))))
+
+(define python-div
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                   (CIf (CPrim2 'eq (CId 'e-2) (CNum 0))
+                        (CError (CStr "/: Divide by zero"))
+                        (CPrim2 'num/ (CId 'e-1) (CId 'e-2)))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+                        (CIf (CPrim2 'eq (CId 'e-2) (CNum 0))
+                             (CError (CStr "/: Divide by zero"))
+                             (CPrim2 'num/ (CId 'e-1) (CId 'e-2)))
+                        (CError (CStr "/: Not supported for this type."))))
+              (CError (CStr "/: Types do not match.")))))
 
 (define create-global-env
   (CFunc (list)
@@ -96,6 +131,9 @@ that calls the primitive `print`.
         (bind '___assertNotEqual assert-notEqual-lambda)
         (bind '___assertIs assert-is-lambda)
         (bind 'python-add python-add)
+        (bind 'python-sub python-sub)
+        (bind 'python-mult python-mult)
+        (bind 'python-div python-div)
         (bind 'create-global-env create-global-env)
 
 ))

@@ -105,9 +105,7 @@
     [PyUnaryOp (op arg)
                (CPrim1 op (desugar arg))]
     [PyBinOp (op left right)
-             (if (equal? op 'python-add)
-                 (CApp (CId op) (list (desugar left) (desugar right)))
-                 (CPrim2 op (desugar left) (desugar right)))]
+             (CApp (CId op) (list (desugar left) (desugar right)))]
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
                    (CTrue)
@@ -138,15 +136,17 @@
            (CSet (desugar lhs) (desugar value))]
     [PyModule (exprs) 
               (let ([global-vars (get-vars exprs)]) ;GET ALL OF THE ASSIGNMENTS IN THE GLOBAL SCOPE
-                (begin ;(checkGlobalScopes global-vars)  ;CHECKS IF WE DONT HAVE AN ERROR FROM USING global OR nonlocals IN THE GLOBAL SCOPE
+               ; (begin ;(checkGlobalScopes global-vars)  ;CHECKS IF WE DONT HAVE AN ERROR FROM USING global OR nonlocals IN THE GLOBAL SCOPE
                         ;WE NEED TO PUT THEM IN THE GLOBAL ENVIRONMENT AS WELL
-                  (display (get-ids global-vars))
+                  ;(display (get-ids global-vars))
                        (cascade-lets (get-ids global-vars) ;PUT THEM IN THE ENVIRONMENT AS LOCALS
                                      (make-item-list (Local) (length global-vars) (list)) 
                                      (make-item-list (CUnbound) (length global-vars) (list)) 
                                      (desugar (PySeq (append 
                                                       (list (PyApp (PyId 'create-global-env) (list)))
-                                                      (list exprs)))))))] ;EXECUTE THE exprs (desugar exprs)
+                                                      (list exprs)))))
+                  ;     )
+                )] ;EXECUTE THE exprs (desugar exprs)
                 
 
     

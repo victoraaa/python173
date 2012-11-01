@@ -166,6 +166,8 @@
 ;; if we have regular exceptions, we will need to throw them higher up...
 ;; Need a "tagof" unary operator. Doesn't python have "type"?
 
+;; We need separate float and intger values. 
+
 ;; Also, this function should be in the "primitives" file. 
 (define (handle-op [op : symbol] [v1 : CVal] [v2 : CVal]) : CVal
   (case op
@@ -173,6 +175,9 @@
     ['notEq (if (equal? v1 v2) (VFalse) (VTrue))]
     ['num+ (VNum (+ (VNum-n v1) (VNum-n v2)))]
     ['string+ (VStr (string-append (VStr-s v1) (VStr-s v2)))]
+    ['num- (VNum (- (VNum-n v1) (VNum-n v2)))]
+    ['num* (VNum (* (VNum-n v1) (VNum-n v2)))]
+    ['num/ (VNum (/ (VNum-n v1) (VNum-n v2)))]
     ['lt (type-case CVal v1
             [VNum (n1) (type-case CVal v2
                          [VNum (n2) (if (< n1 n2) (VTrue) (VFalse))]
@@ -599,13 +604,15 @@
     
     ;;UNDER THIS, WE HAVE NON-TA CODE:
     [CPrim2 (op e1 e2)
-            (begin (display env)
+      ;      (begin (display env)
             (case op
               ;;boolops
               ;; These short-circuit, and so need their own system...
               ['or (interp-or e1 e2 env store)]
               ['and (interp-and e1 e2 env store)]
-              [else (interp-binop op e1 e2 env store)]))]
+              [else (interp-binop op e1 e2 env store)])
+           ; )
+            ]
       ;        ;;cmpops
       ;;        ['eq (interp-eq e1 e2 env store)]
       ;        ['notEq (interp-notEq e1 e2 env store)]

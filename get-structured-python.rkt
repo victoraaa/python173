@@ -132,6 +132,8 @@ structure that you define in python-syntax.rkt
      'python-mult]
     [(hash-table ('type "Div"))
      'python-div]
+ ;   [(hash-table ('type "Pow")) ;; this will need to be recursive. Wait to implement...
+ ;    'python-pow]
     
     [(hash-table ('type "Or"))
      'or]
