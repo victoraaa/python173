@@ -1,5 +1,5 @@
-12 tests succeeded.
-78 tests failed.
+11 tests succeeded.
+79 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-callable.py =
@@ -2683,6 +2683,17 @@ PARSING: Haven't handled a case yet:
 
 === Actual stderr ===
 parse: error is described above.
+=====================================================
+= Results for lambda3.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound indentifier error: global_x
 =====================================================
 = Results for locals-class.py =
 =====================================================

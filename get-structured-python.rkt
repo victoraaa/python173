@@ -120,6 +120,24 @@ structure that you define in python-syntax.rkt
               (get-structured-python left)
               (get-structured-python right))]
     
+    
+    ;; def
+    [(hash-table ('type "FunctionDef")
+                 ('name name)
+                 ('args args)
+                 ('body body)
+                 ('decorator_list decorator-list)
+                 ('returns returns))
+     (PyDef (get-structured-python name) 
+            (get-structured-python args)
+            (map get-structured-python body)
+            (get-structured-python returns))]
+    
+    ;; return case
+    [(hash-table ('type "Return")
+                 ('value value))
+     (PyReturn (get-structured-python value))]
+    
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     

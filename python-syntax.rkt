@@ -23,6 +23,9 @@
   [PyModule (program : PyExpr)]
   [PyGlobalEnv]
   
+  [PyDef (name : symbol) (args : (listof symbol)) (body : PyExpr) (returns : PyExpr)] ;; deffun
+  [PyReturn (value : PyExpr)] ;; return
+  
   [Py-NotExist] ;;THIS IS HERE ONLY SO THAT python-desugar won't complain about having completed all of the expressions
   )
 

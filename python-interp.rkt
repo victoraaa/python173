@@ -391,7 +391,7 @@
        [else (error 'interp "Not a closure")])]
     |#
 
-    [CFunc (args body) (ValueA (VClosure (newEnvScope env) args body) store)]
+    [CFunc (args body vlist) (ValueA (VClosure (newEnvScope env) args body) store)] ;; TODO use vlist...
 
     [CPrim1 (prim arg) (interp-unary prim arg env store)]
     

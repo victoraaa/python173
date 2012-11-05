@@ -78,7 +78,7 @@
     [PyModule (exprs)
               (get-vars exprs)]
     
-;;    [else (error 'desugar "Case not implemented")]
+    [else (error 'get-vars "Case not implemented")]
     ))
 
 
@@ -122,7 +122,7 @@
     
     [PyPass () (CPass)]
     [PyNone () (CNone)]
-    [PyLambda (args body) (CFunc args (desugar body))]
+    [PyLambda (args body) (CFunc args (desugar body) (list))]
     
     #|(FuncC args 
                               (let ([list-vars (get-vars body)])
@@ -147,6 +147,8 @@
                                      (desugar (PySeq (append 
                                                       (list (PyGlobalEnv))
                                                       (list exprs)))))))] ;EXECUTE THE exprs (desugar exprs)
+    
+  ;  [PyDef (name args body returns) (CSet name ())]
                 
 
     
