@@ -139,8 +139,8 @@
               (let ([global-vars (get-vars exprs)]) ;GET ALL OF THE ASSIGNMENTS IN THE GLOBAL SCOPE
                 (begin ;(checkGlobalScopes global-vars)  ;CHECKS IF WE DONT HAVE AN ERROR FROM USING global OR nonlocals IN THE GLOBAL SCOPE
                         ;WE NEED TO PUT THEM IN THE GLOBAL ENVIRONMENT AS WELL
-                       (cascade-lets (get-ids global-vars) ;PUT THEM IN THE ENVIRONMENT AS LOCALS
-                                     (make-item-list (Local) (length global-vars) (list)) 
+                       (cascade-lets (get-ids global-vars) ;PUT THEM IN THE ENVIRONMENT AS GLOBALS
+                                     (make-item-list (Global) (length global-vars) (list)) 
                                      (make-item-list (CUnbound) (length global-vars) (list)) 
                                      (desugar (PySeq (append 
                                                       (list (PyGlobalEnv))

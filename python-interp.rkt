@@ -17,7 +17,7 @@
         (set-box! n (add1 (unbox n)))
         (unbox n)))))
 
-;;
+;;this is the global variable with the global environment
 (define globalEnv
   (hash (list)))
    
