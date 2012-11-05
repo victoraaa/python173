@@ -39,9 +39,10 @@
            (type-case (optionof SLTuple) (hash-ref env key)
              [none () (error 'newEnvScope "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
              [some (v) (local [(define-values (t l) v)]
-                         (cond
-                           [(Local? t) (augmentEnv key (values (NonLocal) l) newEnv)]
-                           [else (augmentEnv key (values t l) newEnv)]))]))
+                         (type-case ScopeType t
+                           [Local () (augmentEnv key (values (NonLocal) l) newEnv)]
+                           [Global () newEnv]
+                           [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
          (hash (list))
          (hash-keys env)))
       

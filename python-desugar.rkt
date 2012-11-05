@@ -56,6 +56,7 @@
     [PyPass () (list)] ;; won't typecheck without this
     [PyNone () (list)]
     [PyLambda (args body) (list)]
+    
     [PyRaise (exc) (get-vars exc)]
     [Py-NotExist () (list)]
     [PyUnaryOp (op arg) (get-vars arg)]
@@ -122,6 +123,7 @@
     [PyPass () (CPass)]
     [PyNone () (CNone)]
     [PyLambda (args body) (CFunc args (desugar body))]
+    
     #|(FuncC args 
                               (let ([list-vars (get-vars body)])
                                 (cascade-lets list-vars
