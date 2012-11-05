@@ -18,7 +18,7 @@
         (set-box! n (add1 (unbox n)))
         (unbox n)))))
 
-;;
+;;this is the global variable with the global environment
 (define globalEnv
   (hash (list)))
    
@@ -32,8 +32,7 @@
                          (augmentEnv key (values (Global) l) newEnv))]))
          (hash (list))
          (hash-keys env)))
-   
-   
+
 ;;newEnvScope returns an environment with the changes needed for a new scope.
 ;;It basically changes the local tags to nonlocal ones.
 (define (newEnvScope [env : Env]) : Env
@@ -41,9 +40,10 @@
            (type-case (optionof SLTuple) (hash-ref env key)
              [none () (error 'newEnvScope "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
              [some (v) (local [(define-values (t l) v)]
-                         (cond
-                           [(Local? t) (augmentEnv key (values (NonLocal) l) newEnv)]
-                           [else (augmentEnv key (values t l) newEnv)]))]))
+                         (type-case ScopeType t
+                           [Local () (augmentEnv key (values (NonLocal) l) newEnv)]
+                           [Global () newEnv]
+                           [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
          (hash (list))
          (hash-keys env)))
       

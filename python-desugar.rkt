@@ -18,6 +18,7 @@
   (type-case PyExpr expr
     [PyNonlocal (id) (list (values (NonLocal) id))]
     [PyGlobal (id) (list (values (Global) id))]
+    [PyGlobalEnv () (list)]
     [PySeq (es) (foldl (lambda (a b) (append b a))
                        (list)
                        (map (lambda (e) (get-vars e)) es))]
@@ -55,6 +56,7 @@
     [PyPass () (list)] ;; won't typecheck without this
     [PyNone () (list)]
     [PyLambda (args body) (list)]
+    
     [PyRaise (exc) (get-vars exc)]
     [Py-NotExist () (list)]
     [PyUnaryOp (op arg) (get-vars arg)]
@@ -121,6 +123,7 @@
     [PyPass () (CPass)]
     [PyNone () (CNone)]
     [PyLambda (args body) (CFunc args (desugar body))]
+    
     #|(FuncC args 
                               (let ([list-vars (get-vars body)])
                                 (cascade-lets list-vars
@@ -133,19 +136,17 @@
                     (desugar (PySeq (map (lambda (e) (PySet e (PyId 'assign-value))) targets))))]
     [PySet (lhs value) 
            (CSet (desugar lhs) (desugar value))]
+    [PyGlobalEnv () (CGlobalEnv)]
     [PyModule (exprs) 
               (let ([global-vars (get-vars exprs)]) ;GET ALL OF THE ASSIGNMENTS IN THE GLOBAL SCOPE
-               ; (begin ;(checkGlobalScopes global-vars)  ;CHECKS IF WE DONT HAVE AN ERROR FROM USING global OR nonlocals IN THE GLOBAL SCOPE
+                (begin ;(checkGlobalScopes global-vars)  ;CHECKS IF WE DONT HAVE AN ERROR FROM USING global OR nonlocals IN THE GLOBAL SCOPE
                         ;WE NEED TO PUT THEM IN THE GLOBAL ENVIRONMENT AS WELL
-                  ;(display (get-ids global-vars))
-                       (cascade-lets (get-ids global-vars) ;PUT THEM IN THE ENVIRONMENT AS LOCALS
-                                     (make-item-list (Local) (length global-vars) (list)) 
+                       (cascade-lets (get-ids global-vars) ;PUT THEM IN THE ENVIRONMENT AS GLOBALS
+                                     (make-item-list (Global) (length global-vars) (list)) 
                                      (make-item-list (CUnbound) (length global-vars) (list)) 
                                      (desugar (PySeq (append 
-                                                      (list (PyApp (PyId 'create-global-env) (list)))
-                                                      (list exprs)))))
-                  ;     )
-                )] ;EXECUTE THE exprs (desugar exprs)
+                                                      (list (PyGlobalEnv))
+                                                      (list exprs)))))))] ;EXECUTE THE exprs (desugar exprs)
                 
 
     
