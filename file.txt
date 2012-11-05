@@ -1,3 +1,4 @@
 def f():
   global y
   y=1
+print(y)

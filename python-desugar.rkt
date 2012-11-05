@@ -27,7 +27,8 @@
                             (foldl (lambda (a b) (append b a))
                                    (list)
                                    (map (lambda (e) (get-vars e)) args)))]
-    [PyId (x) (list)]
+    [PyReturn (value) (list)]
+    [PyId (id) (list)]
     [PyStr (s) (list)]
     [PyBinOp (op left right)
              (append
@@ -56,6 +57,8 @@
     [PyPass () (list)] ;; won't typecheck without this
     [PyNone () (list)]
     [PyLambda (args body) (list)]
+    [PyDef (name args body)
+           (list (values (Local) name))]
     
     [PyRaise (exc) (get-vars exc)]
     [Py-NotExist () (list)]
@@ -78,7 +81,7 @@
     [PyModule (exprs)
               (get-vars exprs)]
     
-    [else (error 'get-vars "Case not implemented")]
+    ;[else (error 'get-vars "Case not implemented")]
     ))
 
 
@@ -100,6 +103,7 @@
                        (desugar (PySeq orelse)) 
                        (desugar (first orelse)))
                    (CPass)))]
+    [PyGlobal (ids) (CPass)]
     [PyBoolop (op exprs)
               (case op
                 ['or (foldl (lambda (expr result) (CPrim2 'or result (desugar expr))) (desugar (first exprs)) (rest exprs))]

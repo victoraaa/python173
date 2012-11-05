@@ -72,15 +72,7 @@ structure that you define in python-syntax.rkt
      (PyStr s)]
     [(hash-table ('type "Pass"))
      (PyPass)]
-    #|
-    [(hash-table ('type "FunctionDef")
-                 ('name name) ;identifier
-                 ('args args) ;arguments
-                 ('body body) ;stmt*
-                 ('decorator_list dec_list) ;expr* ;;ignoring
-                 ('returns returns)) ;expr? ;;ignoring
-     (Py
-    |#
+    
     
     
     [(hash-table ('type "Lambda")
@@ -128,9 +120,9 @@ structure that you define in python-syntax.rkt
                  ('body body)
                  ('decorator_list decorator-list)
                  ('returns returns))
-     (PyDef (get-structured-python name) 
+     (PyDef (string->symbol name) 
             (get-structured-python args)
-            (map get-structured-python body))]
+            (PySeq (map get-structured-python body)))]
     
     ;; return case
     [(hash-table ('type "Return")
@@ -141,7 +133,7 @@ structure that you define in python-syntax.rkt
     ;; global variable
     [(hash-table ('type "Global")
                  ('names names))
-     (PyGlobal (map get-structured-python names))]
+     (PyGlobal (map (lambda (name) (string->symbol name)) names))]
     
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
