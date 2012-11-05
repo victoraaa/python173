@@ -103,7 +103,7 @@
                 ['or (foldl (lambda (expr result) (CPrim2 'or result (desugar expr))) (desugar (first exprs)) (rest exprs))]
                 ['and (foldl (lambda (expr result) (CPrim2 'and result (desugar expr))) (desugar (first exprs)) (rest exprs))])]
     [PyUnaryOp (op arg)
-               (CPrim1 op (desugar arg))]
+               (CPrim1 op (desugar arg))] ;; TODO this needs to desugar to a function application
     [PyBinOp (op left right)
              (CApp (CId op) (list (desugar left) (desugar right)))]
     [PyCompare (left ops comparators)

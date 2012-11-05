@@ -159,11 +159,15 @@ structure that you define in python-syntax.rkt
      'python-in]
 
     
-    ;; Unary (kechpaja)
+    ;; Unary
     [(hash-table ('type "Not"))
      'not]
     [(hash-table ('type "USub"))
      'negative]
+    [(hash-table ('type "UAdd"))
+     'python-uadd]
+    [(hash-table ('type "Invert"))
+     'python-invert]
     
     
     

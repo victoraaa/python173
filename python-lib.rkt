@@ -68,39 +68,93 @@ that calls the primitive `print`.
          (CPass)
          )))
 
-;; handles addition
+
+;; math
 (define python-add
   (CFunc (list 'e-1 'e-2)
-         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
-              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
-                   (CPrim2 'num+ (CId 'e-1) (CId 'e-2))
-                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+         (CIf (CPrim2 'and
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "string")))
+              (CPrim2 'string+ (CId 'e-1) (CId 'e-2))
+              (CIf (CPrim2 'or
+                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float")))
+                   (CIf (CPrim2 'or
+                                (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                                (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "float")))
                         (CPrim2 'num+ (CId 'e-1) (CId 'e-2))
-                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
-                             (CPrim2 'string+ (CId 'e-1) (CId 'e-2))
-                             (CError (CStr "+: Not supported for this type.")))))
-              (CError (CStr "+: Types do not match.")))))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool"))
+                             (CPrim2 'num+ (CId 'e-1) (CPrim1 'to-int (CId 'e-2)))
+                             (CError (CStr "+: Cannot do math on this type!"))))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
+                        (CIf (CPrim2 'or
+                                     (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                                     (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "float")))
+                             (CPrim2 'num+ (CPrim1 'to-int (CId 'e-1)) (CId 'e-2))
+                             (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool"))
+                                  (CPrim2 'num+ (CPrim1 'to-int (CId 'e-1)) (CPrim1 'to-int (CId 'e-2)))
+                                  (CError (CStr "+: Cannot do math on this type!"))))
+                        (CError (CStr "+: Cannot do math on this type... Sorry!")))))))
+
+
+;; handles addition
+;(define python-add
+;  (CFunc (list 'e-1 'e-2)
+;         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
+;              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+;                   (CPrim2 'num+ (CId 'e-1) (CId 'e-2))
+;                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
+;                        (CPrim2 'num+ (CId 'e-1) (CId 'e-2))
+;                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+;                             (CPrim2 'string+ (CId 'e-1) (CId 'e-2))
+;                             (CError (CStr "+: Not supported for this type.")))))
+;              (CError (CStr "+: Types do not match.")))))
 
 (define python-sub
   (CFunc (list 'e-1 'e-2)
-         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
-              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+         (CIf (CPrim2 'or
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float")))
+              (CIf (CPrim2 'or
+                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "float")))
                    (CPrim2 'num- (CId 'e-1) (CId 'e-2))
-                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
-                        (CPrim2 'num- (CId 'e-1) (CId 'e-2))
-                        (CError (CStr "-: Not supported for this type."))))
-              (CError (CStr "-: Types do not match.")))))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool"))
+                        (CPrim2 'num- (CId 'e-1) (CPrim1 'to-int (CId 'e-2)))
+                        (CError (CStr "-: Cannot do math on this type!"))))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
+                   (CIf (CPrim2 'or
+                                (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                                (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "float")))
+                        (CPrim2 'num- (CPrim1 'to-int (CId 'e-1)) (CId 'e-2))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool"))
+                             (CPrim2 'num- (CPrim1 'to-int (CId 'e-1)) (CPrim1 'to-int (CId 'e-2)))
+                             (CError (CStr "-: Cannot do math on this type!"))))
+                   (CError (CStr "-: Cannot do math on this type... Sorry!"))))))
 
 (define python-mult ;; eventaully, this has to work for strings and integers too...
   (CFunc (list 'e-1 'e-2)
-         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
-              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+         (CIf (CPrim2 'or
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float")))
+              (CIf (CPrim2 'or
+                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "float")))
                    (CPrim2 'num* (CId 'e-1) (CId 'e-2))
-                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float"))
-                        (CPrim2 'num* (CId 'e-1) (CId 'e-2))
-                        (CError (CStr "*: Not supported for this type."))))
-              (CError (CStr "*: Types do not match.")))))
+                   (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool"))
+                        (CPrim2 'num* (CId 'e-1) (CPrim1 'to-int (CId 'e-2)))
+                        (CError (CStr "*: Cannot do math on this type!"))))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
+                   (CIf (CPrim2 'or
+                                (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                                (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "float")))
+                        (CPrim2 'num* (CPrim1 'to-int (CId 'e-1)) (CId 'e-2))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool"))
+                             (CPrim2 'num* (CPrim1 'to-int (CId 'e-1)) (CPrim1 'to-int (CId 'e-2)))
+                             (CError (CStr "*: Cannot do math on this type!"))))
+                   (CError (CStr "*: Cannot do math on this type... Sorry!"))))))
 
+;; Need to convert this function as well. 
 (define python-div
   (CFunc (list 'e-1 'e-2)
          (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CPrim1 'tagof (CId 'e-2)))
@@ -162,6 +216,28 @@ that calls the primitive `print`.
                              (CPrim2 'string-gte (CId 'e-1) (CId 'e-2))
                              (CError (CStr ">=: Not supported for this type.")))))
               (CError (CStr ">=: Types do not match.")))))
+
+(define python-uadd
+  (CFunc (list 'e-1)
+         (CIf (CPrim2 'or 
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int")) 
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float")))
+              (CId 'e-1)
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
+                   (CPrim1 'to-int (CId 'e-1))
+                   (CError (CStr "Unary +: Not supported for this type."))))))
+
+;; TODO: need invert, negate, and not cases. With typechecking. 
+
+
+(define python-invert
+  (CFunc (list 'e-1)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+              (CPrim1 'invert (CId 'e-1))
+              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
+                   (CPrim1 'invert (CPrim1 'to-int (CId 'e-1)))
+                   (CError (CStr "~: Cannot invert this type."))))))
+
 
 (define python-eq
   (CFunc (list 'e-1 'e-2)
@@ -246,6 +322,8 @@ that calls the primitive `print`.
         (bind 'str str)
         (bind 'float float)
         (bind 'int int)
+        (bind 'python-uadd python-uadd)
+        (bind 'python-invert python-invert)
         (bind 'True (CTrue)) ;; not entirely sure these should be here, but we're passing more tests now...
         (bind 'False (CFalse))
         (bind 'create-global-env create-global-env)

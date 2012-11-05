@@ -8,6 +8,7 @@
 (require (typed-in racket/base [string<=? : [string string -> boolean]]))
 (require (typed-in racket/base [string>=? : [string string -> boolean]]))
 (require (typed-in racket/base [string-length : [string -> number]]))
+(require (typed-in racket/base [bitwise-not : [number -> number]]))
 
 ;;Returns a new memory address to be used
 (define new-loc
@@ -187,58 +188,7 @@
     ['string-gt (if (string>? (VStr-s v1) (VStr-s v2)) (VTrue) (VFalse))]
     ['num-gte (if (>= (VNum-n v1) (VNum-n v2)) (VTrue) (VFalse))]
     ['string-gte (if (string>=? (VStr-s v1) (VStr-s v2)) (VTrue) (VFalse))]
-    
-  ;  ['lt (type-case CVal v1
-  ;          [VNum (n1) (type-case CVal v2
-  ;                       [VNum (n2) (if (< n1 n2) (VTrue) (VFalse))]
-  ;                       [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-  ;          [VStr (n1) (type-case CVal v2
-  ;                       [VStr (n2) (if (string<? n1 n2) (VTrue) (VFalse))]
-  ;                       [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-  ;          [else (error 'interp-lt "comparison not valid for arguments of this type")])]
-  ;  ['lte (type-case CVal v1
-  ;          [VNum (n1) (type-case CVal v2
-  ;                       [VNum (n2) (if (<= n1 n2) (VTrue) (VFalse))]
-  ;                       [else (error 'interp-lte "comparison not valid for arguments of different types")])]
-  ;          [VStr (n1) (type-case CVal v2
-  ;                       [VStr (n2) (if (string<=? n1 n2) (VTrue) (VFalse))]
-  ;                       [else (error 'interp-lte "comparison not valid for arguments of different types")])]
-  ;          [else (error 'interp-lte "comparison not valid for arguments of this type")])]
- ;   ['gt (type-case CVal v1
- ;           [VNum (n1) (type-case CVal v2
-  ;                       [VNum (n2) (if (> n1 n2) (VTrue) (VFalse))]
- ;                        [else (error 'interp-gt "comparison not valid for arguments of different types")])]
- ;           [VStr (n1) (type-case CVal v2
- ;                        [VStr (n2) (if (string>? n1 n2) (VTrue) (VFalse))]
-  ;                       [else (error 'interp-gt "comparison not valid for arguments of different types")])]
-  ;          [else (error 'interp-gt "comparison not valid for arguments of this type")])]
-  ;  ['gte (type-case CVal v1
-  ;          [VNum (n1) (type-case CVal v2
-  ;                       [VNum (n2) (if (>= n1 n2) (VTrue) (VFalse))]
-  ;                       [else (error 'interp-gte "comparison not valid for arguments of different types")])]
-   ;         [VStr (n1) (type-case CVal v2
-  ;                       [VStr (n2) (if (string>=? n1 n2) (VTrue) (VFalse))]
- ;                        [else (error 'interp-gte "comparison not valid for arguments of different types")])]
-;            [else (error 'interp-gte "comparison not valid for arguments of this type")])]
-    [else (error 'handle-op "case not implemented")]))
-
-
-      ;;        ['eq (interp-eq e1 e2 env store)]
-      ;        ['notEq (interp-notEq e1 e2 env store)]
-      ;        ['lt (interp-lt e1 e2 env store)]
-      ;        ['lte (interp-lte e1 e2 env store)]
-      ;        ['gt (interp-gt e1 e2 env store)]
-      ;        ['gte (interp-gte e1 e2 env store)]
-      ;        ['is (interp-is e1 e2 env store)]
-      ;        ['isNot (interp-isNot e1 e2 env store)]
-      ;        ['in (interp-in e1 e2 env store)]
-      ;        ;;binops
-      ;        ['add (interp-add e1 e2 env store)]
-      ;        ['sub (interp-sub e1 e2 env store)]
-      ;        ['mult (interp-mult e1 e2 env store)]
-      ;        ['div (interp-div e1 e2 env store)]
-       ;       [else (error 'interp "Invalid CPrim2 operation")]
-       ;       )]
+    [else (error op "handle-op: case not implemented")]))
 
 
 
@@ -264,111 +214,6 @@
                       (ValueA v s)
                       (interp-env e2 env s))]))
 
-;;eq returns true if both expressions evaluate to the same value
-;;it uses the equal? racket operator to compare the values
-(define (interp-eq [e1 : CExp]
-                   [e2 : CExp]
-                   [env : Env]
-                   [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env e1 env store)
-    [ValueA (v1 s1)
-      (type-case AnswerC (interp-env e2 env s1)
-        [ValueA (v2 s2)
-                (if (equal? v1 v2)
-                    (ValueA (VTrue) s2)
-                    (ValueA (VFalse) s2))])]))
-
-;;lt returns true if e1 and e2 are comparable and e1 is lesser than
-;;e2
-(define (interp-lt [e1 : CExp]
-                   [e2 : CExp]
-                   [env : Env]
-                   [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env e1 env store)
-    [ValueA (v1 s1)
-      (type-case AnswerC (interp-env e2 env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (if (< n1 n2)
-                                        (ValueA (VTrue) s2)
-                                        (ValueA (VFalse) s2))]
-                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [VStr (n1) (type-case CVal v2
-                         [VStr (n2) (if (string<? n1 n2)
-                                        (ValueA (VTrue) s2)
-                                        (ValueA (VFalse) s2))]
-                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [else (error 'interp-lt "comparison not valid for arguments of this type")])])]))
-    
-;;gt returns true if e1 and e2 are comparable and e1 is greater than
-;;e2
-(define (interp-gt [e1 : CExp]
-                   [e2 : CExp]
-                   [env : Env]
-                   [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env e1 env store)
-    [ValueA (v1 s1)
-      (type-case AnswerC (interp-env e2 env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (if (> n1 n2)
-                                        (ValueA (VTrue) s2)
-                                        (ValueA (VFalse) s2))]
-                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [VStr (n1) (type-case CVal v2
-                         [VStr (n2) (if (string>? n1 n2)
-                                        (ValueA (VTrue) s2)
-                                        (ValueA (VFalse) s2))]
-                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [else (error 'interp-gt "comparison not valid for arguments of this type")])])]))
-
-;;lte returns true if e1 and e2 are comparable and e1 is lesser than
-;; or equal to e2
-(define (interp-lte [e1 : CExp]
-                    [e2 : CExp]
-                    [env : Env]
-                    [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env e1 env store)
-    [ValueA (v1 s1)
-      (type-case AnswerC (interp-env e2 env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (if (<= n1 n2)
-                                        (ValueA (VTrue) s2)
-                                        (ValueA (VFalse) s2))]
-                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [VStr (n1) (type-case CVal v2
-                         [VStr (n2) (if (string<=? n1 n2)
-                                        (ValueA (VTrue) s2)
-                                        (ValueA (VFalse) s2))]
-                         [else (error 'interp-lte "comparison not valid for arguments of different types")])]
-            [else (error 'interp-lte "comparison not valid for arguments of this type")])])]))
-
-;;gte returns true if e1 and e2 are comparable and e1 is greater than
-;; or equal to e2
-(define (interp-gte [e1 : CExp]
-                    [e2 : CExp]
-                    [env : Env]
-                    [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env e1 env store)
-    [ValueA (v1 s1)
-      (type-case AnswerC (interp-env e2 env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (if (>= n1 n2)
-                                        (ValueA (VTrue) s2)
-                                        (ValueA (VFalse) s2))]
-                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [VStr (n1) (type-case CVal v2
-                         [VStr (n2) (if (string>=? n1 n2)
-                                        (ValueA (VTrue) s2)
-                                        (ValueA (VFalse) s2))]
-                         [else (error 'interp-lt "comparison not valid for arguments of different types")])]
-            [else (error 'interp-gte "comparison not valid for arguments of this type")])])]))
 
 ;;is returns true if e1 and e2 are the same object in python
 (define (interp-is [e1 : CExp]
@@ -414,41 +259,6 @@
             [else (error 'interp-isNot (string-append "comparison not valid for arguments of this type" 
                                                    (string-append (to-string v1) (to-string v2))))])])]))
 
-;;interp-notEq returns the opposite of interp-eq. It is a helper
-;;for interpreting the NotEq comparison operator
-(define (interp-notEq [e1 : CExp]
-                      [e2 : CExp]
-                      [env : Env]
-                      [store : Store]) : AnswerC
-  (type-case AnswerC (interp-eq e1 e2 env store)
-    [ValueA (v s)
-      (type-case CVal v
-        [VTrue () (ValueA (VFalse) s)]
-        [VFalse () (ValueA (VTrue) s)]
-        [else (error 'interp-notEq "interp-eq returned a non-boolean value")])]))
-
-
-;; interp-print
-(define (interp-print (arg : CExp) (env : Env) (store : Store)) : AnswerC
-  (type-case AnswerC (interp-env arg env store)
-    [ValueA (v s) (begin (display (pretty v))
-                         (ValueA v s))]))
-
-
-;; interp-not
-(define (interp-not (arg : CExp) (env : Env) (store : Store)) : AnswerC
-  (type-case AnswerC (interp-env arg env store)
-    [ValueA (v s) (if (isTruthy v)
-                      (ValueA (VFalse) s)
-                      (ValueA (VTrue) s))]))
-
-;; interp-negative
-(define (interp-negative (arg : CExp) (env : Env) (store : Store)) : AnswerC
-  (type-case AnswerC (interp-env arg env store)
-    [ValueA (v s) (type-case CVal v
-                    [VNum (n) (ValueA (VNum (- 0 n)) s)] ;; gotta be a better way...
-                    [else (error 'interp "Tried to negate a non-number")])]))
-
 
 ;; interp-in
 (define (interp-in (left : CExp) (right : CExp) (env : Env) (store : Store)) : AnswerC
@@ -464,67 +274,6 @@
                                        [else (error 'interp-in "\"in\" not valid for these (differing?) types")])]
                         [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])])]))
 
-;;interp-add
-(define (interp-add [left : CExp] 
-                    [right : CExp] 
-                    [env : Env] 
-                    [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env left env store)
-    [ValueA (v1 s1)
-      (type-case AnswerC (interp-env right env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (ValueA (VNum (+ n1 n2)) s2)]
-                         [else (error 'interp-add "Cannot add two different types")])]
-            [else (error 'interp-gte "Addition not valid for arguments of this type")])])]))
-
-;;interp-sub
-(define (interp-sub [left : CExp] 
-                    [right : CExp] 
-                    [env : Env] 
-                    [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env left env store)
-    [ValueA (v1 s1)
-      (type-case AnswerC (interp-env right env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (ValueA (VNum (- n1 n2)) s2)]
-                         [else (error 'interp-sub "Cannot subtract two different types")])]
-            [else (error 'interp-gte "Subtraction not valid for arguments of this type")])])]))
-
-;;interp-mult
-(define (interp-mult [left : CExp] 
-                    [right : CExp] 
-                    [env : Env] 
-                    [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env left env store)
-    [ValueA (v1 s1)
-      (type-case AnswerC (interp-env right env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (ValueA (VNum (* n1 n2)) s2)]
-                         [else (error 'interp-mult "Cannot multiply two different types")])]
-            [else (error 'interp-gte "Multiplication not valid for arguments of this type")])])]))
-
-;;interp-div
-(define (interp-div [left : CExp] 
-                    [right : CExp] 
-                    [env : Env] 
-                    [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env left env store)
-    [ValueA (v1 s1)
-      (type-case AnswerC (interp-env right env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (if (= n2 0)
-                                        (error 'divide-by-zero "Cannot divide by zero")
-                                        (ValueA (VNum (/ n1 n2)) s2))]
-                         [else (error 'interp-div "Cannot divide two different types")])]
-            [else (error 'interp-gte "Division not valid for arguments of this type")])])]))
 
 ;; isTruthy returns false if the CVal value is False to python
 ;; and true otherwise
@@ -543,46 +292,41 @@
     [else false]))
 
 
-;; This function implements the builtin "length" function for strings. 
-;; It will eventually be factored out into the library, I hope. 
-;; that is to say, this is the primitive.
-;; It should move to python-primitives. 
-;; It does perform type checking, but shouldn't have to eventually. 
-(define (interp-length [expr : CExp] [env : Env] [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env expr env store)
-    [ValueA (v s) (type-case CVal v
-                    [VStr (str) (ValueA (VNum (string-length str)) s)]
-                    [else (error 'interp-length "Should only be called on strings.")])]))
+;; handle unary operations - akin to handle-op
+(define (handle-unary [prim : symbol] [arg : CVal]) : CVal
+  (case prim
+    ['print (begin (display (pretty arg)) arg)]
+    ['not (if (isTruthy arg) (VFalse) (VTrue))]
+    ['negative (type-case CVal arg
+                    [VNum (n) (VNum (- 0 n))] ;; gotta be a better way...
+                    [else (error 'interp "Tried to negate a non-number")])] ;; TODO handle errors outside...
+    ['invert (type-case CVal arg
+               [VNum (n) (VNum (bitwise-not n))]
+               [else (error 'handle-unary "Tried to invert a non-number")])]
+    ['tagof (VStr (get-tag arg))]
+    ['length (type-case CVal arg
+               [VStr (str) (VNum (string-length str))]
+               [else (error 'interp-length "Should only be called on strings.")])]
+    ['to-bool (if (isTruthy arg) (VTrue) (VFalse))]
+    ['to-string (VStr (pretty arg))]
+    ['to-float (type-case CVal arg
+                 [VFalse () (VNum 0.0)]
+                 [VTrue () (VNum 1.0)]
+                 [VNum (n) (VNum n)]
+                 [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")] ;; TODO handle outside...
+                 [else (error 'interp-to-num "Should not be called on this type.")])]
+    ['to-int (type-case CVal arg
+               [VFalse () (VNum 0)]
+               [VTrue () (VNum 1)]
+               [VNum (n) (VNum n)]
+               [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
+               [else (error 'interp-to-num "Should not be called on this type.")])]
+    [else (error prim "handle-unary: Case not handled yet")]))
 
-;; same here. Just putting it here for the ego boost of passing tests. 
-(define (interp-to-bool [expr : CExp] [env : Env] [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env expr env store)
-    [ValueA (v s) (ValueA (if (isTruthy v) (VTrue) (VFalse)) s)]))
-
-;; and here
-(define (interp-to-string [expr : CExp] [env : Env] [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env expr env store)
-    [ValueA (v s) (ValueA (VStr (pretty v)) s)]))
-
-(define (interp-to-int [expr : CExp] [env : Env] [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env expr env store)
-    [ValueA (v s) 
-            (ValueA (type-case CVal v
-              [VFalse () (VNum 0)]
-              [VTrue () (VNum 1)]
-              [VNum (n) (VNum n)]
-              [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
-              [else (error 'interp-to-num "Should not be called on this type.")]) s)]))
-
-(define (interp-to-float [expr : CExp] [env : Env] [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env expr env store)
-    [ValueA (v s) 
-            (ValueA (type-case CVal v
-              [VFalse () (VNum 0.0)]
-              [VTrue () (VNum 1.0)]
-              [VNum (n) (VNum n)]
-              [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
-              [else (error 'interp-to-num "Should not be called on this type.")]) s)]))
+;; wrapper around unary operations
+(define (interp-unary [prim : symbol] [arg : CExp] [env : Env] [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env arg env store)
+    [ValueA (v s) (ValueA (handle-unary prim v) s)]))
 
 
 ;; interp-env
@@ -649,19 +393,7 @@
 
     [CFunc (args body) (ValueA (VClosure (newEnvScope env) args body) store)]
 
-    [CPrim1 (prim arg)
-            (case prim
-              ['print (interp-print arg env store)]
-              ['not (interp-not arg env store)]
-              ['negative (interp-negative arg env store)]
-              ['tagof (interp-tagof arg env store)]
-              ['length (interp-length arg env store)]
-              ['to-bool (interp-to-bool arg env store)]
-              ['to-string (interp-to-string arg env store)]
-              ['to-float (interp-to-float arg env store)]
-              ['to-int (interp-to-int arg env store)])]
-     
-     ;; (prim arg) (interp-prim1 prim (interp-env arg env store))]
+    [CPrim1 (prim arg) (interp-unary prim arg env store)]
     
     ;;UNDER THIS, WE HAVE NON-TA CODE:
     [CPrim2 (op e1 e2)

@@ -55,13 +55,11 @@ lookupEnv: Unbound indentifier error: isinstance
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "UAdd"))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+python-uadd: handle-unary: Case not handled yet
 =====================================================
 = Results for all.py =
 =====================================================
