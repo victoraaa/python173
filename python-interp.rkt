@@ -31,8 +31,7 @@
                          (augmentEnv key (values (Global) l) newEnv))]))
          (hash (list))
          (hash-keys env)))
-   
-   
+
 ;;newEnvScope returns an environment with the changes needed for a new scope.
 ;;It basically changes the local tags to nonlocal ones.
 (define (newEnvScope [env : Env]) : Env
