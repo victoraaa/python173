@@ -9,6 +9,7 @@
 (require (typed-in racket/base [string>=? : [string string -> boolean]]))
 (require (typed-in racket/base [string-length : [string -> number]]))
 (require (typed-in racket/base [bitwise-not : [number -> number]]))
+(require (typed-in racket/base [fixnum? : [number -> boolean]]))
 
 ;;Returns a new memory address to be used
 (define new-loc
@@ -33,9 +34,9 @@
          (hash (list))
          (hash-keys env)))
 
-;;newEnvScope returns an environment with the changes needed for a new scope.
-;;It basically changes the local tags to nonlocal ones.
-(define (newEnvScope [env : Env]) : Env
+;;keepOldEnv is a helper function that will keep all of the non-global variables of the older scope,
+;;remembering to change 'Local' variables into 'NonLocal' ones
+(define (keepOldEnv [env : Env]) : Env
   (foldl (lambda (key newEnv) 
            (type-case (optionof SLTuple) (hash-ref env key)
              [none () (error 'newEnvScope "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
@@ -46,6 +47,35 @@
                            [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
          (hash (list))
          (hash-keys env)))
+
+;;addGlobalVars will use the vlist (list of variables and ScopeTypes) to insert the variables declared 
+;;as Global in the environment
+(define (addGlobalVars [env : Env]
+                       [vlist : (listof (ScopeType * symbol))]) : Env
+  (cond
+    [(empty? vlist) env]
+    [else (local [(define-values (t id) (first vlist))]
+            (if (Global? t)
+                (if (fixnum? (lookupEnv id globalEnv))
+                    (addGlobalVars (augmentEnv id (values (Global) (lookupEnv id globalEnv)) env) 
+                                   (rest vlist))
+                    (let ([newLocation (new-loc)])
+                      (begin 
+                        (set! globalEnv (augmentEnv id
+                                                    (values (Global) newLocation)
+                                                    env))
+                        (addGlobalVars (augmentEnv id 
+                                                   (values (Global) newLocation) 
+                                                   env)
+                                       (rest vlist)))))
+                (addGlobalVars env (rest vlist))))]))
+
+;;newEnvScope returns an environment with the changes needed for a new scope.
+;;It basically changes the local tags to nonlocal ones.
+(define (newEnvScope [env : Env]
+                     [vlist : (listof (ScopeType * symbol))]) : Env
+  (addGlobalVars (keepOldEnv env) 
+                 vlist))
       
 ;;Adds a new identifier to our environment, with its location
 (define (augmentEnv [id : symbol]
@@ -391,7 +421,7 @@
        [else (error 'interp "Not a closure")])]
     |#
 
-    [CFunc (args body vlist) (ValueA (VClosure (newEnvScope env) args body) store)] ;; TODO use vlist...
+    [CFunc (args body vlist) (ValueA (VClosure (newEnvScope env vlist) args body) store)] ;; TODO use vlist...
 
     [CPrim1 (prim arg) (interp-unary prim arg env store)]
     

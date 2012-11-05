@@ -16,14 +16,14 @@
   [PyNone]
   [PyLambda (args : (listof symbol)) (body : PyExpr)]
   [PyRaise (exc : PyExpr)] ;(cause : PyExpr)]
-  [PyGlobal (id : symbol)]
+  [PyGlobal (ids : (listof symbol))]
   [PyNonlocal (id : symbol)]
   [PyAssign (targets : (listof PyExpr)) (value : PyExpr)]
   [PySet (lhs : PyExpr) (value : PyExpr)]
   [PyModule (program : PyExpr)]
   [PyGlobalEnv]
   
-  [PyDef (name : symbol) (args : (listof symbol)) (body : PyExpr) (returns : PyExpr)] ;; deffun
+  [PyDef (name : symbol) (args : (listof symbol)) (body : PyExpr)] ;; deffun
   [PyReturn (value : PyExpr)] ;; return
   
   [Py-NotExist] ;;THIS IS HERE ONLY SO THAT python-desugar won't complain about having completed all of the expressions

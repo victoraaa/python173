@@ -17,7 +17,7 @@
 (define (get-vars [expr : PyExpr]) : (listof (ScopeType * symbol))
   (type-case PyExpr expr
     [PyNonlocal (id) (list (values (NonLocal) id))]
-    [PyGlobal (id) (list (values (Global) id))]
+    [PyGlobal (ids) (map (lambda (id) (values (Global) id)) ids)]
     [PyGlobalEnv () (list)]
     [PySeq (es) (foldl (lambda (a b) (append b a))
                        (list)
@@ -148,7 +148,9 @@
                                                       (list (PyGlobalEnv))
                                                       (list exprs)))))))] ;EXECUTE THE exprs (desugar exprs)
     
-  ;  [PyDef (name args body returns) (CSet name ())]
+    [PyDef (name args body) (CLet name (Local) (CError (CStr "dummy function was called!"))
+                                  (CLet 'some-func (Local) (CFunc args (desugar body) (get-vars body))
+                                        (CSet (CId name) (CId 'some-func))))]
                 
 
     

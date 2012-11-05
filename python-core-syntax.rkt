@@ -24,6 +24,7 @@ ParselTongue.
   [CFalse]
   [CNone]
   [CPass]
+  [CReturn (value : CExp)]
   [CSet (id : CExp) (value : CExp)]
   
   ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.

@@ -130,13 +130,18 @@ structure that you define in python-syntax.rkt
                  ('returns returns))
      (PyDef (get-structured-python name) 
             (get-structured-python args)
-            (map get-structured-python body)
-            (get-structured-python returns))]
+            (map get-structured-python body))]
     
     ;; return case
     [(hash-table ('type "Return")
                  ('value value))
      (PyReturn (get-structured-python value))]
+    
+    
+    ;; global variable
+    [(hash-table ('type "Global")
+                 ('names names))
+     (PyGlobal (map get-structured-python names))]
     
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
