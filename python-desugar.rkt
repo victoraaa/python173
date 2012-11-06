@@ -54,7 +54,7 @@
                 (foldl (lambda (a b) (append b a))
                                    (list)
                                    (map (lambda (e) (get-vars e)) comparators)))]
-    [PyPass () (list)] ;; won't typecheck without this
+    [PyPass () (list)]
     [PyNone () (list)]
     [PyLambda (args body) (list)]
     [PyDef (name args body)
@@ -129,12 +129,6 @@
     [PyNone () (CNone)]
     [PyLambda (args body) (CFunc args (desugar body) (list))]
     
-    #|(FuncC args 
-                              (let ([list-vars (get-vars body)])
-                                (cascade-lets list-vars
-                                              (list-undefinedC (length list-vars))
-                                              (desugar body))))]
-|#
     [PyRaise (exc) (CError (desugar exc))]
     [PyAssign (targets value) 
               (CLet 'assign-value (Local) (desugar value)
@@ -188,11 +182,9 @@
                                                       (list st)))
                               vars-list)))
 
-;; Implement this method when we have exceptions.
-;; I dont know if I should throw an exception or not. I probably should.
-;; This is going to go over the list of global variable declarations and, if we have anything that is not a Local,
-;; should return 'true'
 
+;; hasGlobalScopeErrors checks the declarations in the global environment.
+;; If we have something that is not a 'Local', we return true ('we have an error').
 (define (hasGlobalScopeErrors [vars : (listof (ScopeType * symbol))]) : boolean
   (not (foldl (lambda (list-el result) (and list-el result))
               true
@@ -203,7 +195,3 @@
 
 ;(test (desugar (PyBoolop 'or (list (PyNum 0) (PyNum 1))))
 ;      (CBoolop 'or (CNum 0) (CNum 1)))
-
-
-
-

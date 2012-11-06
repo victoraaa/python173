@@ -231,17 +231,21 @@
                                closEnv
                                store)]
     [else 
-        (let ([newLocation (new-loc)])
+        ;(let ([newLocation (new-loc)])
           (interp-CApp body
                        env
-                       (augmentEnv (first argsIds)
-                                   (values (Local) newLocation)  ;;GOTTA CHANGE THIS AUGMENTENV FOR THE METHOD THAT CREATES THE NEW SCOPE
-                                   closEnv)
-                       (augmentStore newLocation
+                       closEnv
+                       ;(augmentEnv (first argsIds)
+                       ;            (values (Local) newLocation)  ;;GOTTA CHANGE THIS AUGMENTENV FOR THE METHOD THAT CREATES THE NEW SCOPE
+                       ;            closEnv)
+                       ;(augmentStore newLocation
+                       ;              (first args)
+                       ;              store)
+                       (augmentStore (lookupEnv (first argsIds) closEnv)
                                      (first args)
                                      store)
                        (rest argsIds)
-                       (rest args)))]))
+                       (rest args))]))
 
 
 ;; tagof wrapper
@@ -458,7 +462,6 @@
          (ValueA (lookupStore (lookupVar x env) store) store)]
 
     [CLet (id scopeType bind body)
-      ;(interp-env body (hash-set env id (interp-env bind env)))]
       (type-case AnswerC (interp-env bind env store)
         [ValueA (v s)
                 (let ([newLocation (new-loc)])
