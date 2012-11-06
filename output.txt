@@ -1,158 +1,55 @@
-11 tests succeeded.
-79 tests failed.
+
+C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
+4 tests succeeded.
+18 tests failed.
 == Output of failed tests ==
 =====================================================
-= Results for bool-callable.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: callable
-=====================================================
-= Results for bool-compare-list-dict.py =
+= Results for bound-and-free.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts . (#hasheq((n . 1) (type . "Num")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for bool-convert.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-interp-AppC: Application failed with arity mismatch
-=====================================================
-= Results for bool-isinstance.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: isinstance
-=====================================================
-= Results for bool-math.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-python-uadd: handle-unary: Case not handled yet
-=====================================================
-= Results for all.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
+#hasheq((body
          .
-         (#hasheq((n . 2) (type . "Num"))
-          #hasheq((n . 4) (type . "Num"))
-          #hasheq((n . 6) (type . "Num")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for any.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
-         .
-         (#hasheq((id . "None")
-                  (type . "Name")
-                  (ctx . #hasheq((type . "Load"))))
-          #hasheq((id . "None")
-                  (type . "Name")
-                  (ctx . #hasheq((type . "Load"))))
-          #hasheq((id . "None")
-                  (type . "Name")
-                  (ctx . #hasheq((type . "Load")))))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for callable.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for filter.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
-         .
-         (#hasheq((n . 1) (type . "Num"))
-          #hasheq((s . "hello") (type . "Str"))
-          #hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
-          #hasheq((type . "List")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts . (#hasheq((n . 3) (type . "Num")))))
-          #hasheq((s . "") (type . "Str"))
-          #hasheq((id . "None")
-                  (type . "Name")
-                  (ctx . #hasheq((type . "Load"))))
-          #hasheq((n . 9) (type . "Num"))
-          #hasheq((n . 0) (type . "Num")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for isinstance.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((body . (#hasheq((type . "Pass"))))
+         (#hasheq((args
+                   .
+                   #hasheq((args
+                            .
+                            (#hasheq((arg . "self")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (type . "arguments")
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
+                  (body
+                   .
+                   (#hasheq((value
+                             .
+                             #hasheq((id . "x")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load")))))
+                            (type . "Return"))))
+                  (name . "m")
+                  (type . "FunctionDef")
+                  (returns . #\nul)
+                  (decorator_list . ()))
+          #hasheq((targets
+                   .
+                   (#hasheq((id . "a")
+                            (type . "Name")
+                            (ctx . #hasheq((type . "Store"))))))
+                  (value
+                   .
+                   #hasheq((id . "x")
+                           (type . "Name")
+                           (ctx . #hasheq((type . "Load")))))
+                  (type . "Assign"))))
         (name . "C")
         (type . "ClassDef")
         (decorator_list . ())
@@ -166,1149 +63,326 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for len.py =
+= Results for extra-nesting.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple") (ctx . #hasheq((type . "Load"))) (elts . ()))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+desugar: Haven't desugared a case yet:
+(PyReturn (PyBinOp 'python-add (PyId 'x) (PyId 'y)))
 =====================================================
-= Results for dict-bool.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-clear.py =
+= Results for freevar-in-method.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((values
+#hasheq((body
          .
-         (#hasheq((n . 1) (type . "Num"))
-          #hasheq((n . 2) (type . "Num"))
-          #hasheq((n . 3) (type . "Num"))))
-        (type . "Dict")
-        (keys
-         .
-         (#hasheq((n . 1) (type . "Num"))
-          #hasheq((n . 2) (type . "Num"))
-          #hasheq((n . 3) (type . "Num")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-contains.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-get.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-getitem.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values
-         .
-         (#hasheq((n . 1) (type . "Num")) #hasheq((n . 2) (type . "Num"))))
-        (type . "Dict")
-        (keys
-         .
-         (#hasheq((s . "a") (type . "Str"))
-          #hasheq((s . "b") (type . "Str")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-items.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-keys.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-set-keys.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((attr . "keys")
-        (value
-         .
-         #hasheq((values
-                  .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))
-                 (type . "Dict")
-                 (keys
-                  .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-update.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-values-set.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((attr . "items")
-        (value
-         .
-         #hasheq((values
-                  .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))
-                 (type . "Dict")
-                 (keys
-                  .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-values.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for except-reraise.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"reraise"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for invalid-reraise.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((orelse
-         .
-         (#hasheq((value
+         (#hasheq((args
                    .
                    #hasheq((args
                             .
-                            (#hasheq((s . "No exception raised")
-                                     (type . "Str"))))
-                           (type . "Call")
-                           (keywords . ())
-                           (kwargs . #\nul)
-                           (starargs . #\nul)
-                           (func
+                            (#hasheq((arg . "self")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (type . "arguments")
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
+                  (body
+                   .
+                   (#hasheq((value . #hasheq((s . "method") (type . "Str")))
+                            (type . "Return"))))
+                  (name . "method_and_var")
+                  (type . "FunctionDef")
+                  (returns . #\nul)
+                  (decorator_list . ()))
+          #hasheq((args
+                   .
+                   #hasheq((args
                             .
-                            #hasheq((id . "___fail")
-                                    (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))))
-        (body . (#hasheq((exc . #\nul) (type . "Raise") (cause . #\nul))))
-        (type . "TryExcept")
-        (handlers
-         .
-         (#hasheq((body
+                            (#hasheq((arg . "self")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (type . "arguments")
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
+                  (body
+                   .
+                   (#hasheq((value
+                             .
+                             #hasheq((id . "method_and_var")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load")))))
+                            (type . "Return"))))
+                  (name . "test")
+                  (type . "FunctionDef")
+                  (returns . #\nul)
+                  (decorator_list . ()))
+          #hasheq((args
+                   .
+                   #hasheq((args
+                            .
+                            (#hasheq((arg . "self")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (type . "arguments")
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
+                  (body
                    .
                    (#hasheq((value
                              .
                              #hasheq((args
                                       .
-                                      (#hasheq((s . "No active exception")
-                                               (type . "Str"))
-                                       #hasheq((args
-                                                .
-                                                (#hasheq((id . "e")
-                                                         (type . "Name")
-                                                         (ctx
-                                                          .
-                                                          #hasheq((type
-                                                                   .
-                                                                   "Load"))))))
-                                               (type . "Call")
-                                               (keywords . ())
-                                               (kwargs . #\nul)
-                                               (starargs . #\nul)
-                                               (func
-                                                .
-                                                #hasheq((id . "str")
-                                                        (type . "Name")
-                                                        (ctx
-                                                         .
-                                                         #hasheq((type
-                                                                  .
-                                                                  "Load"))))))))
+                                      (#hasheq((s . "global") (type . "Str"))))
                                      (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
                                      (func
                                       .
-                                      #hasheq((id . "___assertIn")
+                                      #hasheq((id . "str")
                                               (type . "Name")
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))))
-                            (type . "Expr"))))
-                  (name . "e")
-                  (type . "ExceptHandler")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for nested-else.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((body
-         .
-         (#hasheq((orelse
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_else")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (body
-                   .
-                   (#hasheq((orelse
-                             .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_inner_else")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
-                                      (value
-                                       .
-                                       #hasheq((id . "True")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (body . (#hasheq((type . "Pass"))))
-                            (type . "TryExcept")
-                            (handlers
-                             .
-                             (#hasheq((body
-                                       .
-                                       (#hasheq((targets
-                                                 .
-                                                 (#hasheq((id
-                                                           .
-                                                           "hit_inner_except")
-                                                          (type . "Name")
-                                                          (ctx
-                                                           .
-                                                           #hasheq((type
-                                                                    .
-                                                                    "Store"))))))
-                                                (value
-                                                 .
-                                                 #hasheq((id . "True")
-                                                         (type . "Name")
-                                                         (ctx
-                                                          .
-                                                          #hasheq((type
-                                                                   .
-                                                                   "Load")))))
-                                                (type . "Assign"))))
-                                      (name . #\nul)
-                                      (type . "ExceptHandler")))))
-                    #hasheq((exc
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((s . "outer exception")
-                                               (type . "Str"))))
-                                     (type . "Call")
-                                     (keywords . ())
-                                     (kwargs . #\nul)
-                                     (starargs . #\nul)
-                                     (func
-                                      .
-                                      #hasheq((id . "Exception")
-                                              (type . "Name")
-                                              (ctx
-                                               .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Raise")
-                            (cause . #\nul))))
-                  (type . "TryExcept")
-                  (handlers
-                   .
-                   (#hasheq((body
-                             .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
-                                      (value
-                                       .
-                                       #hasheq((id . "True")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
-        (finalbody
-         .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value
-                   .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for nested-reraise.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"nested_reraise"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for nested.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((body
-         .
-         (#hasheq((body
-                   .
-                   (#hasheq((orelse . ())
-                            (body
-                             .
-                             (#hasheq((exc
-                                       .
-                                       #hasheq((args
-                                                .
-                                                (#hasheq((s
-                                                          .
-                                                          "inner exception")
-                                                         (type . "Str"))))
-                                               (type . "Call")
-                                               (keywords . ())
-                                               (kwargs . #\nul)
-                                               (starargs . #\nul)
-                                               (func
-                                                .
-                                                #hasheq((id . "Exception")
-                                                        (type . "Name")
-                                                        (ctx
-                                                         .
-                                                         #hasheq((type
-                                                                  .
-                                                                  "Load")))))))
-                                      (type . "Raise")
-                                      (cause . #\nul))))
-                            (type . "TryExcept")
-                            (handlers
-                             .
-                             (#hasheq((body
-                                       .
-                                       (#hasheq((targets
-                                                 .
-                                                 (#hasheq((id
-                                                           .
-                                                           "hit_inner_except")
-                                                          (type . "Name")
-                                                          (ctx
-                                                           .
-                                                           #hasheq((type
-                                                                    .
-                                                                    "Store"))))))
-                                                (value
-                                                 .
-                                                 #hasheq((id . "True")
-                                                         (type . "Name")
-                                                         (ctx
-                                                          .
-                                                          #hasheq((type
-                                                                   .
-                                                                   "Load")))))
-                                                (type . "Assign"))))
-                                      (name . #\nul)
-                                      (type . "ExceptHandler")))))))
-                  (type . "TryFinally")
-                  (finalbody
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_inner_finally")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign")))))))
-        (type . "TryFinally")
-        (finalbody
-         .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value
-                   .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for reraise.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((orelse
-         .
-         (#hasheq((value
+                            (type . "Return"))))
+                  (name . "actual_global")
+                  (type . "FunctionDef")
+                  (returns . #\nul)
+                  (decorator_list . ()))
+          #hasheq((args
                    .
                    #hasheq((args
                             .
-                            (#hasheq((s . "No exception raised")
-                                     (type . "Str"))))
-                           (type . "Call")
-                           (keywords . ())
-                           (kwargs . #\nul)
-                           (starargs . #\nul)
-                           (func
-                            .
-                            #hasheq((id . "___fail")
-                                    (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))))
-        (body
-         .
-         (#hasheq((orelse . ())
+                            (#hasheq((arg . "self")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (type . "arguments")
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
                   (body
-                   .
-                   (#hasheq((exc
-                             .
-                             #hasheq((args . ())
-                                     (type . "Call")
-                                     (keywords . ())
-                                     (kwargs . #\nul)
-                                     (starargs . #\nul)
-                                     (func
-                                      .
-                                      #hasheq((id . "IndexError")
-                                              (type . "Name")
-                                              (ctx
-                                               .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Raise")
-                            (cause . #\nul))))
-                  (type . "TryExcept")
-                  (handlers
-                   .
-                   (#hasheq((body
-                             .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "exc1")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
-                                      (value
-                                       .
-                                       #hasheq((id . "e")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Assign"))
-                              #hasheq((exc . #\nul)
-                                      (type . "Raise")
-                                      (cause . #\nul))))
-                            (name . "e")
-                            (type . "ExceptHandler")))))))
-        (type . "TryExcept")
-        (handlers
-         .
-         (#hasheq((body
                    .
                    (#hasheq((value
                              .
                              #hasheq((args
                                       .
-                                      (#hasheq((left
+                                      (#hasheq((id . "self")
+                                               (type . "Name")
+                                               (ctx
                                                 .
-                                                #hasheq((id . "exc1")
-                                                        (type . "Name")
-                                                        (ctx
-                                                         .
-                                                         #hasheq((type
-                                                                  .
-                                                                  "Load")))))
-                                               (ops . (#hasheq((type . "Is"))))
-                                               (comparators
-                                                .
-                                                (#hasheq((id . "exc2")
-                                                         (type . "Name")
-                                                         (ctx
-                                                          .
-                                                          #hasheq((type
-                                                                   .
-                                                                   "Load"))))))
-                                               (type . "Compare"))))
+                                                #hasheq((type . "Load"))))))
                                      (type . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
                                      (func
                                       .
-                                      #hasheq((id . "___assertTrue")
+                                      #hasheq((id . "str")
                                               (type . "Name")
                                               (ctx
                                                .
                                                #hasheq((type . "Load")))))))
-                            (type . "Expr"))))
-                  (name . "exc2")
-                  (type . "ExceptHandler")))))
+                            (type . "Return"))))
+                  (name . "str")
+                  (type . "FunctionDef")
+                  (returns . #\nul)
+                  (decorator_list . ()))))
+        (name . "Test")
+        (type . "ClassDef")
+        (decorator_list . ())
+        (keywords . ())
+        (kwargs . #\nul)
+        (starargs . #\nul)
+        (bases . ()))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for test-finally-reraise.py =
+= Results for locals-class.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-"reraise"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for test-try-except-else.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((orelse
+#hasheq((body
          .
          (#hasheq((targets
                    .
-                   (#hasheq((id . "hit_else")
+                   (#hasheq((id . "x")
                             (type . "Name")
                             (ctx . #hasheq((type . "Store"))))))
-                  (value
+                  (value . #hasheq((n . 12) (type . "Num")))
+                  (type . "Assign"))
+          #hasheq((args
                    .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign"))))
-        (body
-         .
-         (#hasheq((exc
+                   #hasheq((args
+                            .
+                            (#hasheq((arg . "self")
+                                     (type . "arg")
+                                     (annotation . #\nul))))
+                           (type . "arguments")
+                           (vararg . #\nul)
+                           (varargannotation . #\nul)
+                           (kwonlyargs . ())
+                           (kwarg . #\nul)
+                           (kwargannotation . #\nul)
+                           (defaults . ())
+                           (kw_defaults . ())))
+                  (body
                    .
-                   #hasheq((args . (#hasheq((s . "foo!") (type . "Str"))))
+                   (#hasheq((value
+                             .
+                             #hasheq((id . "x")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load")))))
+                            (type . "Return"))))
+                  (name . "m")
+                  (type . "FunctionDef")
+                  (returns . #\nul)
+                  (decorator_list . ()))
+          #hasheq((value
+                   .
+                   #hasheq((args . ())
                            (type . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
                            (func
                             .
-                            #hasheq((id . "Exception")
+                            #hasheq((id . "locals")
                                     (type . "Name")
                                     (ctx . #hasheq((type . "Load")))))))
-                  (type . "Raise")
-                  (cause . #\nul))))
-        (type . "TryExcept")
-        (handlers
-         .
-         (#hasheq((body
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_except")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (name . #\nul)
-                  (type . "ExceptHandler")))))
+                  (type . "Expr"))))
+        (name . "C")
+        (type . "ClassDef")
+        (decorator_list . ())
+        (keywords . ())
+        (kwargs . #\nul)
+        (starargs . #\nul)
+        (bases . ()))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for test-try-except-no-exception.py =
+= Results for locals-function.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((orelse . ())
-        (body . (#hasheq((type . "Pass"))))
-        (type . "TryExcept")
-        (handlers
+#hasheq((op . #hasheq((type . "Add")))
+        (value . #hasheq((n . 3) (type . "Num")))
+        (type . "AugAssign")
+        (target
          .
-         (#hasheq((body
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_except")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (name . #\nul)
-                  (type . "ExceptHandler")))))
+         #hasheq((id . "y")
+                 (type . "Name")
+                 (ctx . #hasheq((type . "Store"))))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for test-try-except.py =
+= Results for mixed-freevars-and-cellvars.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+desugar: Haven't desugared a case yet:
+(PyReturn (PyId 'x))
+=====================================================
+= Results for nearest-enclosing-scope.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+desugar: Haven't desugared a case yet:
+(PyReturn (PyBinOp 'python-add (PyId 'x) (PyId 'z)))
+=====================================================
+= Results for nested-nonlocal.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((orelse . ())
-        (body
+#hasheq((op . #hasheq((type . "Sub")))
+        (value . #hasheq((n . 2) (type . "Num")))
+        (type . "AugAssign")
+        (target
          .
-         (#hasheq((exc
-                   .
-                   #hasheq((args . (#hasheq((s . "ahoy!") (type . "Str"))))
-                           (type . "Call")
-                           (keywords . ())
-                           (kwargs . #\nul)
-                           (starargs . #\nul)
-                           (func
-                            .
-                            #hasheq((id . "Exception")
-                                    (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Raise")
-                  (cause . #\nul))))
-        (type . "TryExcept")
-        (handlers
-         .
-         (#hasheq((body
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_except")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (name . #\nul)
-                  (type . "ExceptHandler")))))
+         #hasheq((id . "x")
+                 (type . "Name")
+                 (ctx . #hasheq((type . "Store"))))))
 
 === Expected stderr ===
 
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for try-except-else-finally-no-exception.py =
+= Results for nesting-global-no-free.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((body
-         .
-         (#hasheq((orelse
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_else")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (body . (#hasheq((type . "Pass"))))
-                  (type . "TryExcept")
-                  (handlers
-                   .
-                   (#hasheq((body
-                             .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
-                                      (value
-                                       .
-                                       #hasheq((id . "True")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
-        (finalbody
-         .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value
-                   .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+desugar: Haven't desugared a case yet:
+(PyReturn (PyBinOp 'python-add (PyId 'global_x) (PyId 'y)))
 =====================================================
-= Results for try-except-else-finally.py =
+= Results for nesting-plus-free-ref-to-global.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((body
-         .
-         (#hasheq((orelse
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_else")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (body
-                   .
-                   (#hasheq((exc
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((s . "nyaa!") (type . "Str"))))
-                                     (type . "Call")
-                                     (keywords . ())
-                                     (kwargs . #\nul)
-                                     (starargs . #\nul)
-                                     (func
-                                      .
-                                      #hasheq((id . "Exception")
-                                              (type . "Name")
-                                              (ctx
-                                               .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Raise")
-                            (cause . #\nul))))
-                  (type . "TryExcept")
-                  (handlers
-                   .
-                   (#hasheq((body
-                             .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
-                                      (value
-                                       .
-                                       #hasheq((id . "True")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
-        (finalbody
-         .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value
-                   .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+desugar: Haven't desugared a case yet:
+(PyReturn (PyBinOp 'python-add (PyId 'global_nest_x) (PyId 'y)))
 =====================================================
-= Results for try-except-else-no-exception.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((orelse
-         .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_else")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value
-                   .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign"))))
-        (body . (#hasheq((type . "Pass"))))
-        (type . "TryExcept")
-        (handlers
-         .
-         (#hasheq((body
-                   .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "hit_except")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "True")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))))
-                  (name . #\nul)
-                  (type . "ExceptHandler")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for try-except-finally-no-exception.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((body
-         .
-         (#hasheq((orelse . ())
-                  (body . (#hasheq((type . "Pass"))))
-                  (type . "TryExcept")
-                  (handlers
-                   .
-                   (#hasheq((body
-                             .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
-                                      (value
-                                       .
-                                       #hasheq((id . "True")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
-        (finalbody
-         .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value
-                   .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for try-except-finally.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((body
-         .
-         (#hasheq((orelse . ())
-                  (body
-                   .
-                   (#hasheq((exc
-                             .
-                             #hasheq((args
-                                      .
-                                      (#hasheq((s . "yarr!") (type . "Str"))))
-                                     (type . "Call")
-                                     (keywords . ())
-                                     (kwargs . #\nul)
-                                     (starargs . #\nul)
-                                     (func
-                                      .
-                                      #hasheq((id . "Exception")
-                                              (type . "Name")
-                                              (ctx
-                                               .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Raise")
-                            (cause . #\nul))))
-                  (type . "TryExcept")
-                  (handlers
-                   .
-                   (#hasheq((body
-                             .
-                             (#hasheq((targets
-                                       .
-                                       (#hasheq((id . "hit_except")
-                                                (type . "Name")
-                                                (ctx
-                                                 .
-                                                 #hasheq((type . "Store"))))))
-                                      (value
-                                       .
-                                       #hasheq((id . "True")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Assign"))))
-                            (name . #\nul)
-                            (type . "ExceptHandler")))))))
-        (type . "TryFinally")
-        (finalbody
-         .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value
-                   .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for try-finally-no-exception.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((body . (#hasheq((type . "Pass"))))
-        (type . "TryFinally")
-        (finalbody
-         .
-         (#hasheq((targets
-                   .
-                   (#hasheq((id . "hit_finally")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value
-                   .
-                   #hasheq((id . "True")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for iter-classes.py =
+= Results for nesting-through-class.py =
 =====================================================
 === Expected stdout ===
 
@@ -1323,7 +397,7 @@ PARSING: Haven't handled a case yet:
                             (#hasheq((arg . "self")
                                      (type . "arg")
                                      (annotation . #\nul))
-                             #hasheq((arg . "n")
+                             #hasheq((arg . "y")
                                      (type . "arg")
                                      (annotation . #\nul))))
                            (type . "arguments")
@@ -1336,42 +410,59 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((targets
+                   (#hasheq((value
                              .
-                             (#hasheq((attr . "n")
-                                      (value
-                                       .
-                                       #hasheq((id . "self")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Attribute")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "n")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))
-                    #hasheq((targets
-                             .
-                             (#hasheq((attr . "i")
-                                      (value
-                                       .
-                                       #hasheq((id . "self")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Attribute")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value . #hasheq((n . 0) (type . "Num")))
-                            (type . "Assign"))))
-                  (name . "__init__")
+                             #hasheq((op . #hasheq((type . "Add")))
+                                     (left
+                                      .
+                                      #hasheq((id . "x")
+                                              (type . "Name")
+                                              (ctx
+                                               .
+                                               #hasheq((type . "Load")))))
+                                     (right
+                                      .
+                                      #hasheq((id . "y")
+                                              (type . "Name")
+                                              (ctx
+                                               .
+                                               #hasheq((type . "Load")))))
+                                     (type . "BinOp")))
+                            (type . "Return"))))
+                  (name . "__call__")
                   (type . "FunctionDef")
                   (returns . #\nul)
-                  (decorator_list . ()))
+                  (decorator_list . ()))))
+        (name . "Adder")
+        (type . "ClassDef")
+        (decorator_list . ())
+        (keywords . ())
+        (kwargs . #\nul)
+        (starargs . #\nul)
+        (bases . ()))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
+=====================================================
+= Results for nonlocal-class.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((body
+         .
+         (#hasheq((type . "Nonlocal") (names . ("x")))
+          #hasheq((op . #hasheq((type . "Add")))
+                  (value . #hasheq((n . 1) (type . "Num")))
+                  (type . "AugAssign")
+                  (target
+                   .
+                   #hasheq((id . "x")
+                           (type . "Name")
+                           (ctx . #hasheq((type . "Store"))))))
           #hasheq((args
                    .
                    #hasheq((args
@@ -1389,100 +480,17 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((targets
+                   (#hasheq((value
                              .
-                             (#hasheq((id . "res")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((attr . "i")
-                                     (value
-                                      .
-                                      #hasheq((id . "self")
-                                              (type . "Name")
-                                              (ctx
-                                               .
-                                               #hasheq((type . "Load")))))
-                                     (type . "Attribute")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))
-                    #hasheq((orelse . ())
-                            (body
-                             .
-                             (#hasheq((exc
-                                       .
-                                       #hasheq((id . "StopIteration")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Raise")
-                                      (cause . #\nul))))
-                            (test
-                             .
-                             #hasheq((left
-                                      .
-                                      #hasheq((id . "res")
-                                              (type . "Name")
-                                              (ctx
-                                               .
-                                               #hasheq((type . "Load")))))
-                                     (ops . (#hasheq((type . "GtE"))))
-                                     (comparators
-                                      .
-                                      (#hasheq((attr . "n")
-                                               (value
-                                                .
-                                                #hasheq((id . "self")
-                                                        (type . "Name")
-                                                        (ctx
-                                                         .
-                                                         #hasheq((type
-                                                                  .
-                                                                  "Load")))))
-                                               (type . "Attribute")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load"))))))
-                                     (type . "Compare")))
-                            (type . "If"))
-                    #hasheq((targets
-                             .
-                             (#hasheq((attr . "i")
-                                      (value
-                                       .
-                                       #hasheq((id . "self")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Attribute")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value
-                             .
-                             #hasheq((op . #hasheq((type . "Add")))
-                                     (left
-                                      .
-                                      #hasheq((id . "res")
-                                              (type . "Name")
-                                              (ctx
-                                               .
-                                               #hasheq((type . "Load")))))
-                                     (right . #hasheq((n . 1) (type . "Num")))
-                                     (type . "BinOp")))
-                            (type . "Assign"))
-                    #hasheq((value
-                             .
-                             #hasheq((id . "res")
+                             #hasheq((id . "x")
                                      (type . "Name")
                                      (ctx . #hasheq((type . "Load")))))
                             (type . "Return"))))
-                  (name . "__next__")
+                  (name . "get")
                   (type . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))))
-        (name . "BasicIterClass")
+        (name . "c")
         (type . "ClassDef")
         (decorator_list . ())
         (keywords . ())
@@ -1495,523 +503,20 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for iter-comprehensions.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
-         .
-         (#hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))))))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for iter-misc.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"check_iterator"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for iter-simple.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"check_iterator"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for iter-stop.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((attr . "extend")
-        (value
-         .
-         #hasheq((id . "a") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for test_list_identity.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for test_list_simple.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for test_list_truth.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for range-errs.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: ___assertRaises
-=====================================================
-= Results for range-list.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
-         .
-         (#hasheq((n . 0) (type . "Num"))
-          #hasheq((n . 1) (type . "Num"))
-          #hasheq((n . 2) (type . "Num")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for range-vars.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
-         .
-         (#hasheq((id . "a") (type . "Name") (ctx . #hasheq((type . "Load"))))
-          #hasheq((op . #hasheq((type . "Add")))
-                  (left
-                   .
-                   #hasheq((id . "a")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (right . #hasheq((n . 1) (type . "Num")))
-                  (type . "BinOp")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for bound-and-free.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for extra-nesting.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"make_adder2"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for freevar-in-method.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"test"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for lambda3.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: global_x
-=====================================================
-= Results for locals-class.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for locals-function.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for mixed-freevars-and-cellvars.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"identity"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for nearest-enclosing-scope.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for nested-nonlocal.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for nesting-global-no-free.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"make_adder4"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for nesting-plus-free-ref-to-global.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"make_adder6"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for nesting-through-class.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"make_adder5"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for nonlocal-class.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
 = Results for nonlocal-function.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-"f"
+#hasheq((op . #hasheq((type . "Add")))
+        (value . #hasheq((n . 1) (type . "Num")))
+        (type . "AugAssign")
+        (target
+         .
+         #hasheq((id . "x")
+                 (type . "Name")
+                 (ctx . #hasheq((type . "Store"))))))
 
 === Expected stderr ===
 
@@ -2019,71 +524,6 @@ PARSING: Haven't handled a case yet:
 parse: error is described above.
 =====================================================
 = Results for nonlocal-method.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for recursion.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for simple-and-rebinding.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"make_adder3"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for simple-nesting.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"make_adder"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for unbound-local.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"errorInOuter"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for test-super.py =
 =====================================================
 === Expected stdout ===
 
@@ -2108,9 +548,22 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((value . #hasheq((s . "A") (type . "Str")))
+                   (#hasheq((type . "Nonlocal") (names . ("x")))
+                    #hasheq((op . #hasheq((type . "Add")))
+                            (value . #hasheq((n . 1) (type . "Num")))
+                            (type . "AugAssign")
+                            (target
+                             .
+                             #hasheq((id . "x")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Store"))))))
+                    #hasheq((value
+                             .
+                             #hasheq((id . "x")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load")))))
                             (type . "Return"))))
-                  (name . "f")
+                  (name . "inc")
                   (type . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
@@ -2118,7 +571,7 @@ PARSING: Haven't handled a case yet:
                    .
                    #hasheq((args
                             .
-                            (#hasheq((arg . "cls")
+                            (#hasheq((arg . "self")
                                      (type . "arg")
                                      (annotation . #\nul))))
                            (type . "arguments")
@@ -2131,28 +584,26 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((value
+                   (#hasheq((type . "Nonlocal") (names . ("x")))
+                    #hasheq((op . #hasheq((type . "Sub")))
+                            (value . #hasheq((n . 1) (type . "Num")))
+                            (type . "AugAssign")
+                            (target
                              .
-                             #hasheq((type . "Tuple")
-                                     (ctx . #hasheq((type . "Load")))
-                                     (elts
-                                      .
-                                      (#hasheq((id . "cls")
-                                               (type . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((type . "Load"))))
-                                       #hasheq((s . "A") (type . "Str"))))))
+                             #hasheq((id . "x")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Store"))))))
+                    #hasheq((value
+                             .
+                             #hasheq((id . "x")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load")))))
                             (type . "Return"))))
-                  (name . "cm")
+                  (name . "dec")
                   (type . "FunctionDef")
                   (returns . #\nul)
-                  (decorator_list
-                   .
-                   (#hasheq((id . "classmethod")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Load")))))))))
-        (name . "A")
+                  (decorator_list . ()))))
+        (name . "c")
         (type . "ClassDef")
         (decorator_list . ())
         (keywords . ())
@@ -2165,187 +616,50 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for tuple-add.py =
+= Results for recursion.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple")
-        (ctx . #hasheq((type . "Load")))
-        (elts
-         .
-         (#hasheq((n . 0) (type . "Num")) #hasheq((n . 1) (type . "Num")))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+desugar: Haven't desugared a case yet:
+(PyReturn (PyNum 1))
 =====================================================
-= Results for tuple-constructors.py =
+= Results for simple-and-rebinding.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple") (ctx . #hasheq((type . "Load"))) (elts . ()))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+desugar: Haven't desugared a case yet:
+(PyReturn (PyBinOp 'python-add (PyId 'x) (PyId 'y)))
 =====================================================
-= Results for tuple-length.py =
+= Results for simple-nesting.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple") (ctx . #hasheq((type . "Load"))) (elts . ()))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+desugar: Haven't desugared a case yet:
+(PyReturn (PyBinOp 'python-add (PyId 'x) (PyId 'y)))
 =====================================================
-= Results for tuple-mul.py =
+= Results for unbound-local.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple")
-        (ctx . #hasheq((type . "Load")))
-        (elts
-         .
-         (#hasheq((n . 0) (type . "Num")) #hasheq((n . 1) (type . "Num")))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for tuple-truth.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple") (ctx . #hasheq((type . "Load"))) (elts . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for test_div_zero.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((orelse
-         .
-         (#hasheq((exc
-                   .
-                   #hasheq((args
-                            .
-                            (#hasheq((s
-                                      .
-                                      "5.0 / 0.0 didn't raise ZeroDivisionError")
-                                     (type . "Str"))))
-                           (type . "Call")
-                           (keywords . ())
-                           (kwargs . #\nul)
-                           (starargs . #\nul)
-                           (func
-                            .
-                            #hasheq((id . "Exception")
-                                    (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Raise")
-                  (cause . #\nul))))
-        (body
-         .
-         (#hasheq((value
-                   .
-                   #hasheq((op . #hasheq((type . "Div")))
-                           (left . #hasheq((n . 5.0) (type . "Num")))
-                           (right . #hasheq((n . 0.0) (type . "Num")))
-                           (type . "BinOp")))
-                  (type . "Expr"))))
-        (type . "TryExcept")
-        (handlers
-         .
-         (#hasheq((body . (#hasheq((type . "Pass"))))
-                  (name . #\nul)
-                  (type . "ExceptHandler")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for test_simple_string_ops.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "NotIn"))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for test_string_slices.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((value
-         .
-         #hasheq((id . "a") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Subscript")
-        (ctx . #hasheq((type . "Load")))
-        (slice
-         .
-         #hasheq((type . "Slice")
-                 (upper . #\nul)
-                 (lower . #\nul)
-                 (step . #\nul))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for types_truthy1.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . (#hasheq((n . 1) (type . "Num"))))
-        (type . "Dict")
-        (keys . (#hasheq((s . "x") (type . "Str")))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for types_truthy2.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-"f"
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
+desugar: Haven't desugared a case yet:
+(PyReturn (PyId 'y))

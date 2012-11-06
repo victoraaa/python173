@@ -1,4 +1,15 @@
-def f():
-  global y
-  y=1
-print(y)
+y=4
+def f(x):
+  def inc():
+    nonlocal x
+    x = x+1
+    print(x)
+  def dec():
+    nonlocal x
+    x = x-1
+    print(x)
+  print(y)
+  print(x)
+  inc()
+  dec()
+f(0)

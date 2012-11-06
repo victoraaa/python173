@@ -17,7 +17,7 @@
   [PyLambda (args : (listof symbol)) (body : PyExpr)]
   [PyRaise (exc : PyExpr)] ;(cause : PyExpr)]
   [PyGlobal (ids : (listof symbol))]
-  [PyNonlocal (id : symbol)]
+  [PyNonlocal (ids : (listof symbol))]
   [PyAssign (targets : (listof PyExpr)) (value : PyExpr)]
   [PySet (lhs : PyExpr) (value : PyExpr)]
   [PyModule (program : PyExpr)]

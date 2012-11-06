@@ -39,7 +39,7 @@
 (define (keepOldEnv [env : Env]) : Env
   (foldl (lambda (key newEnv) 
            (type-case (optionof SLTuple) (hash-ref env key)
-             [none () (error 'newEnvScope "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
+             [none () (error 'keepOldEnv "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
              [some (v) (local [(define-values (t l) v)]
                          (type-case ScopeType t
                            [Local () (augmentEnv key (values (NonLocal) l) newEnv)]
@@ -56,7 +56,7 @@
     [(empty? vlist) env]
     [else (local [(define-values (t id) (first vlist))]
             (if (Global? t)
-                (if (fixnum? (lookupEnv id globalEnv))
+                (if (inEnv? id globalEnv)
                     (addGlobalVars (augmentEnv id (values (Global) (lookupEnv id globalEnv)) env) 
                                    (rest vlist))
                     (let ([newLocation (new-loc)])
@@ -70,12 +70,72 @@
                                        (rest vlist)))))
                 (addGlobalVars env (rest vlist))))]))
 
+;;addNonLocals checks for errors that may be raised by the 'nonlocal' expression and,
+;;if there are no errors, returns the same environment
+(define (addNonLocals [env : Env]
+                      [vlist : (listof (ScopeType * symbol))]) : Env
+  (cond
+    [(empty? vlist) env]
+    [else (local [(define-values (t id) (first vlist))]
+            (if (NonLocal? t)
+                (if (inEnv? id env)
+                    (if (Global? (getScopeType id env))
+                        (error 'addNonLocals (string-append "no binding for nonlocal " (string-append (symbol->string id) " found")))
+                        (addNonLocals env (rest vlist)))
+                    (error 'addNonLocals (string-append "no binding for nonlocal " (string-append (symbol->string id) " found"))))
+                (addNonLocals env (rest vlist))))]))
+
+;;addLocals receives a list with Local variables candidates and a list with the variables that are 
+;;already declared as global or nonlocal in this scope. It returns an environment with the 
+;;appended correct Local variables
+(define (addLocals [env : Env]
+                   [localList : (listof (ScopeType * symbol))]
+                   [othersList : (listof (ScopeType * symbol))]) : Env
+  (cond
+    [(empty? localList) env]
+    [else (local [(define-values (t id) (first localList))]
+            (if (foldl (lambda (l result) (or l result))
+                       false
+                       (map (lambda (st-id) (local [(define-values (t2 id2) st-id)]
+                                              (if (equal? id id2)
+                                                  true
+                                                  false)))
+                            othersList))
+                (addLocals env (rest localList) othersList)
+                (addLocals (augmentEnv id 
+                                       (values (Local) (new-loc))
+                                       env)
+                           (rest localList) 
+                           othersList)))]))
+
+;;addArgs just appends the args to a list of (ScopeType * symbol), 
+;;with the ScopeType 'Local'
+(define (addArgs [lst : (listof (ScopeType * symbol))]
+                 [args : (listof symbol)]) : (listof (ScopeType * symbol))
+  (cond
+    [(empty? args) lst]
+    [else (addArgs (append (list (values (Local) (first args))) lst)
+                   (rest args))]))
+
 ;;newEnvScope returns an environment with the changes needed for a new scope.
 ;;It basically changes the local tags to nonlocal ones.
 (define (newEnvScope [env : Env]
-                     [vlist : (listof (ScopeType * symbol))]) : Env
-  (addGlobalVars (keepOldEnv env) 
-                 vlist))
+                     [vlist : (listof (ScopeType * symbol))]
+                     [args : (listof symbol)]) : Env
+  (addLocals (addNonLocals (addGlobalVars (keepOldEnv env) 
+                                          vlist)
+                           vlist)
+             (addArgs (filter (lambda (x) (local [(define-values (t id) x)]
+                                            (if (Local? t)
+                                                true
+                                                false)))
+                              vlist)
+                      args)
+             (filter (lambda (x) (local [(define-values (t id) x)]
+                                   (if (Local? t)
+                                       false
+                                       true)))
+                     vlist)))
       
 ;;Adds a new identifier to our environment, with its location
 (define (augmentEnv [id : symbol]
@@ -89,8 +149,23 @@
                       [store : Store]) : Store
   (hash-set store location value))
 
+;;inEnv? searches the environment for some identifier, returning true if
+;;the identifier is already there and false otherwise
+(define (inEnv? [id : symbol]
+                [env : Env]) : boolean
+  (type-case (optionof SLTuple) (hash-ref env id)
+    [none () false]
+    [some (v) true]))
 
-;;lookupEnv searchs the environment for some identifier
+;;getScopeType gets the ScopeType of 'id' in the environment 'env'
+(define (getScopeType [id : symbol]
+                      [env : Env]) : ScopeType
+  (type-case (optionof SLTuple) (hash-ref env id)
+    [none () (error 'getScopeType (string-append "Unbound Identifier : " (symbol->string id)))]
+    [some (v) (local [(define-values (t l) v)]
+                t)]))
+
+;;lookupEnv searches the environment for some identifier
 (define (lookupEnv [id : symbol]
                    [env : Env]) : Location
   (type-case (optionof SLTuple) (hash-ref env id)
@@ -106,6 +181,14 @@
     [some (v) (type-case CVal v
                 [VUnbound () (error 'lookupStore "Unbound Identifier: using identifier before assignment")]
                 [else v])]))
+
+;;lookupVar searches for the identifier first at the given environment, then at the globalEnv.
+(define (lookupVar [id : symbol]
+                   [env : Env]) : Location
+  (type-case (optionof SLTuple) (hash-ref env id)
+    [none () (lookupEnv id globalEnv)]
+    [some (v) (local [(define-values (t l) v)]
+                l)]))
 
 ;;helper method for our interpreter
 (define (interp-args-CApp [body : CExp]
@@ -372,7 +455,7 @@
     
 
     [CId (x) 
-         (ValueA (lookupStore (lookupEnv x env) store) store)]
+         (ValueA (lookupStore (lookupVar x env) store) store)]
 
     [CLet (id scopeType bind body)
       ;(interp-env body (hash-set env id (interp-env bind env)))]
@@ -421,13 +504,13 @@
        [else (error 'interp "Not a closure")])]
     |#
 
-    [CFunc (args body vlist) (ValueA (VClosure (newEnvScope env vlist) args body) store)] ;; TODO use vlist...
+    [CFunc (args body vlist) 
+           (ValueA (VClosure (newEnvScope env vlist args) args body) store)] ;; TODO use vlist...
 
     [CPrim1 (prim arg) (interp-unary prim arg env store)]
     
     ;;UNDER THIS, WE HAVE NON-TA CODE:
     [CPrim2 (op e1 e2)
-      ;      (begin (display env)
             (case op
               ;;boolops
               ;; These short-circuit, and so need their own system...
@@ -439,7 +522,6 @@
               ['in (interp-in e1 e2 env store)]
               
               [else (interp-binop op e1 e2 env store)])
-           ; )
             ]
       ;        ;;cmpops
       ;;        ['eq (interp-eq e1 e2 env store)]

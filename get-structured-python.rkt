@@ -135,6 +135,11 @@ structure that you define in python-syntax.rkt
                  ('names names))
      (PyGlobal (map (lambda (name) (string->symbol name)) names))]
     
+    ;; nonlocal variable
+    [(hash-table ('type "Nonlocal")
+                 ('names names))
+     (PyNonlocal (map (lambda (name) (string->symbol name)) names))]
+    
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     
