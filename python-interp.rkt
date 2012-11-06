@@ -200,7 +200,6 @@
                           [interpretedArgs : (listof CVal)]) : AnswerC
   (cond
     [(empty? args) (interp-CApp body
-                                env
                                 closEnv
                                 store
                                 argsIds
@@ -219,7 +218,6 @@
 ;;puts all the identifiers and values in the environment and the store,
 ;;and applies the body of the closure
 (define (interp-CApp [body : CExp]
-                     [env : Env]
                      [closEnv : Env]
                      [store : Store]
                      [argsIds : (listof symbol)]
@@ -231,21 +229,13 @@
                                closEnv
                                store)]
     [else 
-        ;(let ([newLocation (new-loc)])
-          (interp-CApp body
-                       env
-                       closEnv
-                       ;(augmentEnv (first argsIds)
-                       ;            (values (Local) newLocation)  ;;GOTTA CHANGE THIS AUGMENTENV FOR THE METHOD THAT CREATES THE NEW SCOPE
-                       ;            closEnv)
-                       ;(augmentStore newLocation
-                       ;              (first args)
-                       ;              store)
-                       (augmentStore (lookupEnv (first argsIds) closEnv)
-                                     (first args)
-                                     store)
-                       (rest argsIds)
-                       (rest args))]))
+     (interp-CApp body
+                  closEnv
+                  (augmentStore (lookupEnv (first argsIds) closEnv)
+                                (first args)
+                                store)
+                  (rest argsIds)
+                  (rest args))]))
 
 
 ;; tagof wrapper
