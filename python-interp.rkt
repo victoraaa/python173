@@ -230,8 +230,6 @@
 
 ;;puts all the identifiers and values in the environment and the store,
 ;;and applies the body of the closure
-;;-------------------------NEED TO CHANGE THIS. IT MUST FIRST ALLOCATE A NEW LOCATION FOR ALL OF THE LOCAL VARIABLES, THEN 
-;;-------------------------CHANGE THE STORE FOR THE ARGS------------------------------------------------------------------
 (define (interp-CApp [body : CExp]
                      [closEnv : Env]
                      [store : Store]
