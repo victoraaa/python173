@@ -200,7 +200,7 @@
                           [interpretedArgs : (listof CVal)]) : AnswerC
   (cond
     [(empty? args) (interp-CApp body
-                                closEnv
+                                (allocateLocals closEnv)
                                 store
                                 argsIds
                                 (reverse interpretedArgs))]
@@ -215,8 +215,23 @@
                                  (rest args)
                                  (cons v interpretedArgs))])]))
 
+;;helper method that allocates a new position for all of the local variables in the environment. Used when applying a function, because
+;;each time we apply we are using new arguments/locals, not the old ones.
+(define (allocateLocals [env : Env]) : Env
+  (foldl (lambda (key newEnv) 
+           (type-case (optionof SLTuple) (hash-ref env key)
+             [none () (error 'allocateLocals "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
+             [some (v) (local [(define-values (t l) v)]
+                         (type-case ScopeType t
+                           [Local () (augmentEnv key (values t (new-loc)) newEnv)]
+                           [else (augmentEnv key v newEnv)]))]))
+         (hash (list))
+         (hash-keys env)))
+
 ;;puts all the identifiers and values in the environment and the store,
 ;;and applies the body of the closure
+;;-------------------------NEED TO CHANGE THIS. IT MUST FIRST ALLOCATE A NEW LOCATION FOR ALL OF THE LOCAL VARIABLES, THEN 
+;;-------------------------CHANGE THE STORE FOR THE ARGS------------------------------------------------------------------
 (define (interp-CApp [body : CExp]
                      [closEnv : Env]
                      [store : Store]
@@ -229,6 +244,14 @@
                                closEnv
                                store)]
     [else 
+     (interp-CApp body
+                  closEnv
+                  (augmentStore (lookupEnv (first argsIds) closEnv)
+                                (first args)
+                                store)
+                  (rest argsIds)
+                  (rest args))]))
+     #|
      (let ([newLocation (new-loc)])
        (interp-CApp body
                     (augmentEnv (first argsIds)
@@ -239,6 +262,7 @@
                                   store)
                     (rest argsIds)
                     (rest args)))]))
+|#
 
 ;; tagof wrapper
 (define (interp-tagof [arg : CExp] [env : Env] [store : Store]) : AnswerC
@@ -571,3 +595,4 @@
 ;;(interp (CTrue))
 
 (define env (hash (list (values 'a (values (Local) 1)) (values 'b (values (NonLocal) 2)) (values 'c (values (Global) 3)))))
+(define h (hash (list (values 'x (values (Local) 1)) (values 'y (values (NonLocal) 2)))))
