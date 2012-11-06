@@ -481,7 +481,7 @@
        [ValueA (vf sf)
          (type-case CVal vf
            [VClosure (e a b)
-                     (interp-args-CApp b   ;;GOTTA CHANGE THIS TO SOMETHING RELATED TO THE NEW SCOPE!!!!!!!!!!!!!!!!
+                     (interp-args-CApp b   
                                        env
                                        e
                                        sf
@@ -502,7 +502,6 @@
 
     [CPrim1 (prim arg) (interp-unary prim arg env store)]
     
-    ;;UNDER THIS, WE HAVE NON-TA CODE:
     [CPrim2 (op e1 e2)
             (case op
               ;;boolops
@@ -564,10 +563,6 @@
 (define (interp (expr : CExp)) : CVal
   (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
     [ValueA (v s) v]))
-            
-            ;;(if (VPass? v)
-                   ;   (void)
-                   ;   (print v))]))
 
 
 ;; basic test cases
