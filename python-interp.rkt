@@ -229,14 +229,16 @@
                                closEnv
                                store)]
     [else 
-     (interp-CApp body
-                  closEnv
-                  (augmentStore (lookupEnv (first argsIds) closEnv)
-                                (first args)
-                                store)
-                  (rest argsIds)
-                  (rest args))]))
-
+     (let ([newLocation (new-loc)])
+       (interp-CApp body
+                    (augmentEnv (first argsIds)
+                                (values (Local) newLocation)
+                                closEnv)
+                    (augmentStore newLocation
+                                  (first args)
+                                  store)
+                    (rest argsIds)
+                    (rest args)))]))
 
 ;; tagof wrapper
 (define (interp-tagof [arg : CExp] [env : Env] [store : Store]) : AnswerC
