@@ -143,15 +143,17 @@
            (CSet (desugar lhs) (desugar value))]
     [PyGlobalEnv () (CGlobalEnv)]
     [PyModule (exprs) 
-              (let ([global-vars (get-vars exprs)]) ;GET ALL OF THE ASSIGNMENTS IN THE GLOBAL SCOPE
-                (begin ;(checkGlobalScopes global-vars)  ;CHECKS IF WE DONT HAVE AN ERROR FROM USING global OR nonlocals IN THE GLOBAL SCOPE
-                        ;WE NEED TO PUT THEM IN THE GLOBAL ENVIRONMENT AS WELL
-                       (cascade-lets (get-ids global-vars) ;PUT THEM IN THE ENVIRONMENT AS GLOBALS
+              (let ([global-vars (get-vars exprs)]) ;gets all of the assignments in the global scope
+                (begin (if (hasGlobalScopeErrors global-vars) ;checks the existence of 'nonlocal' or 'global' declarations in the global scope
+                           (error 'PyModule "Global or Nonlocal declaration in the global scope.")
+                           (void))
+                       (cascade-lets (get-ids global-vars) ;puts the variables in the environment as Globals
                                      (make-item-list (Global) (length global-vars) (list)) 
                                      (make-item-list (CUnbound) (length global-vars) (list)) 
                                      (desugar (PySeq (append 
-                                                      (list (PyGlobalEnv))
-                                                      (list exprs)))))))] ;EXECUTE THE exprs (desugar exprs)
+                                                      (list (PyGlobalEnv)) ;the first thing interpreter does is creating the 
+                                                                           ;separate global environment
+                                                      (list exprs)))))))] ;executes the program
     
     [PyDef (name args body) 
            (begin (CSeq
@@ -188,14 +190,16 @@
 
 ;; Implement this method when we have exceptions.
 ;; I dont know if I should throw an exception or not. I probably should.
-;; This is going to go over the list and, if we have anything that is not a Local,
-;; we should throw the Exception.
-#|
-(define (checkGlobalScopeErrors [vars : (listof (ScopeType * symbol))]) : AnswerC
-  (foldl (lambda (list-el result) (local ([define-values (st id) e])
-                                    (if (Local? st)
-                                        (or result true)
-|# 
+;; This is going to go over the list of global variable declarations and, if we have anything that is not a Local,
+;; should return 'true'
+
+(define (hasGlobalScopeErrors [vars : (listof (ScopeType * symbol))]) : boolean
+  (not (foldl (lambda (list-el result) (and list-el result))
+              true
+              (map (lambda (e) (local ([define-values (st id) e])
+                                 (Local? st)))
+                   vars))))
+
 
 ;(test (desugar (PyBoolop 'or (list (PyNum 0) (PyNum 1))))
 ;      (CBoolop 'or (CNum 0) (CNum 1)))
