@@ -213,7 +213,8 @@
                                  s
                                  argsIds
                                  (rest args)
-                                 (cons v interpretedArgs))])]))
+                                 (cons v interpretedArgs))]
+       [ReturnA (v s) (ReturnA v s)])]))
 
 ;;helper method that allocates a new position for all of the local variables in the environment. Used when applying a function, because
 ;;each time we apply we are using new arguments/locals, not the old ones.
@@ -238,9 +239,11 @@
   (cond
     [(not (equal? (length argsIds) (length args)))
      (error 'interp-AppC "Application failed with arity mismatch")]
-    [(empty? args) (interp-env body 
-                               closEnv
-                               store)]
+    [(empty? args) (type-case AnswerC (interp-env body 
+                                                  closEnv
+                                                  store)
+                     [ValueA (v s) (ValueA v s)]
+                     [ReturnA (v s) (ValueA v s)])]
     [else 
      (interp-CApp body
                   closEnv
@@ -265,7 +268,8 @@
 ;; tagof wrapper
 (define (interp-tagof [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
-    [ValueA (v s) (ValueA (VStr (get-tag v)) s)]))
+    [ValueA (v s) (ValueA (VStr (get-tag v)) s)]
+    [ReturnA (v s) (ReturnA v s)]))
 
 
 ;; This is the tagof operator that we will need later...
@@ -288,8 +292,10 @@
 ;; interp-binop
 (define (interp-binop [op : symbol] [e1 : CExp] [e2 : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env e1 env store)
-             [ValueA (v1 s1) (type-case AnswerC (interp-env e2 env s1)
-                               [ValueA (v2 s2) (ValueA (handle-op op v1 v2) s2)])]))
+    [ValueA (v1 s1) (type-case AnswerC (interp-env e2 env s1)
+                      [ValueA (v2 s2) (ValueA (handle-op op v1 v2) s2)]
+                      [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
 
@@ -332,7 +338,8 @@
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v s) (if (isTruthy v)
                       (ValueA v s)
-                      (interp-env e2 env s))]))
+                      (interp-env e2 env s))]
+    [ReturnA (v s) (ReturnA v s)]))
 
 ;;and returns e1 if its value is not truthy; else, 
 ;;returns e2's value
@@ -343,7 +350,8 @@
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v s) (if (not (isTruthy v))
                       (ValueA v s)
-                      (interp-env e2 env s))]))
+                      (interp-env e2 env s))]
+    [ReturnA (v s) (ReturnA v s)]))
 
 
 ;;is returns true if e1 and e2 are the same object in python
@@ -370,7 +378,9 @@
             [VFalse () (type-case CVal v2
                         [VFalse () (ValueA (VTrue) s2)]
                         [else (ValueA (VFalse) s2)])]
-            [else (error 'interp-is "comparison not valid for arguments of this type")])])]))
+            [else (error 'interp-is "comparison not valid for arguments of this type")])]
+        [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 ;;'is not' returns true if e1 and e2 are not the same object in python
 (define (interp-isNot [e1 : CExp]
@@ -388,7 +398,9 @@
                                         (ValueA (VTrue) s2))]
                          [else (ValueA (VTrue) s2)])]
             [else (error 'interp-isNot (string-append "comparison not valid for arguments of this type" 
-                                                   (string-append (to-string v1) (to-string v2))))])])]))
+                                                   (string-append (to-string v1) (to-string v2))))])]
+        [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
 ;; interp-in
@@ -403,7 +415,9 @@
                                                         (ValueA (VTrue) s2) ;; condition. 
                                                         (ValueA (VFalse) s2))]
                                        [else (error 'interp-in "\"in\" not valid for these (differing?) types")])]
-                        [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])])]))
+                        [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])]
+              [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
 ;; isTruthy returns false if the CVal value is False to python
@@ -457,7 +471,8 @@
 ;; wrapper around unary operations
 (define (interp-unary [prim : symbol] [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
-    [ValueA (v s) (ValueA (handle-unary prim v) s)]))
+    [ValueA (v s) (ValueA (handle-unary prim v) s)]
+    [ReturnA (v s) (ReturnA v s)]))
 
 
 ;; interp-env
@@ -469,7 +484,10 @@
     [CStr (s) (ValueA (VStr s) store)]
     [CTrue () (ValueA (VTrue) store)]
 
-    [CError (e) (error 'interp (pretty (ValueA-value (interp-env e env store))))]
+    [CError (e) (error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
+    [CReturn (value) (type-case AnswerC (interp-env value env store)
+                       [ValueA (v s) (ReturnA v s)]
+                       [ReturnA (v s) (error 'interp "Return statement inside of Return...")])]
     
 
     [CId (x) 
@@ -483,13 +501,15 @@
                               (augmentEnv id (values scopeType newLocation) env)
                               (augmentStore newLocation 
                                             v
-                                            s)))])]
+                                            s)))]
+        [ReturnA (v s) (ReturnA v s)])] ;; This is a bit suspicious...
                          
 
     [CSeq (e1 e2)
       (type-case AnswerC (interp-env e1 env store)
         [ValueA (v s)
-                (interp-env e2 env s)])]
+                (interp-env e2 env s)]
+        [ReturnA (v s) (ReturnA v s)])]
 
     [CSet (id value)
           (type-case CExp id
@@ -497,7 +517,8 @@
                                [ValueA (v s)
                                        (ValueA v (augmentStore (lookupEnv id-symbol env)
                                                                v
-                                                               s))])]
+                                                               s))]
+                               [ReturnA (v s) (ReturnA v s)])]
             [else (error 'interp-CSet "For now, CSet only support ids that are symbols")])]
     
     [CApp (func args)
@@ -512,7 +533,9 @@
                                        a
                                        args
                                        (list))]
-           [else (error 'CApp (string-append "Applied a non-function: " (pretty vf)))])])]
+           [else (error 'CApp (string-append "Applied a non-function: " (pretty vf)))])]
+       [ReturnA (v s) (ReturnA v s)] ;; or pass???
+       )]
     #|
     (type-case CVal (interp-env fun env)
        [VClosure (env argxs body)
@@ -561,7 +584,8 @@
            [ValueA (v s)
                    (if (isTruthy v)
                        (interp-env t env s)
-                       (interp-env e env s))])]
+                       (interp-env e env s))]
+           [ReturnA (v s) (ReturnA v s)])]
     [CNone () (ValueA (VNone) store)]
     [CFalse () (ValueA (VFalse) store)] 
     [CPass () (ValueA (VNone) store)] ;; doing nothing. We need a case for that...
@@ -586,7 +610,8 @@
 ;; regular interpret
 (define (interp (expr : CExp)) : CVal
   (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
-    [ValueA (v s) v]))
+    [ValueA (v s) v]
+    [ReturnA (v s) (VStr "Error: Return outside of function.")]))
 
 
 ;; basic test cases

@@ -1,19 +1,6 @@
-
-C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
-12 tests succeeded.
-78 tests failed.
+21 tests succeeded.
+69 tests failed.
 == Output of failed tests ==
-=====================================================
-= Results for bool-callable.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: callable
 =====================================================
 = Results for bool-compare-list-dict.py =
 =====================================================
@@ -2033,18 +2020,6 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for extra-nesting.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-desugar: Haven't desugared a case yet:
-(PyReturn (PyBinOp 'python-add (PyId 'x) (PyId 'y)))
-=====================================================
 = Results for freevar-in-method.py =
 =====================================================
 === Expected stdout ===
@@ -2284,30 +2259,6 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for mixed-freevars-and-cellvars.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-desugar: Haven't desugared a case yet:
-(PyReturn (PyId 'x))
-=====================================================
-= Results for nearest-enclosing-scope.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-desugar: Haven't desugared a case yet:
-(PyReturn (PyBinOp 'python-add (PyId 'x) (PyId 'z)))
-=====================================================
 = Results for nested-nonlocal.py =
 =====================================================
 === Expected stdout ===
@@ -2327,30 +2278,6 @@ PARSING: Haven't handled a case yet:
 
 === Actual stderr ===
 parse: error is described above.
-=====================================================
-= Results for nesting-global-no-free.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-desugar: Haven't desugared a case yet:
-(PyReturn (PyBinOp 'python-add (PyId 'global_x) (PyId 'y)))
-=====================================================
-= Results for nesting-plus-free-ref-to-global.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-desugar: Haven't desugared a case yet:
-(PyReturn (PyBinOp 'python-add (PyId 'global_nest_x) (PyId 'y)))
 =====================================================
 = Results for nesting-through-class.py =
 =====================================================
@@ -2586,42 +2513,6 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for recursion.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-desugar: Haven't desugared a case yet:
-(PyReturn (PyNum 1))
-=====================================================
-= Results for simple-and-rebinding.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-desugar: Haven't desugared a case yet:
-(PyReturn (PyBinOp 'python-add (PyId 'x) (PyId 'y)))
-=====================================================
-= Results for simple-nesting.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-desugar: Haven't desugared a case yet:
-(PyReturn (PyBinOp 'python-add (PyId 'x) (PyId 'y)))
-=====================================================
 = Results for unbound-local.py =
 =====================================================
 === Expected stdout ===
@@ -2631,8 +2522,7 @@ desugar: Haven't desugared a case yet:
 === Expected stderr ===
 
 === Actual stderr ===
-desugar: Haven't desugared a case yet:
-(PyReturn (PyId 'y))
+lookupEnv: Unbound indentifier error: ___assertRaises
 =====================================================
 = Results for test-super.py =
 =====================================================

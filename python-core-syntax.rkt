@@ -57,4 +57,9 @@ ParselTongue.
 (define-type-alias Store (hashof Location CVal))
 
 (define-type AnswerC
-  [ValueA (value : CVal) (store : Store)])
+  [ValueA (value : CVal) (store : Store)]
+;  [ExceptionA (value : CVal) (store : Store)]
+  [ReturnA (value : CVal) (store : Store)]
+ ; [BreakA (value : CVal) (store : Store)]
+ ; [ContinueA (store : Store)]
+  )

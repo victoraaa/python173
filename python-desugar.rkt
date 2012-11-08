@@ -154,10 +154,10 @@
                    (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list)))
                    (CLet 'some-func (Local) (CFunc args (desugar body) (get-vars body))
                          (CSet (CId name) (CId 'some-func)))))]
-                
-
     
-;|#
+    ;; return
+    [PyReturn (value) (CReturn (desugar value))]
+                
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
 

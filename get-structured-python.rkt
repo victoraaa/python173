@@ -177,6 +177,8 @@ structure that you define in python-syntax.rkt
      'python-isNot]
     [(hash-table ('type "In"))
      'python-in]
+    [(hash-table ('type "NotIn"))
+     'python-notIn]
 
     
     ;; Unary

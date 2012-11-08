@@ -282,6 +282,11 @@ that calls the primitive `print`.
          (CPrim2 'in (CId 'e-1) (CId 'e-2))
          (list)))
 
+(define python-notIn
+  (CFunc (list 'e-1 'e-2)
+         (CPrim1 'not (CPrim2 'in (CId 'e-1) (CId 'e-2)))
+         (list)))
+
 (define len 
   (CFunc (list 'e-1)
          (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))

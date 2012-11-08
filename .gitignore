@@ -2,3 +2,5 @@ compiled/
 *.swp
 *~
 *.bat
+*.txt
+*.sh
