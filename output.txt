@@ -2,6 +2,17 @@
 69 tests failed.
 == Output of failed tests ==
 =====================================================
+= Results for bool-callable.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound indentifier error: callable
+=====================================================
 = Results for bool-compare-list-dict.py =
 =====================================================
 === Expected stdout ===
@@ -38,17 +49,6 @@ interp-AppC: Application failed with arity mismatch
 
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: isinstance
-=====================================================
-= Results for bool-math.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-python-uadd: handle-unary: Case not handled yet
 =====================================================
 = Results for all.py =
 =====================================================
@@ -2245,14 +2245,20 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((op . #hasheq((type . "Add")))
-        (value . #hasheq((n . 3) (type . "Num")))
-        (type . "AugAssign")
-        (target
+#hasheq((targets
          .
-         #hasheq((id . "y")
-                 (type . "Name")
-                 (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((value
+                   .
+                   #hasheq((id . "d")
+                           (type . "Name")
+                           (ctx . #hasheq((type . "Load")))))
+                  (type . "Subscript")
+                  (ctx . #hasheq((type . "Del")))
+                  (slice
+                   .
+                   #hasheq((value . #hasheq((s . "h") (type . "Str")))
+                           (type . "Index"))))))
+        (type . "Delete"))
 
 === Expected stderr ===
 
@@ -2264,20 +2270,11 @@ parse: error is described above.
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((op . #hasheq((type . "Sub")))
-        (value . #hasheq((n . 2) (type . "Num")))
-        (type . "AugAssign")
-        (target
-         .
-         #hasheq((id . "x")
-                 (type . "Name")
-                 (ctx . #hasheq((type . "Store"))))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+interp: Assert failed: values are not Equal
 =====================================================
 = Results for nesting-through-class.py =
 =====================================================
@@ -2354,12 +2351,12 @@ PARSING: Haven't handled a case yet:
          (#hasheq((type . "Nonlocal") (names . ("x")))
           #hasheq((op . #hasheq((type . "Add")))
                   (value . #hasheq((n . 1) (type . "Num")))
-                  (type . "AugAssign")
                   (target
                    .
                    #hasheq((id . "x")
                            (type . "Name")
-                           (ctx . #hasheq((type . "Store"))))))
+                           (ctx . #hasheq((type . "Store")))))
+                  (type . "AugAssign"))
           #hasheq((args
                    .
                    #hasheq((args
@@ -2406,14 +2403,16 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((op . #hasheq((type . "Add")))
-        (value . #hasheq((n . 1) (type . "Num")))
-        (type . "AugAssign")
-        (target
+#hasheq((type . "Tuple")
+        (ctx . #hasheq((type . "Load")))
+        (elts
          .
-         #hasheq((id . "x")
-                 (type . "Name")
-                 (ctx . #hasheq((type . "Store"))))))
+         (#hasheq((id . "inc")
+                  (type . "Name")
+                  (ctx . #hasheq((type . "Load"))))
+          #hasheq((id . "dec")
+                  (type . "Name")
+                  (ctx . #hasheq((type . "Load")))))))
 
 === Expected stderr ===
 
@@ -2448,12 +2447,12 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((type . "Nonlocal") (names . ("x")))
                     #hasheq((op . #hasheq((type . "Add")))
                             (value . #hasheq((n . 1) (type . "Num")))
-                            (type . "AugAssign")
                             (target
                              .
                              #hasheq((id . "x")
                                      (type . "Name")
-                                     (ctx . #hasheq((type . "Store"))))))
+                                     (ctx . #hasheq((type . "Store")))))
+                            (type . "AugAssign"))
                     #hasheq((value
                              .
                              #hasheq((id . "x")
@@ -2484,12 +2483,12 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((type . "Nonlocal") (names . ("x")))
                     #hasheq((op . #hasheq((type . "Sub")))
                             (value . #hasheq((n . 1) (type . "Num")))
-                            (type . "AugAssign")
                             (target
                              .
                              #hasheq((id . "x")
                                      (type . "Name")
-                                     (ctx . #hasheq((type . "Store"))))))
+                                     (ctx . #hasheq((type . "Store")))))
+                            (type . "AugAssign"))
                     #hasheq((value
                              .
                              #hasheq((id . "x")
@@ -2732,13 +2731,11 @@ parse: error is described above.
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "NotIn"))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+lookupEnv: Unbound indentifier error: min
 =====================================================
 = Results for test_string_slices.py =
 =====================================================

@@ -78,6 +78,12 @@
                                          [PyId (id) (list (values (Local) id))]
                                          [else (error 'get-vars-PyAssign "PyAssign should not be getting non-ids yet")])) 
                            targets)))]
+    
+    [PyAugAssign (target op value)
+                 (append
+                  (get-vars value)
+                  (get-vars target))]
+    
     [PyModule (exprs)
               (get-vars exprs)]
     
@@ -110,7 +116,7 @@
                 ['or (foldl (lambda (expr result) (CPrim2 'or result (desugar expr))) (desugar (first exprs)) (rest exprs))]
                 ['and (foldl (lambda (expr result) (CPrim2 'and result (desugar expr))) (desugar (first exprs)) (rest exprs))])]
     [PyUnaryOp (op arg)
-               (CPrim1 op (desugar arg))] ;; TODO this needs to desugar to a function application
+               (CApp (CId op) (list (desugar arg)))] ;; TODO this needs to desugar to a function application
     [PyBinOp (op left right)
              (CApp (CId op) (list (desugar left) (desugar right)))]
     [PyCompare (left ops comparators)
@@ -133,6 +139,14 @@
     [PyAssign (targets value) 
               (CLet 'assign-value (Local) (desugar value)
                     (desugar (PySeq (map (lambda (e) (PySet e (PyId 'assign-value))) targets))))]
+    [PyAugAssign (target op value)
+                 (CLet 'aug-value (Local) (desugar value)
+                       (CLet 'orig-value (Local) (desugar target)
+                             (CSet (desugar target) (CApp (CId op) 
+                                                          (list (CId 'aug-value) (CId 'orig-value))))))] 
+                              ;; may or may not work - side effects?
+    
+    
     [PySet (lhs value) 
            (CSet (desugar lhs) (desugar value))]
     [PyGlobalEnv () (CGlobalEnv)]
@@ -154,6 +168,9 @@
                    (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list)))
                    (CLet 'some-func (Local) (CFunc args (desugar body) (get-vars body))
                          (CSet (CId name) (CId 'some-func)))))]
+    
+    ;; PyList (elts : (listof PyExpr))
+    ;; PyDict (keys : (listof PyExpr)) (values : (listof PyExpr))
     
     ;; return
     [PyReturn (value) (CReturn (desugar value))]

@@ -10,6 +10,7 @@
 (require (typed-in racket/base [string-length : [string -> number]]))
 (require (typed-in racket/base [bitwise-not : [number -> number]]))
 (require (typed-in racket/base [fixnum? : [number -> boolean]]))
+(require (typed-in racket/base [flonum? : [number -> boolean]]))
 
 ;;Returns a new memory address to be used
 (define new-loc
@@ -298,6 +299,13 @@
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
+(define (duplicate-string [str : string] [num : number]) : string
+  (cond
+    [(flonum? num) (error 'duplicate-string "does not work with floats...")]
+    [(<= num 0) ""]
+    [else (string-append str (duplicate-string str (- num 1)))]))
+
+
 
 ;; this function handles binary operations
 ;; it does NO TYPE CHECKING! We will need to check types in library functions. 
@@ -325,6 +333,7 @@
     ['string-gt (if (string>? (VStr-s v1) (VStr-s v2)) (VTrue) (VFalse))]
     ['num-gte (if (>= (VNum-n v1) (VNum-n v2)) (VTrue) (VFalse))]
     ['string-gte (if (string>=? (VStr-s v1) (VStr-s v2)) (VTrue) (VFalse))]
+    ['duplicate (VStr (duplicate-string (VStr-s v1) (VNum-n v2)))] ;; throws exception if types are wrong.
     [else (error op "handle-op: case not implemented")]))
 
 
@@ -457,13 +466,13 @@
     ['to-float (type-case CVal arg
                  [VFalse () (VNum 0.0)]
                  [VTrue () (VNum 1.0)]
-                 [VNum (n) (VNum n)]
+                 [VNum (n) (VNum (+ 0.0 n))]
                  [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")] ;; TODO handle outside...
                  [else (error 'interp-to-num "Should not be called on this type.")])]
     ['to-int (type-case CVal arg
                [VFalse () (VNum 0)]
                [VTrue () (VNum 1)]
-               [VNum (n) (VNum n)]
+               [VNum (n) (VNum n)] ;; TODO figure this out...
                [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
                [else (error 'interp-to-num "Should not be called on this type.")])]
     [else (error prim "handle-unary: Case not handled yet")]))

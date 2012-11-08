@@ -99,6 +99,14 @@ structure that you define in python-syntax.rkt
                  ('value value))
      (PyAssign (map get-structured-python targets)
                (get-structured-python value))]
+    
+    [(hash-table ('type "AugAssign")
+                 ('target target)
+                 ('op op)
+                 ('value value))
+     (PyAugAssign (get-structured-python target)
+                  (get-structured-python op)
+                  (get-structured-python value))]
     ;; raise
     [(hash-table ('type "Raise")
                  ('exc exc)
@@ -183,9 +191,9 @@ structure that you define in python-syntax.rkt
     
     ;; Unary
     [(hash-table ('type "Not"))
-     'not]
+     'python-not]
     [(hash-table ('type "USub"))
-     'negative]
+     'python-negate]
     [(hash-table ('type "UAdd"))
      'python-uadd]
     [(hash-table ('type "Invert"))
