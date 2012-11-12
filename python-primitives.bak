@@ -14,15 +14,18 @@ primitives here.
 
 (require (typed-in racket/base [display : (string -> void)]))
 
-(define (pretty arg)
+(define (pretty arg) : string
   (type-case CVal arg
     [VNum (n) (to-string n)]
     [VStr (s) s]
     [VTrue () "True"]
     [VClosure (env args body) (error 'prim "Can't print closures yet")]
     ;;Non-TA code:
-    [VVoid () "void"]
+    [VNone () "void"]
     [VFalse () "False"]
+    [VPass () ""]
+    [VUnbound () "Unbound"]
+    [VHash (h) "VHash - for now. We should make this recursively later"]
     ))
   
 

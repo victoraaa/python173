@@ -315,7 +315,7 @@ that calls the primitive `print`.
 
 (define python-isNot
   (CFunc (list 'e-1 'e-2)
-         (CPrim2 'isNot (CId 'e-1) (CId 'e-2))
+         (CPrim1 'not (CPrim2 'is (CId 'e-1) (CId 'e-2)))
          (list)))
 
 (define python-in

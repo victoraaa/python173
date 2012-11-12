@@ -36,3 +36,6 @@ When creating a new scope, we do it by the following steps. (look at the 'newEnv
 
 5) to search for a variable, we first check our environment. If it is there, ok. If not there, search the global environment. To mutate a variable, if it is in the environment, ok. If not, thrown an error.
 
+One important thing to notice is function application. In the last assignments, we just created the new environment during the application. Here, we create it 
+when creating the closure. Because of this, we need to allocate a new position for all of the local variables when we apply the function.
+

@@ -19,7 +19,6 @@ ParselTongue.
   [CApp (fun : CExp) (args : (listof CExp))]
   [CFunc (args : (listof symbol)) (body : CExp) (vlist : (listof (ScopeType * symbol)))]
   [CPrim1 (prim : symbol) (arg : CExp)]
-  ;;MADE BY ME:
   [CPrim2 (op : symbol) (e1 : CExp) (e2 : CExp)]
   [CFalse]
   [CNone]
@@ -32,7 +31,8 @@ ParselTongue.
   [CGlobalEnv]
   
   ;; lists and dicts become hashes
-  ;;[CHash (elts : (hashof CVal CVal)))
+  [CList (elts : (hashof CExp CExp))]
+  [CDict (elts : (hashof CExp CExp))]
   
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
@@ -41,12 +41,14 @@ ParselTongue.
   [VNum (n : number)]
   [VStr (s : string)]
   [VTrue]
-  [VClosure (env : Env) (args : (listof symbol)) (body : CExp)]
+  [VClosure (env : Env) (args : (listof symbol)) (body : CExp) (uid : Uid)]
   ;;I ADDED;;
   [VNone]
   [VFalse]
   [VPass]
   [VUnbound]
+  [VList (elts : (hashof CVal CVal)) (uid : Uid)] ;; lists must be keyed byintegers, though...
+  [VDict (elts : (hashof CVal CVal)) (uid : Uid)]
   )
 
 (define-type-alias Location number)
@@ -54,6 +56,8 @@ ParselTongue.
   [Local]
   [NonLocal]
   [Global])
+
+(define-type-alias Uid number)
 
 (define-type-alias SLTuple (ScopeType * number))
 (define-type-alias Env (hashof symbol SLTuple))

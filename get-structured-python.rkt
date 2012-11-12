@@ -148,6 +148,18 @@ structure that you define in python-syntax.rkt
                  ('names names))
      (PyNonlocal (map (lambda (name) (string->symbol name)) names))]
     
+    ;; lists
+    [(hash-table ('type "List")
+                 ('elts elts)
+                 ('ctx ctx))
+     (PyList (map get-structured-python elts))]
+    
+    ;; Dicts
+    [(hash-table ('type "Dict")
+                 ('keys keys)
+                 ('values values))
+     (PyDict (map get-structured-python keys)
+             (map get-structured-python values))]
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     

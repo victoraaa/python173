@@ -1,5 +1,7 @@
-21 tests succeeded.
-69 tests failed.
+
+C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
+24 tests succeeded.
+66 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-callable.py =
@@ -18,15 +20,11 @@ lookupEnv: Unbound indentifier error: callable
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts . (#hasheq((n . 1) (type . "Num")))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+interp-in: "in" is not valid for arguments of this type (yet?)
 =====================================================
 = Results for bool-convert.py =
 =====================================================
@@ -56,13 +54,31 @@ lookupEnv: Unbound indentifier error: isinstance
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
+#hasheq((type . "GeneratorExp")
+        (generators
          .
-         (#hasheq((n . 2) (type . "Num"))
-          #hasheq((n . 4) (type . "Num"))
-          #hasheq((n . 6) (type . "Num")))))
+         (#hasheq((target
+                   .
+                   #hasheq((id . "x")
+                           (type . "Name")
+                           (ctx . #hasheq((type . "Store")))))
+                  (type . "comprehension")
+                  (iter
+                   .
+                   #hasheq((id . "S")
+                           (type . "Name")
+                           (ctx . #hasheq((type . "Load")))))
+                  (ifs . ()))))
+        (elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (type . "Name")
+                          (ctx . #hasheq((type . "Load")))))
+                 (ops . (#hasheq((type . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (type . "Num"))))
+                 (type . "Compare"))))
 
 === Expected stderr ===
 
@@ -75,19 +91,31 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
+#hasheq((type . "GeneratorExp")
+        (generators
          .
-         (#hasheq((id . "None")
-                  (type . "Name")
-                  (ctx . #hasheq((type . "Load"))))
-          #hasheq((id . "None")
-                  (type . "Name")
-                  (ctx . #hasheq((type . "Load"))))
-          #hasheq((id . "None")
-                  (type . "Name")
-                  (ctx . #hasheq((type . "Load")))))))
+         (#hasheq((target
+                   .
+                   #hasheq((id . "x")
+                           (type . "Name")
+                           (ctx . #hasheq((type . "Store")))))
+                  (type . "comprehension")
+                  (iter
+                   .
+                   #hasheq((id . "S")
+                           (type . "Name")
+                           (ctx . #hasheq((type . "Load")))))
+                  (ifs . ()))))
+        (elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (type . "Name")
+                          (ctx . #hasheq((type . "Load")))))
+                 (ops . (#hasheq((type . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (type . "Num"))))
+                 (type . "Compare"))))
 
 === Expected stderr ===
 
@@ -141,22 +169,11 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
+#hasheq((elts
          .
-         (#hasheq((n . 1) (type . "Num"))
-          #hasheq((s . "hello") (type . "Str"))
-          #hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
-          #hasheq((type . "List")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts . (#hasheq((n . 3) (type . "Num")))))
-          #hasheq((s . "") (type . "Str"))
-          #hasheq((id . "None")
-                  (type . "Name")
-                  (ctx . #hasheq((type . "Load"))))
-          #hasheq((n . 9) (type . "Num"))
-          #hasheq((n . 0) (type . "Num")))))
+         (#hasheq((n . 1) (type . "Num")) #hasheq((n . 2) (type . "Num"))))
+        (type . "Tuple")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -189,20 +206,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple") (ctx . #hasheq((type . "Load"))) (elts . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-bool.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
+#hasheq((elts . ()) (type . "Tuple") (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -215,17 +219,12 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((values
+#hasheq((attr . "clear")
+        (value
          .
-         (#hasheq((n . 1) (type . "Num"))
-          #hasheq((n . 2) (type . "Num"))
-          #hasheq((n . 3) (type . "Num"))))
-        (type . "Dict")
-        (keys
-         .
-         (#hasheq((n . 1) (type . "Num"))
-          #hasheq((n . 2) (type . "Num"))
-          #hasheq((n . 3) (type . "Num")))))
+         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
+        (type . "Attribute")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -237,13 +236,11 @@ parse: error is described above.
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+interp-in: "in" not valid for these (differing?) types
 =====================================================
 = Results for dict-get.py =
 =====================================================
@@ -251,7 +248,12 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
+#hasheq((attr . "get")
+        (value
+         .
+         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
+        (type . "Attribute")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -264,14 +266,15 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((values
+#hasheq((value
          .
-         (#hasheq((n . 1) (type . "Num")) #hasheq((n . 2) (type . "Num"))))
-        (type . "Dict")
-        (keys
+         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
+        (type . "Subscript")
+        (ctx . #hasheq((type . "Load")))
+        (slice
          .
-         (#hasheq((s . "a") (type . "Str"))
-          #hasheq((s . "b") (type . "Str")))))
+         #hasheq((value . #hasheq((s . "a") (type . "Str")))
+                 (type . "Index"))))
 
 === Expected stderr ===
 
@@ -284,7 +287,12 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
+#hasheq((attr . "items")
+        (value
+         .
+         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
+        (type . "Attribute")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -297,7 +305,12 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
+#hasheq((attr . "keys")
+        (value
+         .
+         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
+        (type . "Attribute")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -317,11 +330,11 @@ PARSING: Haven't handled a case yet:
                   .
                   (#hasheq((n . 1) (type . "Num"))
                    #hasheq((n . 2) (type . "Num"))))
-                 (type . "Dict")
                  (keys
                   .
                   (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))))
+                   #hasheq((n . 2) (type . "Num"))))
+                 (type . "Dict")))
         (type . "Attribute")
         (ctx . #hasheq((type . "Load"))))
 
@@ -336,7 +349,12 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
+#hasheq((attr . "update")
+        (value
+         .
+         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
+        (type . "Attribute")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -356,11 +374,11 @@ PARSING: Haven't handled a case yet:
                   .
                   (#hasheq((n . 1) (type . "Num"))
                    #hasheq((n . 2) (type . "Num"))))
-                 (type . "Dict")
                  (keys
                   .
                   (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))))
+                   #hasheq((n . 2) (type . "Num"))))
+                 (type . "Dict")))
         (type . "Attribute")
         (ctx . #hasheq((type . "Load"))))
 
@@ -375,7 +393,12 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((values . ()) (type . "Dict") (keys . ()))
+#hasheq((attr . "values")
+        (value
+         .
+         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
+        (type . "Attribute")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -1624,199 +1647,13 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
+#hasheq((elts
          .
-         (#hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 0) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 1) (type . "Num")))))
-          #hasheq((type . "Tuple")
-                  (ctx . #hasheq((type . "Load")))
-                  (elts
-                   .
-                   (#hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))
-                    #hasheq((n . 2) (type . "Num"))))))))
+         (#hasheq((n . 0) (type . "Num"))
+          #hasheq((n . 0) (type . "Num"))
+          #hasheq((n . 0) (type . "Num"))))
+        (type . "Tuple")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -1829,7 +1666,68 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
+#hasheq((orelse . ())
+        (body
+         .
+         (#hasheq((orelse . ())
+                  (body
+                   .
+                   (#hasheq((targets
+                             .
+                             (#hasheq((id . "val")
+                                      (type . "Name")
+                                      (ctx . #hasheq((type . "Store"))))))
+                            (value
+                             .
+                             #hasheq((args
+                                      .
+                                      (#hasheq((id . "it")
+                                               (type . "Name")
+                                               (ctx
+                                                .
+                                                #hasheq((type . "Load"))))))
+                                     (type . "Call")
+                                     (keywords . ())
+                                     (kwargs . #\nul)
+                                     (starargs . #\nul)
+                                     (func
+                                      .
+                                      #hasheq((id . "next")
+                                              (type . "Name")
+                                              (ctx
+                                               .
+                                               #hasheq((type . "Load")))))))
+                            (type . "Assign"))))
+                  (type . "TryExcept")
+                  (handlers
+                   .
+                   (#hasheq((body . (#hasheq((type . "Break"))))
+                            (name . #\nul)
+                            (type . "ExceptHandler")))))
+          #hasheq((value
+                   .
+                   #hasheq((args
+                            .
+                            (#hasheq((id . "val")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load"))))))
+                           (type . "Call")
+                           (keywords . ())
+                           (kwargs . #\nul)
+                           (starargs . #\nul)
+                           (func
+                            .
+                            #hasheq((attr . "append")
+                                    (value
+                                     .
+                                     #hasheq((id . "res")
+                                             (type . "Name")
+                                             (ctx . #hasheq((type . "Load")))))
+                                    (type . "Attribute")
+                                    (ctx . #hasheq((type . "Load")))))))
+                  (type . "Expr"))))
+        (test . #hasheq((n . 1) (type . "Num")))
+        (type . "While"))
 
 === Expected stderr ===
 
@@ -1842,7 +1740,68 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
+#hasheq((orelse . ())
+        (body
+         .
+         (#hasheq((orelse . ())
+                  (body
+                   .
+                   (#hasheq((targets
+                             .
+                             (#hasheq((id . "val")
+                                      (type . "Name")
+                                      (ctx . #hasheq((type . "Store"))))))
+                            (value
+                             .
+                             #hasheq((args
+                                      .
+                                      (#hasheq((id . "it")
+                                               (type . "Name")
+                                               (ctx
+                                                .
+                                                #hasheq((type . "Load"))))))
+                                     (type . "Call")
+                                     (keywords . ())
+                                     (kwargs . #\nul)
+                                     (starargs . #\nul)
+                                     (func
+                                      .
+                                      #hasheq((id . "next")
+                                              (type . "Name")
+                                              (ctx
+                                               .
+                                               #hasheq((type . "Load")))))))
+                            (type . "Assign"))))
+                  (type . "TryExcept")
+                  (handlers
+                   .
+                   (#hasheq((body . (#hasheq((type . "Break"))))
+                            (name . #\nul)
+                            (type . "ExceptHandler")))))
+          #hasheq((value
+                   .
+                   #hasheq((args
+                            .
+                            (#hasheq((id . "val")
+                                     (type . "Name")
+                                     (ctx . #hasheq((type . "Load"))))))
+                           (type . "Call")
+                           (keywords . ())
+                           (kwargs . #\nul)
+                           (starargs . #\nul)
+                           (func
+                            .
+                            #hasheq((attr . "append")
+                                    (value
+                                     .
+                                     #hasheq((id . "res")
+                                             (type . "Name")
+                                             (ctx . #hasheq((type . "Load")))))
+                                    (type . "Attribute")
+                                    (ctx . #hasheq((type . "Load")))))))
+                  (type . "Expr"))))
+        (test . #hasheq((n . 1) (type . "Num")))
+        (type . "While"))
 
 === Expected stderr ===
 
@@ -1867,39 +1826,13 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for test_list_identity.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
 = Results for test_list_simple.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for test_list_truth.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List") (ctx . #hasheq((type . "Load"))) (elts . ()))
+#hasheq((elts . ()) (type . "Tuple") (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -1922,44 +1855,22 @@ lookupEnv: Unbound indentifier error: ___assertRaises
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
-         .
-         (#hasheq((n . 0) (type . "Num"))
-          #hasheq((n . 1) (type . "Num"))
-          #hasheq((n . 2) (type . "Num")))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+lookupEnv: Unbound indentifier error: list
 =====================================================
 = Results for range-vars.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((type . "List")
-        (ctx . #hasheq((type . "Load")))
-        (elts
-         .
-         (#hasheq((id . "a") (type . "Name") (ctx . #hasheq((type . "Load"))))
-          #hasheq((op . #hasheq((type . "Add")))
-                  (left
-                   .
-                   #hasheq((id . "a")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (right . #hasheq((n . 1) (type . "Num")))
-                  (type . "BinOp")))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+lookupEnv: Unbound indentifier error: list
 =====================================================
 = Results for bound-and-free.py =
 =====================================================
@@ -2403,16 +2314,16 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple")
-        (ctx . #hasheq((type . "Load")))
-        (elts
+#hasheq((elts
          .
          (#hasheq((id . "inc")
                   (type . "Name")
                   (ctx . #hasheq((type . "Load"))))
           #hasheq((id . "dec")
                   (type . "Name")
-                  (ctx . #hasheq((type . "Load")))))))
+                  (ctx . #hasheq((type . "Load"))))))
+        (type . "Tuple")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -2573,16 +2484,16 @@ PARSING: Haven't handled a case yet:
                    .
                    (#hasheq((value
                              .
-                             #hasheq((type . "Tuple")
-                                     (ctx . #hasheq((type . "Load")))
-                                     (elts
+                             #hasheq((elts
                                       .
                                       (#hasheq((id . "cls")
                                                (type . "Name")
                                                (ctx
                                                 .
                                                 #hasheq((type . "Load"))))
-                                       #hasheq((s . "A") (type . "Str"))))))
+                                       #hasheq((s . "A") (type . "Str"))))
+                                     (type . "Tuple")
+                                     (ctx . #hasheq((type . "Load")))))
                             (type . "Return"))))
                   (name . "cm")
                   (type . "FunctionDef")
@@ -2611,11 +2522,11 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple")
-        (ctx . #hasheq((type . "Load")))
-        (elts
+#hasheq((elts
          .
-         (#hasheq((n . 0) (type . "Num")) #hasheq((n . 1) (type . "Num")))))
+         (#hasheq((n . 0) (type . "Num")) #hasheq((n . 1) (type . "Num"))))
+        (type . "Tuple")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -2628,7 +2539,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple") (ctx . #hasheq((type . "Load"))) (elts . ()))
+#hasheq((elts . ()) (type . "Tuple") (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -2641,7 +2552,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple") (ctx . #hasheq((type . "Load"))) (elts . ()))
+#hasheq((elts . ()) (type . "Tuple") (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -2654,11 +2565,11 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple")
-        (ctx . #hasheq((type . "Load")))
-        (elts
+#hasheq((elts
          .
-         (#hasheq((n . 0) (type . "Num")) #hasheq((n . 1) (type . "Num")))))
+         (#hasheq((n . 0) (type . "Num")) #hasheq((n . 1) (type . "Num"))))
+        (type . "Tuple")
+        (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -2671,7 +2582,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "Tuple") (ctx . #hasheq((type . "Load"))) (elts . ()))
+#hasheq((elts . ()) (type . "Tuple") (ctx . #hasheq((type . "Load"))))
 
 === Expected stderr ===
 
@@ -2765,15 +2676,11 @@ parse: error is described above.
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((values . (#hasheq((n . 1) (type . "Num"))))
-        (type . "Dict")
-        (keys . (#hasheq((s . "x") (type . "Str")))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+lookupEnv: Unbound indentifier error: Exception
 =====================================================
 = Results for types_truthy2.py =
 =====================================================

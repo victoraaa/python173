@@ -29,6 +29,11 @@
   [PyDef (name : symbol) (args : (listof symbol)) (body : PyExpr)] ;; deffun
   [PyReturn (value : PyExpr)] ;; return
   
+  
+  ;; Lists, dict, etc
+  [PyList (elts : (listof PyExpr))]
+  [PyDict (keys : (listof PyExpr)) (values : (listof PyExpr))]
+  
   [Py-NotExist] ;;THIS IS HERE ONLY SO THAT python-desugar won't complain about having completed all of the expressions
   )
 

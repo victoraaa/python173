@@ -87,6 +87,19 @@
     [PyModule (exprs)
               (get-vars exprs)]
     
+    [PyList (elts) 
+            (foldl (lambda (a b) (append b a))
+                   (list)
+                   (map (lambda (e) (get-vars e)) elts))]
+    
+    [PyDict (keys values) 
+            (append (foldl (lambda (a b) (append b a))
+                           (list)
+                           (map (lambda (e) (get-vars e)) keys))
+                    (foldl (lambda (a b) (append b a))
+                           (list)
+                           (map (lambda (e) (get-vars e)) values)))]
+    
     ;[else (error 'get-vars "Case not implemented")]
     ))
 
@@ -169,14 +182,32 @@
                    (CLet 'some-func (Local) (CFunc args (desugar body) (get-vars body))
                          (CSet (CId name) (CId 'some-func)))))]
     
-    ;; PyList (elts : (listof PyExpr))
-    ;; PyDict (keys : (listof PyExpr)) (values : (listof PyExpr))
+    [PyList (elts) (CList (desugar-list elts))]
+    [PyDict (keys values) (CDict (desugar-dict-insides keys values))]
     
     ;; return
     [PyReturn (value) (CReturn (desugar value))]
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
+
+;; desugars a dictionary
+(define (desugar-dict-insides [keys : (listof PyExpr)]
+                      [values : (listof PyExpr)]) : (hashof CExp CExp)
+  (cond
+    [(and (empty? keys) (empty? values)) (hash (list))]
+    [(and (cons? keys) (cons? values)) (hash-set (desugar-dict-insides (rest keys) (rest values)) (desugar (first keys)) (desugar (first values)))]
+    [else (error 'desugar-dict-insides "key and value lists do not match")]))
+
+;; desugars a list
+(define (desugar-list [elts : (listof PyExpr)]) : (hashof CExp CExp)
+  (desugar-dict-insides (reverse (make-pynum-keys-backwards (length elts))) elts))
+
+;; a helper for desugar-list...
+(define (make-pynum-keys-backwards [n : number]) : (listof PyExpr)
+  (cond
+    [(<= n 0) empty]
+    [else (cons (PyNum (- n 1)) (make-pynum-keys-backwards (- n 1)))]))
 
 (define (make-item-list [item : 'a]
                         [size : number]

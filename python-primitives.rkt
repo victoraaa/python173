@@ -19,12 +19,14 @@ primitives here.
     [VNum (n) (to-string n)]
     [VStr (s) s]
     [VTrue () "True"]
-    [VClosure (env args body) (error 'prim "Can't print closures yet")]
+    [VClosure (env args body uid) (error 'prim "Can't print closures yet")]
     ;;Non-TA code:
     [VNone () "void"]
     [VFalse () "False"]
     [VPass () ""]
     [VUnbound () "Unbound"]
+    [VDict (h uid) "VDict - for now. We should make this recursively later"]
+    [VList (h uid) "VList - for now. We should make this recursively later"]
     ))
   
 
