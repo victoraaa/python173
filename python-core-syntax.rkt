@@ -33,6 +33,7 @@ ParselTongue.
   ;; lists and dicts become hashes
   [CList (elts : (hashof CExp CExp))]
   [CDict (elts : (hashof CExp CExp))]
+  [CTuple (elts : (hashof CExp CExp))]
   
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
@@ -49,6 +50,7 @@ ParselTongue.
   [VUnbound]
   [VList (elts : (hashof CVal CVal)) (uid : Uid)] ;; lists must be keyed byintegers, though...
   [VDict (elts : (hashof CVal CVal)) (uid : Uid)]
+  [VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
   )
 
 (define-type-alias Location number)

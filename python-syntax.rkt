@@ -33,6 +33,10 @@
   ;; Lists, dict, etc
   [PyList (elts : (listof PyExpr))]
   [PyDict (keys : (listof PyExpr)) (values : (listof PyExpr))]
+  [PyTuple (elts : (listof PyExpr))]
+  
+  ;; Exceptions
+  ;[PyTryExcFinally (
   
   [Py-NotExist] ;;THIS IS HERE ONLY SO THAT python-desugar won't complain about having completed all of the expressions
   )

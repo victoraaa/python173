@@ -27,6 +27,10 @@
                             (foldl (lambda (a b) (append b a))
                                    (list)
                                    (map (lambda (e) (get-vars e)) args)))]
+    [PyTuple (elts) 
+             (foldl (lambda (a b) (append b a))
+                    (list)
+                    (map (lambda (e) (get-vars e)) elts))]
     [PyReturn (value) (list)]
     [PyId (id) (list)]
     [PyStr (s) (list)]
@@ -184,6 +188,7 @@
     
     [PyList (elts) (CList (desugar-list elts))]
     [PyDict (keys values) (CDict (desugar-dict-insides keys values))]
+    [PyTuple (elts) (CTuple (desugar-list elts))]
     
     ;; return
     [PyReturn (value) (CReturn (desugar value))]

@@ -160,6 +160,32 @@ structure that you define in python-syntax.rkt
                  ('values values))
      (PyDict (map get-structured-python keys)
              (map get-structured-python values))]
+    
+    ;; Tuples
+    [(hash-table ('type "Tuple")
+                 ('elts elts)
+                 ('ctx ctx))
+     (PyTuple (map get-structured-python elts))]
+    
+    ;; TryExcept
+    [(hash-table ('type "TryExcept")
+                 ('body body)
+                 ('handlers handlers)
+                 ('orelse orelse))
+     (PyPass)]
+    
+    ;; TryFinally
+    [(hash-table ('type "TryFinally")
+                 ('body body)
+                 ('finalbody finalbody))
+     (PyPass)]
+    
+    ;; ExceptHandlers
+    [(hash-table ('type "ExceptHandler")
+                 ('name name)
+                 ('body body))
+     (PyPass)]
+    
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     

@@ -27,6 +27,7 @@ primitives here.
     [VUnbound () "Unbound"]
     [VDict (h uid) "VDict - for now. We should make this recursively later"]
     [VList (h uid) "VList - for now. We should make this recursively later"]
+    [VTuple (h uid) "VTuple - for now. We'll make it recursive later. "]
     ))
   
 

@@ -296,7 +296,8 @@
     [VPass () "pass"] ;; should never be reached. 
     [VUnbound () "unbound"]
     [VList (elts uid) "list"]
-    [VDict (elts uid) "dict"])) ;; should never be reached. 
+    [VDict (elts uid) "dict"]
+    [VTuple (elts uid) "tuple"])) ;; should never be reached. 
 
 
 ;; This is going to be an interp function that works on arbitrary CExps.
@@ -434,18 +435,31 @@
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
+;; 
+(define (hash-values [h : (hashof 'a 'b)]) : (listof 'b)
+  (map (lambda (x) (type-case (optionof 'b) (hash-ref h x)
+                     [none () (error 'hash-values "This exists...")]
+                     [some (v) v])) (hash-keys h)))
+
+
 ;; interp-in
 (define (interp-in (left : CExp) (right : CExp) (env : Env) (store : Store)) : AnswerC
   (type-case AnswerC (interp-env left env store)
     [ValueA (v1 s1)
             (type-case AnswerC (interp-env right env s1)
               [ValueA (v2 s2)
-                      (type-case CVal v1
-                        [VStr (str1) (type-case CVal v2
-                                       [VStr (str2) (if false ;; False, so that it typechecks. Need actual
+                      (type-case CVal v2
+                        [VStr (str2) (type-case CVal v1
+                                       [VStr (str1) (if false ;; False, so that it typechecks. Need actual
                                                         (ValueA (VTrue) s2) ;; condition. 
                                                         (ValueA (VFalse) s2))]
                                        [else (error 'interp-in "\"in\" not valid for these (differing?) types")])]
+                        [VList (elts uid) (if (member v1 (hash-values elts))
+                                              (ValueA (VTrue) s2)
+                                              (ValueA (VFalse) s2))]
+                        [VDict (elts uid) (if (member v1 (hash-keys elts))
+                                              (ValueA (VTrue) s2)
+                                              (ValueA (VFalse) s2))]
                         [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])]
               [ReturnA (v2 s2) (ReturnA v2 s2)])]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
@@ -490,7 +504,10 @@
     ['tagof (VStr (get-tag arg))]
     ['length (type-case CVal arg
                [VStr (str) (VNum (string-length str))]
-               [else (error 'interp-length "Should only be called on strings.")])]
+               [VList (elts uid) (VNum (length (hash-keys elts)))]
+               [VDict (elts uid) (VNum (length (hash-keys elts)))]
+               [VTuple (elts uid) (VNum (length (hash-keys elts)))]
+               [else (error 'interp-length "Should only be called on strings, lists, dicts and tuples.")])]
     ['to-bool (if (isTruthy arg) (VTrue) (VFalse))]
     ['to-string (VStr (pretty arg))]
     ['to-float (type-case CVal arg
@@ -552,6 +569,27 @@
                                            [ReturnA (v3 s3) (error 'interp-list-insides "Shouldn't see a return here...")])]
                          [ReturnA (v2 s2) (error 'interp-list-insides "This should never be a return.")])])]
        [ReturnA (v2 s2) (error 'interp-list-insides "This should never be a return.")])]))
+
+
+;; interps a tuple, receiving a list of ints as its keys
+(define (interp-tuple-insides [keys : (listof CExp)]
+                              [lst : (hashof CExp CExp)]
+                              [env : Env]
+                              [store : Store]) : AnswerC 
+  (cond
+    [(empty? keys) (ValueA (VList (hash (list)) (new-uid)) store)]
+    [(cons? keys) 
+     (type-case AnswerC (interp-env (first keys) env store)
+       [ValueA (v1 s1)
+               (type-case (optionof CExp) (hash-ref lst (first keys))
+                 [none () (error 'interp-tuple-insides "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
+                 [some (lst-value) 
+                       (type-case AnswerC (interp-env lst-value env s1)
+                         [ValueA (v2 s2) (type-case AnswerC (interp-tuple-insides (rest keys) lst env s2)
+                                           [ValueA (v3 s3) (ValueA (VList (hash-set (VList-elts v3) v1 v2) (VList-uid v3)) s3)]
+                                           [ReturnA (v3 s3) (error 'interp-tuple-insides "Shouldn't see a return here...")])]
+                         [ReturnA (v2 s2) (error 'interp-tuple-insides "This should never be a return.")])])]
+       [ReturnA (v2 s2) (error 'interp-tuple-insides "This should never be a return.")])]))
 
 ;; interp-env
 (define (interp-env [expr : CExp] 
@@ -678,7 +716,10 @@
     
     [CList (l) (type-case AnswerC (interp-list-insides (hash-keys l) l env store)
                  [ValueA (v s) (ValueA v s)]
-                 [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a dict. ")])]
+                 [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a list. ")])]
+    [CTuple (elts) (type-case AnswerC (interp-list-insides (hash-keys elts) elts env store)
+                 [ValueA (v s) (ValueA v s)]
+                 [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a tuple. ")])]
     
     [else (error 'interp (string-append "Haven't implemented a case yet:\n"
                                        (to-string expr)))]

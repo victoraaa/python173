@@ -1,24 +1,4 @@
-y=4
-def f(x,y):
-  def inc():
-    nonlocal x
-    x = x+1
-    print(x)
-  def dec():
-    nonlocal x
-    x = x-1
-    print(x)
-  print(y)
-  print(x)
-  inc()
-  dec()
-f(0,(5+4-1))
-print(y)
-
-f1 = lambda x: lambda y: x + y
-inc = f1(1)
-plus10 = f1(10)
-print("\n")
-print(inc(1))
-print("\n")
-print(plus10(5))
+try: 1+"2"
+except EOFException: print('exc')
+except: print('not EOF')
+finally: print('end')
