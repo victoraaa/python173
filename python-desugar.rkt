@@ -92,13 +92,13 @@
                    (list)
                    (map (lambda (e) (get-vars e)) elts))]
     
-    [PyDict (keys values) 
+    [PyDict (keys vals) 
             (append (foldl (lambda (a b) (append b a))
                            (list)
                            (map (lambda (e) (get-vars e)) keys))
                     (foldl (lambda (a b) (append b a))
                            (list)
-                           (map (lambda (e) (get-vars e)) values)))]
+                           (map (lambda (e) (get-vars e)) vals)))]
     
     ;[else (error 'get-vars "Case not implemented")]
     ))
@@ -183,7 +183,7 @@
                          (CSet (CId name) (CId 'some-func)))))]
     
     [PyList (elts) (CList (desugar-list elts))]
-    [PyDict (keys values) (CDict (desugar-dict-insides keys values))]
+    [PyDict (keys vals) (CDict (desugar-dict-insides keys vals))]
     
     ;; return
     [PyReturn (value) (CReturn (desugar value))]
@@ -193,10 +193,10 @@
 
 ;; desugars a dictionary
 (define (desugar-dict-insides [keys : (listof PyExpr)]
-                      [values : (listof PyExpr)]) : (hashof CExp CExp)
+                      [vals : (listof PyExpr)]) : (hashof CExp CExp)
   (cond
-    [(and (empty? keys) (empty? values)) (hash (list))]
-    [(and (cons? keys) (cons? values)) (hash-set (desugar-dict-insides (rest keys) (rest values)) (desugar (first keys)) (desugar (first values)))]
+    [(and (empty? keys) (empty? vals)) (hash (list))]
+    [(and (cons? keys) (cons? vals)) (hash-set (desugar-dict-insides (rest keys) (rest vals)) (desugar (first keys)) (desugar (first vals)))]
     [else (error 'desugar-dict-insides "key and value lists do not match")]))
 
 ;; desugars a list
