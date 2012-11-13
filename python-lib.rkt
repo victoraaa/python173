@@ -351,9 +351,15 @@ that calls the primitive `print`.
 
 (define len 
   (CFunc (list 'e-1)
-         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+         (CIf (CPrim2 'or
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
+                      (CPrim2 'or
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
+                              (CPrim2 'or
+                                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "dict"))
+                                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")))))
               (CPrim1 'length (CId 'e-1))
-              (CError (CStr "len: Argument must be a string.")))
+              (CError (CStr "len: Argument must be a string, list or dict (so far...).")))
          (list)))
 
 (define abs
@@ -426,6 +432,7 @@ that calls the primitive `print`.
         (bind 'python-is python-is)
         (bind 'python-isNot python-isNot)
         (bind 'python-in python-in)
+        (bind 'python-notIn python-notIn)
         (bind 'len len)
         (bind 'abs abs)
         (bind 'bool bool)
