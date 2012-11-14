@@ -1,4 +1,4 @@
-try: 1+"2"
-except EOFException: print('exc')
-except: print('not EOF')
-finally: print('end')
+try: 
+  raise Exception('spam', 'eggs')
+except Exception as inst: 
+  print('exc')

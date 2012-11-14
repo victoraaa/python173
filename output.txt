@@ -1,3 +1,5 @@
+
+C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
 33 tests succeeded.
 57 tests failed.
 == Output of failed tests ==
@@ -41,31 +43,31 @@ lookupEnv: Unbound indentifier error: isinstance
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "GeneratorExp")
+#hasheq((nodetype . "GeneratorExp")
         (generators
          .
          (#hasheq((target
                    .
                    #hasheq((id . "x")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Store")))))
-                  (type . "comprehension")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (nodetype . "comprehension")
                   (iter
                    .
                    #hasheq((id . "S")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
                   (ifs . ()))))
         (elt
          .
          #hasheq((left
                   .
                   #hasheq((id . "x")
-                          (type . "Name")
-                          (ctx . #hasheq((type . "Load")))))
-                 (ops . (#hasheq((type . "Gt"))))
-                 (comparators . (#hasheq((n . 42) (type . "Num"))))
-                 (type . "Compare"))))
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare"))))
 
 === Expected stderr ===
 
@@ -78,31 +80,31 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((type . "GeneratorExp")
+#hasheq((nodetype . "GeneratorExp")
         (generators
          .
          (#hasheq((target
                    .
                    #hasheq((id . "x")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Store")))))
-                  (type . "comprehension")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (nodetype . "comprehension")
                   (iter
                    .
                    #hasheq((id . "S")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
                   (ifs . ()))))
         (elt
          .
          #hasheq((left
                   .
                   #hasheq((id . "x")
-                          (type . "Name")
-                          (ctx . #hasheq((type . "Load")))))
-                 (ops . (#hasheq((type . "Gt"))))
-                 (comparators . (#hasheq((n . 42) (type . "Num"))))
-                 (type . "Compare"))))
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare"))))
 
 === Expected stderr ===
 
@@ -122,9 +124,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -132,13 +134,13 @@ PARSING: Haven't handled a case yet:
                            (kwargannotation . #\nul)
                            (defaults . ())
                            (kw_defaults . ())))
-                  (body . (#hasheq((type . "Pass"))))
+                  (body . (#hasheq((nodetype . "Pass"))))
                   (name . "meth")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))))
         (name . "C1")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -167,9 +169,9 @@ lookupEnv: Unbound indentifier error: list
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body . (#hasheq((type . "Pass"))))
+#hasheq((body . (#hasheq((nodetype . "Pass"))))
         (name . "C")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -190,9 +192,11 @@ PARSING: Haven't handled a case yet:
 #hasheq((attr . "clear")
         (value
          .
-         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
+         #hasheq((id . "d")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Load")))))
+        (nodetype . "Attribute")
+        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
@@ -208,9 +212,11 @@ PARSING: Haven't handled a case yet:
 #hasheq((attr . "get")
         (value
          .
-         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
+         #hasheq((id . "d")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Load")))))
+        (nodetype . "Attribute")
+        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
@@ -225,13 +231,15 @@ parse: error is described above.
 PARSING: Haven't handled a case yet: 
 #hasheq((value
          .
-         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Subscript")
-        (ctx . #hasheq((type . "Load")))
+         #hasheq((id . "d")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Load")))))
+        (nodetype . "Subscript")
+        (ctx . #hasheq((nodetype . "Load")))
         (slice
          .
-         #hasheq((value . #hasheq((s . "a") (type . "Str")))
-                 (type . "Index"))))
+         #hasheq((value . #hasheq((s . "a") (nodetype . "Str")))
+                 (nodetype . "Index"))))
 
 === Expected stderr ===
 
@@ -247,9 +255,11 @@ PARSING: Haven't handled a case yet:
 #hasheq((attr . "items")
         (value
          .
-         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
+         #hasheq((id . "d")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Load")))))
+        (nodetype . "Attribute")
+        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
@@ -265,9 +275,11 @@ PARSING: Haven't handled a case yet:
 #hasheq((attr . "keys")
         (value
          .
-         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
+         #hasheq((id . "d")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Load")))))
+        (nodetype . "Attribute")
+        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
@@ -285,15 +297,15 @@ PARSING: Haven't handled a case yet:
          .
          #hasheq((values
                   .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))
+                  (#hasheq((n . 1) (nodetype . "Num"))
+                   #hasheq((n . 2) (nodetype . "Num"))))
                  (keys
                   .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))
-                 (type . "Dict")))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
+                  (#hasheq((n . 1) (nodetype . "Num"))
+                   #hasheq((n . 2) (nodetype . "Num"))))
+                 (nodetype . "Dict")))
+        (nodetype . "Attribute")
+        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
@@ -309,9 +321,11 @@ PARSING: Haven't handled a case yet:
 #hasheq((attr . "update")
         (value
          .
-         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
+         #hasheq((id . "d")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Load")))))
+        (nodetype . "Attribute")
+        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
@@ -329,15 +343,15 @@ PARSING: Haven't handled a case yet:
          .
          #hasheq((values
                   .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))
+                  (#hasheq((n . 1) (nodetype . "Num"))
+                   #hasheq((n . 2) (nodetype . "Num"))))
                  (keys
                   .
-                  (#hasheq((n . 1) (type . "Num"))
-                   #hasheq((n . 2) (type . "Num"))))
-                 (type . "Dict")))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
+                  (#hasheq((n . 1) (nodetype . "Num"))
+                   #hasheq((n . 2) (nodetype . "Num"))))
+                 (nodetype . "Dict")))
+        (nodetype . "Attribute")
+        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
@@ -353,9 +367,11 @@ PARSING: Haven't handled a case yet:
 #hasheq((attr . "values")
         (value
          .
-         #hasheq((id . "d") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
+         #hasheq((id . "d")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Load")))))
+        (nodetype . "Attribute")
+        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
@@ -520,12 +536,12 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))
                              #hasheq((arg . "n")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -541,34 +557,34 @@ PARSING: Haven't handled a case yet:
                                       (value
                                        .
                                        #hasheq((id . "self")
-                                               (type . "Name")
+                                               (nodetype . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Attribute")
-                                      (ctx . #hasheq((type . "Store"))))))
+                                                #hasheq((nodetype . "Load")))))
+                                      (nodetype . "Attribute")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
                             (value
                              .
                              #hasheq((id . "n")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Assign"))
                     #hasheq((targets
                              .
                              (#hasheq((attr . "i")
                                       (value
                                        .
                                        #hasheq((id . "self")
-                                               (type . "Name")
+                                               (nodetype . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Attribute")
-                                      (ctx . #hasheq((type . "Store"))))))
-                            (value . #hasheq((n . 0) (type . "Num")))
-                            (type . "Assign"))))
+                                                #hasheq((nodetype . "Load")))))
+                                      (nodetype . "Attribute")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
+                            (value . #hasheq((n . 0) (nodetype . "Num")))
+                            (nodetype . "Assign"))))
                   (name . "__init__")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
           #hasheq((args
@@ -576,9 +592,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -591,98 +607,102 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((targets
                              .
                              (#hasheq((id . "res")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                                      (nodetype . "Name")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
                             (value
                              .
                              #hasheq((attr . "i")
                                      (value
                                       .
                                       #hasheq((id . "self")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))
-                                     (type . "Attribute")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Assign"))
+                                               #hasheq((nodetype . "Load")))))
+                                     (nodetype . "Attribute")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Assign"))
                     #hasheq((orelse . ())
                             (body
                              .
                              (#hasheq((exc
                                        .
                                        #hasheq((id . "StopIteration")
-                                               (type . "Name")
+                                               (nodetype . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Raise")
+                                                #hasheq((nodetype . "Load")))))
+                                      (nodetype . "Raise")
                                       (cause . #\nul))))
                             (test
                              .
                              #hasheq((left
                                       .
                                       #hasheq((id . "res")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))
-                                     (ops . (#hasheq((type . "GtE"))))
+                                               #hasheq((nodetype . "Load")))))
+                                     (ops . (#hasheq((nodetype . "GtE"))))
                                      (comparators
                                       .
                                       (#hasheq((attr . "n")
                                                (value
                                                 .
                                                 #hasheq((id . "self")
-                                                        (type . "Name")
+                                                        (nodetype . "Name")
                                                         (ctx
                                                          .
-                                                         #hasheq((type
+                                                         #hasheq((nodetype
                                                                   .
                                                                   "Load")))))
-                                               (type . "Attribute")
+                                               (nodetype . "Attribute")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load"))))))
-                                     (type . "Compare")))
-                            (type . "If"))
+                                                #hasheq((nodetype
+                                                         .
+                                                         "Load"))))))
+                                     (nodetype . "Compare")))
+                            (nodetype . "If"))
                     #hasheq((targets
                              .
                              (#hasheq((attr . "i")
                                       (value
                                        .
                                        #hasheq((id . "self")
-                                               (type . "Name")
+                                               (nodetype . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load")))))
-                                      (type . "Attribute")
-                                      (ctx . #hasheq((type . "Store"))))))
+                                                #hasheq((nodetype . "Load")))))
+                                      (nodetype . "Attribute")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
                             (value
                              .
-                             #hasheq((op . #hasheq((type . "Add")))
+                             #hasheq((op . #hasheq((nodetype . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "res")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))
-                                     (right . #hasheq((n . 1) (type . "Num")))
-                                     (type . "BinOp")))
-                            (type . "Assign"))
+                                               #hasheq((nodetype . "Load")))))
+                                     (right
+                                      .
+                                      #hasheq((n . 1) (nodetype . "Num")))
+                                     (nodetype . "BinOp")))
+                            (nodetype . "Assign"))
                     #hasheq((value
                              .
                              #hasheq((id . "res")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Return"))))
                   (name . "__next__")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))))
         (name . "BasicIterClass")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -716,39 +736,39 @@ PARSING: Haven't handled a case yet:
                                                 (#hasheq((elts
                                                           .
                                                           (#hasheq((id . "i")
-                                                                   (type
+                                                                   (nodetype
                                                                     .
                                                                     "Name")
                                                                    (ctx
                                                                     .
-                                                                    #hasheq((type
+                                                                    #hasheq((nodetype
                                                                              .
                                                                              "Load"))))
                                                            #hasheq((id . "j")
-                                                                   (type
+                                                                   (nodetype
                                                                     .
                                                                     "Name")
                                                                    (ctx
                                                                     .
-                                                                    #hasheq((type
+                                                                    #hasheq((nodetype
                                                                              .
                                                                              "Load"))))
                                                            #hasheq((id . "k")
-                                                                   (type
+                                                                   (nodetype
                                                                     .
                                                                     "Name")
                                                                    (ctx
                                                                     .
-                                                                    #hasheq((type
+                                                                    #hasheq((nodetype
                                                                              .
                                                                              "Load"))))))
-                                                         (type . "Tuple")
+                                                         (nodetype . "Tuple")
                                                          (ctx
                                                           .
-                                                          #hasheq((type
+                                                          #hasheq((nodetype
                                                                    .
                                                                    "Load"))))))
-                                               (type . "Call")
+                                               (nodetype . "Call")
                                                (keywords . ())
                                                (kwargs . #\nul)
                                                (starargs . #\nul)
@@ -758,89 +778,97 @@ PARSING: Haven't handled a case yet:
                                                         (value
                                                          .
                                                          #hasheq((id . "res")
-                                                                 (type
+                                                                 (nodetype
                                                                   .
                                                                   "Name")
                                                                  (ctx
                                                                   .
-                                                                  #hasheq((type
+                                                                  #hasheq((nodetype
                                                                            .
                                                                            "Load")))))
-                                                        (type . "Attribute")
+                                                        (nodetype
+                                                         .
+                                                         "Attribute")
                                                         (ctx
                                                          .
-                                                         #hasheq((type
+                                                         #hasheq((nodetype
                                                                   .
                                                                   "Load")))))))
-                                      (type . "Expr"))))
+                                      (nodetype . "Expr"))))
                             (target
                              .
                              #hasheq((id . "k")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Store")))))
-                            (type . "For")
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Store")))))
+                            (nodetype . "For")
                             (iter
                              .
                              #hasheq((args
                                       .
                                       (#hasheq((id . "seq")
-                                               (type . "Name")
+                                               (nodetype . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load"))))))
-                                     (type . "Call")
+                                                #hasheq((nodetype
+                                                         .
+                                                         "Load"))))))
+                                     (nodetype . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
                                      (func
                                       .
                                       #hasheq((id . "iter")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load"))))))))))
+                                               #hasheq((nodetype
+                                                        .
+                                                        "Load"))))))))))
                   (target
                    .
                    #hasheq((id . "j")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Store")))))
-                  (type . "For")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (nodetype . "For")
                   (iter
                    .
                    #hasheq((args
                             .
                             (#hasheq((id . "seq")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load"))))))
-                           (type . "Call")
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load"))))))
+                           (nodetype . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
                            (func
                             .
                             #hasheq((id . "iter")
-                                    (type . "Name")
-                                    (ctx . #hasheq((type . "Load"))))))))))
+                                    (nodetype . "Name")
+                                    (ctx . #hasheq((nodetype . "Load"))))))))))
         (target
          .
-         #hasheq((id . "i") (type . "Name") (ctx . #hasheq((type . "Store")))))
-        (type . "For")
+         #hasheq((id . "i")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Store")))))
+        (nodetype . "For")
         (iter
          .
          #hasheq((args
                   .
                   (#hasheq((id . "seq")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load"))))))
-                 (type . "Call")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load"))))))
+                 (nodetype . "Call")
                  (keywords . ())
                  (kwargs . #\nul)
                  (starargs . #\nul)
                  (func
                   .
                   #hasheq((id . "iter")
-                          (type . "Name")
-                          (ctx . #hasheq((type . "Load"))))))))
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load"))))))))
 
 === Expected stderr ===
 
@@ -862,43 +890,52 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((targets
                              .
                              (#hasheq((id . "val")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                                      (nodetype . "Name")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
                             (value
                              .
                              #hasheq((args
                                       .
                                       (#hasheq((id . "it")
-                                               (type . "Name")
+                                               (nodetype . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load"))))))
-                                     (type . "Call")
+                                                #hasheq((nodetype
+                                                         .
+                                                         "Load"))))))
+                                     (nodetype . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
                                      (func
                                       .
                                       #hasheq((id . "next")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Assign"))))
-                  (type . "TryExcept")
+                                               #hasheq((nodetype
+                                                        .
+                                                        "Load")))))))
+                            (nodetype . "Assign"))))
+                  (nodetype . "TryExcept")
                   (handlers
                    .
-                   (#hasheq((body . (#hasheq((type . "Break"))))
+                   (#hasheq((body . (#hasheq((nodetype . "Break"))))
                             (name . #\nul)
-                            (type . "ExceptHandler")))))
+                            (type
+                             .
+                             #hasheq((id . "StopIteration")
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "ExceptHandler")))))
           #hasheq((value
                    .
                    #hasheq((args
                             .
                             (#hasheq((id . "val")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load"))))))
-                           (type . "Call")
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load"))))))
+                           (nodetype . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -908,13 +945,15 @@ PARSING: Haven't handled a case yet:
                                     (value
                                      .
                                      #hasheq((id . "res")
-                                             (type . "Name")
-                                             (ctx . #hasheq((type . "Load")))))
-                                    (type . "Attribute")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))))
-        (test . #hasheq((n . 1) (type . "Num")))
-        (type . "While"))
+                                             (nodetype . "Name")
+                                             (ctx
+                                              .
+                                              #hasheq((nodetype . "Load")))))
+                                    (nodetype . "Attribute")
+                                    (ctx . #hasheq((nodetype . "Load")))))))
+                  (nodetype . "Expr"))))
+        (test . #hasheq((n . 1) (nodetype . "Num")))
+        (nodetype . "While"))
 
 === Expected stderr ===
 
@@ -936,43 +975,52 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((targets
                              .
                              (#hasheq((id . "val")
-                                      (type . "Name")
-                                      (ctx . #hasheq((type . "Store"))))))
+                                      (nodetype . "Name")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
                             (value
                              .
                              #hasheq((args
                                       .
                                       (#hasheq((id . "it")
-                                               (type . "Name")
+                                               (nodetype . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load"))))))
-                                     (type . "Call")
+                                                #hasheq((nodetype
+                                                         .
+                                                         "Load"))))))
+                                     (nodetype . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
                                      (func
                                       .
                                       #hasheq((id . "next")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Assign"))))
-                  (type . "TryExcept")
+                                               #hasheq((nodetype
+                                                        .
+                                                        "Load")))))))
+                            (nodetype . "Assign"))))
+                  (nodetype . "TryExcept")
                   (handlers
                    .
-                   (#hasheq((body . (#hasheq((type . "Break"))))
+                   (#hasheq((body . (#hasheq((nodetype . "Break"))))
                             (name . #\nul)
-                            (type . "ExceptHandler")))))
+                            (type
+                             .
+                             #hasheq((id . "StopIteration")
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "ExceptHandler")))))
           #hasheq((value
                    .
                    #hasheq((args
                             .
                             (#hasheq((id . "val")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load"))))))
-                           (type . "Call")
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load"))))))
+                           (nodetype . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
@@ -982,13 +1030,15 @@ PARSING: Haven't handled a case yet:
                                     (value
                                      .
                                      #hasheq((id . "res")
-                                             (type . "Name")
-                                             (ctx . #hasheq((type . "Load")))))
-                                    (type . "Attribute")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))))
-        (test . #hasheq((n . 1) (type . "Num")))
-        (type . "While"))
+                                             (nodetype . "Name")
+                                             (ctx
+                                              .
+                                              #hasheq((nodetype . "Load")))))
+                                    (nodetype . "Attribute")
+                                    (ctx . #hasheq((nodetype . "Load")))))))
+                  (nodetype . "Expr"))))
+        (test . #hasheq((n . 1) (nodetype . "Num")))
+        (nodetype . "While"))
 
 === Expected stderr ===
 
@@ -1004,9 +1054,11 @@ PARSING: Haven't handled a case yet:
 #hasheq((attr . "extend")
         (value
          .
-         #hasheq((id . "a") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Attribute")
-        (ctx . #hasheq((type . "Load"))))
+         #hasheq((id . "a")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Load")))))
+        (nodetype . "Attribute")
+        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
@@ -1070,9 +1122,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1085,26 +1137,26 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((value
                              .
                              #hasheq((id . "x")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Return"))))
                   (name . "m")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
           #hasheq((targets
                    .
                    (#hasheq((id . "a")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
+                            (nodetype . "Name")
+                            (ctx . #hasheq((nodetype . "Store"))))))
                   (value
                    .
                    #hasheq((id . "x")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Assign"))))
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "Assign"))))
         (name . "C")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -1129,9 +1181,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1141,10 +1193,12 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((value . #hasheq((s . "method") (type . "Str")))
-                            (type . "Return"))))
+                   (#hasheq((value
+                             .
+                             #hasheq((s . "method") (nodetype . "Str")))
+                            (nodetype . "Return"))))
                   (name . "method_and_var")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
           #hasheq((args
@@ -1152,9 +1206,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1167,11 +1221,11 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((value
                              .
                              #hasheq((id . "method_and_var")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Return"))))
                   (name . "test")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
           #hasheq((args
@@ -1179,9 +1233,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1195,21 +1249,24 @@ PARSING: Haven't handled a case yet:
                              .
                              #hasheq((args
                                       .
-                                      (#hasheq((s . "global") (type . "Str"))))
-                                     (type . "Call")
+                                      (#hasheq((s . "global")
+                                               (nodetype . "Str"))))
+                                     (nodetype . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
                                      (func
                                       .
                                       #hasheq((id . "str")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Return"))))
+                                               #hasheq((nodetype
+                                                        .
+                                                        "Load")))))))
+                            (nodetype . "Return"))))
                   (name . "actual_global")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
           #hasheq((args
@@ -1217,9 +1274,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1234,28 +1291,32 @@ PARSING: Haven't handled a case yet:
                              #hasheq((args
                                       .
                                       (#hasheq((id . "self")
-                                               (type . "Name")
+                                               (nodetype . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load"))))))
-                                     (type . "Call")
+                                                #hasheq((nodetype
+                                                         .
+                                                         "Load"))))))
+                                     (nodetype . "Call")
                                      (keywords . ())
                                      (kwargs . #\nul)
                                      (starargs . #\nul)
                                      (func
                                       .
                                       #hasheq((id . "str")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))))
-                            (type . "Return"))))
+                                               #hasheq((nodetype
+                                                        .
+                                                        "Load")))))))
+                            (nodetype . "Return"))))
                   (name . "str")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))))
         (name . "Test")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -1278,18 +1339,18 @@ PARSING: Haven't handled a case yet:
          (#hasheq((targets
                    .
                    (#hasheq((id . "x")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Store"))))))
-                  (value . #hasheq((n . 12) (type . "Num")))
-                  (type . "Assign"))
+                            (nodetype . "Name")
+                            (ctx . #hasheq((nodetype . "Store"))))))
+                  (value . #hasheq((n . 12) (nodetype . "Num")))
+                  (nodetype . "Assign"))
           #hasheq((args
                    .
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1302,28 +1363,28 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((value
                              .
                              #hasheq((id . "x")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Return"))))
                   (name . "m")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
           #hasheq((value
                    .
                    #hasheq((args . ())
-                           (type . "Call")
+                           (nodetype . "Call")
                            (keywords . ())
                            (kwargs . #\nul)
                            (starargs . #\nul)
                            (func
                             .
                             #hasheq((id . "locals")
-                                    (type . "Name")
-                                    (ctx . #hasheq((type . "Load")))))))
-                  (type . "Expr"))))
+                                    (nodetype . "Name")
+                                    (ctx . #hasheq((nodetype . "Load")))))))
+                  (nodetype . "Expr"))))
         (name . "C")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -1346,15 +1407,15 @@ PARSING: Haven't handled a case yet:
          (#hasheq((value
                    .
                    #hasheq((id . "d")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Load")))))
-                  (type . "Subscript")
-                  (ctx . #hasheq((type . "Del")))
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "Subscript")
+                  (ctx . #hasheq((nodetype . "Del")))
                   (slice
                    .
-                   #hasheq((value . #hasheq((s . "h") (type . "Str")))
-                           (type . "Index"))))))
-        (type . "Delete"))
+                   #hasheq((value . #hasheq((s . "h") (nodetype . "Str")))
+                           (nodetype . "Index"))))))
+        (nodetype . "Delete"))
 
 === Expected stderr ===
 
@@ -1385,12 +1446,12 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))
                              #hasheq((arg . "y")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1402,29 +1463,29 @@ PARSING: Haven't handled a case yet:
                    .
                    (#hasheq((value
                              .
-                             #hasheq((op . #hasheq((type . "Add")))
+                             #hasheq((op . #hasheq((nodetype . "Add")))
                                      (left
                                       .
                                       #hasheq((id . "x")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))
+                                               #hasheq((nodetype . "Load")))))
                                      (right
                                       .
                                       #hasheq((id . "y")
-                                              (type . "Name")
+                                              (nodetype . "Name")
                                               (ctx
                                                .
-                                               #hasheq((type . "Load")))))
-                                     (type . "BinOp")))
-                            (type . "Return"))))
+                                               #hasheq((nodetype . "Load")))))
+                                     (nodetype . "BinOp")))
+                            (nodetype . "Return"))))
                   (name . "__call__")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))))
         (name . "Adder")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -1444,23 +1505,23 @@ parse: error is described above.
 PARSING: Haven't handled a case yet: 
 #hasheq((body
          .
-         (#hasheq((type . "Nonlocal") (names . ("x")))
-          #hasheq((op . #hasheq((type . "Add")))
-                  (value . #hasheq((n . 1) (type . "Num")))
+         (#hasheq((nodetype . "Nonlocal") (names . ("x")))
+          #hasheq((op . #hasheq((nodetype . "Add")))
+                  (value . #hasheq((n . 1) (nodetype . "Num")))
                   (target
                    .
                    #hasheq((id . "x")
-                           (type . "Name")
-                           (ctx . #hasheq((type . "Store")))))
-                  (type . "AugAssign"))
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (nodetype . "AugAssign"))
           #hasheq((args
                    .
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1473,15 +1534,15 @@ PARSING: Haven't handled a case yet:
                    (#hasheq((value
                              .
                              #hasheq((id . "x")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Return"))))
                   (name . "get")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))))
         (name . "c")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -1517,9 +1578,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1529,23 +1590,23 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((type . "Nonlocal") (names . ("x")))
-                    #hasheq((op . #hasheq((type . "Add")))
-                            (value . #hasheq((n . 1) (type . "Num")))
+                   (#hasheq((nodetype . "Nonlocal") (names . ("x")))
+                    #hasheq((op . #hasheq((nodetype . "Add")))
+                            (value . #hasheq((n . 1) (nodetype . "Num")))
                             (target
                              .
                              #hasheq((id . "x")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Store")))))
-                            (type . "AugAssign"))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Store")))))
+                            (nodetype . "AugAssign"))
                     #hasheq((value
                              .
                              #hasheq((id . "x")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Return"))))
                   (name . "inc")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
           #hasheq((args
@@ -1553,9 +1614,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1565,27 +1626,27 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((type . "Nonlocal") (names . ("x")))
-                    #hasheq((op . #hasheq((type . "Sub")))
-                            (value . #hasheq((n . 1) (type . "Num")))
+                   (#hasheq((nodetype . "Nonlocal") (names . ("x")))
+                    #hasheq((op . #hasheq((nodetype . "Sub")))
+                            (value . #hasheq((n . 1) (nodetype . "Num")))
                             (target
                              .
                              #hasheq((id . "x")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Store")))))
-                            (type . "AugAssign"))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Store")))))
+                            (nodetype . "AugAssign"))
                     #hasheq((value
                              .
                              #hasheq((id . "x")
-                                     (type . "Name")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Return"))))
                   (name . "dec")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))))
         (name . "c")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -1621,9 +1682,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "self")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1633,10 +1694,10 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((value . #hasheq((s . "A") (type . "Str")))
-                            (type . "Return"))))
+                   (#hasheq((value . #hasheq((s . "A") (nodetype . "Str")))
+                            (nodetype . "Return"))))
                   (name . "f")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
           #hasheq((args
@@ -1644,9 +1705,9 @@ PARSING: Haven't handled a case yet:
                    #hasheq((args
                             .
                             (#hasheq((arg . "cls")
-                                     (type . "arg")
+                                     (nodetype . "arg")
                                      (annotation . #\nul))))
-                           (type . "arguments")
+                           (nodetype . "arguments")
                            (vararg . #\nul)
                            (varargannotation . #\nul)
                            (kwonlyargs . ())
@@ -1661,24 +1722,24 @@ PARSING: Haven't handled a case yet:
                              #hasheq((elts
                                       .
                                       (#hasheq((id . "cls")
-                                               (type . "Name")
+                                               (nodetype . "Name")
                                                (ctx
                                                 .
-                                                #hasheq((type . "Load"))))
-                                       #hasheq((s . "A") (type . "Str"))))
-                                     (type . "Tuple")
-                                     (ctx . #hasheq((type . "Load")))))
-                            (type . "Return"))))
+                                                #hasheq((nodetype . "Load"))))
+                                       #hasheq((s . "A") (nodetype . "Str"))))
+                                     (nodetype . "Tuple")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (nodetype . "Return"))))
                   (name . "cm")
-                  (type . "FunctionDef")
+                  (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list
                    .
                    (#hasheq((id . "classmethod")
-                            (type . "Name")
-                            (ctx . #hasheq((type . "Load")))))))))
+                            (nodetype . "Name")
+                            (ctx . #hasheq((nodetype . "Load")))))))))
         (name . "A")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)
@@ -1742,12 +1803,14 @@ lookupEnv: Unbound indentifier error: min
 PARSING: Haven't handled a case yet: 
 #hasheq((value
          .
-         #hasheq((id . "a") (type . "Name") (ctx . #hasheq((type . "Load")))))
-        (type . "Subscript")
-        (ctx . #hasheq((type . "Load")))
+         #hasheq((id . "a")
+                 (nodetype . "Name")
+                 (ctx . #hasheq((nodetype . "Load")))))
+        (nodetype . "Subscript")
+        (ctx . #hasheq((nodetype . "Load")))
         (slice
          .
-         #hasheq((type . "Slice")
+         #hasheq((nodetype . "Slice")
                  (upper . #\nul)
                  (lower . #\nul)
                  (step . #\nul))))
@@ -1774,9 +1837,9 @@ lookupEnv: Unbound indentifier error: Exception
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((body . (#hasheq((type . "Pass"))))
+#hasheq((body . (#hasheq((nodetype . "Pass"))))
         (name . "C")
-        (type . "ClassDef")
+        (nodetype . "ClassDef")
         (decorator_list . ())
         (keywords . ())
         (kwargs . #\nul)

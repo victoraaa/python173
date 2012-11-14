@@ -14,11 +14,11 @@ structure that you define in python-syntax.rkt
 
 (define (get-structured-python pyjson)
   (match pyjson
-    [(hash-table ('type "Module") ('body expr-list))
+    [(hash-table ('nodetype "Module") ('body expr-list))
      (PyModule (PySeq (map get-structured-python expr-list)))]
-    [(hash-table ('type "Expr") ('value expr))
+    [(hash-table ('nodetype "Expr") ('value expr))
      (get-structured-python expr)]
-    [(hash-table ('type "Call")
+    [(hash-table ('nodetype "Call")
                  ('keywords keywords) ;; ignoring keywords for now
                  ('kwargs kwargs)     ;; ignoring kwargs for now
                  ('starargs starargs) ;; ignoring starargs for now
@@ -28,7 +28,7 @@ structure that you define in python-syntax.rkt
             (map get-structured-python args-list))]
     
     ;; Catching None up here, before we hit the identifer case
-    [(hash-table ('type "Name")
+    [(hash-table ('nodetype "Name")
                  ('ctx _)
                  ('id "None"))
      (PyNone)]
@@ -37,50 +37,50 @@ structure that you define in python-syntax.rkt
     ;; Alternatively, they could be handled in desugaring. This is a decision we need to make
     ;; before we can proceed. I vote for desugaring. 
     
-    [(hash-table ('type "Name")
+    [(hash-table ('nodetype "Name")
                  ('ctx _)        ;; ignoring ctx for now
                  ('id id))
      (PyId (string->symbol id))]
-    [(hash-table ('type "Num")
+    [(hash-table ('nodetype "Num")
                  ('n n))
      (PyNum n)]
     ;;MADE BY ME:
-    [(hash-table ('type "If")
+    [(hash-table ('nodetype "If")
                  ('body body) ;stmt-list
                  ('test test) ;expr
                  ('orelse orelse)) ;stmt-list
      (PyIf (get-structured-python test )
            (map get-structured-python body)
            (map get-structured-python orelse))]
-    [(hash-table ('type "BoolOp")
+    [(hash-table ('nodetype "BoolOp")
                  ('op op) ;boolop
                  ('values values)) ;expr-list
      (PyBoolop (get-structured-python op) (map get-structured-python values))]
-    [(hash-table ('type "UnaryOp")
+    [(hash-table ('nodetype "UnaryOp")
                  ('op op)
                  ('operand operand))
      (PyUnaryOp (get-structured-python op) (get-structured-python operand))]
-    [(hash-table ('type "Compare")
+    [(hash-table ('nodetype "Compare")
                  ('left left) ;expr
                  ('ops ops) ;cmpop*
                  ('comparators comparators)) ;expr*
      (PyCompare (get-structured-python left)
                 (map get-structured-python ops)
                 (map get-structured-python comparators))]
-    [(hash-table ('type "Str")
+    [(hash-table ('nodetype "Str")
                  ('s s))
      (PyStr s)]
-    [(hash-table ('type "Pass"))
+    [(hash-table ('nodetype "Pass"))
      (PyPass)]
     
     
     
-    [(hash-table ('type "Lambda")
+    [(hash-table ('nodetype "Lambda")
                  ('args args) ;arguments
                  ('body body)) ;expr
      (PyLambda (get-structured-python args)
                (get-structured-python body))]
-    [(hash-table ('type "arguments")
+    [(hash-table ('nodetype "arguments")
                  ('args args) ;arg*
                  ('vararg vararg)
                  ('varargannotation varargannotation)
@@ -90,17 +90,17 @@ structure that you define in python-syntax.rkt
                  ('defaults defaults)
                  ('kw_defaults kw_defaults))
      (map get-structured-python args)]
-    [(hash-table ('type "arg")
+    [(hash-table ('nodetype "arg")
                  ('arg arg)
                  ('annotation annotation))
      (string->symbol arg)]
-    [(hash-table ('type "Assign")
+    [(hash-table ('nodetype "Assign")
                  ('targets targets)
                  ('value value))
      (PyAssign (map get-structured-python targets)
                (get-structured-python value))]
     
-    [(hash-table ('type "AugAssign")
+    [(hash-table ('nodetype "AugAssign")
                  ('target target)
                  ('op op)
                  ('value value))
@@ -108,11 +108,11 @@ structure that you define in python-syntax.rkt
                   (get-structured-python op)
                   (get-structured-python value))]
     ;; raise
-    [(hash-table ('type "Raise")
+    [(hash-table ('nodetype "Raise")
                  ('exc exc)
                  ('cause cause))
      (PyRaise (get-structured-python exc))] ;; (get-structured-python cause))]
-    [(hash-table ('type "BinOp")
+    [(hash-table ('nodetype "BinOp")
                  ('left left) ;expr
                  ('op op) ;operator
                  ('right right)) ;expr
@@ -122,7 +122,7 @@ structure that you define in python-syntax.rkt
     
     
     ;; def
-    [(hash-table ('type "FunctionDef")
+    [(hash-table ('nodetype "FunctionDef")
                  ('name name)
                  ('args args)
                  ('body body)
@@ -133,55 +133,55 @@ structure that you define in python-syntax.rkt
             (PySeq (map get-structured-python body)))]
     
     ;; return case
-    [(hash-table ('type "Return")
+    [(hash-table ('nodetype "Return")
                  ('value value))
      (PyReturn (get-structured-python value))]
     
     
     ;; global variable
-    [(hash-table ('type "Global")
+    [(hash-table ('nodetype "Global")
                  ('names names))
      (PyGlobal (map (lambda (name) (string->symbol name)) names))]
     
     ;; nonlocal variable
-    [(hash-table ('type "Nonlocal")
+    [(hash-table ('nodetype "Nonlocal")
                  ('names names))
      (PyNonlocal (map (lambda (name) (string->symbol name)) names))]
     
     ;; lists
-    [(hash-table ('type "List")
+    [(hash-table ('nodetype "List")
                  ('elts elts)
                  ('ctx ctx))
      (PyList (map get-structured-python elts))]
     
     ;; Dicts
-    [(hash-table ('type "Dict")
+    [(hash-table ('nodetype "Dict")
                  ('keys keys)
                  ('values values))
      (PyDict (map get-structured-python keys)
              (map get-structured-python values))]
     
     ;; Tuples
-    [(hash-table ('type "Tuple")
+    [(hash-table ('nodetype "Tuple")
                  ('elts elts)
                  ('ctx ctx))
      (PyTuple (map get-structured-python elts))]
     
     ;; TryExcept
-    [(hash-table ('type "TryExcept")
+    [(hash-table ('nodetype "TryExcept")
                  ('body body)
                  ('handlers handlers)
                  ('orelse orelse))
      (PyPass)]
     
     ;; TryFinally
-    [(hash-table ('type "TryFinally")
+    [(hash-table ('nodetype "TryFinally")
                  ('body body)
                  ('finalbody finalbody))
      (PyPass)]
     
     ;; ExceptHandlers
-    [(hash-table ('type "ExceptHandler")
+    [(hash-table ('nodetype "ExceptHandler")
                  ('name name)
                  ('body body))
      (PyPass)]
@@ -190,51 +190,51 @@ structure that you define in python-syntax.rkt
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     
     ;; arithmetic
-    [(hash-table ('type "Add"))
+    [(hash-table ('nodetype "Add"))
      'python-add]
-    [(hash-table ('type "Sub"))
+    [(hash-table ('nodetype "Sub"))
      'python-sub]
-    [(hash-table ('type "Mult"))
+    [(hash-table ('nodetype "Mult"))
      'python-mult]
-    [(hash-table ('type "Div"))
+    [(hash-table ('nodetype "Div"))
      'python-div]
- ;   [(hash-table ('type "Pow")) ;; this will need to be recursive. Wait to implement...
+ ;   [(hash-table ('nodetype "Pow")) ;; this will need to be recursive. Wait to implement...
  ;    'python-pow]
     
-    [(hash-table ('type "Or"))
+    [(hash-table ('nodetype "Or"))
      'or]
-    [(hash-table ('type "And"))
+    [(hash-table ('nodetype "And"))
      'and]
-    [(hash-table ('type "Eq"))
+    [(hash-table ('nodetype "Eq"))
      'python-eq]
-    [(hash-table ('type "NotEq"))
+    [(hash-table ('nodetype "NotEq"))
      'python-notEq]
-    [(hash-table ('type "Lt"))
+    [(hash-table ('nodetype "Lt"))
      'python-lt]
-    [(hash-table ('type "LtE"))
+    [(hash-table ('nodetype "LtE"))
      'python-lte]
-    [(hash-table ('type "Gt"))
+    [(hash-table ('nodetype "Gt"))
      'python-gt]
-    [(hash-table ('type "GtE"))
+    [(hash-table ('nodetype "GtE"))
      'python-gte]
-    [(hash-table ('type "Is"))
+    [(hash-table ('nodetype "Is"))
      'python-is]
-    [(hash-table ('type "IsNot"))
+    [(hash-table ('nodetype "IsNot"))
      'python-isNot]
-    [(hash-table ('type "In"))
+    [(hash-table ('nodetype "In"))
      'python-in]
-    [(hash-table ('type "NotIn"))
+    [(hash-table ('nodetype "NotIn"))
      'python-notIn]
 
     
     ;; Unary
-    [(hash-table ('type "Not"))
+    [(hash-table ('nodetype "Not"))
      'python-not]
-    [(hash-table ('type "USub"))
+    [(hash-table ('nodetype "USub"))
      'python-negate]
-    [(hash-table ('type "UAdd"))
+    [(hash-table ('nodetype "UAdd"))
      'python-uadd]
-    [(hash-table ('type "Invert"))
+    [(hash-table ('nodetype "Invert"))
      'python-invert]
     
     
