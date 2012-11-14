@@ -36,8 +36,12 @@
   [PyTuple (elts : (listof PyExpr))]
   
   ;; Exceptions
-  ;[PyTryExcFinally (
+  [PyTryExcept (body : PyExpr) (handlers : (listof PyExceptHandler))]
+  [PyTryFinally (body : PyExpr) (finalbody : PyExpr)]
+ ; [PyExceptHandler (name : symbol) (type : PyExpr) (body : (listof PyExpr))]
   
   [Py-NotExist] ;;THIS IS HERE ONLY SO THAT python-desugar won't complain about having completed all of the expressions
   )
 
+(define-type PyExceptHandler
+  [PyExcHandler (name : symbol) (type : PyExpr) (body : (listof PyExpr))])

@@ -35,8 +35,16 @@ ParselTongue.
   [CDict (elts : (hashof CExp CExp))]
   [CTuple (elts : (hashof CExp CExp))]
   
+  ;; Exception handling types
+  [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler))]
+  [CTryFinally (body : CExp) (finalbody : CExp)]
+ ; [CExceptionHandler (name : symbol) (type : CExp) (body : CExp)]
+  
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
+
+(define-type CExceptionHandler
+  [CExcHandler (name : symbol) (type : CExp) (body : CExp)])
 
 (define-type CVal
   [VNum (n : number)]
@@ -67,7 +75,7 @@ ParselTongue.
 
 (define-type AnswerC
   [ValueA (value : CVal) (store : Store)]
-;  [ExceptionA (value : CVal) (store : Store)]
+  [ExceptionA (value : CVal) (store : Store)]
   [ReturnA (value : CVal) (store : Store)]
  ; [BreakA (value : CVal) (store : Store)]
  ; [ContinueA (store : Store)]

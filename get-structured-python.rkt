@@ -108,6 +108,10 @@ structure that you define in python-syntax.rkt
                   (get-structured-python op)
                   (get-structured-python value))]
     ;; raise
+    [(hash-table ('nodetype "Raise")    ;;check if this is wrong
+                 ('exc #\nul)
+                 ('cause cause))
+     (PyRaise (PyNone))] ;; (get-structured-python cause))]
     [(hash-table ('nodetype "Raise")
                  ('exc exc)
                  ('cause cause))
@@ -172,20 +176,43 @@ structure that you define in python-syntax.rkt
                  ('body body)
                  ('handlers handlers)
                  ('orelse orelse))
-     (PyPass)]
+     (PyTryExcept (PySeq (map get-structured-python body))
+                  (map get-structured-python handlers))]
     
     ;; TryFinally
     [(hash-table ('nodetype "TryFinally")
                  ('body body)
                  ('finalbody finalbody))
-     (PyPass)]
+     (PyTryFinally (PySeq (map get-structured-python body))
+                   (PySeq (map get-structured-python finalbody)))]
     
     ;; ExceptHandlers
+    [(hash-table ('nodetype "ExceptHandler")          ;;CHECK IF THIS IS CORRECT
+                 ('name name)
+                 ('type #\nul)
+                 ('body body))
+     (PyExcHandler (if (string? name)
+                       (string->symbol name)
+                       'no-name)
+                   (PyNone)
+                   (map get-structured-python body))]
+    
     [(hash-table ('nodetype "ExceptHandler")
                  ('name name)
+                 ('type type)
                  ('body body))
-     (PyPass)]
+     (PyExcHandler (if (string? name)
+                       (string->symbol name)
+                       'no-name)
+                   (get-structured-python type)
+                   (map get-structured-python body))]
     
+    ;; Attribute --------------------------------------------------Create a PyAttribute--------------------------------------------
+    [(hash-table ('nodetype "Attribute")
+                 ('value value)
+                 ('attr attr)
+                 ('ctx ctx))
+     (PyPass)]
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     

@@ -188,40 +188,22 @@ parse: error is described above.
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((attr . "clear")
-        (value
-         .
-         #hasheq((id . "d")
-                 (nodetype . "Name")
-                 (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Attribute")
-        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+CApp: Applied a non-function: void
 =====================================================
 = Results for dict-get.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((attr . "get")
-        (value
-         .
-         #hasheq((id . "d")
-                 (nodetype . "Name")
-                 (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Attribute")
-        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+CApp: Applied a non-function: void
 =====================================================
 = Results for dict-getitem.py =
 =====================================================
@@ -252,14 +234,15 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((attr . "items")
-        (value
+#hasheq((elts
          .
-         #hasheq((id . "d")
-                 (nodetype . "Name")
-                 (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Attribute")
-        (ctx . #hasheq((nodetype . "Load"))))
+         (#hasheq((elts
+                   .
+                   (#hasheq((n . 1) (nodetype . "Num"))
+                    #hasheq((n . 2) (nodetype . "Num"))))
+                  (nodetype . "Tuple")
+                  (ctx . #hasheq((nodetype . "Load"))))))
+        (nodetype . "Set"))
 
 === Expected stderr ===
 
@@ -271,20 +254,11 @@ parse: error is described above.
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((attr . "keys")
-        (value
-         .
-         #hasheq((id . "d")
-                 (nodetype . "Name")
-                 (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Attribute")
-        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+lookupEnv: Unbound indentifier error: set
 =====================================================
 = Results for dict-set-keys.py =
 =====================================================
@@ -292,20 +266,11 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((attr . "keys")
-        (value
+#hasheq((elts
          .
-         #hasheq((values
-                  .
-                  (#hasheq((n . 1) (nodetype . "Num"))
-                   #hasheq((n . 2) (nodetype . "Num"))))
-                 (keys
-                  .
-                  (#hasheq((n . 1) (nodetype . "Num"))
-                   #hasheq((n . 2) (nodetype . "Num"))))
-                 (nodetype . "Dict")))
-        (nodetype . "Attribute")
-        (ctx . #hasheq((nodetype . "Load"))))
+         (#hasheq((n . 1) (nodetype . "Num"))
+          #hasheq((n . 2) (nodetype . "Num"))))
+        (nodetype . "Set"))
 
 === Expected stderr ===
 
@@ -317,20 +282,11 @@ parse: error is described above.
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((attr . "update")
-        (value
-         .
-         #hasheq((id . "d")
-                 (nodetype . "Name")
-                 (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Attribute")
-        (ctx . #hasheq((nodetype . "Load"))))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+CApp: Applied a non-function: void
 =====================================================
 = Results for dict-values-set.py =
 =====================================================
@@ -338,20 +294,21 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((attr . "items")
-        (value
+#hasheq((elts
          .
-         #hasheq((values
-                  .
-                  (#hasheq((n . 1) (nodetype . "Num"))
-                   #hasheq((n . 2) (nodetype . "Num"))))
-                 (keys
-                  .
-                  (#hasheq((n . 1) (nodetype . "Num"))
-                   #hasheq((n . 2) (nodetype . "Num"))))
-                 (nodetype . "Dict")))
-        (nodetype . "Attribute")
-        (ctx . #hasheq((nodetype . "Load"))))
+         (#hasheq((elts
+                   .
+                   (#hasheq((n . 1) (nodetype . "Num"))
+                    #hasheq((n . 1) (nodetype . "Num"))))
+                  (nodetype . "Tuple")
+                  (ctx . #hasheq((nodetype . "Load"))))
+          #hasheq((elts
+                   .
+                   (#hasheq((n . 2) (nodetype . "Num"))
+                    #hasheq((n . 2) (nodetype . "Num"))))
+                  (nodetype . "Tuple")
+                  (ctx . #hasheq((nodetype . "Load"))))))
+        (nodetype . "Set"))
 
 === Expected stderr ===
 
@@ -364,14 +321,7 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((attr . "values")
-        (value
-         .
-         #hasheq((id . "d")
-                 (nodetype . "Name")
-                 (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Attribute")
-        (ctx . #hasheq((nodetype . "Load"))))
+#hasheq((elts . (#hasheq((n . 2) (nodetype . "Num")))) (nodetype . "Set"))
 
 === Expected stderr ===
 
@@ -389,6 +339,17 @@ parse: error is described above.
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: ___assertRaises
 =====================================================
+= Results for invalid-reraise.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+interp: void
+=====================================================
 = Results for nested-else.py =
 =====================================================
 === Expected stdout ===
@@ -398,20 +359,18 @@ lookupEnv: Unbound indentifier error: ___assertRaises
 === Expected stderr ===
 
 === Actual stderr ===
-interp: Assert failed: value is False
+lookupEnv: Unbound indentifier error: Exception
 =====================================================
 = Results for nested-reraise.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#\nul
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
+lookupEnv: Unbound indentifier error: ___assertRaises
 =====================================================
 = Results for nested.py =
 =====================================================
@@ -422,7 +381,18 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-interp: Assert failed: value is False
+lookupEnv: Unbound indentifier error: Exception
+=====================================================
+= Results for reraise.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound indentifier error: IndexError
 =====================================================
 = Results for test-finally-reraise.py =
 =====================================================
@@ -444,7 +414,7 @@ lookupEnv: Unbound indentifier error: ___assertRaises
 === Expected stderr ===
 
 === Actual stderr ===
-interp: Assert failed: value is False
+lookupEnv: Unbound indentifier error: Exception
 =====================================================
 = Results for test-try-except.py =
 =====================================================
@@ -455,7 +425,7 @@ interp: Assert failed: value is False
 === Expected stderr ===
 
 === Actual stderr ===
-interp: Assert failed: value is False
+lookupEnv: Unbound indentifier error: Exception
 =====================================================
 = Results for try-except-else-finally-no-exception.py =
 =====================================================
@@ -477,20 +447,9 @@ interp: Assert failed: value is False
 === Expected stderr ===
 
 === Actual stderr ===
-interp: Assert failed: value is False
+lookupEnv: Unbound indentifier error: Exception
 =====================================================
 = Results for try-except-else-no-exception.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-interp: Assert failed: value is False
-=====================================================
-= Results for try-except-finally-no-exception.py =
 =====================================================
 === Expected stdout ===
 
@@ -510,18 +469,7 @@ interp: Assert failed: value is False
 === Expected stderr ===
 
 === Actual stderr ===
-interp: Assert failed: value is False
-=====================================================
-= Results for try-finally-no-exception.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-interp: Assert failed: value is False
+lookupEnv: Unbound indentifier error: Exception
 =====================================================
 = Results for iter-classes.py =
 =====================================================
@@ -917,7 +865,6 @@ PARSING: Haven't handled a case yet:
                                                         .
                                                         "Load")))))))
                             (nodetype . "Assign"))))
-                  (nodetype . "TryExcept")
                   (handlers
                    .
                    (#hasheq((body . (#hasheq((nodetype . "Break"))))
@@ -927,7 +874,8 @@ PARSING: Haven't handled a case yet:
                              #hasheq((id . "StopIteration")
                                      (nodetype . "Name")
                                      (ctx . #hasheq((nodetype . "Load")))))
-                            (nodetype . "ExceptHandler")))))
+                            (nodetype . "ExceptHandler"))))
+                  (nodetype . "TryExcept"))
           #hasheq((value
                    .
                    #hasheq((args
@@ -1002,7 +950,6 @@ PARSING: Haven't handled a case yet:
                                                         .
                                                         "Load")))))))
                             (nodetype . "Assign"))))
-                  (nodetype . "TryExcept")
                   (handlers
                    .
                    (#hasheq((body . (#hasheq((nodetype . "Break"))))
@@ -1012,7 +959,8 @@ PARSING: Haven't handled a case yet:
                              #hasheq((id . "StopIteration")
                                      (nodetype . "Name")
                                      (ctx . #hasheq((nodetype . "Load")))))
-                            (nodetype . "ExceptHandler")))))
+                            (nodetype . "ExceptHandler"))))
+                  (nodetype . "TryExcept"))
           #hasheq((value
                    .
                    #hasheq((args
@@ -1051,14 +999,17 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((attr . "extend")
-        (value
+#hasheq((value
          .
-         #hasheq((id . "a")
+         #hasheq((id . "state")
                  (nodetype . "Name")
                  (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Attribute")
-        (ctx . #hasheq((nodetype . "Load"))))
+        (nodetype . "Subscript")
+        (ctx . #hasheq((nodetype . "Load")))
+        (slice
+         .
+         #hasheq((value . #hasheq((n . 0) (nodetype . "Num")))
+                 (nodetype . "Index"))))
 
 === Expected stderr ===
 
@@ -1422,17 +1373,6 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for nested-nonlocal.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-interp: Assert failed: values are not Equal
-=====================================================
 = Results for nesting-through-class.py =
 =====================================================
 === Expected stdout ===
@@ -1782,7 +1722,20 @@ lookupEnv: Unbound indentifier error: tuple
 === Expected stderr ===
 
 === Actual stderr ===
-interp: *: Cannot do math on this type!
+interp: *: Cannot do math on this type... Sorry!
+=====================================================
+= Results for test_div_zero.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((nodetype . "FloorDiv"))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
 =====================================================
 = Results for test_simple_string_ops.py =
 =====================================================

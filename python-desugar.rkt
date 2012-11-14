@@ -31,7 +31,7 @@
              (foldl (lambda (a b) (append b a))
                     (list)
                     (map (lambda (e) (get-vars e)) elts))]
-    [PyReturn (value) (list)]
+    [PyReturn (value) (get-vars value)]
     [PyId (id) (list)]
     [PyStr (s) (list)]
     [PyBinOp (op left right)
@@ -103,7 +103,21 @@
                     (foldl (lambda (a b) (append b a))
                            (list)
                            (map (lambda (e) (get-vars e)) vals)))]
-    
+    [PyTryExcept (body handlers)
+                 (append (get-vars body)
+                         (foldl (lambda (a b) (append b a))
+                           (list)
+                           (map (lambda (e) (get-vars (PySeq (PyExcHandler-body e)))) handlers)))
+                         ] ;; Check... TODO
+    [PyTryFinally (body finalbody)
+                  (append (get-vars body)
+                          (get-vars finalbody))] ;; ???
+   ; [PyExceptHandler (name type body)
+  ;                   (append (list (values (Local) name))
+  ;                           (append (get-vars type)
+  ;                                   (foldl (lambda (a b) (append b a))
+  ;                                          (list)
+  ;                                          (map (lambda (e) (get-vars e)) body))))]
     ;[else (error 'get-vars "Case not implemented")]
     ))
 
@@ -160,7 +174,7 @@
                  (CLet 'aug-value (Local) (desugar value)
                        (CLet 'orig-value (Local) (desugar target)
                              (CSet (desugar target) (CApp (CId op) 
-                                                          (list (CId 'aug-value) (CId 'orig-value))))))] 
+                                                          (list (CId 'orig-value) (CId 'aug-value))))))] 
                               ;; may or may not work - side effects?
     
     
@@ -190,11 +204,20 @@
     [PyDict (keys vals) (CDict (desugar-dict-insides keys vals))]
     [PyTuple (elts) (CTuple (desugar-list elts))]
     
+    ;; exceptions
+    [PyTryExcept (body handlers) (CTryExcept (desugar body) (map desugar-handler handlers))]
+    [PyTryFinally (body finalbody) (CTryFinally (desugar body) (desugar finalbody))]
+  ;  [PyExceptHandler (name type body) (CPass)]
+    
     ;; return
     [PyReturn (value) (CReturn (desugar value))]
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
+
+;; desugars handlers
+(define (desugar-handler [handler : PyExceptHandler]) : CExceptionHandler
+  (CExcHandler (PyExcHandler-name handler) (desugar (PyExcHandler-type handler)) (desugar (PySeq (PyExcHandler-body handler)))))
 
 ;; desugars a dictionary
 (define (desugar-dict-insides [keys : (listof PyExpr)]

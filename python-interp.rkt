@@ -223,7 +223,7 @@
                                  argsIds
                                  (rest args)
                                  (cons v interpretedArgs))]
-     ;;  [ExceptionA (v s) (ExceptionA v s)]
+       [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v s) (ReturnA v s)])]))
 
 ;;helper method that allocates a new position for all of the local variables in the environment. Used when applying a function, because
@@ -253,7 +253,7 @@
                                                   closEnv
                                                   store)
                      [ValueA (v s) (ValueA v s)]
-                    ;; [ExceptionA (v s) (ExceptionA v s)]
+                     [ExceptionA (v s) (ExceptionA v s)]
                      [ReturnA (v s) (ValueA v s)])]
     [else 
      (interp-CApp body
@@ -280,17 +280,17 @@
 (define (interp-tagof [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
     [ValueA (v s) (ValueA (VStr (get-tag v)) s)]
-  ;;  [ExceptionA (v s) (ExceptionA v s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
 
 ;; This is the tagof operator that we will need later...
 (define (get-tag [val : CVal]) : string
   (type-case CVal val
-    [VNum (n) "int"] ;; this really should distinguish ints from floats...
-          ;(cond
-              ;  [(fixnum? n) "int"]
-              ;  [(flonum? n) "float"])]
+    [VNum (n) ;"int"] ;; this really should distinguish ints from floats...
+          (cond
+                [(fixnum? n) "int"]
+                [(flonum? n) "float"])]
     [VStr (s) "string"]
     [VClosure (e a b uid) "function"]
     [VTrue () "bool"]
@@ -309,9 +309,9 @@
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v1 s1) (type-case AnswerC (interp-env e2 env s1)
                       [ValueA (v2 s2) (ValueA (handle-op op v1 v2) s2)]
-                   ;;   [ExceptionA (v s) (ExceptionA v s)]
+                      [ExceptionA (v s) (ExceptionA v s)]
                       [ReturnA (v2 s2) (ReturnA v2 s2)])]
- ;;   [ExceptionA (v s) (Exception v s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
@@ -364,7 +364,7 @@
     [ValueA (v s) (if (isTruthy v)
                       (ValueA v s)
                       (interp-env e2 env s))]
-  ;;  [ExceptionA (v s) (ExceptionA v s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
 ;;and returns e1 if its value is not truthy; else, 
@@ -377,7 +377,7 @@
     [ValueA (v s) (if (not (isTruthy v))
                       (ValueA v s)
                       (interp-env e2 env s))]
- ;;   [ExceptionA (v s) (ExceptionA v s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
 ;;  get-uid returns the uid for any type that has one
@@ -418,9 +418,9 @@
             [else (if (equal? (get-uid v1) (get-uid v2))
                       (ValueA (VTrue) s2)
                       (ValueA (VFalse) s2))])]
-    ;;    [ExceptionA (v s) (ExceptionA v s)]
+        [ExceptionA (v s) (ExceptionA v s)]
         [ReturnA (v2 s2) (ReturnA v2 s2)])]
- ;;   [ExceptionA (v s) (ExceptionA v s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 ;;'is not' returns true if e1 and e2 are not the same object in python
@@ -440,9 +440,9 @@
                          [else (ValueA (VTrue) s2)])]
             [else (error 'interp-isNot (string-append "comparison not valid for arguments of this type" 
                                                    (string-append (to-string v1) (to-string v2))))])]
-     ;;   [ExceptionA (v s) (ExceptionA v s)]
+        [ExceptionA (v s) (ExceptionA v s)]
         [ReturnA (v2 s2) (ReturnA v2 s2)])]
-  ;;  [ExceptionA (v s) (Exception v s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
@@ -472,9 +472,9 @@
                                               (ValueA (VTrue) s2)
                                               (ValueA (VFalse) s2))]
                         [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])]
-             ;; [ExceptionA (v s) (ExceptionA v s)]
+              [ExceptionA (v s) (ExceptionA v s)]
               [ReturnA (v2 s2) (ReturnA v2 s2)])]
- ;;   [ExceptionA (v s) (ExceptionA v s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
@@ -541,7 +541,7 @@
 (define (interp-unary [prim : symbol] [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
     [ValueA (v s) (ValueA (handle-unary prim v) s)]
- ;;   [ExceptionA (v s) (ExceptionA v s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
 ;; interps a dictionary, receiving its keys
@@ -560,10 +560,11 @@
                        (type-case AnswerC (interp-env dict-value env s1)
                          [ValueA (v2 s2) (type-case AnswerC (interp-dict-insides (rest keys) dict env s2)
                                            [ValueA (v3 s3) (ValueA (VDict (hash-set (VDict-elts v3) v1 v2) (VDict-uid v3)) s3)]
+                                           [ExceptionA (v3 s3) (ExceptionA v3 s3)]
                                            [ReturnA (v3 s3) (error 'interp-dict-insides "Shouldn't see a return here...")])]
-                     ;;    [ExceptionA (v s) (ExceptionA v s)]
+                         [ExceptionA (v s) (ExceptionA v s)]
                          [ReturnA (v2 s2) (error 'interp-dict-insides "This should never be a return.")])])]
-    ;;   [ExceptionA (v s) (ExceptionA v s)]
+       [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v2 s2) (error 'interp-dict-insides "This should never be a return.")])]))
 
 ;; interps a list, receiving a list of ints as its keys
@@ -582,10 +583,11 @@
                        (type-case AnswerC (interp-env lst-value env s1)
                          [ValueA (v2 s2) (type-case AnswerC (interp-list-insides (rest keys) lst env s2)
                                            [ValueA (v3 s3) (ValueA (VList (hash-set (VList-elts v3) v1 v2) (VList-uid v3)) s3)]
+                                           [ExceptionA (v3 s3) (ExceptionA v3 s3)]
                                            [ReturnA (v3 s3) (error 'interp-list-insides "Shouldn't see a return here...")])]
-                         ;;[ExceptionA (v s) (ExceptionA v s)]
+                         [ExceptionA (v s) (ExceptionA v s)]
                          [ReturnA (v2 s2) (error 'interp-list-insides "This should never be a return.")])])]
-       ;;[ExceptionA (v s) (ExceptionA v s)]
+       [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v2 s2) (error 'interp-list-insides "This should never be a return.")])]))
 
 
@@ -605,12 +607,22 @@
                        (type-case AnswerC (interp-env lst-value env s1)
                          [ValueA (v2 s2) (type-case AnswerC (interp-tuple-insides (rest keys) lst env s2)
                                            [ValueA (v3 s3) (ValueA (VList (hash-set (VList-elts v3) v1 v2) (VList-uid v3)) s3)]
+                                           [ExceptionA (v3 s3) (ExceptionA v3 s3)]
                                            [ReturnA (v3 s3) (error 'interp-tuple-insides "Shouldn't see a return here...")])]
-                         ;;[ExceptionA (v s) (ExceptionA v s)]
+                         [ExceptionA (v s) (ExceptionA v s)]
                          [ReturnA (v2 s2) (error 'interp-tuple-insides "This should never be a return.")])])]
-       ;;[ExceptionA (v s) (ExceptionA v s)]
+       [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v2 s2) (error 'interp-tuple-insides "This should never be a return.")])]))
 
+
+;; THIS DOES NOT CATCH THE CORRECT EXCEPTION YET!!!!! WE NEED TO IMPLEMENT TYPES BEFORE WE DO THIS. FOR NOW, WE JUST MATCH THE FIRST RESULT
+;; THIS ALSO DOES NOT IMPLEMENT THE BINDING OF THE NAME WITH THE TYPE
+;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+(define (interp-handlers [handlers : (listof CExceptionHandler)] [val : CVal] [env : Env] [store : Store]) : AnswerC 
+  (cond
+    [(empty? handlers) (ExceptionA val store)]
+    [(cons? handlers) (interp-env (CExcHandler-body (first handlers)) env store)]))
+     
 ;; interp-env
 (define (interp-env [expr : CExp] 
                     [env : Env] 
@@ -623,6 +635,7 @@
     [CError (e) (error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
     [CReturn (value) (type-case AnswerC (interp-env value env store)
                        [ValueA (v s) (ReturnA v s)]
+                       [ExceptionA (v s) (ExceptionA v s)]
                        [ReturnA (v s) (error 'interp "Return statement inside of Return...")])]
     
 
@@ -638,7 +651,7 @@
                               (augmentStore newLocation 
                                             v
                                             s)))]
-     ;;   [ExceptionA (v s) (ExceptionA v s)]
+        [ExceptionA (v s) (ExceptionA v s)]
         [ReturnA (v s) (ReturnA v s)])] ;; This is a bit suspicious...
                          
 
@@ -646,7 +659,7 @@
       (type-case AnswerC (interp-env e1 env store)
         [ValueA (v s)
                 (interp-env e2 env s)]
-        ;;[ExceptionA (v s) (ExceptionA v s)]
+        [ExceptionA (v s) (ExceptionA v s)]
         [ReturnA (v s) (ReturnA v s)])]
 
     [CSet (id value)
@@ -656,7 +669,7 @@
                                        (ValueA v (augmentStore (lookupEnv id-symbol env)
                                                                v
                                                                s))]
-                         ;;      [ExceptionA (v s) (ExceptionA v s)]
+                               [ExceptionA (v s) (ExceptionA v s)]
                                [ReturnA (v s) (ReturnA v s)])]
             [else (error 'interp-CSet "For now, CSet only support ids that are symbols")])]
     
@@ -673,7 +686,7 @@
                                        args
                                        (list))]
            [else (error 'CApp (string-append "Applied a non-function: " (pretty vf)))])]
-    ;;   [ExceptionA (v s) (ExceptionA v s)]
+       [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v s) (ReturnA v s)] ;; or pass???
        )]
     #|
@@ -709,7 +722,7 @@
                    (if (isTruthy v)
                        (interp-env t env s)
                        (interp-env e env s))]
-           ;;[ExceptionA (v s) (ExceptionA v s)]
+           [ExceptionA (v s) (ExceptionA v s)]
            [ReturnA (v s) (ReturnA v s)])]
     [CNone () (ValueA (VNone) store)]
     [CFalse () (ValueA (VFalse) store)] 
@@ -721,17 +734,33 @@
                   (ValueA (VNone) store))]
     [CDict (dict) (type-case AnswerC (interp-dict-insides (hash-keys dict) dict env store)
                     [ValueA (v s) (ValueA v s)]
-                ;;    [ExceptionA (v s) (ExceptionA v s)]
+                    [ExceptionA (v s) (ExceptionA v s)]
                     [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a dict. ")])]
     
     [CList (l) (type-case AnswerC (interp-list-insides (hash-keys l) l env store)
                  [ValueA (v s) (ValueA v s)]
-             ;;    [ExceptionA (v s) (ExceptionA v s)]
+                 [ExceptionA (v s) (ExceptionA v s)]
                  [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a list. ")])]
     [CTuple (elts) (type-case AnswerC (interp-list-insides (hash-keys elts) elts env store)
                  [ValueA (v s) (ValueA v s)]
-                ;; [ExceptionA (v s) (ExceptionA v s)]
+                 [ExceptionA (v s) (ExceptionA v s)]
                  [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a tuple. ")])]
+    
+    ;; exception handling
+    [CTryExcept (body handlers) (type-case AnswerC (interp-env body env store)
+                                  [ValueA (v s) (ValueA v s)]
+                                  [ExceptionA (v s) (interp-handlers handlers v env s)]
+                                  [ReturnA (v s) (ReturnA v s)])]
+    [CTryFinally (body finalbody) (type-case AnswerC (interp-env body env store)
+                                    [ValueA (v s) (interp-env finalbody env s)]
+                                    [ExceptionA (v s) (type-case AnswerC (interp-env finalbody env s)
+                                                        [ValueA (v2 s2) (ExceptionA v s2)]
+                                                        [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                                                        [ReturnA (v2 s2) (ReturnA v2 s2)])]
+                                    [ReturnA (v s) (type-case AnswerC (interp-env finalbody env s)
+                                                        [ValueA (v2 s2) (ReturnA v s2)]
+                                                        [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                                                        [ReturnA (v2 s2) (ReturnA v2 s2)])])]
     
     [else (error 'interp (string-append "Haven't implemented a case yet:\n"
                                        (to-string expr)))]
@@ -750,7 +779,7 @@
 (define (interp (expr : CExp)) : CVal
   (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
     [ValueA (v s) v]
- ;;   [ExceptionA (v s) (raise-user-error (pretty v))] ;; really? 
+    [ExceptionA (v s) (error 'exception (pretty v))] ;; really? 
     [ReturnA (v s) (VStr "Error: Return outside of function.")]))
 
 
