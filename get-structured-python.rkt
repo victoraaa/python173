@@ -152,6 +152,14 @@ structure that you define in python-syntax.rkt
                  ('names names))
      (PyNonlocal (map (lambda (name) (string->symbol name)) names))]
     
+    ;; Attribute
+    [(hash-table ('nodetype "Attribute")
+                 ('value value)
+                 ('attr attr)
+                 ('ctx ctx))
+     (PyAttribute (string->symbol attr)
+                  (get-structured-python value))]
+    
     ;; lists
     [(hash-table ('nodetype "List")
                  ('elts elts)

@@ -38,6 +38,8 @@
              (append
               (get-vars left)
               (get-vars right))]
+    [PyAttribute (attr value)
+                 (get-vars value)]
     [PyIf (test then orelse)
           (append
            (get-vars test)
@@ -203,6 +205,8 @@
     [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (list)))]
     [PyDict (keys vals) (CHash (desugar-hash keys vals) (Type "dict" (list)))]
     [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "tuple" (list)))]
+    
+    [PyAttribute (attr value) (CAttribute attr (desugar value))]
     
     ;; exceptions
     [PyTryExcept (body handlers orelse) (CTryExcept (desugar body) (map desugar-handler handlers) (desugar orelse))]

@@ -18,6 +18,7 @@
   [PyRaise (exc : PyExpr)] ;(cause : PyExpr)]
   [PyGlobal (ids : (listof symbol))]
   [PyNonlocal (ids : (listof symbol))]
+  [PyAttribute (attr : symbol) (value : PyExpr)]
   
   [PyAssign (targets : (listof PyExpr)) (value : PyExpr)]
   [PyAugAssign (target : PyExpr) (op : symbol) (value : PyExpr)]

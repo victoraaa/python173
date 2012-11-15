@@ -409,8 +409,10 @@ that calls the primitive `print`.
 
 ;; Here, we define built-in CLASSES
 (define Exception
-  (CClass (Type "Exception" (list))))
+  (CClass (hash (list)) (Type "Exception" (list))))
 
+(define TestClass
+  (CClass (hash (list (values (VStr "f") (VClosure (hash (list)) (list) (CPrim1 'print (CStr "printing")) -1)))) (Type "TestClass" (list))))
 
 ;;STILL TO DO: assertRaises and fail
 (define lib-functions
@@ -455,6 +457,7 @@ that calls the primitive `print`.
         
         ;;binding of built-in classes
         (bind 'Exception Exception)
+        (bind 'TestClass TestClass)
 
 ))
 

@@ -29,7 +29,7 @@ primitives here.
     ;[VList (h uid) "VList - for now. We should make this recursively later"]
     ;[VTuple (h uid) "VTuple - for now. We'll make it recursive later. "]
     [VHash (h uid type) (Type-name type)]
-    [VClass (type) (Type-name type)]
+    [VClass (elts type) (Type-name type)]
     ))
   
 

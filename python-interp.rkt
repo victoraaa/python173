@@ -302,7 +302,7 @@
     ;[VDict (elts uid) "dict"]
     ;[VTuple (elts uid) "tuple"]
     [VHash (elts uid type) (Type-name type)]
-    [VClass (type) (Type-name type)]))
+    [VClass (elts type) (Type-name type)]))
 
 
 ;; This is going to be an interp function that works on arbitrary CExps.
@@ -499,7 +499,7 @@
   (type-case CVal value
     [VTrue () true]
     [VNum (n)
-          (if (equal? n 0)
+          (if (= n 0)
               false
               true)]
     [VStr (s)
@@ -556,6 +556,11 @@
                [VNum (n) (VNum n)] ;; TODO figure this out...
                [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
                [else (error 'interp-to-num "Should not be called on this type.")])]
+    ['to-list (type-case CVal arg
+                [VHash (elts uid type) (if (or (isInstanceOf arg (Type "list" (list))) (isInstanceOf arg (Type "tuple" (list))))
+                                           (VHash elts (new-uid) (Type "list" (list)))
+                                           (error 'interp-to-list "arguments of this type are not supported"))]
+                [else (error 'interp-to-list "Unsupported Type")])]
     [else (error prim "handle-unary: Case not handled yet")]))
 
 ;; wrapper around unary operations
@@ -625,7 +630,19 @@
   (cond
     [(empty? handlers) (ExceptionA val store)]
     [(cons? handlers) (interp-env (CExcHandler-body (first handlers)) env store)]))
-     
+
+;; getAttr gets the attribute from an object (VHash) -----------------------------------------------------------throw an exception instead of an error
+(define (getAttr [attr : symbol]
+                 [obj : CVal]) : CVal
+  (type-case CVal obj
+    [VHash (elts uid type) (type-case (optionof CVal) (hash-ref elts (VStr (symbol->string attr)))
+                             [none () (error 'getAttr "non-existent attribute")]
+                             [some (v) v])]
+    [VClass (elts type) (type-case (optionof CVal) (hash-ref elts (VStr (symbol->string attr)))
+                          [none () (error 'getAttr "non-existent attribute")]
+                          [some (v) v])]
+    [else (error 'getAttr "tried to get attribute from non-object")]))
+
 ;; interp-env
 (define (interp-env [expr : CExp] 
                     [env : Env] 
@@ -694,7 +711,7 @@
                                        args
                                        (list))]
            ;;TEMPORARY CASE FOR APPLICATION
-           [VClass (type) (ValueA (VClass type) store)]
+           [VClass (elts type) (ValueA (VClass elts type) store)]
            
            [else (error 'CApp (string-append "Applied a non-function: " (pretty vf)))])]
        [ExceptionA (v s) (ExceptionA v s)]
@@ -743,6 +760,14 @@
                 (begin
                   (set! globalEnv (createGlobalEnv env))
                   (ValueA (VNone) store))]
+    [CAttribute (attr value)
+                (type-case AnswerC (interp-env value env store)
+                  [ValueA (v s) (type-case CVal v
+                                  [VHash (elts uid type) (ValueA (getAttr attr v) s)]
+                                  [VClass (elts type) (ValueA (getAttr attr v) s)]
+                                  [else (interp-env (CError (CStr "tried to get an attribute from a return expression")) env s)])]
+                  [ExceptionA (v s) (ExceptionA v s)]
+                  [ReturnA (v s) (error 'CAttribute "should not get an attribute from a return expression")])]
     #|
     [CDict (dict) (type-case AnswerC (interp-dict-insides (hash-keys dict) dict env store)
                     [ValueA (v s) (ValueA v s)]
@@ -761,7 +786,7 @@
     [CHash (h type) (interp-CHash (hash-keys h) h type env store)]
     
     ;;This class is just temporary, so that we can pass exception tests
-    [CClass (type) (ValueA (VClass type) store)]
+    [CClass (elts type) (ValueA (VClass elts type) store)]
     
     ;; exception handling
     [CTryExcept (body handlers orelse) 

@@ -25,6 +25,7 @@ ParselTongue.
   [CPass]
   [CReturn (value : CExp)]
   [CSet (id : CExp) (value : CExp)]
+  [CAttribute (attr : symbol) (value : CExp)]
   
   ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.
   [CUnbound]
@@ -37,7 +38,7 @@ ParselTongue.
   [CHash (elts : (hashof CExp CExp)) (type : VType)]
   
   ;; TEMPORARY class
-  [CClass (type : VType)]
+  [CClass (elts : (hashof CVal CVal)) (type : VType)]
   
   ;; Exception handling types
   [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler)) (orelse : CExp)]
@@ -64,7 +65,7 @@ ParselTongue.
   ;[VDict (elts : (hashof CVal CVal)) (uid : Uid)]
   ;[VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
   [VHash (elts : (hashof CVal CVal)) (uid : Uid) (type : VType)]
-  [VClass (type : VType)]  ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE
+  [VClass (elts : (hashof CVal CVal)) (type : VType)]  ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE
   )
 
 (define-type VType
