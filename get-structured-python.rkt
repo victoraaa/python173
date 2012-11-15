@@ -171,13 +171,22 @@ structure that you define in python-syntax.rkt
                  ('ctx ctx))
      (PyTuple (map get-structured-python elts))]
     
-    ;; TryExcept
+    ;; TryExcept - WITHOUT ELSE
+    [(hash-table ('nodetype "TryExcept")
+                 ('body body)
+                 ('handlers handlers)
+                 ('orelse '()))
+     (PyTryExcept (PySeq (map get-structured-python body))
+                  (map get-structured-python handlers)
+                  (PyNone))]
+    ;; TryExcept - WITH ELSE
     [(hash-table ('nodetype "TryExcept")
                  ('body body)
                  ('handlers handlers)
                  ('orelse orelse))
      (PyTryExcept (PySeq (map get-structured-python body))
-                  (map get-structured-python handlers))]
+                  (map get-structured-python handlers)
+                  (PySeq (map get-structured-python orelse)))]
     
     ;; TryFinally
     [(hash-table ('nodetype "TryFinally")
@@ -188,15 +197,13 @@ structure that you define in python-syntax.rkt
     
     ;; ExceptHandlers
     [(hash-table ('nodetype "ExceptHandler")          ;;CHECK IF THIS IS CORRECT
-                 ('name name)
+                 ('name #\nul)
                  ('type #\nul)
                  ('body body))
-     (PyExcHandler (if (string? name)
-                       (string->symbol name)
-                       'no-name)
+     (PyExcHandler 'no-name
                    (PyNone)
-                   (map get-structured-python body))]
-    
+                   (PySeq (map get-structured-python body)))]
+    ;; ExceptHandlers
     [(hash-table ('nodetype "ExceptHandler")
                  ('name name)
                  ('type type)
@@ -205,7 +212,7 @@ structure that you define in python-syntax.rkt
                        (string->symbol name)
                        'no-name)
                    (get-structured-python type)
-                   (map get-structured-python body))]
+                   (PySeq (map get-structured-python body)))]
     
     ;; Attribute --------------------------------------------------Create a PyAttribute--------------------------------------------
     [(hash-table ('nodetype "Attribute")

@@ -36,7 +36,7 @@
   [PyTuple (elts : (listof PyExpr))]
   
   ;; Exceptions
-  [PyTryExcept (body : PyExpr) (handlers : (listof PyExceptHandler))]
+  [PyTryExcept (body : PyExpr) (handlers : (listof PyExceptHandler)) (orelse : PyExpr)]
   [PyTryFinally (body : PyExpr) (finalbody : PyExpr)]
  ; [PyExceptHandler (name : symbol) (type : PyExpr) (body : (listof PyExpr))]
   
@@ -44,4 +44,4 @@
   )
 
 (define-type PyExceptHandler
-  [PyExcHandler (name : symbol) (type : PyExpr) (body : (listof PyExpr))])
+  [PyExcHandler (name : symbol) (type : PyExpr) (body : PyExpr)])

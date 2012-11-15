@@ -301,7 +301,8 @@
     ;[VList (elts uid) "list"]
     ;[VDict (elts uid) "dict"]
     ;[VTuple (elts uid) "tuple"]
-    [VHash (elts uid type) (Type-name type)])) ;; should never be reached. 
+    [VHash (elts uid type) (Type-name type)]
+    [VClass (type) (Type-name type)]))
 
 
 ;; This is going to be an interp function that works on arbitrary CExps.
@@ -588,6 +589,34 @@
        [ExceptionA (v1 s1) (ExceptionA v1 s1)]
        [ReturnA (v1 s1) (error 'interp-CHash "This should never be a return!!")])]))
 
+;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
+;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
+;; isInstanceOf checks whether 'obj' is of the same type or of one of the base types of 'type'
+(define (isInstanceOf [obj : CVal]
+                      [type : VType]) : boolean
+  (equal? (get-tag obj) (Type-name type)))
+
+;; helper function that interps a CExp (that is supposed to be a VClass) to a type
+(define (CExpToType [type : CExp]
+                    [env : Env]
+                    [store : Store]) : VType
+  (VClass-type (lookupStore (lookupVar (CId-x type) env) store)))
+
+;; hasMatchingException checks whether any of the except clauses deal with the raised object
+(define (hasMatchingException [exc : CVal] 
+                              [handlers : (listof CExceptionHandler)]
+                              [env : Env]
+                              [store : Store]) : boolean
+  (cond
+    [(empty? handlers) false]
+    [(cons? handlers) 
+     (if (CNone? (CExcHandler-type (first handlers)))
+         true
+         (if (isInstanceOf exc (CExpToType (CExcHandler-type (first handlers)) env store))
+             true
+             (hasMatchingException exc (rest handlers) env store)))]))
+                      
+
 
 ;; THIS DOES NOT CATCH THE CORRECT EXCEPTION YET!!!!! WE NEED TO IMPLEMENT TYPES BEFORE WE DO THIS. FOR NOW, WE JUST MATCH THE FIRST RESULT
 ;; THIS ALSO DOES NOT IMPLEMENT THE BINDING OF THE NAME WITH THE TYPE
@@ -606,7 +635,11 @@
     [CStr (s) (ValueA (VStr s) store)]
     [CTrue () (ValueA (VTrue) store)]
 
-    [CError (e) (error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
+    [CError (e) (type-case AnswerC (interp-env e env store)
+                  [ValueA (v s) (ExceptionA v s)]
+                  [ExceptionA (v s) (ExceptionA v s)]
+                  [ReturnA (v s) (error 'CError "should not get a Return statement when raising something")])]
+            ;(error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
                   
     [CReturn (value) (type-case AnswerC (interp-env value env store)
                        [ValueA (v s) (ReturnA v s)]
@@ -660,6 +693,9 @@
                                        a
                                        args
                                        (list))]
+           ;;TEMPORARY CASE FOR APPLICATION
+           [VClass (type) (ValueA (VClass type) store)]
+           
            [else (error 'CApp (string-append "Applied a non-function: " (pretty vf)))])]
        [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v s) (ReturnA v s)] ;; or pass???
@@ -724,11 +760,17 @@
 |#
     [CHash (h type) (interp-CHash (hash-keys h) h type env store)]
     
+    ;;This class is just temporary, so that we can pass exception tests
+    [CClass (type) (ValueA (VClass type) store)]
+    
     ;; exception handling
-    [CTryExcept (body handlers) (type-case AnswerC (interp-env body env store)
-                                  [ValueA (v s) (ValueA v s)]
-                                  [ExceptionA (v s) (interp-handlers handlers v env s)]
-                                  [ReturnA (v s) (ReturnA v s)])]
+    [CTryExcept (body handlers orelse) 
+                (type-case AnswerC (interp-env body env store)
+                  [ValueA (v s) (interp-env orelse env s)]
+                  [ExceptionA (v s) (if (hasMatchingException v handlers env s)
+                                        (interp-handlers handlers v env s)
+                                        (interp-env orelse env s))]
+                  [ReturnA (v s) (ReturnA v s)])]
     [CTryFinally (body finalbody) (type-case AnswerC (interp-env body env store)
                                     [ValueA (v s) (interp-env finalbody env s)]
                                     [ExceptionA (v s) (type-case AnswerC (interp-env finalbody env s)

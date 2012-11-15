@@ -103,12 +103,12 @@
                     (foldl (lambda (a b) (append b a))
                            (list)
                            (map (lambda (e) (get-vars e)) vals)))]
-    [PyTryExcept (body handlers)
+    [PyTryExcept (body handlers orelse)
                  (append (get-vars body)
-                         (foldl (lambda (a b) (append b a))
-                           (list)
-                           (map (lambda (e) (get-vars (PySeq (PyExcHandler-body e)))) handlers)))
-                         ] ;; Check... TODO
+                         (append (get-vars orelse)
+                                 (foldl (lambda (a b) (append b a))
+                                        (list)
+                                        (map (lambda (e) (get-vars (PyExcHandler-body e))) handlers))))] ;; Check... TODO
     [PyTryFinally (body finalbody)
                   (append (get-vars body)
                           (get-vars finalbody))] ;; ???
@@ -205,7 +205,7 @@
     [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "tuple" (list)))]
     
     ;; exceptions
-    [PyTryExcept (body handlers) (CTryExcept (desugar body) (map desugar-handler handlers))]
+    [PyTryExcept (body handlers orelse) (CTryExcept (desugar body) (map desugar-handler handlers) (desugar orelse))]
     [PyTryFinally (body finalbody) (CTryFinally (desugar body) (desugar finalbody))]
   ;  [PyExceptHandler (name type body) (CPass)]
     
@@ -217,7 +217,7 @@
 
 ;; desugars handlers
 (define (desugar-handler [handler : PyExceptHandler]) : CExceptionHandler
-  (CExcHandler (PyExcHandler-name handler) (desugar (PyExcHandler-type handler)) (desugar (PySeq (PyExcHandler-body handler)))))
+  (CExcHandler (PyExcHandler-name handler) (desugar (PyExcHandler-type handler)) (desugar (PyExcHandler-body handler))))
 
 ;; desugars a dictionary
 (define (desugar-hash [keys : (listof PyExpr)]

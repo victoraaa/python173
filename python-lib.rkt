@@ -407,6 +407,11 @@ that calls the primitive `print`.
 (define-type LibBinding
   [bind (left : symbol) (right : CExp)])
 
+;; Here, we define built-in CLASSES
+(define Exception
+  (CClass (Type "Exception" (list))))
+
+
 ;;STILL TO DO: assertRaises and fail
 (define lib-functions
   (list (bind 'print print-lambda)
@@ -447,8 +452,12 @@ that calls the primitive `print`.
         (bind 'True (CTrue)) ;; not entirely sure these should be here, but we're passing more tests now...
         (bind 'False (CFalse))
         (bind 'create-global-env create-global-env)
+        
+        ;;binding of built-in classes
+        (bind 'Exception Exception)
 
 ))
+
 
 (define (python-lib expr)
   (local [(define (python-lib/recur libs)

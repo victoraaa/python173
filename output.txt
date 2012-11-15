@@ -1,7 +1,7 @@
 
 C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
-33 tests succeeded.
-57 tests failed.
+41 tests succeeded.
+49 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-callable.py =
@@ -348,18 +348,7 @@ lookupEnv: Unbound indentifier error: ___assertRaises
 === Expected stderr ===
 
 === Actual stderr ===
-interp: void
-=====================================================
-= Results for nested-else.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: Exception
+lookupEnv: Unbound indentifier error: RuntimeError
 =====================================================
 = Results for nested-reraise.py =
 =====================================================
@@ -371,17 +360,6 @@ lookupEnv: Unbound indentifier error: Exception
 
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: ___assertRaises
-=====================================================
-= Results for nested.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: Exception
 =====================================================
 = Results for reraise.py =
 =====================================================
@@ -404,72 +382,6 @@ lookupEnv: Unbound indentifier error: IndexError
 
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: ___assertRaises
-=====================================================
-= Results for test-try-except-else.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: Exception
-=====================================================
-= Results for test-try-except.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: Exception
-=====================================================
-= Results for try-except-else-finally-no-exception.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-interp: Assert failed: value is False
-=====================================================
-= Results for try-except-else-finally.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: Exception
-=====================================================
-= Results for try-except-else-no-exception.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-interp: Assert failed: value is False
-=====================================================
-= Results for try-except-finally.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: Exception
 =====================================================
 = Results for iter-classes.py =
 =====================================================
@@ -1700,7 +1612,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-interp: +: Cannot do math on this type... Sorry!
+exception: +: Cannot do math on this type... Sorry!
 =====================================================
 = Results for tuple-constructors.py =
 =====================================================
@@ -1722,7 +1634,7 @@ lookupEnv: Unbound indentifier error: tuple
 === Expected stderr ===
 
 === Actual stderr ===
-interp: *: Cannot do math on this type... Sorry!
+exception: *: Cannot do math on this type... Sorry!
 =====================================================
 = Results for test_div_zero.py =
 =====================================================
@@ -1782,7 +1694,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: Exception
+exception: Exception
 =====================================================
 = Results for types_truthy2.py =
 =====================================================

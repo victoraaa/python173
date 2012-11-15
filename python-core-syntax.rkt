@@ -36,10 +36,13 @@ ParselTongue.
   ;[CTuple (elts : (hashof CExp CExp))]
   [CHash (elts : (hashof CExp CExp)) (type : VType)]
   
+  ;; TEMPORARY class
+  [CClass (type : VType)]
+  
   ;; Exception handling types
-  [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler))]
+  [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler)) (orelse : CExp)]
   [CTryFinally (body : CExp) (finalbody : CExp)]
- ; [CExceptionHandler (name : symbol) (type : CExp) (body : CExp)]
+  
   
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
@@ -61,6 +64,7 @@ ParselTongue.
   ;[VDict (elts : (hashof CVal CVal)) (uid : Uid)]
   ;[VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
   [VHash (elts : (hashof CVal CVal)) (uid : Uid) (type : VType)]
+  [VClass (type : VType)]  ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE
   )
 
 (define-type VType
