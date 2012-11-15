@@ -298,9 +298,10 @@
     [VNone () "NoneType"] ;; TODO this looks like a class name. Maybe we should make it so?
     [VPass () "pass"] ;; should never be reached. 
     [VUnbound () "unbound"]
-    [VList (elts uid) "list"]
-    [VDict (elts uid) "dict"]
-    [VTuple (elts uid) "tuple"])) ;; should never be reached. 
+    ;[VList (elts uid) "list"]
+    ;[VDict (elts uid) "dict"]
+    ;[VTuple (elts uid) "tuple"]
+    [VHash (elts uid type) (Type-name type)])) ;; should never be reached. 
 
 
 ;; This is going to be an interp function that works on arbitrary CExps.
@@ -384,8 +385,9 @@
 (define (get-uid [v : CVal]) : Uid
   (type-case CVal v
     [VClosure (e a b uid) uid]
-    [VList (elts uid) uid]
-    [VDict (elts uid) uid]
+    ;[VList (elts uid) uid]
+    ;[VDict (elts uid) uid]
+    [VHash (elts uid type) uid]
     [else (error 'get-uid "should not use get-uid for types that do not have Uid's")]))
 
 ;;is returns true if e1 and e2 are the same object in python
@@ -465,12 +467,23 @@
                                                         (ValueA (VTrue) s2) ;; condition. 
                                                         (ValueA (VFalse) s2))]
                                        [else (error 'interp-in "\"in\" not valid for these (differing?) types")])]
+                        #|
                         [VList (elts uid) (if (member v1 (hash-values elts))
                                               (ValueA (VTrue) s2)
                                               (ValueA (VFalse) s2))]
                         [VDict (elts uid) (if (member v1 (hash-keys elts))
                                               (ValueA (VTrue) s2)
                                               (ValueA (VFalse) s2))]
+                        |#
+                        [VHash (elts uid type) 
+                               (cond 
+                                 [(equal? (Type-name type) "dict") (if (member v1 (hash-keys elts))
+                                                                       (ValueA (VTrue) s2)
+                                                                       (ValueA (VFalse) s2))]
+                                 [(or (equal? (Type-name type) "list")
+                                      (equal? (Type-name type) "tuple")) (if (member v1 (hash-values elts))
+                                                                             (ValueA (VTrue) s2)
+                                                                             (ValueA (VFalse) s2))])]
                         [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])]
               [ExceptionA (v s) (ExceptionA v s)]
               [ReturnA (v2 s2) (ReturnA v2 s2)])]
@@ -492,6 +505,11 @@
           (if (> (string-length s) 0)
               true
               false)]
+    [VHash (elts uid t)
+           (if (empty? (hash-keys elts))
+               false
+               true)]
+    #|
     [VList (elts uid)
            (if (empty? (hash-keys elts))
                false
@@ -500,6 +518,7 @@
            (if (empty? (hash-keys elts))
                false
                true)]
+    |#
     [else false]))
 
 
@@ -517,9 +536,10 @@
     ['tagof (VStr (get-tag arg))]
     ['length (type-case CVal arg
                [VStr (str) (VNum (string-length str))]
-               [VList (elts uid) (VNum (length (hash-keys elts)))]
-               [VDict (elts uid) (VNum (length (hash-keys elts)))]
-               [VTuple (elts uid) (VNum (length (hash-keys elts)))]
+               ;[VList (elts uid) (VNum (length (hash-keys elts)))]
+               ;[VDict (elts uid) (VNum (length (hash-keys elts)))]
+               ;[VTuple (elts uid) (VNum (length (hash-keys elts)))]
+               [VHash (elts uid t) (VNum (length (hash-keys elts)))]
                [else (error 'interp-length "Should only be called on strings, lists, dicts and tuples.")])]
     ['to-bool (if (isTruthy arg) (VTrue) (VFalse))]
     ['to-string (VStr (pretty arg))]
@@ -544,75 +564,29 @@
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
-;; interps a dictionary, receiving its keys
-(define (interp-dict-insides [keys : (listof CExp)]
-                             [dict : (hashof CExp CExp)]
-                             [env : Env]
-                             [store : Store]) : AnswerC 
+;;interps every object represented as a hash
+(define (interp-CHash [keys : (listof CExp)]
+                      [h : (hashof CExp CExp)]
+                      [type : VType]
+                      [env : Env]
+                      [store : Store]) : AnswerC 
   (cond
-    [(empty? keys) (ValueA (VDict (hash (list)) (new-uid)) store)]
+    [(empty? keys) (ValueA (VHash (hash (list)) (new-uid) type) store)]
     [(cons? keys) 
      (type-case AnswerC (interp-env (first keys) env store)
        [ValueA (v1 s1)
-               (type-case (optionof CExp) (hash-ref dict (first keys))
-                 [none () (error 'interp-dict-insides "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
-                 [some (dict-value) 
-                       (type-case AnswerC (interp-env dict-value env s1)
-                         [ValueA (v2 s2) (type-case AnswerC (interp-dict-insides (rest keys) dict env s2)
-                                           [ValueA (v3 s3) (ValueA (VDict (hash-set (VDict-elts v3) v1 v2) (VDict-uid v3)) s3)]
+               (type-case (optionof CExp) (hash-ref h (first keys))
+                 [none () (error 'interp-CHash "Cannot find key inside hash with this key: something is very wrong")]
+                 [some (value) 
+                       (type-case AnswerC (interp-env value env s1)
+                         [ValueA (v2 s2) (type-case AnswerC (interp-CHash (rest keys) h type env s2)
+                                           [ValueA (v3 s3) (ValueA (VHash (hash-set (VHash-elts v3) v1 v2) (VHash-uid v3) type) s3)]
                                            [ExceptionA (v3 s3) (ExceptionA v3 s3)]
-                                           [ReturnA (v3 s3) (error 'interp-dict-insides "Shouldn't see a return here...")])]
-                         [ExceptionA (v s) (ExceptionA v s)]
-                         [ReturnA (v2 s2) (error 'interp-dict-insides "This should never be a return.")])])]
-       [ExceptionA (v s) (ExceptionA v s)]
-       [ReturnA (v2 s2) (error 'interp-dict-insides "This should never be a return.")])]))
-
-;; interps a list, receiving a list of ints as its keys
-(define (interp-list-insides [keys : (listof CExp)]
-                             [lst : (hashof CExp CExp)]
-                             [env : Env]
-                             [store : Store]) : AnswerC 
-  (cond
-    [(empty? keys) (ValueA (VList (hash (list)) (new-uid)) store)]
-    [(cons? keys) 
-     (type-case AnswerC (interp-env (first keys) env store)
-       [ValueA (v1 s1)
-               (type-case (optionof CExp) (hash-ref lst (first keys))
-                 [none () (error 'interp-list-insides "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
-                 [some (lst-value) 
-                       (type-case AnswerC (interp-env lst-value env s1)
-                         [ValueA (v2 s2) (type-case AnswerC (interp-list-insides (rest keys) lst env s2)
-                                           [ValueA (v3 s3) (ValueA (VList (hash-set (VList-elts v3) v1 v2) (VList-uid v3)) s3)]
-                                           [ExceptionA (v3 s3) (ExceptionA v3 s3)]
-                                           [ReturnA (v3 s3) (error 'interp-list-insides "Shouldn't see a return here...")])]
-                         [ExceptionA (v s) (ExceptionA v s)]
-                         [ReturnA (v2 s2) (error 'interp-list-insides "This should never be a return.")])])]
-       [ExceptionA (v s) (ExceptionA v s)]
-       [ReturnA (v2 s2) (error 'interp-list-insides "This should never be a return.")])]))
-
-
-;; interps a tuple, receiving a list of ints as its keys
-(define (interp-tuple-insides [keys : (listof CExp)]
-                              [lst : (hashof CExp CExp)]
-                              [env : Env]
-                              [store : Store]) : AnswerC 
-  (cond
-    [(empty? keys) (ValueA (VList (hash (list)) (new-uid)) store)]
-    [(cons? keys) 
-     (type-case AnswerC (interp-env (first keys) env store)
-       [ValueA (v1 s1)
-               (type-case (optionof CExp) (hash-ref lst (first keys))
-                 [none () (error 'interp-tuple-insides "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
-                 [some (lst-value) 
-                       (type-case AnswerC (interp-env lst-value env s1)
-                         [ValueA (v2 s2) (type-case AnswerC (interp-tuple-insides (rest keys) lst env s2)
-                                           [ValueA (v3 s3) (ValueA (VList (hash-set (VList-elts v3) v1 v2) (VList-uid v3)) s3)]
-                                           [ExceptionA (v3 s3) (ExceptionA v3 s3)]
-                                           [ReturnA (v3 s3) (error 'interp-tuple-insides "Shouldn't see a return here...")])]
-                         [ExceptionA (v s) (ExceptionA v s)]
-                         [ReturnA (v2 s2) (error 'interp-tuple-insides "This should never be a return.")])])]
-       [ExceptionA (v s) (ExceptionA v s)]
-       [ReturnA (v2 s2) (error 'interp-tuple-insides "This should never be a return.")])]))
+                                           [ReturnA (v3 s3) (error 'interp-CHash "Shouldn't see a return here...")])]
+                         [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                         [ReturnA (v2 s2) (error 'interp-CHash "This should never be a return.")])])]
+       [ExceptionA (v1 s1) (ExceptionA v1 s1)]
+       [ReturnA (v1 s1) (error 'interp-CHash "This should never be a return!!")])]))
 
 
 ;; THIS DOES NOT CATCH THE CORRECT EXCEPTION YET!!!!! WE NEED TO IMPLEMENT TYPES BEFORE WE DO THIS. FOR NOW, WE JUST MATCH THE FIRST RESULT
@@ -633,6 +607,7 @@
     [CTrue () (ValueA (VTrue) store)]
 
     [CError (e) (error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
+                  
     [CReturn (value) (type-case AnswerC (interp-env value env store)
                        [ValueA (v s) (ReturnA v s)]
                        [ExceptionA (v s) (ExceptionA v s)]
@@ -732,6 +707,7 @@
                 (begin
                   (set! globalEnv (createGlobalEnv env))
                   (ValueA (VNone) store))]
+    #|
     [CDict (dict) (type-case AnswerC (interp-dict-insides (hash-keys dict) dict env store)
                     [ValueA (v s) (ValueA v s)]
                     [ExceptionA (v s) (ExceptionA v s)]
@@ -745,6 +721,8 @@
                  [ValueA (v s) (ValueA v s)]
                  [ExceptionA (v s) (ExceptionA v s)]
                  [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a tuple. ")])]
+|#
+    [CHash (h type) (interp-CHash (hash-keys h) h type env store)]
     
     ;; exception handling
     [CTryExcept (body handlers) (type-case AnswerC (interp-env body env store)

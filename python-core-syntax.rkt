@@ -31,9 +31,10 @@ ParselTongue.
   [CGlobalEnv]
   
   ;; lists and dicts become hashes
-  [CList (elts : (hashof CExp CExp))]
-  [CDict (elts : (hashof CExp CExp))]
-  [CTuple (elts : (hashof CExp CExp))]
+  ;[CList (elts : (hashof CExp CExp))]
+  ;[CDict (elts : (hashof CExp CExp))]
+  ;[CTuple (elts : (hashof CExp CExp))]
+  [CHash (elts : (hashof CExp CExp)) (type : VType)]
   
   ;; Exception handling types
   [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler))]
@@ -56,10 +57,14 @@ ParselTongue.
   [VFalse]
   [VPass]
   [VUnbound]
-  [VList (elts : (hashof CVal CVal)) (uid : Uid)] ;; lists must be keyed byintegers, though...
-  [VDict (elts : (hashof CVal CVal)) (uid : Uid)]
-  [VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
+  ;[VList (elts : (hashof CVal CVal)) (uid : Uid)] ;; lists must be keyed byintegers, though...
+  ;[VDict (elts : (hashof CVal CVal)) (uid : Uid)]
+  ;[VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
+  [VHash (elts : (hashof CVal CVal)) (uid : Uid) (type : VType)]
   )
+
+(define-type VType
+  [Type (name : string) (baseTypes : (listof VType))])
 
 (define-type-alias Location number)
 (define-type ScopeType
@@ -80,3 +85,4 @@ ParselTongue.
  ; [BreakA (value : CVal) (store : Store)]
  ; [ContinueA (store : Store)]
   )
+ 

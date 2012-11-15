@@ -200,9 +200,9 @@
                    (CLet 'some-func (Local) (CFunc args (desugar body) (get-vars body))
                          (CSet (CId name) (CId 'some-func)))))]
     
-    [PyList (elts) (CList (desugar-list elts))]
-    [PyDict (keys vals) (CDict (desugar-dict-insides keys vals))]
-    [PyTuple (elts) (CTuple (desugar-list elts))]
+    [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (list)))]
+    [PyDict (keys vals) (CHash (desugar-hash keys vals) (Type "dict" (list)))]
+    [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "tuple" (list)))]
     
     ;; exceptions
     [PyTryExcept (body handlers) (CTryExcept (desugar body) (map desugar-handler handlers))]
@@ -220,22 +220,26 @@
   (CExcHandler (PyExcHandler-name handler) (desugar (PyExcHandler-type handler)) (desugar (PySeq (PyExcHandler-body handler)))))
 
 ;; desugars a dictionary
-(define (desugar-dict-insides [keys : (listof PyExpr)]
+(define (desugar-hash [keys : (listof PyExpr)]
                       [vals : (listof PyExpr)]) : (hashof CExp CExp)
   (cond
     [(and (empty? keys) (empty? vals)) (hash (list))]
-    [(and (cons? keys) (cons? vals)) (hash-set (desugar-dict-insides (rest keys) (rest vals)) (desugar (first keys)) (desugar (first vals)))]
-    [else (error 'desugar-dict-insides "key and value lists do not match")]))
+    [(and (cons? keys) (cons? vals)) (hash-set (desugar-hash (rest keys) (rest vals)) (desugar (first keys)) (desugar (first vals)))]
+    [else (error 'desugar-hash "key and value lists do not match")]))
 
-;; desugars a list
-(define (desugar-list [elts : (listof PyExpr)]) : (hashof CExp CExp)
-  (desugar-dict-insides (reverse (make-pynum-keys-backwards (length elts))) elts))
+;; helper functions to create ranges of numbers
+;###########################
+(define (pynum-range [n : number]) : (listof PyExpr)
+  (map (lambda (x) (PyNum x)) (range n)))
 
-;; a helper for desugar-list...
-(define (make-pynum-keys-backwards [n : number]) : (listof PyExpr)
+(define (range [n : number]) : (listof number)
+  (reverse (range-backwards n)))
+
+(define (range-backwards [n : number]) : (listof number)
   (cond
     [(<= n 0) empty]
-    [else (cons (PyNum (- n 1)) (make-pynum-keys-backwards (- n 1)))]))
+    [else (cons (- n 1) (range-backwards (- n 1)))]))
+;###########################
 
 (define (make-item-list [item : 'a]
                         [size : number]

@@ -25,9 +25,10 @@ primitives here.
     [VFalse () "False"]
     [VPass () ""]
     [VUnbound () "Unbound"]
-    [VDict (h uid) "VDict - for now. We should make this recursively later"]
-    [VList (h uid) "VList - for now. We should make this recursively later"]
-    [VTuple (h uid) "VTuple - for now. We'll make it recursive later. "]
+    ;[VDict (h uid) "VDict - for now. We should make this recursively later"]
+    ;[VList (h uid) "VList - for now. We should make this recursively later"]
+    ;[VTuple (h uid) "VTuple - for now. We'll make it recursive later. "]
+    [VHash (h uid type) (Type-name type)]
     ))
   
 
