@@ -1,7 +1,8 @@
 #lang plai-typed
 
 (require "python-core-syntax.rkt"
-         "python-primitives.rkt")
+         "python-primitives.rkt"
+         "python-desugar.rkt")
 
 (require (typed-in racket/base [string<? : [string string -> boolean]]))
 (require (typed-in racket/base [string>? : [string string -> boolean]]))
@@ -11,6 +12,9 @@
 (require (typed-in racket/base [bitwise-not : [number -> number]]))
 (require (typed-in racket/base [fixnum? : [number -> boolean]]))
 (require (typed-in racket/base [flonum? : [number -> boolean]]))
+;(require (typed-in racket/string [string-split : [string -> (listof string)]]))
+(require (typed-in racket/base [string->list : [string -> (listof string)]]))
+(require (typed-in racket/base [list->string : [(listof string) -> string]]))
 
 ;;Returns a new memory address to be used
 (define new-loc
@@ -333,11 +337,22 @@
 
 ;; We need separate float and intger values. 
 
+;; check-equality
+(define (check-equality [v1 : CVal] [v2 : CVal]) : boolean
+  (type-case CVal v1
+    [VHash (elts1 uid1 type1) (type-case CVal v2
+                                [VHash (elts2 uid2 type2) (if (equal? type1 type2)
+                                                              (equal? elts1 elts2) ;; TODO recur!
+                                                              false)]
+                                [else false])]
+    [else (equal? v1 v2)]))
+
+
 ;; Also, this function should be in the "primitives" file. 
 (define (handle-op [op : symbol] [v1 : CVal] [v2 : CVal]) : CVal
   (case op
-    ['eq (if (equal? v1 v2) (VTrue) (VFalse))]
-    ['notEq (if (equal? v1 v2) (VFalse) (VTrue))]
+    ['eq (if (check-equality v1 v2) (VTrue) (VFalse))]
+    ['notEq (if (check-equality v1 v2) (VFalse) (VTrue))]
     ['num+ (VNum (+ (VNum-n v1) (VNum-n v2)))]
     ['string+ (VStr (string-append (VStr-s v1) (VStr-s v2)))]
     ['num- (VNum (- (VNum-n v1) (VNum-n v2)))]
@@ -523,6 +538,27 @@
     [else false]))
 
 
+;; TODO should just import these from desugar...
+;(define (range [n : number]) : (listof number)
+;  (reverse (range-backwards n)))
+
+;(define (range-backwards [n : number]) : (listof number)
+;  (cond
+;    [(<= n 0) empty]
+;    [else (cons (- n 1) (range-backwards (- n 1)))]))
+
+(define (make-new-map [keys : (listof CVal)] [vals : (listof CVal)]) : (hashof CVal CVal)
+  (cond 
+    [(empty? keys) (hash (list))]
+    [(cons? keys) (hash-set (make-new-map (rest keys) (rest vals)) (first keys) (first vals))]))
+
+;; change-string-to-list
+;; converts a string into a list
+(define (change-string-to-list (s : string)) : (hashof CVal CVal)
+  (make-new-map (map (lambda (x) (VNum x)) (range (string-length s))) 
+                (map (lambda (x) (VStr (list->string (list x)))) (string->list s))))
+
+
 ;; handle unary operations - akin to handle-op
 (define (handle-unary [prim : symbol] [arg : CVal]) : CVal
   (case prim
@@ -560,6 +596,7 @@
                 [VHash (elts uid type) (if (or (isInstanceOf arg (Type "list" (list))) (isInstanceOf arg (Type "tuple" (list))))
                                            (VHash elts (new-uid) (Type "list" (list)))
                                            (error 'interp-to-list "arguments of this type are not supported"))]
+                [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "list" (list)))] ;; string to list
                 [else (error 'interp-to-list "Unsupported Type")])]
     [else (error prim "handle-unary: Case not handled yet")]))
 
@@ -833,3 +870,7 @@
 
 (define env (hash (list (values 'a (values (Local) 1)) (values 'b (values (NonLocal) 2)) (values 'c (values (Global) 3)))))
 (define h (hash (list (values 'x (values (Local) 1)) (values 'y (values (NonLocal) 2)))))
+
+;(make-new-map 
+;   (list (VNum 0) (VNum 1) (VNum 2) (VNum 3))
+;   (list (VStr "s") (VStr "p") (VStr "a") (VStr "m")))

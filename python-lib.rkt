@@ -395,6 +395,11 @@ that calls the primitive `print`.
          (CPrim1 'to-int (CId 'e-1))
          (list)))
 
+(define make-list
+  (CFunc (list 'e-1)
+         (CPrim1 'to-list (CId 'e-1))
+         (list)))
+
 (define create-global-env
   (CFunc (list)
          (CGlobalEnv)
@@ -446,6 +451,7 @@ that calls the primitive `print`.
         (bind 'str str)
         (bind 'float float)
         (bind 'int int)
+        (bind 'list make-list)
         (bind 'python-uadd python-uadd)
         (bind 'python-invert python-invert)
         (bind 'print print)

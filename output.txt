@@ -1,7 +1,5 @@
-
-C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
-42 tests succeeded.
-48 tests failed.
+43 tests succeeded.
+47 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-callable.py =
@@ -161,7 +159,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: list
+lookupEnv: Unbound indentifier error: filter
 =====================================================
 = Results for isinstance.py =
 =====================================================
@@ -192,7 +190,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-CApp: Applied a non-function: void
+getAttr: non-existent attribute
 =====================================================
 = Results for dict-get.py =
 =====================================================
@@ -203,7 +201,7 @@ CApp: Applied a non-function: void
 === Expected stderr ===
 
 === Actual stderr ===
-CApp: Applied a non-function: void
+getAttr: non-existent attribute
 =====================================================
 = Results for dict-getitem.py =
 =====================================================
@@ -286,7 +284,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-CApp: Applied a non-function: void
+getAttr: non-existent attribute
 =====================================================
 = Results for dict-values-set.py =
 =====================================================
@@ -411,7 +409,12 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((targets
+                   (#hasheq((value
+                             .
+                             #hasheq((id . "n")
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load")))))
+                            (targets
                              .
                              (#hasheq((attr . "n")
                                       (value
@@ -423,13 +426,9 @@ PARSING: Haven't handled a case yet:
                                                 #hasheq((nodetype . "Load")))))
                                       (nodetype . "Attribute")
                                       (ctx . #hasheq((nodetype . "Store"))))))
-                            (value
-                             .
-                             #hasheq((id . "n")
-                                     (nodetype . "Name")
-                                     (ctx . #hasheq((nodetype . "Load")))))
                             (nodetype . "Assign"))
-                    #hasheq((targets
+                    #hasheq((value . #hasheq((n . 0) (nodetype . "Num")))
+                            (targets
                              .
                              (#hasheq((attr . "i")
                                       (value
@@ -441,7 +440,6 @@ PARSING: Haven't handled a case yet:
                                                 #hasheq((nodetype . "Load")))))
                                       (nodetype . "Attribute")
                                       (ctx . #hasheq((nodetype . "Store"))))))
-                            (value . #hasheq((n . 0) (nodetype . "Num")))
                             (nodetype . "Assign"))))
                   (name . "__init__")
                   (nodetype . "FunctionDef")
@@ -464,12 +462,7 @@ PARSING: Haven't handled a case yet:
                            (kw_defaults . ())))
                   (body
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "res")
-                                      (nodetype . "Name")
-                                      (ctx . #hasheq((nodetype . "Store"))))))
-                            (value
+                   (#hasheq((value
                              .
                              #hasheq((attr . "i")
                                      (value
@@ -481,6 +474,11 @@ PARSING: Haven't handled a case yet:
                                                #hasheq((nodetype . "Load")))))
                                      (nodetype . "Attribute")
                                      (ctx . #hasheq((nodetype . "Load")))))
+                            (targets
+                             .
+                             (#hasheq((id . "res")
+                                      (nodetype . "Name")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
                             (nodetype . "Assign"))
                     #hasheq((orelse . ())
                             (body
@@ -524,19 +522,7 @@ PARSING: Haven't handled a case yet:
                                                          "Load"))))))
                                      (nodetype . "Compare")))
                             (nodetype . "If"))
-                    #hasheq((targets
-                             .
-                             (#hasheq((attr . "i")
-                                      (value
-                                       .
-                                       #hasheq((id . "self")
-                                               (nodetype . "Name")
-                                               (ctx
-                                                .
-                                                #hasheq((nodetype . "Load")))))
-                                      (nodetype . "Attribute")
-                                      (ctx . #hasheq((nodetype . "Store"))))))
-                            (value
+                    #hasheq((value
                              .
                              #hasheq((op . #hasheq((nodetype . "Add")))
                                      (left
@@ -550,6 +536,18 @@ PARSING: Haven't handled a case yet:
                                       .
                                       #hasheq((n . 1) (nodetype . "Num")))
                                      (nodetype . "BinOp")))
+                            (targets
+                             .
+                             (#hasheq((attr . "i")
+                                      (value
+                                       .
+                                       #hasheq((id . "self")
+                                               (nodetype . "Name")
+                                               (ctx
+                                                .
+                                                #hasheq((nodetype . "Load")))))
+                                      (nodetype . "Attribute")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
                             (nodetype . "Assign"))
                     #hasheq((value
                              .
@@ -747,12 +745,7 @@ PARSING: Haven't handled a case yet:
          (#hasheq((orelse . ())
                   (body
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "val")
-                                      (nodetype . "Name")
-                                      (ctx . #hasheq((nodetype . "Store"))))))
-                            (value
+                   (#hasheq((value
                              .
                              #hasheq((args
                                       .
@@ -776,6 +769,11 @@ PARSING: Haven't handled a case yet:
                                                #hasheq((nodetype
                                                         .
                                                         "Load")))))))
+                            (targets
+                             .
+                             (#hasheq((id . "val")
+                                      (nodetype . "Name")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
                             (nodetype . "Assign"))))
                   (handlers
                    .
@@ -832,12 +830,7 @@ PARSING: Haven't handled a case yet:
          (#hasheq((orelse . ())
                   (body
                    .
-                   (#hasheq((targets
-                             .
-                             (#hasheq((id . "val")
-                                      (nodetype . "Name")
-                                      (ctx . #hasheq((nodetype . "Store"))))))
-                            (value
+                   (#hasheq((value
                              .
                              #hasheq((args
                                       .
@@ -861,6 +854,11 @@ PARSING: Haven't handled a case yet:
                                                #hasheq((nodetype
                                                         .
                                                         "Load")))))))
+                            (targets
+                             .
+                             (#hasheq((id . "val")
+                                      (nodetype . "Name")
+                                      (ctx . #hasheq((nodetype . "Store"))))))
                             (nodetype . "Assign"))))
                   (handlers
                    .
@@ -928,17 +926,6 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for test_list_simple.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: list
-=====================================================
 = Results for range-errs.py =
 =====================================================
 === Expected stdout ===
@@ -959,7 +946,7 @@ lookupEnv: Unbound indentifier error: ___assertRaises
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: list
+lookupEnv: Unbound indentifier error: range
 =====================================================
 = Results for range-vars.py =
 =====================================================
@@ -970,7 +957,7 @@ lookupEnv: Unbound indentifier error: list
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: list
+lookupEnv: Unbound indentifier error: range
 =====================================================
 = Results for bound-and-free.py =
 =====================================================
@@ -1007,16 +994,16 @@ PARSING: Haven't handled a case yet:
                   (nodetype . "FunctionDef")
                   (returns . #\nul)
                   (decorator_list . ()))
-          #hasheq((targets
-                   .
-                   (#hasheq((id . "a")
-                            (nodetype . "Name")
-                            (ctx . #hasheq((nodetype . "Store"))))))
-                  (value
+          #hasheq((value
                    .
                    #hasheq((id . "x")
                            (nodetype . "Name")
                            (ctx . #hasheq((nodetype . "Load")))))
+                  (targets
+                   .
+                   (#hasheq((id . "a")
+                            (nodetype . "Name")
+                            (ctx . #hasheq((nodetype . "Store"))))))
                   (nodetype . "Assign"))))
         (name . "C")
         (nodetype . "ClassDef")
@@ -1199,12 +1186,12 @@ parse: error is described above.
 PARSING: Haven't handled a case yet: 
 #hasheq((body
          .
-         (#hasheq((targets
+         (#hasheq((value . #hasheq((n . 12) (nodetype . "Num")))
+                  (targets
                    .
                    (#hasheq((id . "x")
                             (nodetype . "Name")
                             (ctx . #hasheq((nodetype . "Store"))))))
-                  (value . #hasheq((n . 12) (nodetype . "Num")))
                   (nodetype . "Assign"))
           #hasheq((args
                    .
