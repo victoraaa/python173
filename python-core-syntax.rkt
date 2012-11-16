@@ -17,7 +17,10 @@ ParselTongue.
   [CId (x : symbol)]
   [CLet (id : symbol) (scopeType : ScopeType) (bind : CExp) (body : CExp)]
   [CApp (fun : CExp) (args : (listof CExp))]
-  [CFunc (args : (listof symbol)) (body : CExp) (vlist : (listof (ScopeType * symbol)))]
+  [CFunc (args : (listof symbol)) 
+         (body : CExp) 
+         (vlist : (listof (ScopeType * symbol))) 
+         (defargs : (listof CExp))]
   [CPrim1 (prim : symbol) (arg : CExp)]
   [CPrim2 (op : symbol) (e1 : CExp) (e2 : CExp)]
   [CFalse]
@@ -55,7 +58,7 @@ ParselTongue.
   [VNum (n : number)]
   [VStr (s : string)]
   [VTrue]
-  [VClosure (env : Env) (args : (listof symbol)) (body : CExp) (uid : Uid)]
+  [VClosure (env : Env) (args : (listof symbol)) (body : CExp) (defargs : (listof CVal)) (uid : Uid)]
   ;;I ADDED;;
   [VNone]
   [VFalse]

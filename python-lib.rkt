@@ -16,7 +16,7 @@ that calls the primitive `print`.
 
 (define print-lambda
   (CFunc (list 'to-print)
-    (CPrim1 'print (CId 'to-print)) (list)))
+    (CPrim1 'print (CId 'to-print)) (list) (list)))
 
 (define assert-equal-lambda
   (CFunc (list 'e-1 'e-2)
@@ -24,6 +24,7 @@ that calls the primitive `print`.
          (CPass) 
          (CError (CStr "Assert failed: values are not Equal"))
          ) 
+    (list)
     (list)))
 
 (define assert-notEqual-lambda
@@ -32,16 +33,19 @@ that calls the primitive `print`.
          (CError (CStr "Assert failed: values are Equal"))
          (CPass)
          )
+    (list)
     (list)))
 
 (define assert-true-lambda
   (CFunc (list 'check-true)
     (CIf (CId 'check-true) (CPass) (CError (CStr "Assert failed: value is False")))
+    (list)
     (list)))
 
 (define assert-false-lambda
   (CFunc (list 'check-false)
     (CIf (CId 'check-false) (CError (CStr "Assert failed: value is True")) (CPass) )
+    (list)
     (list)))
 
 (define assert-is-lambda
@@ -50,6 +54,7 @@ that calls the primitive `print`.
          (CPass) 
          (CError (CStr "Assert failed: first argument is not second argument"))
          )
+    (list)
     (list)))
 
 (define assert-isNot-lambda
@@ -58,6 +63,7 @@ that calls the primitive `print`.
          (CError (CStr "Assert failed: first argument is second argument"))
          (CPass) 
          )
+    (list)
     (list)))
 
 (define assert-in-lambda
@@ -66,6 +72,7 @@ that calls the primitive `print`.
          (CPass) 
          (CError (CStr "Assert failed: element not found"))
          )
+    (list)
     (list)))
 
 (define assert-notIn-lambda
@@ -74,6 +81,7 @@ that calls the primitive `print`.
          (CError (CStr "Assert failed: element found"))
          (CPass)
          )
+    (list)
     (list)))
 
 
@@ -103,6 +111,7 @@ that calls the primitive `print`.
                                   (CPrim2 'num+ (CPrim1 'to-int (CId 'e-1)) (CPrim1 'to-int (CId 'e-2)))
                                   (CError (CStr "+: Cannot do math on this type!"))))
                         (CError (CStr "+: Cannot do math on this type... Sorry!")))))
+         (list)
          (list)))
 
 
@@ -140,6 +149,7 @@ that calls the primitive `print`.
                              (CPrim2 'num- (CPrim1 'to-int (CId 'e-1)) (CPrim1 'to-int (CId 'e-2)))
                              (CError (CStr "-: Cannot do math on this type!"))))
                    (CError (CStr "-: Cannot do math on this type... Sorry!"))))
+         (list)
          (list)))
 
 (define python-mult ;; eventaully, this has to work for strings and integers too...
@@ -157,7 +167,11 @@ that calls the primitive `print`.
                              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
                                   (CPrim2 'duplicate (CId 'e-2) (CId 'e-1))
                                   (CError (CStr "*: Cannot multiply string by float type!")))
-                             (CError (CStr "*: Cannot do math on this type!")))))
+                             (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "tuple"))
+                                  (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                                       (CPrim2 'duple (CId 'e-2) (CId 'e-1))
+                                       (CError (CStr "*: Cannot multiply string by float type!")))
+                                  (CError (CStr "*: Cannot do math on this type!"))))))
               (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
                    (CIf (CPrim2 'or
                                 (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
@@ -170,7 +184,12 @@ that calls the primitive `print`.
                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
                             (CPrim2 'duplicate (CId 'e-1) (CId 'e-2))
                             (CError (CStr "*: Cannot do math on these types... Sorry!")))
-                       (CError (CStr "*: Cannot do math on this type... Sorry!")))))
+                       (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
+                            (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                                 (CPrim2 'duple (CId 'e-1) (CId 'e-2))
+                                 (CError (CStr "*: Cannot do math on these types... Sorry!")))
+                            (CError (CStr "*: Cannot do math on this type... Sorry!"))))))
+         (list)
          (list)))
 
 ;; Need to convert this function as well. Divison must handle booleans.
@@ -191,6 +210,7 @@ that calls the primitive `print`.
                    (CError (CStr "/: Divide by zero"))
                    (CPrim2 'num/ (CPrim1 'to-float (CId 'e-1)) (CPrim1 'to-float (CId 'e-2))))
               (CError (CStr "/: Not supported for this type.")))
+         (list)
          (list)))
 
 
@@ -221,6 +241,7 @@ that calls the primitive `print`.
                              (CPrim2 'string-lt (CId 'e-1) (CId 'e-2))
                              (CError (CStr "<: Not supported for this type.")))))
               (CError (CStr "<: Types do not match.")))
+         (list)
          (list)))
 
 (define python-lte
@@ -234,6 +255,7 @@ that calls the primitive `print`.
                              (CPrim2 'string-lte (CId 'e-1) (CId 'e-2))
                              (CError (CStr "<=: Not supported for this type.")))))
               (CError (CStr "<=: Types do not match.")))
+         (list)
          (list)))
 
 (define python-gt
@@ -247,6 +269,7 @@ that calls the primitive `print`.
                              (CPrim2 'string-gt (CId 'e-1) (CId 'e-2))
                              (CError (CStr ">: Not supported for this type.")))))
               (CError (CStr ">: Types do not match.")))
+         (list)
          (list)))
 
 (define python-gte
@@ -260,6 +283,7 @@ that calls the primitive `print`.
                              (CPrim2 'string-gte (CId 'e-1) (CId 'e-2))
                              (CError (CStr ">=: Not supported for this type.")))))
               (CError (CStr ">=: Types do not match.")))
+         (list)
          (list)))
 
 (define python-uadd
@@ -271,6 +295,7 @@ that calls the primitive `print`.
               (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
                    (CPrim1 'to-int (CId 'e-1))
                    (CError (CStr "Unary +: Not supported for this type."))))
+         (list)
          (list)))
 
 ;; TODO: need invert, negate, and not cases. With typechecking. 
@@ -283,6 +308,7 @@ that calls the primitive `print`.
               (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
                    (CPrim1 'invert (CPrim1 'to-int (CId 'e-1)))
                    (CError (CStr "~: Cannot invert this type."))))
+         (list)
          (list)))
 
 
@@ -301,41 +327,49 @@ that calls the primitive `print`.
                                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool")))))
               (CPrim2 'eq (CPrim1 'to-float (CId 'e-1)) (CPrim1 'to-float (CId 'e-2)))
               (CPrim2 'eq (CId 'e-1) (CId 'e-2)))
+         (list)
          (list)))
 
 (define python-notEq
   (CFunc (list 'e-1 'e-2)
          (CPrim2 'notEq (CId 'e-1) (CId 'e-2))
+         (list)
          (list)))
 
 (define python-is
   (CFunc (list 'e-1 'e-2)
          (CPrim2 'is (CId 'e-1) (CId 'e-2))
+         (list)
          (list)))
 
 (define python-isNot
   (CFunc (list 'e-1 'e-2)
          (CPrim1 'not (CPrim2 'is (CId 'e-1) (CId 'e-2)))
+         (list)
          (list)))
 
 (define python-in
   (CFunc (list 'e-1 'e-2)
          (CPrim2 'in (CId 'e-1) (CId 'e-2))
+         (list)
          (list)))
 
 (define python-notIn
   (CFunc (list 'e-1 'e-2)
          (CPrim1 'not (CPrim2 'in (CId 'e-1) (CId 'e-2)))
+         (list)
          (list)))
 
 (define print
   (CFunc (list 'e-1)
          (CPrim1 'print (CId 'e-1))
+         (list)
          (list)))
 
 (define python-not
   (CFunc (list 'e-1)
          (CPrim1 'not (CId 'e-1))
+         (list)
          (list)))
 
 (define python-negate
@@ -347,6 +381,7 @@ that calls the primitive `print`.
                            (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float")))
                    (CPrim1 'negative (CId 'e-1)) ;; can be made much more efficient...
                    (CError (CStr "Unary -: Not supported for this type."))))
+         (list)
          (list)))
 
 (define len 
@@ -360,6 +395,7 @@ that calls the primitive `print`.
                                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")))))
               (CPrim1 'length (CId 'e-1))
               (CError (CStr "len: Argument must be a string, list or dict (so far...).")))
+         (list)
          (list)))
 
 (define abs
@@ -373,36 +409,51 @@ that calls the primitive `print`.
                         (CPrim1 'negative (CId 'e-1))
                         (CId 'e-1)) ;; is this the right way to do it?
                    (CError (CStr "abs: Argument must be a number or boolean"))))
+         (list)
          (list)))
 
 (define bool ;; needs to handle arbitrary-arity input
   (CFunc (list 'e-1)
          (CPrim1 'to-bool (CId 'e-1))
-         (list)))
+         (list)
+         (list (CFalse))))
 
 (define str
   (CFunc (list 'e-1)
          (CPrim1 'to-string (CId 'e-1))
+         (list)
          (list)))
 
 (define float
   (CFunc (list 'e-1)
          (CPrim1 'to-float (CId 'e-1))
+         (list)
          (list)))
 
 (define int
   (CFunc (list 'e-1)
          (CPrim1 'to-int (CId 'e-1))
+         (list)
          (list)))
 
 (define make-list
   (CFunc (list 'e-1)
          (CPrim1 'to-list (CId 'e-1))
+         (list)
          (list)))
+
+(define make-tuple
+  (CFunc (list 'e-1)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")) 
+              (CId 'e-1)
+              (CPrim1 'to-tuple (CId 'e-1)))
+         (list)
+         (list (CHash (hash (list)) (Type "tuple" (list))))))
 
 (define create-global-env
   (CFunc (list)
          (CGlobalEnv)
+         (list)
          (list)))
          
 
@@ -417,7 +468,7 @@ that calls the primitive `print`.
   (CClass (hash (list)) (Type "Exception" (list))))
 
 (define TestClass
-  (CClass (hash (list (values (VStr "f") (VClosure (hash (list)) (list) (CPrim1 'print (CStr "printing")) -1)))) (Type "TestClass" (list))))
+  (CClass (hash (list (values (VStr "f") (VClosure (hash (list)) (list) (CPrim1 'print (CStr "printing")) (list) -1)))) (Type "TestClass" (list))))
 
 ;;STILL TO DO: assertRaises and fail
 (define lib-functions
@@ -452,6 +503,7 @@ that calls the primitive `print`.
         (bind 'float float)
         (bind 'int int)
         (bind 'list make-list)
+        (bind 'tuple make-tuple)
         (bind 'python-uadd python-uadd)
         (bind 'python-invert python-invert)
         (bind 'print print)

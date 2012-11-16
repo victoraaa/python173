@@ -19,7 +19,7 @@ primitives here.
     [VNum (n) (to-string n)]
     [VStr (s) s]
     [VTrue () "True"]
-    [VClosure (env args body uid) (error 'prim "Can't print closures yet")]
+    [VClosure (env args body defargs uid) (error 'prim "Can't print closures yet")]
     ;;Non-TA code:
     [VNone () "void"]
     [VFalse () "False"]

@@ -166,7 +166,7 @@
     
     [PyPass () (CPass)]
     [PyNone () (CNone)]
-    [PyLambda (args body) (CFunc args (desugar body) (list))]
+    [PyLambda (args body) (CFunc args (desugar body) (list) (list))]
     
     [PyRaise (exc) (CError (desugar exc))]
     [PyAssign (targets value) 
@@ -198,8 +198,8 @@
     
     [PyDef (name args body) 
            (begin (CSeq
-                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list)))
-                   (CLet 'some-func (Local) (CFunc args (desugar body) (get-vars body))
+                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list)))
+                   (CLet 'some-func (Local) (CFunc args (desugar body) (get-vars body) (list))
                          (CSet (CId name) (CId 'some-func)))))]
     
     [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (list)))]

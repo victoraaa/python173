@@ -15,6 +15,8 @@
 ;(require (typed-in racket/string [string-split : [string -> (listof string)]]))
 (require (typed-in racket/base [string->list : [string -> (listof string)]]))
 (require (typed-in racket/base [list->string : [(listof string) -> string]]))
+(require (typed-in racket/base [list-tail : [(listof 'a) number -> (listof 'a)]]))
+(require (typed-in racket/list [argmax : [('a -> number) (listof 'a) -> 'a]]))
 
 ;;Returns a new memory address to be used
 (define new-loc
@@ -210,13 +212,18 @@
                           [store : Store]
                           [argsIds : (listof symbol)]
                           [args : (listof CExp)]
-                          [interpretedArgs : (listof CVal)]) : AnswerC
+                          [interpretedArgs : (listof CVal)]
+                          [defargs : (listof CVal)]) : AnswerC
   (cond
     [(empty? args) (interp-CApp body
-                                (allocateLocals closEnv)
-                                store
-                                argsIds
-                                (reverse interpretedArgs))]
+                              (allocateLocals closEnv)
+                              store
+                              argsIds
+                              (append (reverse interpretedArgs)
+                                      (list-tail defargs 
+                                                 (- (length defargs)
+                                                    (- (length argsIds) 
+                                                       (length interpretedArgs))))))]     
     [else 
      (type-case AnswerC (interp-env (first args) env store)
        [ValueA (v s)
@@ -226,7 +233,8 @@
                                  s
                                  argsIds
                                  (rest args)
-                                 (cons v interpretedArgs))]
+                                 (cons v interpretedArgs)
+                                 defargs)]
        [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v s) (ReturnA v s)])]))
 
@@ -296,7 +304,7 @@
                 [(fixnum? n) "int"]
                 [(flonum? n) "float"])]
     [VStr (s) "string"]
-    [VClosure (e a b uid) "function"]
+    [VClosure (e a b defargs uid) "function"]
     [VTrue () "bool"]
     [VFalse () "bool"]
     [VNone () "NoneType"] ;; TODO this looks like a class name. Maybe we should make it so?
@@ -326,6 +334,27 @@
     [(flonum? num) (error 'duplicate-string "does not work with floats...")]
     [(<= num 0) ""]
     [else (string-append str (duplicate-string str (- num 1)))]))
+
+;; just a helper...
+(define (repeat-list [lst : (listof 'a)] [n : number]) : (listof 'a)
+  (cond
+    [(= n 0) empty]
+    [else (append lst (repeat-list lst (- n 1)))]))
+
+
+(define (duplicate-tuple [tup : (hashof CVal CVal)] [n : number]) : (hashof CVal CVal)
+  (cond
+    [(flonum? n) (error 'duplicate-tuple "does not work with floats...")]
+    [(<= n 0) (hash (list))]
+    [else (make-new-map (map (lambda (x) (VNum x)) 
+                             (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
+                        (repeat-list (hash-values tup) n))]))
+
+
+
+;(make-new-map (map (lambda (x) (VNum x)) 
+ ;                  (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
+ ;             (repeat-list (hash-values tup) n))
 
 
 
@@ -367,6 +396,7 @@
     ['num-gte (if (>= (VNum-n v1) (VNum-n v2)) (VTrue) (VFalse))]
     ['string-gte (if (string>=? (VStr-s v1) (VStr-s v2)) (VTrue) (VFalse))]
     ['duplicate (VStr (duplicate-string (VStr-s v1) (VNum-n v2)))] ;; throws exception if types are wrong.
+    ['duple (VHash (duplicate-tuple (VHash-elts v1) (VNum-n v2)) (new-uid) (Type "tuple" (list)))]
     [else (error op "handle-op: case not implemented")]))
 
 
@@ -400,7 +430,7 @@
 ;;  get-uid returns the uid for any type that has one
 (define (get-uid [v : CVal]) : Uid
   (type-case CVal v
-    [VClosure (e a b uid) uid]
+    [VClosure (e a b defargs uid) uid]
     ;[VList (elts uid) uid]
     ;[VDict (elts uid) uid]
     [VHash (elts uid type) uid]
@@ -598,6 +628,12 @@
                                            (error 'interp-to-list "arguments of this type are not supported"))]
                 [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "list" (list)))] ;; string to list
                 [else (error 'interp-to-list "Unsupported Type")])]
+    ['to-tuple (type-case CVal arg
+                [VHash (elts uid type) (if (or (isInstanceOf arg (Type "list" (list))) (isInstanceOf arg (Type "tuple" (list))))
+                                           (VHash elts (new-uid) (Type "tuple" (list)))
+                                           (error 'interp-to-list "arguments of this type are not supported"))]
+                [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "tuple" (list)))] ;; string to list
+                [else (error 'interp-to-list "Unsupported Type")])]
     [else (error prim "handle-unary: Case not handled yet")]))
 
 ;; wrapper around unary operations
@@ -680,6 +716,34 @@
                           [some (v) v])]
     [else (error 'getAttr "tried to get attribute from non-object")]))
 
+
+;(define-type DefArgHolder
+  
+
+;; 
+;(define (interp-defargs [defargs : (listof CExp)] [env : Env] [store : Store]) : DefArgHolder
+  
+
+(define (interp-func [args : (listof symbol)] 
+                     [body : CExp] 
+                     [vlist : (listof (ScopeType * symbol))]
+                     [defargs : (listof CExp)] 
+                     [defvals : (listof CVal)]
+                     [env : Env]
+                     [store : Store]) : AnswerC
+  (cond 
+    [(empty? defargs) (ValueA (VClosure (newEnvScope env vlist args) 
+                                        args 
+                                        body 
+                                        (reverse defvals) 
+                                        (new-uid)) 
+                              store)]
+    [else (type-case AnswerC (interp-env (first defargs) env store)
+            [ValueA (v s) (interp-func args body vlist (rest defargs) (cons v defvals) env s)]
+            [ExceptionA (v s) (ExceptionA v s)]
+            [ReturnA (v s) (error 'interp-func "I don't think this should even happen.")])]))
+
+
 ;; interp-env
 (define (interp-env [expr : CExp] 
                     [env : Env] 
@@ -739,14 +803,15 @@
      (type-case AnswerC (interp-env func env store)
        [ValueA (vf sf)
          (type-case CVal vf
-           [VClosure (e a b uid)
+           [VClosure (e a b defargs uid)
                      (interp-args-CApp b   
                                        env
                                        e
                                        sf
                                        a
                                        args
-                                       (list))]
+                                       (list)
+                                       defargs)]
            ;;TEMPORARY CASE FOR APPLICATION
            [VClass (elts type) (ValueA (VClass elts type) store)]
            
@@ -762,8 +827,9 @@
        [else (error 'interp "Not a closure")])]
     |#
 
-    [CFunc (args body vlist) 
-           (ValueA (VClosure (newEnvScope env vlist args) args body (new-uid)) store)] ;; TODO use vlist...
+    [CFunc (args body vlist defargs) 
+           (interp-func args body vlist defargs (list) env store)]
+           ;(ValueA (VClosure (newEnvScope env vlist args) args body () (new-uid)) store)] ;; TODO use vlist...
 
     [CPrim1 (prim arg) (interp-unary prim arg env store)]
     
@@ -773,7 +839,6 @@
               ;; These short-circuit, and so need their own system...
               ['or (interp-or e1 e2 env store)]
               ['and (interp-and e1 e2 env store)]
-              
               ['is (interp-is e1 e2 env store)] ;; might want to think about these...
               ['isNot (interp-isNot e1 e2 env store)]
               ['in (interp-in e1 e2 env store)]

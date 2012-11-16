@@ -1,5 +1,5 @@
-43 tests succeeded.
-47 tests failed.
+46 tests succeeded.
+44 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-callable.py =
@@ -12,17 +12,6 @@
 
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: callable
-=====================================================
-= Results for bool-convert.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-interp-AppC: Application failed with arity mismatch
 =====================================================
 = Results for bool-isinstance.py =
 =====================================================
@@ -1600,28 +1589,6 @@ parse: error is described above.
 
 === Actual stderr ===
 exception: +: Cannot do math on this type... Sorry!
-=====================================================
-= Results for tuple-constructors.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: tuple
-=====================================================
-= Results for tuple-mul.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: *: Cannot do math on this type... Sorry!
 =====================================================
 = Results for test_div_zero.py =
 =====================================================
