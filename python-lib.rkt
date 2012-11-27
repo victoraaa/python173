@@ -84,8 +84,8 @@ that calls the primitive `print`.
     (list)
     (list)))
 
-(define assert-raises-lambda
-  (CFunc
+;(define assert-raises-lambda
+ ; (CFunc
 
 
 ;; math

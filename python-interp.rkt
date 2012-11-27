@@ -683,6 +683,13 @@
        [ExceptionA (v1 s1) (ExceptionA v1 s1)]
        [ReturnA (v1 s1) (error 'interp-CHash "This should never be a return!!")])]))
 
+
+;; TODO somehow we need to have a function to convert a CId into a string
+(define (id-to-string (id : CExp)) : string
+  (type-case CExp id
+    [CId (s) (symbol->string s)]
+    [else (error 'id-to-string "Not an ID")]))
+
 ;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
 ;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
 ;; isInstanceOf checks whether 'obj' is of the same type or of one of the base types of 'type'
@@ -695,6 +702,8 @@
                     [env : Env]
                     [store : Store]) : VType
   (VClass-type (lookupStore (lookupVar (CId-x type) env) store)))
+
+;; TODO This needs to be adapted to work with integers and other primitive types as well...
 
 ;; hasMatchingException checks whether any of the except clauses deal with the raised object
 (define (hasMatchingException [exc : CVal] 
@@ -858,6 +867,9 @@
               ['is (interp-is e1 e2 env store)] ;; might want to think about these...
               ['isNot (interp-isNot e1 e2 env store)]
               ['in (interp-in e1 e2 env store)]
+  ;            ['isinstance (if (isInstanceOf e1 (Type () (list))) 
+  ;                             (ValueA (VTrue) store)
+  ;                             (ValueA (VFalse) store))]
               
               [else (interp-binop op e1 e2 env store)])
             ]
