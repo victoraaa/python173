@@ -1,17 +1,6 @@
-46 tests succeeded.
-44 tests failed.
+47 tests succeeded.
+43 tests failed.
 == Output of failed tests ==
-=====================================================
-= Results for bool-callable.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: callable
 =====================================================
 = Results for bool-isinstance.py =
 =====================================================

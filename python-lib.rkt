@@ -412,6 +412,16 @@ that calls the primitive `print`.
          (list)
          (list)))
 
+;; Callable
+;; may need to re-write this in the future - it depends. I don't know yet. 
+(define callable
+  (CFunc (list 'e-1)
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "function"))
+              (CTrue)
+              (CFalse))
+         (list)
+         (list)))
+
 (define bool ;; needs to handle arbitrary-arity input
   (CFunc (list 'e-1)
          (CPrim1 'to-bool (CId 'e-1))
@@ -449,6 +459,18 @@ that calls the primitive `print`.
               (CPrim1 'to-tuple (CId 'e-1)))
          (list)
          (list (CHash (hash (list)) (Type "tuple" (list))))))
+
+(define make-range
+  (CFunc (list 'e-1 'e-2 'e-3)
+         (CIf (CPrim2 'and 
+                      (CPrim2 'is (CId 'e-2) (CNone)) 
+                      (CPrim2 'is (CId 'e-3) (CNone)))
+              (CNone)
+              (CIf (CPrim2 'is (CId 'e-3) (CNone))
+                   (CNone)
+                   (CNone))) ;; These are wrong and need to be fixed. 
+         (list)
+         (list (CNone) (CNone))))
 
 (define create-global-env
   (CFunc (list)
@@ -504,6 +526,7 @@ that calls the primitive `print`.
         (bind 'int int)
         (bind 'list make-list)
         (bind 'tuple make-tuple)
+        (bind 'callable callable)
         (bind 'python-uadd python-uadd)
         (bind 'python-invert python-invert)
         (bind 'print print)
