@@ -14,7 +14,6 @@
   [PyCompare (left : PyExpr) (ops : (listof symbol)) (comparators : (listof PyExpr))]
   [PyPass]
   [PyNone]
-  [PyLambda (args : (listof symbol)) (body : PyExpr)]
   [PyRaise (exc : PyExpr)] ;(cause : PyExpr)]
   [PyGlobal (ids : (listof symbol))]
   [PyNonlocal (ids : (listof symbol))]
@@ -27,7 +26,10 @@
   [PyModule (program : PyExpr)]
   [PyGlobalEnv]
   
-  [PyDef (name : symbol) (args : (listof symbol)) (body : PyExpr)] ;; deffun
+  [PyLambda (arguments : PyExpr) (body : PyExpr)]
+  [PyDef (name : symbol) (arguments : PyExpr) (body : PyExpr)] ;; deffun
+  [PyArguments (args : (listof symbol)) (defaults : (listof PyExpr))]
+  
   [PyReturn (value : PyExpr)] ;; return
   
   

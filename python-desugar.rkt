@@ -62,9 +62,12 @@
                                    (map (lambda (e) (get-vars e)) comparators)))]
     [PyPass () (list)]
     [PyNone () (list)]
-    [PyLambda (args body) (list)]
+    [PyLambda (args body) (get-vars args)]
     [PyDef (name args body)
-           (list (values (Local) name))]
+           (append (list (values (Local) name))
+                   (get-vars args))]
+    [PyArguments (args defaults)          ;-------------------------------------------check if declarations in defaults should be caught
+                 (list)]
     
     [PyRaise (exc) (get-vars exc)]
     [Py-NotExist () (list)]
@@ -166,7 +169,8 @@
     
     [PyPass () (CPass)]
     [PyNone () (CNone)]
-    [PyLambda (args body) (CFunc args (desugar body) (list) (list))]
+    [PyLambda (args body) (CFunc (PyArguments-args args) (desugar body) (list) (map desugar (PyArguments-defaults args)))]
+    [PyArguments (args defaults) (CPass)] ;just used within PyLambda and PyDef
     
     [PyRaise (exc) (CError (desugar exc))]
     [PyAssign (targets value) 
@@ -199,7 +203,7 @@
     [PyDef (name args body) 
            (begin (CSeq
                    (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list)))
-                   (CLet 'some-func (Local) (CFunc args (desugar body) (get-vars body) (list))
+                   (CLet 'some-func (Local) (CFunc (PyArguments-args args) (desugar body) (get-vars body) (map desugar (PyArguments-defaults args)))
                          (CSet (CId name) (CId 'some-func)))))]
     
     [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (list)))]

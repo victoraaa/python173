@@ -1,1 +1,4 @@
-TestClass.f()
+def f(x):
+  print(x)
+
+f('x')

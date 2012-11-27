@@ -20,13 +20,22 @@ structure that you define in python-syntax.rkt
      (get-structured-python expr)]
     [(hash-table ('nodetype "Call")
                  ('keywords keywords) ;; ignoring keywords for now
+                 ('kwargs #\nul)     ;; ignoring kwargs for now
+                 ('starargs starargs) ;; ignoring starargs for now
+                 ('args args-list)
+                 ('func func-expr))
+     (PyApp (get-structured-python func-expr)
+            (map get-structured-python args-list))]
+    #|
+    [(hash-table ('nodetype "Call")
+                 ('keywords keywords) ;; ignoring keywords for now
                  ('kwargs kwargs)     ;; ignoring kwargs for now
                  ('starargs starargs) ;; ignoring starargs for now
                  ('args args-list)
                  ('func func-expr))
      (PyApp (get-structured-python func-expr)
             (map get-structured-python args-list))]
-    
+    |#
     ;; Catching None up here, before we hit the identifer case
     [(hash-table ('nodetype "Name")
                  ('ctx _)
@@ -89,7 +98,8 @@ structure that you define in python-syntax.rkt
                  ('kwargannotation kwargannotation)
                  ('defaults defaults)
                  ('kw_defaults kw_defaults))
-     (map get-structured-python args)]
+     (PyArguments (map get-structured-python args)
+                  (map get-structured-python defaults))]
     [(hash-table ('nodetype "arg")
                  ('arg arg)
                  ('annotation annotation))

@@ -27,13 +27,19 @@
                             (foldl (lambda (a b) (append b a))
                                    (list)
                                    (map (lambda (e) (get-vars e)) args)))]
-    [PyReturn (value) (list)]
+    [PyTuple (elts) 
+             (foldl (lambda (a b) (append b a))
+                    (list)
+                    (map (lambda (e) (get-vars e)) elts))]
+    [PyReturn (value) (get-vars value)]
     [PyId (id) (list)]
     [PyStr (s) (list)]
     [PyBinOp (op left right)
              (append
               (get-vars left)
               (get-vars right))]
+    [PyAttribute (attr value)
+                 (get-vars value)]
     [PyIf (test then orelse)
           (append
            (get-vars test)
@@ -87,6 +93,33 @@
     [PyModule (exprs)
               (get-vars exprs)]
     
+    [PyList (elts) 
+            (foldl (lambda (a b) (append b a))
+                   (list)
+                   (map (lambda (e) (get-vars e)) elts))]
+    
+    [PyDict (keys vals) 
+            (append (foldl (lambda (a b) (append b a))
+                           (list)
+                           (map (lambda (e) (get-vars e)) keys))
+                    (foldl (lambda (a b) (append b a))
+                           (list)
+                           (map (lambda (e) (get-vars e)) vals)))]
+    [PyTryExcept (body handlers orelse)
+                 (append (get-vars body)
+                         (append (get-vars orelse)
+                                 (foldl (lambda (a b) (append b a))
+                                        (list)
+                                        (map (lambda (e) (get-vars (PyExcHandler-body e))) handlers))))] ;; Check... TODO
+    [PyTryFinally (body finalbody)
+                  (append (get-vars body)
+                          (get-vars finalbody))] ;; ???
+   ; [PyExceptHandler (name type body)
+  ;                   (append (list (values (Local) name))
+  ;                           (append (get-vars type)
+  ;                                   (foldl (lambda (a b) (append b a))
+  ;                                          (list)
+  ;                                          (map (lambda (e) (get-vars e)) body))))]
     ;[else (error 'get-vars "Case not implemented")]
     ))
 
@@ -133,7 +166,7 @@
     
     [PyPass () (CPass)]
     [PyNone () (CNone)]
-    [PyLambda (args body) (CFunc args (desugar body) (list))]
+    [PyLambda (args body) (CFunc args (desugar body) (list) (list))]
     
     [PyRaise (exc) (CError (desugar exc))]
     [PyAssign (targets value) 
@@ -143,7 +176,7 @@
                  (CLet 'aug-value (Local) (desugar value)
                        (CLet 'orig-value (Local) (desugar target)
                              (CSet (desugar target) (CApp (CId op) 
-                                                          (list (CId 'aug-value) (CId 'orig-value))))))] 
+                                                          (list (CId 'orig-value) (CId 'aug-value))))))] 
                               ;; may or may not work - side effects?
     
     
@@ -165,18 +198,52 @@
     
     [PyDef (name args body) 
            (begin (CSeq
-                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list)))
-                   (CLet 'some-func (Local) (CFunc args (desugar body) (get-vars body))
+                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list)))
+                   (CLet 'some-func (Local) (CFunc (PyArguments-args args) (desugar body) (get-vars body) (map desugar (PyArguments-defaults args)))
                          (CSet (CId name) (CId 'some-func)))))]
     
-    ;; PyList (elts : (listof PyExpr))
-    ;; PyDict (keys : (listof PyExpr)) (values : (listof PyExpr))
+    [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (list)))]
+    [PyDict (keys vals) (CHash (desugar-hash keys vals) (Type "dict" (list)))]
+    [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "tuple" (list)))]
+    
+    [PyAttribute (attr value) (CAttribute attr (desugar value))]
+    
+    ;; exceptions
+    [PyTryExcept (body handlers orelse) (CTryExcept (desugar body) (map desugar-handler handlers) (desugar orelse))]
+    [PyTryFinally (body finalbody) (CTryFinally (desugar body) (desugar finalbody))]
+  ;  [PyExceptHandler (name type body) (CPass)]
     
     ;; return
     [PyReturn (value) (CReturn (desugar value))]
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
+
+;; desugars handlers
+(define (desugar-handler [handler : PyExceptHandler]) : CExceptionHandler
+  (CExcHandler (PyExcHandler-name handler) (desugar (PyExcHandler-type handler)) (desugar (PyExcHandler-body handler))))
+
+;; desugars a dictionary
+(define (desugar-hash [keys : (listof PyExpr)]
+                      [vals : (listof PyExpr)]) : (hashof CExp CExp)
+  (cond
+    [(and (empty? keys) (empty? vals)) (hash (list))]
+    [(and (cons? keys) (cons? vals)) (hash-set (desugar-hash (rest keys) (rest vals)) (desugar (first keys)) (desugar (first vals)))]
+    [else (error 'desugar-hash "key and value lists do not match")]))
+
+;; helper functions to create ranges of numbers
+;###########################
+(define (pynum-range [n : number]) : (listof PyExpr)
+  (map (lambda (x) (PyNum x)) (range n)))
+
+(define (range [n : number]) : (listof number)
+  (reverse (range-backwards n)))
+
+(define (range-backwards [n : number]) : (listof number)
+  (cond
+    [(<= n 0) empty]
+    [else (cons (- n 1) (range-backwards (- n 1)))]))
+;###########################
 
 (define (make-item-list [item : 'a]
                         [size : number]
