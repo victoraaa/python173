@@ -350,7 +350,21 @@
                              (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
                         (repeat-list (hash-values tup) n))]))
 
+;; Assumes we are dealing with VHashs
+(define (merge-python-lists (l1 : CVal) (l2 : CVal)) : (hashof CVal CVal)
+  (local ([define h1 (VHash-elts l1)]
+          [define h2 (VHash-elts l2)]
+          [define keylenh (length (hash-keys h1))])
+    (foldl (lambda (x h) (hash-set h (VNum (+ (VNum-n x) keylenh)) 
+                                   (type-case (optionof CVal) (hash-ref h2 x)
+                                     [some (s) s]
+                                     [none () (error 'merge-python-lists "???")])))
+           h1
+           (hash-keys h2))))
 
+   
+   
+ ;;  (lambda (x) (hash-set h1 (VNum (+ (VNum-n x) keylenh)) (hash-ref h2 x)))
 
 ;(make-new-map (map (lambda (x) (VNum x)) 
  ;                  (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
@@ -384,6 +398,8 @@
     ['notEq (if (check-equality v1 v2) (VFalse) (VTrue))]
     ['num+ (VNum (+ (VNum-n v1) (VNum-n v2)))]
     ['string+ (VStr (string-append (VStr-s v1) (VStr-s v2)))]
+    ['list+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "list" (list)))]
+    ['tuple+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "tuple" (list)))]
     ['num- (VNum (- (VNum-n v1) (VNum-n v2)))]
     ['num* (VNum (* (VNum-n v1) (VNum-n v2)))]
     ['num/ (VNum (/ (VNum-n v1) (VNum-n v2)))]

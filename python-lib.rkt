@@ -84,6 +84,9 @@ that calls the primitive `print`.
     (list)
     (list)))
 
+(define assert-raises-lambda
+  (CFunc
+
 
 ;; math
 (define python-add
@@ -110,7 +113,15 @@ that calls the primitive `print`.
                              (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool"))
                                   (CPrim2 'num+ (CPrim1 'to-int (CId 'e-1)) (CPrim1 'to-int (CId 'e-2)))
                                   (CError (CStr "+: Cannot do math on this type!"))))
-                        (CError (CStr "+: Cannot do math on this type... Sorry!")))))
+                        (CIf (CPrim2 'and 
+                                     (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
+                                     (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "list")))
+                             (CPrim2 'list+ (CId 'e-1) (CId 'e-2))
+                             (CIf (CPrim2 'and 
+                                          (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
+                                          (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "tuple")))
+                                  (CPrim2 'tuple+ (CId 'e-1) (CId 'e-2))
+                                  (CError (CStr "+: Cannot do math on this type... Sorry!")))))))
          (list)
          (list)))
 
@@ -465,13 +476,28 @@ that calls the primitive `print`.
          (CIf (CPrim2 'and 
                       (CPrim2 'is (CId 'e-2) (CNone)) 
                       (CPrim2 'is (CId 'e-3) (CNone)))
-              (CNone)
+              (CApp (CId 'python-make-range) (list (CNum 0) (CId 'e-1) (CNum 1)))
               (CIf (CPrim2 'is (CId 'e-3) (CNone))
-                   (CNone)
-                   (CNone))) ;; These are wrong and need to be fixed. 
+                   (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CNum 1)))
+                   (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CId 'e-3))))) 
          (list)
          (list (CNone) (CNone))))
 
+(define python-make-range
+  (CLet 'python-make-range
+        (Local)
+        (CFunc (list) (CError (CStr "Dummy! (python-make-range)")) (list) (list))
+        (CSet (CId 'python-make-range)
+              (CFunc (list 'e-1 'e-2 'e-3)
+                     (CIf (CPrim2 'eq (CId 'e-1) (CId 'e-2))
+                          (CHash (hash (list)) (Type "list" (list)))
+                          (CPrim2 'list+ 
+                                  (CHash (hash-set (hash (list)) (CNum 0) (CId 'e-1)) (Type "list" (list)))
+                                  (CApp (CId 'python-make-range) 
+                                        (list (CPrim2 'num+ (CId 'e-1) (CId 'e-3)) (CId 'e-2) (CId 'e-3)))))
+                     (list)
+                     (list)))))
+               
 (define create-global-env
   (CFunc (list)
          (CGlobalEnv)
@@ -527,6 +553,8 @@ that calls the primitive `print`.
         (bind 'list make-list)
         (bind 'tuple make-tuple)
         (bind 'callable callable)
+        (bind 'range make-range)
+        (bind 'python-make-range python-make-range)
         (bind 'python-uadd python-uadd)
         (bind 'python-invert python-invert)
         (bind 'print print)

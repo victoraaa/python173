@@ -1,5 +1,5 @@
-47 tests succeeded.
-43 tests failed.
+50 tests succeeded.
+40 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-isinstance.py =
@@ -915,28 +915,6 @@ parse: error is described above.
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: ___assertRaises
 =====================================================
-= Results for range-list.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: range
-=====================================================
-= Results for range-vars.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: range
-=====================================================
 = Results for bound-and-free.py =
 =====================================================
 === Expected stdout ===
@@ -1567,17 +1545,6 @@ PARSING: Haven't handled a case yet:
 
 === Actual stderr ===
 parse: error is described above.
-=====================================================
-= Results for tuple-add.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: +: Cannot do math on this type... Sorry!
 =====================================================
 = Results for test_div_zero.py =
 =====================================================
