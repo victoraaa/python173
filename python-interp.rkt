@@ -350,7 +350,21 @@
                              (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
                         (repeat-list (hash-values tup) n))]))
 
+;; Assumes we are dealing with VHashs
+(define (merge-python-lists (l1 : CVal) (l2 : CVal)) : (hashof CVal CVal)
+  (local ([define h1 (VHash-elts l1)]
+          [define h2 (VHash-elts l2)]
+          [define keylenh (length (hash-keys h1))])
+    (foldl (lambda (x h) (hash-set h (VNum (+ (VNum-n x) keylenh)) 
+                                   (type-case (optionof CVal) (hash-ref h2 x)
+                                     [some (s) s]
+                                     [none () (error 'merge-python-lists "???")])))
+           h1
+           (hash-keys h2))))
 
+   
+   
+ ;;  (lambda (x) (hash-set h1 (VNum (+ (VNum-n x) keylenh)) (hash-ref h2 x)))
 
 ;(make-new-map (map (lambda (x) (VNum x)) 
  ;                  (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
@@ -384,6 +398,8 @@
     ['notEq (if (check-equality v1 v2) (VFalse) (VTrue))]
     ['num+ (VNum (+ (VNum-n v1) (VNum-n v2)))]
     ['string+ (VStr (string-append (VStr-s v1) (VStr-s v2)))]
+    ['list+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "list" (list)))]
+    ['tuple+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "tuple" (list)))]
     ['num- (VNum (- (VNum-n v1) (VNum-n v2)))]
     ['num* (VNum (* (VNum-n v1) (VNum-n v2)))]
     ['num/ (VNum (/ (VNum-n v1) (VNum-n v2)))]
@@ -667,6 +683,13 @@
        [ExceptionA (v1 s1) (ExceptionA v1 s1)]
        [ReturnA (v1 s1) (error 'interp-CHash "This should never be a return!!")])]))
 
+
+;; TODO somehow we need to have a function to convert a CId into a string
+(define (id-to-string (id : CExp)) : string
+  (type-case CExp id
+    [CId (s) (symbol->string s)]
+    [else (error 'id-to-string "Not an ID")]))
+
 ;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
 ;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
 ;; isInstanceOf checks whether 'obj' is of the same type or of one of the base types of 'type'
@@ -679,6 +702,8 @@
                     [env : Env]
                     [store : Store]) : VType
   (VClass-type (lookupStore (lookupVar (CId-x type) env) store)))
+
+;; TODO This needs to be adapted to work with integers and other primitive types as well...
 
 ;; hasMatchingException checks whether any of the except clauses deal with the raised object
 (define (hasMatchingException [exc : CVal] 
@@ -842,6 +867,9 @@
               ['is (interp-is e1 e2 env store)] ;; might want to think about these...
               ['isNot (interp-isNot e1 e2 env store)]
               ['in (interp-in e1 e2 env store)]
+  ;            ['isinstance (if (isInstanceOf e1 (Type () (list))) 
+  ;                             (ValueA (VTrue) store)
+  ;                             (ValueA (VFalse) store))]
               
               [else (interp-binop op e1 e2 env store)])
             ]
