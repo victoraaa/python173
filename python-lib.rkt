@@ -93,7 +93,12 @@ that calls the primitive `print`.
     'no-vararg))
 
 ;(define assert-raises-lambda
-;  (CFunc 
+;  (CFunc (list 'e-1 'e-2)
+; (CTryExcept (CApp (CId 'e-2) (CPrim1 'python-star (CId 'args)) (list)) (CExcHandler 'e () (CTrue)) (CFalse))
+                                       ;; Or however it ends up working...
+; (list)
+; (list)
+; 'args))
 
 
 
