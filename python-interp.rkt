@@ -208,7 +208,7 @@
     [some (v) (local [(define-values (t l) v)]
                 l)]))
 
-;;puts the default args of the functino in the places with CUnbounds
+;;puts the default args of the function in the places with CUnbounds
 (define (add-default-args [args : (listof CVal)]
                           [defaults : (listof CVal)]) : (listof CVal)
   (cond
@@ -836,10 +836,10 @@
 ;;checks if the list of arguments has some CUnbound in a position that is not from some default argument
 (define (group-check-defaults [ids : (listof symbol)]
                               [nDefArgs : number]
-                              [argsList : (listof CExp)]) : boolean
+                              [argsList : (listof CExp)]) : (listof CExp)
   (if (member (CUnbound) (drop-right argsList nDefArgs))
-      false
-      true))
+      (error 'group-arguments "missing argument: throw TypeError exception")
+      argsList))
 
 ;; group-arguments create a list of arguments in the correct order from the list of positional args, keyword args and the number of existing default args.
 ;; if varargid is different from 'no-vararg, adds a new argument to the list of arguments, that is a list containing the positional arguments in excess
@@ -872,18 +872,15 @@
                       (group-keyword-arguments ids keywargs argList)
                       varargs)]
     [else
-     (if (group-check-defaults ids
-                               nDefArgs
-                               (drop-right (group-all-arguments ids
-                                                                argList
-                                                                varargid
-                                                                varargs)
-                                           1))
-         (group-all-arguments ids
-                              argList
-                              varargid
-                              varargs)
-         (error 'group-arguments "missing argument: throw TypeError exception"))]))
+     (let [(groupedArgs (group-all-arguments ids
+                                             argList
+                                             varargid
+                                             varargs))]
+       (group-check-defaults ids
+                             nDefArgs
+                             (if (equal? varargid 'no-vararg)
+                                 groupedArgs
+                                 (drop-right groupedArgs 1))))]))
 
 
 ;; helper functions to create ranges of numbers

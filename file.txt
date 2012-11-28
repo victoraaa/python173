@@ -1,4 +1,4 @@
-def f(*sum):
+def f(x,*sum):
   print(len(sum))
 
 f(1,2,3,9,0,1,2,'2')
