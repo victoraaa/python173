@@ -16,7 +16,7 @@ that calls the primitive `print`.
 
 (define print-lambda
   (CFunc (list 'to-print)
-    (CPrim1 'print (CId 'to-print)) (list) (list)))
+    (CPrim1 'print (CId 'to-print)) (list) (list) 'no-vararg))
 
 (define assert-equal-lambda
   (CFunc (list 'e-1 'e-2)
@@ -25,7 +25,8 @@ that calls the primitive `print`.
          (CError (CStr "Assert failed: values are not Equal"))
          ) 
     (list)
-    (list)))
+    (list)
+    'no-vararg))
 
 (define assert-notEqual-lambda
   (CFunc (list 'e-1 'e-2)
@@ -34,19 +35,22 @@ that calls the primitive `print`.
          (CPass)
          )
     (list)
-    (list)))
+    (list)
+    'no-vararg))
 
 (define assert-true-lambda
   (CFunc (list 'check-true)
     (CIf (CId 'check-true) (CPass) (CError (CStr "Assert failed: value is False")))
     (list)
-    (list)))
+    (list)
+    'no-vararg))
 
 (define assert-false-lambda
   (CFunc (list 'check-false)
     (CIf (CId 'check-false) (CError (CStr "Assert failed: value is True")) (CPass) )
     (list)
-    (list)))
+    (list)
+    'no-vararg))
 
 (define assert-is-lambda
   (CFunc (list 'e-1 'e-2)
@@ -55,7 +59,8 @@ that calls the primitive `print`.
          (CError (CStr "Assert failed: first argument is not second argument"))
          )
     (list)
-    (list)))
+    (list)
+    'no-vararg))
 
 (define assert-isNot-lambda
   (CFunc (list 'e-1 'e-2)
@@ -64,7 +69,8 @@ that calls the primitive `print`.
          (CPass) 
          )
     (list)
-    (list)))
+    (list)
+    'no-vararg))
 
 (define assert-in-lambda
   (CFunc (list 'e-1 'e-2)
@@ -73,7 +79,8 @@ that calls the primitive `print`.
          (CError (CStr "Assert failed: element not found"))
          )
     (list)
-    (list)))
+    (list)
+    'no-vararg))
 
 (define assert-notIn-lambda
   (CFunc (list 'e-1 'e-2)
@@ -82,10 +89,12 @@ that calls the primitive `print`.
          (CPass)
          )
     (list)
-    (list)))
+    (list)
+    'no-vararg))
 
 ;(define assert-raises-lambda
- ; (CFunc
+;  (CFunc 
+
 
 
 ;; math
@@ -123,7 +132,8 @@ that calls the primitive `print`.
                                   (CPrim2 'tuple+ (CId 'e-1) (CId 'e-2))
                                   (CError (CStr "+: Cannot do math on this type... Sorry!")))))))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 
 ;; handles addition
@@ -161,7 +171,8 @@ that calls the primitive `print`.
                              (CError (CStr "-: Cannot do math on this type!"))))
                    (CError (CStr "-: Cannot do math on this type... Sorry!"))))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-mult ;; eventaully, this has to work for strings and integers too...
   (CFunc (list 'e-1 'e-2)
@@ -201,7 +212,8 @@ that calls the primitive `print`.
                                  (CError (CStr "*: Cannot do math on these types... Sorry!")))
                             (CError (CStr "*: Cannot do math on this type... Sorry!"))))))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 ;; Need to convert this function as well. Divison must handle booleans.
 (define python-div
@@ -222,7 +234,8 @@ that calls the primitive `print`.
                    (CPrim2 'num/ (CPrim1 'to-float (CId 'e-1)) (CPrim1 'to-float (CId 'e-2))))
               (CError (CStr "/: Not supported for this type.")))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 
 
@@ -253,7 +266,8 @@ that calls the primitive `print`.
                              (CError (CStr "<: Not supported for this type.")))))
               (CError (CStr "<: Types do not match.")))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-lte
   (CFunc (list 'e-1 'e-2)
@@ -267,7 +281,8 @@ that calls the primitive `print`.
                              (CError (CStr "<=: Not supported for this type.")))))
               (CError (CStr "<=: Types do not match.")))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-gt
   (CFunc (list 'e-1 'e-2)
@@ -281,7 +296,8 @@ that calls the primitive `print`.
                              (CError (CStr ">: Not supported for this type.")))))
               (CError (CStr ">: Types do not match.")))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-gte
   (CFunc (list 'e-1 'e-2)
@@ -295,7 +311,8 @@ that calls the primitive `print`.
                              (CError (CStr ">=: Not supported for this type.")))))
               (CError (CStr ">=: Types do not match.")))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-uadd
   (CFunc (list 'e-1)
@@ -307,7 +324,8 @@ that calls the primitive `print`.
                    (CPrim1 'to-int (CId 'e-1))
                    (CError (CStr "Unary +: Not supported for this type."))))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 ;; TODO: need invert, negate, and not cases. With typechecking. 
 
@@ -320,7 +338,8 @@ that calls the primitive `print`.
                    (CPrim1 'invert (CPrim1 'to-int (CId 'e-1)))
                    (CError (CStr "~: Cannot invert this type."))))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 
 (define python-eq
@@ -339,49 +358,58 @@ that calls the primitive `print`.
               (CPrim2 'eq (CPrim1 'to-float (CId 'e-1)) (CPrim1 'to-float (CId 'e-2)))
               (CPrim2 'eq (CId 'e-1) (CId 'e-2)))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-notEq
   (CFunc (list 'e-1 'e-2)
          (CPrim2 'notEq (CId 'e-1) (CId 'e-2))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-is
   (CFunc (list 'e-1 'e-2)
          (CPrim2 'is (CId 'e-1) (CId 'e-2))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-isNot
   (CFunc (list 'e-1 'e-2)
          (CPrim1 'not (CPrim2 'is (CId 'e-1) (CId 'e-2)))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-in
   (CFunc (list 'e-1 'e-2)
          (CPrim2 'in (CId 'e-1) (CId 'e-2))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
+
 
 (define python-notIn
   (CFunc (list 'e-1 'e-2)
          (CPrim1 'not (CPrim2 'in (CId 'e-1) (CId 'e-2)))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define print
   (CFunc (list 'e-1)
          (CPrim1 'print (CId 'e-1))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-not
   (CFunc (list 'e-1)
          (CPrim1 'not (CId 'e-1))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define python-negate
   (CFunc (list 'e-1)
@@ -393,7 +421,8 @@ that calls the primitive `print`.
                    (CPrim1 'negative (CId 'e-1)) ;; can be made much more efficient...
                    (CError (CStr "Unary -: Not supported for this type."))))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define len 
   (CFunc (list 'e-1)
@@ -407,7 +436,8 @@ that calls the primitive `print`.
               (CPrim1 'length (CId 'e-1))
               (CError (CStr "len: Argument must be a string, list or dict (so far...).")))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define abs
   (CFunc (list 'e-1)
@@ -421,7 +451,8 @@ that calls the primitive `print`.
                         (CId 'e-1)) ;; is this the right way to do it?
                    (CError (CStr "abs: Argument must be a number or boolean"))))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 ;; Callable
 ;; may need to re-write this in the future - it depends. I don't know yet. 
@@ -431,37 +462,43 @@ that calls the primitive `print`.
               (CTrue)
               (CFalse))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define bool ;; needs to handle arbitrary-arity input
   (CFunc (list 'e-1)
          (CPrim1 'to-bool (CId 'e-1))
          (list)
-         (list (CFalse))))
+         (list (CFalse))
+         'no-vararg))
 
 (define str
   (CFunc (list 'e-1)
          (CPrim1 'to-string (CId 'e-1))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define float
   (CFunc (list 'e-1)
          (CPrim1 'to-float (CId 'e-1))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define int
   (CFunc (list 'e-1)
          (CPrim1 'to-int (CId 'e-1))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define make-list
   (CFunc (list 'e-1)
          (CPrim1 'to-list (CId 'e-1))
          (list)
-         (list)))
+         (list)
+         'no-vararg))
 
 (define make-tuple
   (CFunc (list 'e-1)
@@ -469,7 +506,8 @@ that calls the primitive `print`.
               (CId 'e-1)
               (CPrim1 'to-tuple (CId 'e-1)))
          (list)
-         (list (CHash (hash (list)) (Type "tuple" (list))))))
+         (list (CHash (hash (list)) (Type "tuple" (list))))
+         'no-vararg))
 
 (define make-range
   (CFunc (list 'e-1 'e-2 'e-3)
@@ -481,12 +519,13 @@ that calls the primitive `print`.
                    (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CNum 1)) (list))
                    (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CId 'e-3)) (list)))) 
          (list)
-         (list (CNone) (CNone))))
+         (list (CNone) (CNone))
+         'no-vararg))
 
 (define python-make-range
   (CLet 'python-make-range
         (Local)
-        (CFunc (list) (CError (CStr "Dummy! (python-make-range)")) (list) (list))
+        (CFunc (list) (CError (CStr "Dummy! (python-make-range)")) (list) (list) 'no-vararg)
         (CSet (CId 'python-make-range)
               (CFunc (list 'e-1 'e-2 'e-3)
                      (CIf (CPrim2 'eq (CId 'e-1) (CId 'e-2))
@@ -497,13 +536,15 @@ that calls the primitive `print`.
                                         (list (CPrim2 'num+ (CId 'e-1) (CId 'e-3)) (CId 'e-2) (CId 'e-3))
                                         (list))))
                      (list)
-                     (list)))))
+                     (list)
+                     'no-vararg))))
                
 (define create-global-env
   (CFunc (list)
          (CGlobalEnv)
          (list)
-         (list)))
+         (list)
+         'no-vararg))
          
 
 (define true-val
@@ -517,7 +558,7 @@ that calls the primitive `print`.
   (CClass (hash (list)) (Type "Exception" (list))))
 
 (define TestClass
-  (CClass (hash (list (values (VStr "f") (VClosure (hash (list)) (list) (CPrim1 'print (CStr "printing")) (list) -1)))) (Type "TestClass" (list))))
+  (CClass (hash (list (values (VStr "f") (VClosure (hash (list)) (list) 'no-vararg (CPrim1 'print (CStr "printing")) (list) -1)))) (Type "TestClass" (list))))
 
 ;;STILL TO DO: assertRaises and fail
 (define lib-functions

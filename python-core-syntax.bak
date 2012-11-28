@@ -16,7 +16,7 @@ ParselTongue.
   [CIf (test : CExp) (then : CExp) (else : CExp)]
   [CId (x : symbol)]
   [CLet (id : symbol) (scopeType : ScopeType) (bind : CExp) (body : CExp)]
-  [CApp (fun : CExp) (args : (listof CExp))]
+  [CApp (fun : CExp) (args : (listof CExp)) (keywordArguments : (listof (symbol * CExp)))]
   [CFunc (args : (listof symbol)) 
          (body : CExp) 
          (vlist : (listof (ScopeType * symbol))) 

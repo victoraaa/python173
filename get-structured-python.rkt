@@ -54,6 +54,19 @@ structure that you define in python-syntax.rkt
     ;; Alternatively, they could be handled in desugaring. This is a decision we need to make
     ;; before we can proceed. I vote for desugaring. 
     
+    ;; Stuff for classes
+    [(hash-table ('nodetype "ClassDef")
+                 ('name name)
+                 ('bases bases)
+                 ('keywords keywords)
+                 ('starargs starargs)
+                 ('kwargs kwargs)
+                 ('body body)
+                 ('decorator_list decorator_list))
+     (PyClassDef (string->symbol name)
+                 (map get-structured-python bases)
+                 (map get-structured-python body))]
+    
     [(hash-table ('nodetype "Name")
                  ('ctx _)        ;; ignoring ctx for now
                  ('id id))
@@ -107,7 +120,10 @@ structure that you define in python-syntax.rkt
                  ('defaults defaults)
                  ('kw_defaults kw_defaults))
      (PyArguments (map get-structured-python args)
-                  (map get-structured-python defaults))]
+                  (map get-structured-python defaults)
+                  (if (string? vararg)
+                      (string->symbol vararg)
+                      'no-vararg))]
     [(hash-table ('nodetype "arg")
                  ('arg arg)
                  ('annotation annotation))

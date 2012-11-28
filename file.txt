@@ -1,8 +1,19 @@
-def f(x,y,z):
-  print(x)
-  print(y)
-  print(z)
+def f(*sum):
+  print(len(sum))
 
-f(x='x',z='z',y='y')
+f(1,2,3,9,0,1,2,'2')
 
-#test whether a keyword argument that doesnt exists works
+
+
+#class C: 
+#  def m(self):
+#    pass
+
+#  def f():
+#    pass
+
+#obj = C()
+#obj.m()
+#obj.f()
+
+#c()

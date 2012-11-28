@@ -138,7 +138,8 @@
 ;;It basically changes the local tags to nonlocal ones.
 (define (newEnvScope [env : Env]
                      [vlist : (listof (ScopeType * symbol))]
-                     [args : (listof symbol)]) : Env
+                     [args : (listof symbol)]
+                     [vararg : symbol]) : Env
   (addLocals (addNonLocals (addGlobalVars (keepOldEnv env) 
                                           vlist)
                            vlist)
@@ -147,7 +148,7 @@
                                                 true
                                                 false)))
                               vlist)
-                      args)
+                      (append args (list vararg)))
              (filter (lambda (x) (local [(define-values (t id) x)]
                                    (if (Local? t)
                                        false
@@ -324,7 +325,7 @@
                 [(fixnum? n) "int"]
                 [(flonum? n) "float"])]
     [VStr (s) "string"]
-    [VClosure (e a b defargs uid) "function"]
+    [VClosure (e a varg b defargs uid) "function"]
     [VTrue () "bool"]
     [VFalse () "bool"]
     [VNone () "NoneType"] ;; TODO this looks like a class name. Maybe we should make it so?
@@ -466,7 +467,7 @@
 ;;  get-uid returns the uid for any type that has one
 (define (get-uid [v : CVal]) : Uid
   (type-case CVal v
-    [VClosure (e a b defargs uid) uid]
+    [VClosure (e a varg b defargs uid) uid]
     ;[VList (elts uid) uid]
     ;[VDict (elts uid) uid]
     [VHash (elts uid type) uid]
@@ -769,7 +770,8 @@
 ;(define (interp-defargs [defargs : (listof CExp)] [env : Env] [store : Store]) : DefArgHolder
   
 
-(define (interp-func [args : (listof symbol)] 
+(define (interp-func [args : (listof symbol)]
+                     [vararg : symbol]
                      [body : CExp] 
                      [vlist : (listof (ScopeType * symbol))]
                      [defargs : (listof CExp)] 
@@ -777,14 +779,15 @@
                      [env : Env]
                      [store : Store]) : AnswerC
   (cond 
-    [(empty? defargs) (ValueA (VClosure (newEnvScope env vlist args) 
+    [(empty? defargs) (ValueA (VClosure (newEnvScope env vlist args vararg) 
                                         args 
+                                        vararg
                                         body 
                                         (reverse defvals) 
                                         (new-uid)) 
                               store)]
     [else (type-case AnswerC (interp-env (first defargs) env store)
-            [ValueA (v s) (interp-func args body vlist (rest defargs) (cons v defvals) env s)]
+            [ValueA (v s) (interp-func args vararg body vlist (rest defargs) (cons v defvals) env s)]
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (error 'interp-func "I don't think this should even happen.")])]))
 
@@ -792,7 +795,7 @@
 (define (group-positional-arguments [ids : (listof symbol)]
                                     [args : (listof CExp)]) : (hashof symbol CExp)
   (cond
-    [(empty? args)
+    [(or (empty? args) (empty? ids))
      (hash (list))]
     [else
      (hash-set (group-positional-arguments (rest ids)
@@ -818,50 +821,93 @@
 
 ;;creates an ordered list of arguments with CUnbound representing the default arguments in the position of missing arguments.
 (define (group-all-arguments [ids : (listof symbol)]
-                             [argList : (hashof symbol CExp)]) : (listof CExp)
-  (foldl (lambda (id lst) (type-case (optionof CExp) (hash-ref argList id)
-                            [none () (append lst (list (CUnbound)))]
-                            [some (v) (append lst (list v))]))
-         (list)
-         ids))
+                             [argList : (hashof symbol CExp)]
+                             [varargid : symbol]
+                             [varargs : (listof CExp)]) : (listof CExp)
+  (let [(arguments (foldl (lambda (id lst) (type-case (optionof CExp) (hash-ref argList id)
+                                             [none () (append lst (list (CUnbound)))]
+                                             [some (v) (append lst (list v))]))
+                          (list)
+                          ids))]
+    (if (not (equal? varargid 'no-vararg))
+        (append arguments (list (create-clist varargs)))
+        arguments)))
 
 ;;checks if the list of arguments has some CUnbound in a position that is not from some default argument
 (define (group-check-defaults [ids : (listof symbol)]
                               [nDefArgs : number]
-                              [argsList : (listof CExp)]) : (listof CExp)
+                              [argsList : (listof CExp)]) : boolean
   (if (member (CUnbound) (drop-right argsList nDefArgs))
-      (error 'group-check-defaults "missing argument: throw TypeError exception")
-      argsList))
+      false
+      true))
 
 ;; group-arguments create a list of arguments in the correct order from the list of positional args, keyword args and the number of existing default args.
+;; if varargid is different from 'no-vararg, adds a new argument to the list of arguments, that is a list containing the positional arguments in excess
 (define (group-arguments [ids : (listof symbol)]
+                         [varargid : symbol]
                          [args : (listof CExp)]
                          [keywargs : (listof (symbol * CExp))]
                          [nDefArgs : number]
-                         [argList : (hashof symbol CExp)]) : (listof CExp)
+                         [argList : (hashof symbol CExp)]
+                         [varargs : (listof CExp)]) : (listof CExp)
   (cond
-    [(< (length ids) (length args))
+    [(and (< (length ids) (length args)) (equal? varargid 'no-vararg))
      (error 'group-arguments "arity mismatch: more arguments than function can handle. Should throw TypeError exception.")]
     [(not (empty? args))
      (group-arguments ids
+                      varargid
                       (list)
                       keywargs
                       nDefArgs
-                      (group-positional-arguments ids args))]
+                      (group-positional-arguments ids args)
+                      (if (< (length ids) (length args))
+                          (list-tail args (length ids))
+                          (list)))]
     [(not (empty? keywargs))
      (group-arguments ids
+                      varargid
                       (list)
                       (list)
                       nDefArgs
-                      (group-keyword-arguments ids keywargs argList))]
+                      (group-keyword-arguments ids keywargs argList)
+                      varargs)]
     [else
-     (group-check-defaults ids
-                           nDefArgs
-                           (group-all-arguments ids
-                                                argList))]))
-     
-       
+     (if (group-check-defaults ids
+                               nDefArgs
+                               (drop-right (group-all-arguments ids
+                                                                argList
+                                                                varargid
+                                                                varargs)
+                                           1))
+         (group-all-arguments ids
+                              argList
+                              varargid
+                              varargs)
+         (error 'group-arguments "missing argument: throw TypeError exception"))]))
 
+
+;; helper functions to create ranges of numbers
+;###########################
+(define (cnum-range [n : number]) : (listof CExp)
+  (map (lambda (x) (CNum x)) (range2 n)))
+
+(define (range2 [n : number]) : (listof number)
+  (reverse (range-backwards n)))
+
+(define (range-backwards2 [n : number]) : (listof number)
+  (cond
+    [(<= n 0) empty]
+    [else (cons (- n 1) (range-backwards (- n 1)))]))
+
+(define (create-hash [keys : (listof CExp)]
+                     [vals : (listof CExp)]) : (hashof CExp CExp)
+  (cond
+    [(and (empty? keys) (empty? vals)) (hash (list))]
+    [(and (cons? keys) (cons? vals)) (hash-set (create-hash (rest keys) (rest vals)) (first keys) (first vals))]
+    [else (error 'create-hash "key and value lists do not match")]))
+ 
+(define (create-clist [exps : (listof CExp)]) : CExp
+  (CHash (create-hash (cnum-range (length exps)) exps) (Type "list" (list))))
 
 ;; interp-env
 (define (interp-env [expr : CExp] 
@@ -922,13 +968,15 @@
      (type-case AnswerC (interp-env func env store)
        [ValueA (vf sf)
          (type-case CVal vf
-           [VClosure (e a b defargs uid)
+           [VClosure (e a varg b defargs uid)
                      (interp-args-CApp b   
                                        env
                                        e
                                        sf
-                                       a
-                                       (group-arguments a args keywargs (length defargs) (hash (list)))
+                                       (if (not (equal? varg 'no-vararg))
+                                           (append a (list varg))
+                                           a)
+                                       (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
                                        (list)
                                        defargs)]
            ;;TEMPORARY CASE FOR APPLICATION
@@ -946,8 +994,8 @@
        [else (error 'interp "Not a closure")])]
     |#
 
-    [CFunc (args body vlist defargs) 
-           (interp-func args body vlist defargs (list) env store)]
+    [CFunc (args body vlist defargs vararg) 
+           (interp-func args vararg body vlist defargs (list) env store)]
            ;(ValueA (VClosure (newEnvScope env vlist args) args body () (new-uid)) store)] ;; TODO use vlist...
 
     [CPrim1 (prim arg) (interp-unary prim arg env store)]

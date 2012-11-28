@@ -69,7 +69,12 @@
     [PyDef (name args body)
            (append (list (values (Local) name))
                    (get-vars args))]
-    [PyArguments (args defaults)          ;-------------------------------------------check if declarations in defaults should be caught
+    
+    
+    [PyClassDef (name bases body) (list (values (Local) name))]
+    
+    
+    [PyArguments (args defaults vararg)          ;-------------------------------------------check if declarations in defaults should be caught
                  (list)]
     
     [PyRaise (exc) (get-vars exc)]
@@ -177,8 +182,8 @@
     
     [PyPass () (CPass)]
     [PyNone () (CNone)]
-    [PyLambda (args body) (CFunc (PyArguments-args args) (desugar body) (list) (map desugar (PyArguments-defaults args)))]
-    [PyArguments (args defaults) (CPass)] ;just used within PyLambda and PyDef
+    [PyLambda (args body) (CFunc (PyArguments-args args) (desugar body) (list) (map desugar (PyArguments-defaults args)) (PyArguments-vararg args))]
+    [PyArguments (args defaults vararg) (CPass)] ;just used within PyLambda and PyDef
     
     [PyRaise (exc) (CError (desugar exc))]
     [PyAssign (targets value) 
@@ -211,9 +216,25 @@
     
     [PyDef (name args body) 
            (begin (CSeq
-                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list)))
-                   (CLet 'some-func (Local) (CFunc (PyArguments-args args) (desugar body) (get-vars body) (map desugar (PyArguments-defaults args)))
+                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list) 'no-vararg))
+                   (CLet 'some-func 
+                         (Local) 
+                         (CFunc (PyArguments-args args) 
+                                (desugar body) 
+                                (get-vars body) 
+                                (map desugar (PyArguments-defaults args)) 
+                                (PyArguments-vararg args))
                          (CSet (CId name) (CId 'some-func)))))]
+    
+   ; c.f
+    [PyClassDef (name bases body) 
+                (begin (CSeq
+                        (CSet (CId name) (CHash (hash (list)) (Type "dummy" (list))))
+                        (CLet 'some-class (Local) (CHash (hash-set (hash (list)) (CStr "__name__") (CStr (symbol->string name))) (Type "class" (map desugar bases)))
+                              (CSeq
+                               (CSet (CId name) (CId 'some-class))
+                               (desugar-class-innards name body)))))]
+    
     
     [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (list)))]
     [PyDict (keys vals) (CHash (desugar-hash keys vals) (Type "dict" (list)))]
@@ -231,6 +252,20 @@
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
+
+;; desugar class innards
+(define (desugar-class-innards (name : symbol) (body : (listof PyExpr))) : CExp
+  (CPass))
+;  (cond 
+;    [(empty? body) ...]
+;    [(= (length body) 1) ()]
+;    [else (CSeq () (desugar-class-innards name (rest body)))]))
+
+
+;; desugar class body
+;(define (desugar-class-body (body : (listof PyExpr))) : (hashof CExp CExp)
+;  (
+
 
 ;; desugars handlers
 (define (desugar-handler [handler : PyExceptHandler]) : CExceptionHandler

@@ -30,7 +30,10 @@
   
   [PyLambda (arguments : PyExpr) (body : PyExpr)]
   [PyDef (name : symbol) (arguments : PyExpr) (body : PyExpr)] ;; deffun
-  [PyArguments (args : (listof symbol)) (defaults : (listof PyExpr))]
+  
+  [PyClassDef (name : symbol) (bases : (listof PyExpr)) (body : (listof PyExpr))]
+  
+  [PyArguments (args : (listof symbol)) (defaults : (listof PyExpr)) (vararg : symbol)]
   
   [PyReturn (value : PyExpr)] ;; return
   
