@@ -20,7 +20,7 @@ that calls the primitive `print`.
 
 (define assert-equal-lambda
   (CFunc (list 'e-1 'e-2)
-    (CIf (CApp (CId 'python-eq) (list (CId 'e-1) (CId 'e-2)))
+    (CIf (CApp (CId 'python-eq) (list (CId 'e-1) (CId 'e-2)) (list))
          (CPass) 
          (CError (CStr "Assert failed: values are not Equal"))
          ) 
@@ -476,10 +476,10 @@ that calls the primitive `print`.
          (CIf (CPrim2 'and 
                       (CPrim2 'is (CId 'e-2) (CNone)) 
                       (CPrim2 'is (CId 'e-3) (CNone)))
-              (CApp (CId 'python-make-range) (list (CNum 0) (CId 'e-1) (CNum 1)))
+              (CApp (CId 'python-make-range) (list (CNum 0) (CId 'e-1) (CNum 1)) (list))
               (CIf (CPrim2 'is (CId 'e-3) (CNone))
-                   (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CNum 1)))
-                   (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CId 'e-3))))) 
+                   (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CNum 1)) (list))
+                   (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CId 'e-3)) (list)))) 
          (list)
          (list (CNone) (CNone))))
 
@@ -494,7 +494,8 @@ that calls the primitive `print`.
                           (CPrim2 'list+ 
                                   (CHash (hash-set (hash (list)) (CNum 0) (CId 'e-1)) (Type "list" (list)))
                                   (CApp (CId 'python-make-range) 
-                                        (list (CPrim2 'num+ (CId 'e-1) (CId 'e-3)) (CId 'e-2) (CId 'e-3)))))
+                                        (list (CPrim2 'num+ (CId 'e-1) (CId 'e-3)) (CId 'e-2) (CId 'e-3))
+                                        (list))))
                      (list)
                      (list)))))
                

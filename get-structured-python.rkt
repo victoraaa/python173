@@ -18,15 +18,17 @@ structure that you define in python-syntax.rkt
      (PyModule (PySeq (map get-structured-python expr-list)))]
     [(hash-table ('nodetype "Expr") ('value expr))
      (get-structured-python expr)]
+    ;;The base case for "Call" outputs an empty list for keyword arguments
     [(hash-table ('nodetype "Call")
-                 ('keywords keywords) ;; ignoring keywords for now
-                 ('kwargs #\nul)     ;; ignoring kwargs for now
+                 ('keywords #\nul) ;; ignoring keywords for now
+                 ('kwargs kwargs)     ;; ignoring kwargs for now
                  ('starargs starargs) ;; ignoring starargs for now
                  ('args args-list)
                  ('func func-expr))
      (PyApp (get-structured-python func-expr)
-            (map get-structured-python args-list))]
-    #|
+            (map get-structured-python args-list)
+            (list))]
+    
     [(hash-table ('nodetype "Call")
                  ('keywords keywords) ;; ignoring keywords for now
                  ('kwargs kwargs)     ;; ignoring kwargs for now
@@ -34,8 +36,14 @@ structure that you define in python-syntax.rkt
                  ('args args-list)
                  ('func func-expr))
      (PyApp (get-structured-python func-expr)
-            (map get-structured-python args-list))]
-    |#
+            (map get-structured-python args-list)
+            (map get-structured-python keywords))]
+    
+    [(hash-table ('nodetype "keyword")
+                 ('arg arg)
+                 ('value value))
+     (keywarghelpertype (string->symbol arg) (get-structured-python value))]
+    
     ;; Catching None up here, before we hit the identifer case
     [(hash-table ('nodetype "Name")
                  ('ctx _)

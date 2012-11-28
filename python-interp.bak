@@ -1,7 +1,8 @@
 #lang plai-typed
 
 (require "python-core-syntax.rkt"
-         "python-primitives.rkt")
+         "python-primitives.rkt"
+         "python-desugar.rkt")
 
 (require (typed-in racket/base [string<? : [string string -> boolean]]))
 (require (typed-in racket/base [string>? : [string string -> boolean]]))
@@ -11,9 +12,22 @@
 (require (typed-in racket/base [bitwise-not : [number -> number]]))
 (require (typed-in racket/base [fixnum? : [number -> boolean]]))
 (require (typed-in racket/base [flonum? : [number -> boolean]]))
+;(require (typed-in racket/string [string-split : [string -> (listof string)]]))
+(require (typed-in racket/base [string->list : [string -> (listof string)]]))
+(require (typed-in racket/base [list->string : [(listof string) -> string]]))
+(require (typed-in racket/base [list-tail : [(listof 'a) number -> (listof 'a)]]))
+(require (typed-in racket/list [argmax : [('a -> number) (listof 'a) -> 'a]]))
 
 ;;Returns a new memory address to be used
 (define new-loc
+  (let ([n (box 0)])
+    (lambda ()
+      (begin
+        (set-box! n (add1 (unbox n)))
+        (unbox n)))))
+
+;;Returns a new uid to be used
+(define new-uid
   (let ([n (box 0)])
     (lambda ()
       (begin
@@ -198,13 +212,18 @@
                           [store : Store]
                           [argsIds : (listof symbol)]
                           [args : (listof CExp)]
-                          [interpretedArgs : (listof CVal)]) : AnswerC
+                          [interpretedArgs : (listof CVal)]
+                          [defargs : (listof CVal)]) : AnswerC
   (cond
     [(empty? args) (interp-CApp body
-                                (allocateLocals closEnv)
-                                store
-                                argsIds
-                                (reverse interpretedArgs))]
+                              (allocateLocals closEnv)
+                              store
+                              argsIds
+                              (append (reverse interpretedArgs)
+                                      (list-tail defargs 
+                                                 (- (length defargs)
+                                                    (- (length argsIds) 
+                                                       (length interpretedArgs))))))]     
     [else 
      (type-case AnswerC (interp-env (first args) env store)
        [ValueA (v s)
@@ -214,7 +233,9 @@
                                  s
                                  argsIds
                                  (rest args)
-                                 (cons v interpretedArgs))]
+                                 (cons v interpretedArgs)
+                                 defargs)]
+       [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v s) (ReturnA v s)])]))
 
 ;;helper method that allocates a new position for all of the local variables in the environment. Used when applying a function, because
@@ -244,6 +265,7 @@
                                                   closEnv
                                                   store)
                      [ValueA (v s) (ValueA v s)]
+                     [ExceptionA (v s) (ExceptionA v s)]
                      [ReturnA (v s) (ValueA v s)])]
     [else 
      (interp-CApp body
@@ -270,23 +292,29 @@
 (define (interp-tagof [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
     [ValueA (v s) (ValueA (VStr (get-tag v)) s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
 
 ;; This is the tagof operator that we will need later...
 (define (get-tag [val : CVal]) : string
   (type-case CVal val
-    [VNum (n) "int"] ;; this really should distinguish ints from floats...
-          ;(cond
-              ;  [(fixnum? n) "int"]
-              ;  [(flonum? n) "float"])]
+    [VNum (n) ;"int"] ;; this really should distinguish ints from floats...
+          (cond
+                [(fixnum? n) "int"]
+                [(flonum? n) "float"])]
     [VStr (s) "string"]
-    [VClosure (e a b) "function"]
+    [VClosure (e a b defargs uid) "function"]
     [VTrue () "bool"]
     [VFalse () "bool"]
     [VNone () "NoneType"] ;; TODO this looks like a class name. Maybe we should make it so?
     [VPass () "pass"] ;; should never be reached. 
-    [VUnbound () "unbound"])) ;; should never be reached. 
+    [VUnbound () "unbound"]
+    ;[VList (elts uid) "list"]
+    ;[VDict (elts uid) "dict"]
+    ;[VTuple (elts uid) "tuple"]
+    [VHash (elts uid type) (Type-name type)]
+    [VClass (elts type) (Type-name type)]))
 
 
 ;; This is going to be an interp function that works on arbitrary CExps.
@@ -295,7 +323,9 @@
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v1 s1) (type-case AnswerC (interp-env e2 env s1)
                       [ValueA (v2 s2) (ValueA (handle-op op v1 v2) s2)]
+                      [ExceptionA (v s) (ExceptionA v s)]
                       [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
@@ -304,6 +334,41 @@
     [(flonum? num) (error 'duplicate-string "does not work with floats...")]
     [(<= num 0) ""]
     [else (string-append str (duplicate-string str (- num 1)))]))
+
+;; just a helper...
+(define (repeat-list [lst : (listof 'a)] [n : number]) : (listof 'a)
+  (cond
+    [(= n 0) empty]
+    [else (append lst (repeat-list lst (- n 1)))]))
+
+
+(define (duplicate-tuple [tup : (hashof CVal CVal)] [n : number]) : (hashof CVal CVal)
+  (cond
+    [(flonum? n) (error 'duplicate-tuple "does not work with floats...")]
+    [(<= n 0) (hash (list))]
+    [else (make-new-map (map (lambda (x) (VNum x)) 
+                             (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
+                        (repeat-list (hash-values tup) n))]))
+
+;; Assumes we are dealing with VHashs
+(define (merge-python-lists (l1 : CVal) (l2 : CVal)) : (hashof CVal CVal)
+  (local ([define h1 (VHash-elts l1)]
+          [define h2 (VHash-elts l2)]
+          [define keylenh (length (hash-keys h1))])
+    (foldl (lambda (x h) (hash-set h (VNum (+ (VNum-n x) keylenh)) 
+                                   (type-case (optionof CVal) (hash-ref h2 x)
+                                     [some (s) s]
+                                     [none () (error 'merge-python-lists "???")])))
+           h1
+           (hash-keys h2))))
+
+   
+   
+ ;;  (lambda (x) (hash-set h1 (VNum (+ (VNum-n x) keylenh)) (hash-ref h2 x)))
+
+;(make-new-map (map (lambda (x) (VNum x)) 
+ ;                  (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
+ ;             (repeat-list (hash-values tup) n))
 
 
 
@@ -315,13 +380,26 @@
 
 ;; We need separate float and intger values. 
 
+;; check-equality
+(define (check-equality [v1 : CVal] [v2 : CVal]) : boolean
+  (type-case CVal v1
+    [VHash (elts1 uid1 type1) (type-case CVal v2
+                                [VHash (elts2 uid2 type2) (if (equal? type1 type2)
+                                                              (equal? elts1 elts2) ;; TODO recur!
+                                                              false)]
+                                [else false])]
+    [else (equal? v1 v2)]))
+
+
 ;; Also, this function should be in the "primitives" file. 
 (define (handle-op [op : symbol] [v1 : CVal] [v2 : CVal]) : CVal
   (case op
-    ['eq (if (equal? v1 v2) (VTrue) (VFalse))]
-    ['notEq (if (equal? v1 v2) (VFalse) (VTrue))]
+    ['eq (if (check-equality v1 v2) (VTrue) (VFalse))]
+    ['notEq (if (check-equality v1 v2) (VFalse) (VTrue))]
     ['num+ (VNum (+ (VNum-n v1) (VNum-n v2)))]
     ['string+ (VStr (string-append (VStr-s v1) (VStr-s v2)))]
+    ['list+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "list" (list)))]
+    ['tuple+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "tuple" (list)))]
     ['num- (VNum (- (VNum-n v1) (VNum-n v2)))]
     ['num* (VNum (* (VNum-n v1) (VNum-n v2)))]
     ['num/ (VNum (/ (VNum-n v1) (VNum-n v2)))]
@@ -334,6 +412,7 @@
     ['num-gte (if (>= (VNum-n v1) (VNum-n v2)) (VTrue) (VFalse))]
     ['string-gte (if (string>=? (VStr-s v1) (VStr-s v2)) (VTrue) (VFalse))]
     ['duplicate (VStr (duplicate-string (VStr-s v1) (VNum-n v2)))] ;; throws exception if types are wrong.
+    ['duple (VHash (duplicate-tuple (VHash-elts v1) (VNum-n v2)) (new-uid) (Type "tuple" (list)))]
     [else (error op "handle-op: case not implemented")]))
 
 
@@ -348,6 +427,7 @@
     [ValueA (v s) (if (isTruthy v)
                       (ValueA v s)
                       (interp-env e2 env s))]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
 ;;and returns e1 if its value is not truthy; else, 
@@ -360,8 +440,17 @@
     [ValueA (v s) (if (not (isTruthy v))
                       (ValueA v s)
                       (interp-env e2 env s))]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
+;;  get-uid returns the uid for any type that has one
+(define (get-uid [v : CVal]) : Uid
+  (type-case CVal v
+    [VClosure (e a b defargs uid) uid]
+    ;[VList (elts uid) uid]
+    ;[VDict (elts uid) uid]
+    [VHash (elts uid type) uid]
+    [else (error 'get-uid "should not use get-uid for types that do not have Uid's")]))
 
 ;;is returns true if e1 and e2 are the same object in python
 (define (interp-is [e1 : CExp]
@@ -387,8 +476,15 @@
             [VFalse () (type-case CVal v2
                         [VFalse () (ValueA (VTrue) s2)]
                         [else (ValueA (VFalse) s2)])]
-            [else (error 'interp-is "comparison not valid for arguments of this type")])]
+            [VStr (str1) (if (equal? v1 v2)
+                             (ValueA (VTrue) s2)
+                             (ValueA (VFalse) s2))]
+            [else (if (equal? (get-uid v1) (get-uid v2))
+                      (ValueA (VTrue) s2)
+                      (ValueA (VFalse) s2))])]
+        [ExceptionA (v s) (ExceptionA v s)]
         [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 ;;'is not' returns true if e1 and e2 are not the same object in python
@@ -408,8 +504,17 @@
                          [else (ValueA (VTrue) s2)])]
             [else (error 'interp-isNot (string-append "comparison not valid for arguments of this type" 
                                                    (string-append (to-string v1) (to-string v2))))])]
+        [ExceptionA (v s) (ExceptionA v s)]
         [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
+
+
+;; 
+(define (hash-values [h : (hashof 'a 'b)]) : (listof 'b)
+  (map (lambda (x) (type-case (optionof 'b) (hash-ref h x)
+                     [none () (error 'hash-values "This exists...")]
+                     [some (v) v])) (hash-keys h)))
 
 
 ;; interp-in
@@ -418,14 +523,33 @@
     [ValueA (v1 s1)
             (type-case AnswerC (interp-env right env s1)
               [ValueA (v2 s2)
-                      (type-case CVal v1
-                        [VStr (str1) (type-case CVal v2
-                                       [VStr (str2) (if false ;; False, so that it typechecks. Need actual
+                      (type-case CVal v2
+                        [VStr (str2) (type-case CVal v1
+                                       [VStr (str1) (if false ;; False, so that it typechecks. Need actual
                                                         (ValueA (VTrue) s2) ;; condition. 
                                                         (ValueA (VFalse) s2))]
                                        [else (error 'interp-in "\"in\" not valid for these (differing?) types")])]
+                        #|
+                        [VList (elts uid) (if (member v1 (hash-values elts))
+                                              (ValueA (VTrue) s2)
+                                              (ValueA (VFalse) s2))]
+                        [VDict (elts uid) (if (member v1 (hash-keys elts))
+                                              (ValueA (VTrue) s2)
+                                              (ValueA (VFalse) s2))]
+                        |#
+                        [VHash (elts uid type) 
+                               (cond 
+                                 [(equal? (Type-name type) "dict") (if (member v1 (hash-keys elts))
+                                                                       (ValueA (VTrue) s2)
+                                                                       (ValueA (VFalse) s2))]
+                                 [(or (equal? (Type-name type) "list")
+                                      (equal? (Type-name type) "tuple")) (if (member v1 (hash-values elts))
+                                                                             (ValueA (VTrue) s2)
+                                                                             (ValueA (VFalse) s2))])]
                         [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])]
+              [ExceptionA (v s) (ExceptionA v s)]
               [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 
@@ -436,14 +560,49 @@
   (type-case CVal value
     [VTrue () true]
     [VNum (n)
-          (if (equal? n 0)
+          (if (= n 0)
               false
               true)]
     [VStr (s)
           (if (> (string-length s) 0)
               true
               false)]
+    [VHash (elts uid t)
+           (if (empty? (hash-keys elts))
+               false
+               true)]
+    #|
+    [VList (elts uid)
+           (if (empty? (hash-keys elts))
+               false
+               true)]
+    [VDict (elts uid)
+           (if (empty? (hash-keys elts))
+               false
+               true)]
+    |#
     [else false]))
+
+
+;; TODO should just import these from desugar...
+;(define (range [n : number]) : (listof number)
+;  (reverse (range-backwards n)))
+
+;(define (range-backwards [n : number]) : (listof number)
+;  (cond
+;    [(<= n 0) empty]
+;    [else (cons (- n 1) (range-backwards (- n 1)))]))
+
+(define (make-new-map [keys : (listof CVal)] [vals : (listof CVal)]) : (hashof CVal CVal)
+  (cond 
+    [(empty? keys) (hash (list))]
+    [(cons? keys) (hash-set (make-new-map (rest keys) (rest vals)) (first keys) (first vals))]))
+
+;; change-string-to-list
+;; converts a string into a list
+(define (change-string-to-list (s : string)) : (hashof CVal CVal)
+  (make-new-map (map (lambda (x) (VNum x)) (range (string-length s))) 
+                (map (lambda (x) (VStr (list->string (list x)))) (string->list s))))
 
 
 ;; handle unary operations - akin to handle-op
@@ -460,7 +619,11 @@
     ['tagof (VStr (get-tag arg))]
     ['length (type-case CVal arg
                [VStr (str) (VNum (string-length str))]
-               [else (error 'interp-length "Should only be called on strings.")])]
+               ;[VList (elts uid) (VNum (length (hash-keys elts)))]
+               ;[VDict (elts uid) (VNum (length (hash-keys elts)))]
+               ;[VTuple (elts uid) (VNum (length (hash-keys elts)))]
+               [VHash (elts uid t) (VNum (length (hash-keys elts)))]
+               [else (error 'interp-length "Should only be called on strings, lists, dicts and tuples.")])]
     ['to-bool (if (isTruthy arg) (VTrue) (VFalse))]
     ['to-string (VStr (pretty arg))]
     ['to-float (type-case CVal arg
@@ -475,13 +638,135 @@
                [VNum (n) (VNum n)] ;; TODO figure this out...
                [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
                [else (error 'interp-to-num "Should not be called on this type.")])]
+    ['to-list (type-case CVal arg
+                [VHash (elts uid type) (if (or (isInstanceOf arg (Type "list" (list))) (isInstanceOf arg (Type "tuple" (list))))
+                                           (VHash elts (new-uid) (Type "list" (list)))
+                                           (error 'interp-to-list "arguments of this type are not supported"))]
+                [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "list" (list)))] ;; string to list
+                [else (error 'interp-to-list "Unsupported Type")])]
+    ['to-tuple (type-case CVal arg
+                [VHash (elts uid type) (if (or (isInstanceOf arg (Type "list" (list))) (isInstanceOf arg (Type "tuple" (list))))
+                                           (VHash elts (new-uid) (Type "tuple" (list)))
+                                           (error 'interp-to-list "arguments of this type are not supported"))]
+                [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "tuple" (list)))] ;; string to list
+                [else (error 'interp-to-list "Unsupported Type")])]
     [else (error prim "handle-unary: Case not handled yet")]))
 
 ;; wrapper around unary operations
 (define (interp-unary [prim : symbol] [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
     [ValueA (v s) (ValueA (handle-unary prim v) s)]
+    [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
+
+;;interps every object represented as a hash
+(define (interp-CHash [keys : (listof CExp)]
+                      [h : (hashof CExp CExp)]
+                      [type : VType]
+                      [env : Env]
+                      [store : Store]) : AnswerC 
+  (cond
+    [(empty? keys) (ValueA (VHash (hash (list)) (new-uid) type) store)]
+    [(cons? keys) 
+     (type-case AnswerC (interp-env (first keys) env store)
+       [ValueA (v1 s1)
+               (type-case (optionof CExp) (hash-ref h (first keys))
+                 [none () (error 'interp-CHash "Cannot find key inside hash with this key: something is very wrong")]
+                 [some (value) 
+                       (type-case AnswerC (interp-env value env s1)
+                         [ValueA (v2 s2) (type-case AnswerC (interp-CHash (rest keys) h type env s2)
+                                           [ValueA (v3 s3) (ValueA (VHash (hash-set (VHash-elts v3) v1 v2) (VHash-uid v3) type) s3)]
+                                           [ExceptionA (v3 s3) (ExceptionA v3 s3)]
+                                           [ReturnA (v3 s3) (error 'interp-CHash "Shouldn't see a return here...")])]
+                         [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                         [ReturnA (v2 s2) (error 'interp-CHash "This should never be a return.")])])]
+       [ExceptionA (v1 s1) (ExceptionA v1 s1)]
+       [ReturnA (v1 s1) (error 'interp-CHash "This should never be a return!!")])]))
+
+
+;; TODO somehow we need to have a function to convert a CId into a string
+(define (id-to-string (id : CExp)) : string
+  (type-case CExp id
+    [CId (s) (symbol->string s)]
+    [else (error 'id-to-string "Not an ID")]))
+
+;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
+;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
+;; isInstanceOf checks whether 'obj' is of the same type or of one of the base types of 'type'
+(define (isInstanceOf [obj : CVal]
+                      [type : VType]) : boolean
+  (equal? (get-tag obj) (Type-name type)))
+
+;; helper function that interps a CExp (that is supposed to be a VClass) to a type
+(define (CExpToType [type : CExp]
+                    [env : Env]
+                    [store : Store]) : VType
+  (VClass-type (lookupStore (lookupVar (CId-x type) env) store)))
+
+;; TODO This needs to be adapted to work with integers and other primitive types as well...
+
+;; hasMatchingException checks whether any of the except clauses deal with the raised object
+(define (hasMatchingException [exc : CVal] 
+                              [handlers : (listof CExceptionHandler)]
+                              [env : Env]
+                              [store : Store]) : boolean
+  (cond
+    [(empty? handlers) false]
+    [(cons? handlers) 
+     (if (CNone? (CExcHandler-type (first handlers)))
+         true
+         (if (isInstanceOf exc (CExpToType (CExcHandler-type (first handlers)) env store))
+             true
+             (hasMatchingException exc (rest handlers) env store)))]))
+                      
+
+
+;; THIS DOES NOT CATCH THE CORRECT EXCEPTION YET!!!!! WE NEED TO IMPLEMENT TYPES BEFORE WE DO THIS. FOR NOW, WE JUST MATCH THE FIRST RESULT
+;; THIS ALSO DOES NOT IMPLEMENT THE BINDING OF THE NAME WITH THE TYPE
+;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+(define (interp-handlers [handlers : (listof CExceptionHandler)] [val : CVal] [env : Env] [store : Store]) : AnswerC 
+  (cond
+    [(empty? handlers) (ExceptionA val store)]
+    [(cons? handlers) (interp-env (CExcHandler-body (first handlers)) env store)]))
+
+;; getAttr gets the attribute from an object (VHash) -----------------------------------------------------------throw an exception instead of an error
+(define (getAttr [attr : symbol]
+                 [obj : CVal]) : CVal
+  (type-case CVal obj
+    [VHash (elts uid type) (type-case (optionof CVal) (hash-ref elts (VStr (symbol->string attr)))
+                             [none () (error 'getAttr "non-existent attribute")]
+                             [some (v) v])]
+    [VClass (elts type) (type-case (optionof CVal) (hash-ref elts (VStr (symbol->string attr)))
+                          [none () (error 'getAttr "non-existent attribute")]
+                          [some (v) v])]
+    [else (error 'getAttr "tried to get attribute from non-object")]))
+
+
+;(define-type DefArgHolder
+  
+
+;; 
+;(define (interp-defargs [defargs : (listof CExp)] [env : Env] [store : Store]) : DefArgHolder
+  
+
+(define (interp-func [args : (listof symbol)] 
+                     [body : CExp] 
+                     [vlist : (listof (ScopeType * symbol))]
+                     [defargs : (listof CExp)] 
+                     [defvals : (listof CVal)]
+                     [env : Env]
+                     [store : Store]) : AnswerC
+  (cond 
+    [(empty? defargs) (ValueA (VClosure (newEnvScope env vlist args) 
+                                        args 
+                                        body 
+                                        (reverse defvals) 
+                                        (new-uid)) 
+                              store)]
+    [else (type-case AnswerC (interp-env (first defargs) env store)
+            [ValueA (v s) (interp-func args body vlist (rest defargs) (cons v defvals) env s)]
+            [ExceptionA (v s) (ExceptionA v s)]
+            [ReturnA (v s) (error 'interp-func "I don't think this should even happen.")])]))
 
 
 ;; interp-env
@@ -493,9 +778,15 @@
     [CStr (s) (ValueA (VStr s) store)]
     [CTrue () (ValueA (VTrue) store)]
 
-    [CError (e) (error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
+    [CError (e) (type-case AnswerC (interp-env e env store)
+                  [ValueA (v s) (ExceptionA v s)]
+                  [ExceptionA (v s) (ExceptionA v s)]
+                  [ReturnA (v s) (error 'CError "should not get a Return statement when raising something")])]
+            ;(error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
+                  
     [CReturn (value) (type-case AnswerC (interp-env value env store)
                        [ValueA (v s) (ReturnA v s)]
+                       [ExceptionA (v s) (ExceptionA v s)]
                        [ReturnA (v s) (error 'interp "Return statement inside of Return...")])]
     
 
@@ -511,6 +802,7 @@
                               (augmentStore newLocation 
                                             v
                                             s)))]
+        [ExceptionA (v s) (ExceptionA v s)]
         [ReturnA (v s) (ReturnA v s)])] ;; This is a bit suspicious...
                          
 
@@ -518,6 +810,7 @@
       (type-case AnswerC (interp-env e1 env store)
         [ValueA (v s)
                 (interp-env e2 env s)]
+        [ExceptionA (v s) (ExceptionA v s)]
         [ReturnA (v s) (ReturnA v s)])]
 
     [CSet (id value)
@@ -527,6 +820,7 @@
                                        (ValueA v (augmentStore (lookupEnv id-symbol env)
                                                                v
                                                                s))]
+                               [ExceptionA (v s) (ExceptionA v s)]
                                [ReturnA (v s) (ReturnA v s)])]
             [else (error 'interp-CSet "For now, CSet only support ids that are symbols")])]
     
@@ -534,15 +828,20 @@
      (type-case AnswerC (interp-env func env store)
        [ValueA (vf sf)
          (type-case CVal vf
-           [VClosure (e a b)
+           [VClosure (e a b defargs uid)
                      (interp-args-CApp b   
                                        env
                                        e
                                        sf
                                        a
                                        args
-                                       (list))]
+                                       (list)
+                                       defargs)]
+           ;;TEMPORARY CASE FOR APPLICATION
+           [VClass (elts type) (ValueA (VClass elts type) store)]
+           
            [else (error 'CApp (string-append "Applied a non-function: " (pretty vf)))])]
+       [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v s) (ReturnA v s)] ;; or pass???
        )]
     #|
@@ -553,8 +852,9 @@
        [else (error 'interp "Not a closure")])]
     |#
 
-    [CFunc (args body vlist) 
-           (ValueA (VClosure (newEnvScope env vlist args) args body) store)] ;; TODO use vlist...
+    [CFunc (args body vlist defargs) 
+           (interp-func args body vlist defargs (list) env store)]
+           ;(ValueA (VClosure (newEnvScope env vlist args) args body () (new-uid)) store)] ;; TODO use vlist...
 
     [CPrim1 (prim arg) (interp-unary prim arg env store)]
     
@@ -564,36 +864,23 @@
               ;; These short-circuit, and so need their own system...
               ['or (interp-or e1 e2 env store)]
               ['and (interp-and e1 e2 env store)]
-              
               ['is (interp-is e1 e2 env store)] ;; might want to think about these...
               ['isNot (interp-isNot e1 e2 env store)]
               ['in (interp-in e1 e2 env store)]
+  ;            ['isinstance (if (isInstanceOf e1 (Type () (list))) 
+  ;                             (ValueA (VTrue) store)
+  ;                             (ValueA (VFalse) store))]
               
               [else (interp-binop op e1 e2 env store)])
             ]
-      ;        ;;cmpops
-      ;;        ['eq (interp-eq e1 e2 env store)]
-      ;        ['notEq (interp-notEq e1 e2 env store)]
-      ;        ['lt (interp-lt e1 e2 env store)]
-      ;        ['lte (interp-lte e1 e2 env store)]
-      ;        ['gt (interp-gt e1 e2 env store)]
-      ;        ['gte (interp-gte e1 e2 env store)]
-      ;        ['is (interp-is e1 e2 env store)]
-      ;        ['isNot (interp-isNot e1 e2 env store)]
-      ;        ['in (interp-in e1 e2 env store)]
-      ;        ;;binops
-      ;        ['add (interp-add e1 e2 env store)]
-      ;        ['sub (interp-sub e1 e2 env store)]
-      ;        ['mult (interp-mult e1 e2 env store)]
-      ;        ['div (interp-div e1 e2 env store)]
-       ;       [else (error 'interp "Invalid CPrim2 operation")]
-       ;       )]
+    
     [CIf (i t e)
          (type-case AnswerC (interp-env i env store)
            [ValueA (v s)
                    (if (isTruthy v)
                        (interp-env t env s)
                        (interp-env e env s))]
+           [ExceptionA (v s) (ExceptionA v s)]
            [ReturnA (v s) (ReturnA v s)])]
     [CNone () (ValueA (VNone) store)]
     [CFalse () (ValueA (VFalse) store)] 
@@ -603,6 +890,53 @@
                 (begin
                   (set! globalEnv (createGlobalEnv env))
                   (ValueA (VNone) store))]
+    [CAttribute (attr value)
+                (type-case AnswerC (interp-env value env store)
+                  [ValueA (v s) (type-case CVal v
+                                  [VHash (elts uid type) (ValueA (getAttr attr v) s)]
+                                  [VClass (elts type) (ValueA (getAttr attr v) s)]
+                                  [else (interp-env (CError (CStr "tried to get an attribute from a return expression")) env s)])]
+                  [ExceptionA (v s) (ExceptionA v s)]
+                  [ReturnA (v s) (error 'CAttribute "should not get an attribute from a return expression")])]
+    #|
+    [CDict (dict) (type-case AnswerC (interp-dict-insides (hash-keys dict) dict env store)
+                    [ValueA (v s) (ValueA v s)]
+                    [ExceptionA (v s) (ExceptionA v s)]
+                    [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a dict. ")])]
+    
+    [CList (l) (type-case AnswerC (interp-list-insides (hash-keys l) l env store)
+                 [ValueA (v s) (ValueA v s)]
+                 [ExceptionA (v s) (ExceptionA v s)]
+                 [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a list. ")])]
+    [CTuple (elts) (type-case AnswerC (interp-list-insides (hash-keys elts) elts env store)
+                 [ValueA (v s) (ValueA v s)]
+                 [ExceptionA (v s) (ExceptionA v s)]
+                 [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a tuple. ")])]
+|#
+    [CHash (h type) (interp-CHash (hash-keys h) h type env store)]
+    
+    ;;This class is just temporary, so that we can pass exception tests
+    [CClass (elts type) (ValueA (VClass elts type) store)]
+    
+    ;; exception handling
+    [CTryExcept (body handlers orelse) 
+                (type-case AnswerC (interp-env body env store)
+                  [ValueA (v s) (interp-env orelse env s)]
+                  [ExceptionA (v s) (if (hasMatchingException v handlers env s)
+                                        (interp-handlers handlers v env s)
+                                        (interp-env orelse env s))]
+                  [ReturnA (v s) (ReturnA v s)])]
+    [CTryFinally (body finalbody) (type-case AnswerC (interp-env body env store)
+                                    [ValueA (v s) (interp-env finalbody env s)]
+                                    [ExceptionA (v s) (type-case AnswerC (interp-env finalbody env s)
+                                                        [ValueA (v2 s2) (ExceptionA v s2)]
+                                                        [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                                                        [ReturnA (v2 s2) (ReturnA v2 s2)])]
+                                    [ReturnA (v s) (type-case AnswerC (interp-env finalbody env s)
+                                                        [ValueA (v2 s2) (ReturnA v s2)]
+                                                        [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                                                        [ReturnA (v2 s2) (ReturnA v2 s2)])])]
+    
     [else (error 'interp (string-append "Haven't implemented a case yet:\n"
                                        (to-string expr)))]
     ))
@@ -620,6 +954,7 @@
 (define (interp (expr : CExp)) : CVal
   (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
     [ValueA (v s) v]
+    [ExceptionA (v s) (error 'exception (pretty v))] ;; really? 
     [ReturnA (v s) (VStr "Error: Return outside of function.")]))
 
 
@@ -628,3 +963,7 @@
 
 (define env (hash (list (values 'a (values (Local) 1)) (values 'b (values (NonLocal) 2)) (values 'c (values (Global) 3)))))
 (define h (hash (list (values 'x (values (Local) 1)) (values 'y (values (NonLocal) 2)))))
+
+;(make-new-map 
+;   (list (VNum 0) (VNum 1) (VNum 2) (VNum 3))
+;   (list (VStr "s") (VStr "p") (VStr "a") (VStr "m")))

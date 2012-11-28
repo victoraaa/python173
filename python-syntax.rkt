@@ -1,10 +1,12 @@
 #lang plai-typed
 
+(require (typed-in racket/list [drop-right : [(listof 'a) number -> (listof 'a)]]))
+
 (define-type PyExpr
   [PySeq (es : (listof PyExpr))]
   [PyNum (n : number)]
   [PyId (x : symbol)]
-  [PyApp (fun : PyExpr) (args : (listof PyExpr))]
+  [PyApp (fun : PyExpr) (args : (listof PyExpr)) (keywordArgs : (listof keywargHelperType))]
   ;;Made by me:
   [PyStr (s : string)]
   [PyIf (test : PyExpr) (then : (listof PyExpr)) (orelse : (listof PyExpr))]
@@ -48,3 +50,6 @@
 
 (define-type PyExceptHandler
   [PyExcHandler (name : symbol) (type : PyExpr) (body : PyExpr)])
+
+(define-type keywargHelperType
+  [keywarghelpertype (value1 : symbol) (value2 : PyExpr)])

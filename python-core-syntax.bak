@@ -17,7 +17,10 @@ ParselTongue.
   [CId (x : symbol)]
   [CLet (id : symbol) (scopeType : ScopeType) (bind : CExp) (body : CExp)]
   [CApp (fun : CExp) (args : (listof CExp))]
-  [CFunc (args : (listof symbol)) (body : CExp) (vlist : (listof (ScopeType * symbol)))]
+  [CFunc (args : (listof symbol)) 
+         (body : CExp) 
+         (vlist : (listof (ScopeType * symbol))) 
+         (defargs : (listof CExp))]
   [CPrim1 (prim : symbol) (arg : CExp)]
   [CPrim2 (op : symbol) (e1 : CExp) (e2 : CExp)]
   [CFalse]
@@ -25,28 +28,51 @@ ParselTongue.
   [CPass]
   [CReturn (value : CExp)]
   [CSet (id : CExp) (value : CExp)]
+  [CAttribute (attr : symbol) (value : CExp)]
   
   ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.
   [CUnbound]
   [CGlobalEnv]
   
   ;; lists and dicts become hashes
-  ;;[CHash (elts : (hashof CVal CVal)))
+  ;[CList (elts : (hashof CExp CExp))]
+  ;[CDict (elts : (hashof CExp CExp))]
+  ;[CTuple (elts : (hashof CExp CExp))]
+  [CHash (elts : (hashof CExp CExp)) (type : VType)]
+  
+  ;; TEMPORARY class
+  [CClass (elts : (hashof CVal CVal)) (type : VType)]
+  
+  ;; Exception handling types
+  [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler)) (orelse : CExp)]
+  [CTryFinally (body : CExp) (finalbody : CExp)]
+  
   
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
+
+(define-type CExceptionHandler
+  [CExcHandler (name : symbol) (type : CExp) (body : CExp)])
 
 (define-type CVal
   [VNum (n : number)]
   [VStr (s : string)]
   [VTrue]
-  [VClosure (env : Env) (args : (listof symbol)) (body : CExp)]
+  [VClosure (env : Env) (args : (listof symbol)) (body : CExp) (defargs : (listof CVal)) (uid : Uid)]
   ;;I ADDED;;
   [VNone]
   [VFalse]
   [VPass]
   [VUnbound]
+  ;[VList (elts : (hashof CVal CVal)) (uid : Uid)] ;; lists must be keyed byintegers, though...
+  ;[VDict (elts : (hashof CVal CVal)) (uid : Uid)]
+  ;[VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
+  [VHash (elts : (hashof CVal CVal)) (uid : Uid) (type : VType)]
+  [VClass (elts : (hashof CVal CVal)) (type : VType)]  ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE
   )
+
+(define-type VType
+  [Type (name : string) (baseTypes : (listof VType))])
 
 (define-type-alias Location number)
 (define-type ScopeType
@@ -54,14 +80,17 @@ ParselTongue.
   [NonLocal]
   [Global])
 
+(define-type-alias Uid number)
+
 (define-type-alias SLTuple (ScopeType * number))
 (define-type-alias Env (hashof symbol SLTuple))
 (define-type-alias Store (hashof Location CVal))
 
 (define-type AnswerC
   [ValueA (value : CVal) (store : Store)]
-;  [ExceptionA (value : CVal) (store : Store)]
+  [ExceptionA (value : CVal) (store : Store)]
   [ReturnA (value : CVal) (store : Store)]
  ; [BreakA (value : CVal) (store : Store)]
  ; [ContinueA (store : Store)]
   )
+ 

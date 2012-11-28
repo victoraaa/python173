@@ -17,6 +17,8 @@
 (require (typed-in racket/base [list->string : [(listof string) -> string]]))
 (require (typed-in racket/base [list-tail : [(listof 'a) number -> (listof 'a)]]))
 (require (typed-in racket/list [argmax : [('a -> number) (listof 'a) -> 'a]]))
+(require (typed-in racket/list [drop-right : [(listof 'a) number -> (listof 'a)]]))
+(require (typed-in racket/list [last : [(listof 'a) -> 'a]]))
 
 ;;Returns a new memory address to be used
 (define new-loc
@@ -205,6 +207,20 @@
     [some (v) (local [(define-values (t l) v)]
                 l)]))
 
+;;puts the default args of the functino in the places with CUnbounds
+(define (add-default-args [args : (listof CVal)]
+                          [defaults : (listof CVal)]) : (listof CVal)
+  (cond
+    [(empty? args) (list)]
+    [else
+     (if (equal? (last args) (VUnbound))
+         (append (add-default-args (drop-right args 1) 
+                                   (drop-right defaults 1)) 
+                 (list (last defaults)))
+         (append (add-default-args (drop-right args 1)
+                                   defaults)
+                 (list (last args))))]))
+
 ;;helper method for our interpreter
 (define (interp-args-CApp [body : CExp]
                           [env : Env]
@@ -219,11 +235,15 @@
                               (allocateLocals closEnv)
                               store
                               argsIds
+                              (add-default-args (reverse interpretedArgs)
+                                                defargs))]
+                              #|
                               (append (reverse interpretedArgs)
                                       (list-tail defargs 
                                                  (- (length defargs)
                                                     (- (length argsIds) 
                                                        (length interpretedArgs))))))]     
+|#
     [else 
      (type-case AnswerC (interp-env (first args) env store)
        [ValueA (v s)
@@ -768,6 +788,80 @@
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (error 'interp-func "I don't think this should even happen.")])]))
 
+;;creates a hash with all of the positional arguments
+(define (group-positional-arguments [ids : (listof symbol)]
+                                    [args : (listof CExp)]) : (hashof symbol CExp)
+  (cond
+    [(empty? args)
+     (hash (list))]
+    [else
+     (hash-set (group-positional-arguments (rest ids)
+                                           (rest args))
+               (first ids)
+               (first args))]))
+
+;;adds the keyword arguments to the hash of arguments, and throws an error if we have one
+(define (group-keyword-arguments [ids : (listof symbol)]
+                                 [keywargs : (listof (symbol * CExp))]
+                                 [argList : (hashof symbol CExp)]) : (hashof symbol CExp)
+  (cond
+    [(empty? keywargs) argList]
+    [else
+     (local [(define-values (id exp) (first keywargs))]
+       (if (member id ids)
+           (if (member id (hash-keys argList))
+               (error 'group-keyword-arguments "keyword argument for argument already defined by positional argument: throw TypeError exception")
+               (group-keyword-arguments ids 
+                                        (rest keywargs)
+                                        (hash-set argList id exp)))
+           (error 'group-keyword-arguments "non-existing keyword argument: throw a TypeError exception.")))]))
+
+;;creates an ordered list of arguments with CUnbound representing the default arguments in the position of missing arguments.
+(define (group-all-arguments [ids : (listof symbol)]
+                             [argList : (hashof symbol CExp)]) : (listof CExp)
+  (foldl (lambda (id lst) (type-case (optionof CExp) (hash-ref argList id)
+                            [none () (append lst (list (CUnbound)))]
+                            [some (v) (append lst (list v))]))
+         (list)
+         ids))
+
+;;checks if the list of arguments has some CUnbound in a position that is not from some default argument
+(define (group-check-defaults [ids : (listof symbol)]
+                              [nDefArgs : number]
+                              [argsList : (listof CExp)]) : (listof CExp)
+  (if (member (CUnbound) (drop-right argsList nDefArgs))
+      (error 'group-check-defaults "missing argument: throw TypeError exception")
+      argsList))
+
+;; group-arguments create a list of arguments in the correct order from the list of positional args, keyword args and the number of existing default args.
+(define (group-arguments [ids : (listof symbol)]
+                         [args : (listof CExp)]
+                         [keywargs : (listof (symbol * CExp))]
+                         [nDefArgs : number]
+                         [argList : (hashof symbol CExp)]) : (listof CExp)
+  (cond
+    [(< (length ids) (length args))
+     (error 'group-arguments "arity mismatch: more arguments than function can handle. Should throw TypeError exception.")]
+    [(not (empty? args))
+     (group-arguments ids
+                      (list)
+                      keywargs
+                      nDefArgs
+                      (group-positional-arguments ids args))]
+    [(not (empty? keywargs))
+     (group-arguments ids
+                      (list)
+                      (list)
+                      nDefArgs
+                      (group-keyword-arguments ids keywargs argList))]
+    [else
+     (group-check-defaults ids
+                           nDefArgs
+                           (group-all-arguments ids
+                                                argList))]))
+     
+       
+
 
 ;; interp-env
 (define (interp-env [expr : CExp] 
@@ -824,7 +918,7 @@
                                [ReturnA (v s) (ReturnA v s)])]
             [else (error 'interp-CSet "For now, CSet only support ids that are symbols")])]
     
-    [CApp (func args)
+    [CApp (func args keywargs)
      (type-case AnswerC (interp-env func env store)
        [ValueA (vf sf)
          (type-case CVal vf
@@ -834,7 +928,7 @@
                                        e
                                        sf
                                        a
-                                       args
+                                       (group-arguments a args keywargs (length defargs) (hash (list)))
                                        (list)
                                        defargs)]
            ;;TEMPORARY CASE FOR APPLICATION

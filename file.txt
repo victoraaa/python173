@@ -1,4 +1,8 @@
-def f(x):
+def f(x,y,z):
   print(x)
+  print(y)
+  print(z)
 
-f('x')
+f(x='x',z='z',y='y')
+
+#test whether a keyword argument that doesnt exists works

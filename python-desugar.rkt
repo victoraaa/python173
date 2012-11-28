@@ -23,10 +23,13 @@
                        (list)
                        (map (lambda (e) (get-vars e)) es))]
     [PyNum (n) (list)]
-    [PyApp (f args) (append (get-vars f)
-                            (foldl (lambda (a b) (append b a))
-                                   (list)
-                                   (map (lambda (e) (get-vars e)) args)))]
+    [PyApp (f args keywordArguments) (append (get-vars f)
+                                             (foldl (lambda (a b) (append b a))
+                                                    (list)
+                                                    (map (lambda (e) (get-vars e)) (append args
+                                                                                           (map (lambda (kwarg) (type-case keywargHelperType kwarg
+                                                                                                                  [keywarghelpertype (id value) value]))
+                                                                                                keywordArguments)))))]
     [PyTuple (elts) 
              (foldl (lambda (a b) (append b a))
                     (list)
@@ -133,7 +136,11 @@
  ;   #|
     [PySeq (es) (foldl (lambda (e1 e2) (CSeq e2 (desugar e1))) (desugar (first es)) (rest es))]
     [PyNum (n) (CNum n)]
-    [PyApp (f args) (CApp (desugar f) (map desugar args))]
+    [PyApp (f args keywordArguments) (CApp (desugar f) 
+                                           (map desugar args)
+                                           (map (lambda (keyArg) (type-case keywargHelperType keyArg
+                                                                   [keywarghelpertype (arg value) (values arg (desugar value))]))
+                                                keywordArguments))]
     [PyId (x) (CId x)]
     ;;Under this, Non-TA code
     [PyStr (s) (CStr s)]
@@ -152,16 +159,17 @@
                 ['or (foldl (lambda (expr result) (CPrim2 'or result (desugar expr))) (desugar (first exprs)) (rest exprs))]
                 ['and (foldl (lambda (expr result) (CPrim2 'and result (desugar expr))) (desugar (first exprs)) (rest exprs))])]
     [PyUnaryOp (op arg)
-               (CApp (CId op) (list (desugar arg)))] ;; TODO this needs to desugar to a function application
+               (CApp (CId op) (list (desugar arg)) (list))] ;; TODO this needs to desugar to a function application
     [PyBinOp (op left right)
-             (CApp (CId op) (list (desugar left) (desugar right)))]
+             (CApp (CId op) (list (desugar left) (desugar right)) (list))]
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
                    (CTrue)
                    (CLet 'left-comp (Local) (desugar left)
                      (CLet 'right-comp (Local) (desugar (first comparators))
                        (CIf (CApp (CId (first ops))
-                                    (list (CId 'left-comp) (CId 'right-comp)))
+                                  (list (CId 'left-comp) (CId 'right-comp))
+                                  (list))
                             (desugar (PyCompare (PyId 'right-comp)
                                                 (rest ops)
                                                 (rest comparators)))
@@ -180,7 +188,8 @@
                  (CLet 'aug-value (Local) (desugar value)
                        (CLet 'orig-value (Local) (desugar target)
                              (CSet (desugar target) (CApp (CId op) 
-                                                          (list (CId 'orig-value) (CId 'aug-value))))))] 
+                                                          (list (CId 'orig-value) (CId 'aug-value))
+                                                          (list)))))] 
                               ;; may or may not work - side effects?
     
     
