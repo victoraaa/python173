@@ -18,6 +18,20 @@ structure that you define in python-syntax.rkt
      (PyModule (PySeq (map get-structured-python expr-list)))]
     [(hash-table ('nodetype "Expr") ('value expr))
      (get-structured-python expr)]
+    
+    
+    [(hash-table ('nodetype "Call")
+                 ('keywords #\nul) ;; ignoring keywords for now
+                 ('kwargs kwargs)     ;; ignoring kwargs for now
+                 ('starargs #\nul) ;; ignoring starargs for now
+                 ('args args-list)
+                 ('func func-expr))
+     (PyApp (get-structured-python func-expr)
+            (map get-structured-python args-list)
+            (list)
+            (PyList (hash (list)))
+            )]
+    
     ;;The base case for "Call" outputs an empty list for keyword arguments
     [(hash-table ('nodetype "Call")
                  ('keywords #\nul) ;; ignoring keywords for now
@@ -27,7 +41,21 @@ structure that you define in python-syntax.rkt
                  ('func func-expr))
      (PyApp (get-structured-python func-expr)
             (map get-structured-python args-list)
-            (list))]
+            (list)
+            (get-structured-python starargs)
+            )]
+    
+    [(hash-table ('nodetype "Call")
+                 ('keywords keywords) ;; ignoring keywords for now
+                 ('kwargs kwargs)     ;; ignoring kwargs for now
+                 ('starargs #\nul) ;; ignoring starargs for now
+                 ('args args-list)
+                 ('func func-expr))
+     (PyApp (get-structured-python func-expr)
+            (map get-structured-python args-list)
+            (map get-structured-python keywords)
+            (PyList (list))
+            )]
     
     [(hash-table ('nodetype "Call")
                  ('keywords keywords) ;; ignoring keywords for now
@@ -37,7 +65,9 @@ structure that you define in python-syntax.rkt
                  ('func func-expr))
      (PyApp (get-structured-python func-expr)
             (map get-structured-python args-list)
-            (map get-structured-python keywords))]
+            (map get-structured-python keywords)
+            (get-structured-python starargs)
+            )]
     
     [(hash-table ('nodetype "keyword")
                  ('arg arg)

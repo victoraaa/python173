@@ -6,7 +6,7 @@
   [PySeq (es : (listof PyExpr))]
   [PyNum (n : number)]
   [PyId (x : symbol)]
-  [PyApp (fun : PyExpr) (args : (listof PyExpr)) (keywordArgs : (listof keywargHelperType))]
+  [PyApp (fun : PyExpr) (args : (listof PyExpr)) (keywordArgs : (listof keywargHelperType)) (star : PyExpr)]
   ;;Made by me:
   [PyStr (s : string)]
   [PyIf (test : PyExpr) (then : (listof PyExpr)) (orelse : (listof PyExpr))]

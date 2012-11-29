@@ -20,7 +20,11 @@ that calls the primitive `print`.
 
 (define assert-equal-lambda
   (CFunc (list 'e-1 'e-2)
-    (CIf (CApp (CId 'python-eq) (list (CId 'e-1) (CId 'e-2)) (list))
+    (CIf (CApp (CId 'python-eq) 
+               (list (CId 'e-1) (CId 'e-2)) 
+               (list) 
+               (CHash (hash (list)) (Type "list" (list)))
+               )
          (CPass) 
          (CError (CStr "Assert failed: values are not Equal"))
          ) 
@@ -91,6 +95,16 @@ that calls the primitive `print`.
     (list)
     (list)
     'no-vararg))
+
+
+(define assert-raises-lambda
+  (CFunc (list 'e-1 'e-2)
+         (CTryExcept (CApp (CId 'e-2) (list) (list) (CId 'vargs)) 
+                     (list (CExcHandler 'e (CId 'e-1) (CTrue)))
+                     (CFalse))
+         (list)
+         (list)
+         'vargs))
 
 ;(define assert-raises-lambda
 ;  (CFunc (list 'e-1 'e-2)
@@ -463,7 +477,9 @@ that calls the primitive `print`.
 ;; may need to re-write this in the future - it depends. I don't know yet. 
 (define callable
   (CFunc (list 'e-1)
-         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "function"))
+         (CIf (CPrim2 'or 
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "function"))
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "class")))
               (CTrue)
               (CFalse))
          (list)
@@ -495,7 +511,7 @@ that calls the primitive `print`.
   (CFunc (list 'e-1)
          (CPrim1 'to-int (CId 'e-1))
          (list)
-         (list)
+         (list (CNum 0))
          'no-vararg))
 
 (define make-list
@@ -519,10 +535,22 @@ that calls the primitive `print`.
          (CIf (CPrim2 'and 
                       (CPrim2 'is (CId 'e-2) (CNone)) 
                       (CPrim2 'is (CId 'e-3) (CNone)))
-              (CApp (CId 'python-make-range) (list (CNum 0) (CId 'e-1) (CNum 1)) (list))
+              (CApp (CId 'python-make-range) 
+                    (list (CNum 0) (CId 'e-1) (CNum 1)) 
+                    (list)
+                    (CHash (hash (list)) (Type "list" (list)))
+                    )
               (CIf (CPrim2 'is (CId 'e-3) (CNone))
-                   (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CNum 1)) (list))
-                   (CApp (CId 'python-make-range) (list (CId 'e-1) (CId 'e-2) (CId 'e-3)) (list)))) 
+                   (CApp (CId 'python-make-range) 
+                         (list (CId 'e-1) (CId 'e-2) (CNum 1)) 
+                         (list)
+                         (CHash (hash (list)) (Type "list" (list)))
+                         )
+                   (CApp (CId 'python-make-range) 
+                         (list (CId 'e-1) (CId 'e-2) (CId 'e-3)) 
+                         (list)
+                         (CHash (hash (list)) (Type "list" (list)))
+                         ))) 
          (list)
          (list (CNone) (CNone))
          'no-vararg))
@@ -539,7 +567,9 @@ that calls the primitive `print`.
                                   (CHash (hash-set (hash (list)) (CNum 0) (CId 'e-1)) (Type "list" (list)))
                                   (CApp (CId 'python-make-range) 
                                         (list (CPrim2 'num+ (CId 'e-1) (CId 'e-3)) (CId 'e-2) (CId 'e-3))
-                                        (list))))
+                                        (list)
+                                        (CHash (hash (list)) (Type "list" (list)))
+                                        )))
                      (list)
                      (list)
                      'no-vararg))))
@@ -554,6 +584,13 @@ that calls the primitive `print`.
 
 (define true-val
   (CTrue))
+
+(define type-error-def
+  (CClass (hash (list)) (Type "TypeError" (list)))) ;; TEMPORARY TypeError definition...
+
+(define index-error-def
+  (CClass (hash (list)) (Type "IndexError" (list))))
+
 
 (define-type LibBinding
   [bind (left : symbol) (right : CExp)])
@@ -577,6 +614,7 @@ that calls the primitive `print`.
         (bind '___assertNotEqual assert-notEqual-lambda)
         (bind '___assertIs assert-is-lambda)
         (bind '___assertIsNot assert-isNot-lambda)
+        (bind '___assertRaises assert-raises-lambda)
         (bind 'python-add python-add)
         (bind 'python-sub python-sub)
         (bind 'python-mult python-mult)
@@ -610,6 +648,10 @@ that calls the primitive `print`.
         (bind 'True (CTrue)) ;; not entirely sure these should be here, but we're passing more tests now...
         (bind 'False (CFalse))
         (bind 'create-global-env create-global-env)
+        
+        ;; exceptions
+        (bind 'TypeError type-error-def)
+        (bind 'IndexError index-error-def)
         
         ;;binding of built-in classes
         (bind 'Exception Exception)

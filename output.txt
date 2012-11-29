@@ -1,5 +1,3 @@
-
-C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
 50 tests succeeded.
 40 tests failed.
 == Output of failed tests ==
@@ -276,7 +274,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: ___assertRaises
+interp-AppC: 32Application failed with arity mismatch
 =====================================================
 = Results for invalid-reraise.py =
 =====================================================
@@ -298,7 +296,7 @@ lookupEnv: Unbound indentifier error: RuntimeError
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: ___assertRaises
+interp-AppC: 32Application failed with arity mismatch
 =====================================================
 = Results for reraise.py =
 =====================================================
@@ -320,7 +318,7 @@ lookupEnv: Unbound indentifier error: IndexError
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: ___assertRaises
+lookupEnv: Unbound indentifier error: KeyError
 =====================================================
 = Results for iter-classes.py =
 =====================================================
@@ -770,7 +768,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: ___assertRaises
+interp-AppC: 32Application failed with arity mismatch
 =====================================================
 = Results for bound-and-free.py =
 =====================================================
@@ -884,7 +882,7 @@ CApp: Applied a non-function: class
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: ___assertRaises
+lookupEnv: Unbound indentifier error: UnboundLocalError
 =====================================================
 = Results for test-super.py =
 =====================================================

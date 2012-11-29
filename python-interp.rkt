@@ -222,6 +222,41 @@
                                    defaults)
                  (list (last args))))]))
 
+
+(define (interp-starargs-CApp [body : CExp]
+                              [env : Env]
+                              [closEnv : Env]
+                              [store : Store]
+                              [argsIds : (listof symbol)]
+                              [interpretedArgs : (listof CVal)]
+                              [defargs : (listof CVal)]
+                              [star : CExp]) : AnswerC
+  (type-case AnswerC (interp-env star env store)
+    [ValueA (v s) (type-case CVal v
+                    [VHash (elts uid t) (interp-CApp body
+                                                     (allocateLocals closEnv)
+                                                     s
+                                                     argsIds
+                                                     (add-default-args (append
+                                                                        (reverse interpretedArgs)
+                                                                        (collapse-vhash-args v 0)) 
+                                                                       defargs))]
+                    [else (error 'interp-starargs-CApp "non-hash")])]
+    [ExceptionA (v s) (ExceptionA v s)]
+    [ReturnA (v s) (ReturnA v s)]))
+
+   
+   
+;; Should implement starargs...
+;; TODO this won't work yet. Needs to take a CVal.
+;; requires VHash
+(define (collapse-vhash-args [vhash : CVal] [n : number]) : (listof CVal)
+  (cond
+    [(<= (length (hash-keys (VHash-elts vhash))) n) empty]
+    [else (type-case (optionof CVal) (hash-ref (VHash-elts vhash) (VNum n))
+            [some (s) (cons s (collapse-vhash-args vhash (+ n 1)))]
+            [none () (error 'collapse-vhash-args "Missing element...")])]))
+
 ;;helper method for our interpreter
 (define (interp-args-CApp [body : CExp]
                           [env : Env]
@@ -230,9 +265,22 @@
                           [argsIds : (listof symbol)]
                           [args : (listof CExp)]
                           [interpretedArgs : (listof CVal)]
-                          [defargs : (listof CVal)]) : AnswerC
+                          [defargs : (listof CVal)]
+                          ;[star : CExp]
+                          ) : AnswerC
   (cond
-    [(empty? args) (interp-CApp body
+    [(empty? args) 
+     
+     ;(interp-starargs-CApp body
+     ;                                    env
+     ;                                    closEnv
+     ;                                    store
+     ;                                    argsIds
+     ;                                    interpretedArgs
+     ;                                    defargs
+     ;                                    star)]
+     
+     (interp-CApp body
                               (allocateLocals closEnv)
                               store
                               argsIds
@@ -255,7 +303,9 @@
                                  argsIds
                                  (rest args)
                                  (cons v interpretedArgs)
-                                 defargs)]
+                                 defargs
+                                 ;star
+                                 )]
        [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v s) (ReturnA v s)])]))
 
@@ -281,7 +331,10 @@
                      [args : (listof CVal)]) : AnswerC
   (cond
     [(not (equal? (length argsIds) (length args)))
-     (error 'interp-AppC "Application failed with arity mismatch")]
+     (error 'interp-AppC (string-append 
+                          (string-append (to-string (length argsIds)) 
+                                         (to-string (length args))) 
+                          "Application failed with arity mismatch"))]
     [(empty? args) (type-case AnswerC (interp-env body 
                                                   closEnv
                                                   store)
@@ -906,6 +959,19 @@
 (define (create-clist [exps : (listof CExp)]) : CExp
   (CHash (create-hash (cnum-range (length exps)) exps) (Type "list" (list))))
 
+
+    
+
+
+;(define (collapse-and-interp [chash : CExp] 
+;                             [n : number] 
+;                             [env : Env] 
+;                             [store : Store]) : (listof CVal)
+;  (type-case 
+
+    
+ ;   [else (cons (hash-ref (CHash-elts chash) (CNum n)) (collapse-chash-args chash (+ n 1)))]))
+
 ;; interp-env
 (define (interp-env [expr : CExp] 
                     [env : Env] 
@@ -961,21 +1027,37 @@
                                [ReturnA (v s) (ReturnA v s)])]
             [else (error 'interp-CSet "For now, CSet only support ids that are symbols")])]
     
-    [CApp (func args keywargs)
+    [CApp (func args keywargs star)
      (type-case AnswerC (interp-env func env store)
        [ValueA (vf sf)
-         (type-case CVal vf
-           [VClosure (e a varg b defargs uid)
-                     (interp-args-CApp b   
-                                       env
-                                       e
-                                       sf
-                                       (if (not (equal? varg 'no-vararg))
-                                           (append a (list varg))
-                                           a)
-                                       (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
-                                       (list)
-                                       defargs)]
+               (type-case CVal vf
+                 [VClosure (e a varg b defargs uid)
+                           (type-case AnswerC (interp-env star env sf)
+                             [ValueA (vh sh) (type-case CVal vh
+                                               [VHash (elts uid t) 
+                                                      (interp-args-CApp b   
+                                                                        env
+                                                                        e
+                                                                        sh
+                                                                        a
+                                                                        ; (if (not (equal? varg 'no-vararg))
+                                                                        ;     (append a (list varg))
+                                                                        ;     a)
+                                                                        (group-arguments a 
+                                                                                         varg 
+                                                                                         args
+                                                                                         ;(append args (collapse-chash-args star 0))
+                                                                                         keywargs 
+                                                                                         (length defargs)
+                                                                                         (hash (list)) 
+                                                                                         (list))
+                                                                        (reverse (collapse-vhash-args vh 0))
+                                                                        defargs
+                                                                        ;star
+                                                                        )]
+                                               [else (error 'interp-args-CApp "needs a hash")])]
+                             [ExceptionA (v s) (ExceptionA v s)]
+                             [ReturnA (v s) (ReturnA v s)])]
            ;;TEMPORARY CASE FOR APPLICATION
            [VClass (elts type) (ValueA (VClass elts type) store)]
            
@@ -1106,3 +1188,5 @@
 ;(make-new-map 
 ;   (list (VNum 0) (VNum 1) (VNum 2) (VNum 3))
 ;   (list (VStr "s") (VStr "p") (VStr "a") (VStr "m")))
+
+;(interp (CPrim1 'print (CNum 4)))
