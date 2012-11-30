@@ -6,3 +6,6 @@ class C:
 print(C)
 print(C.x)
 print(C.y)
+
+c = C()
+print(isinstance(c, C))

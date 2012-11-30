@@ -573,6 +573,14 @@ that calls the primitive `print`.
                      (list)
                      (list)
                      'no-vararg))))
+
+(define python-isinstance
+  (CFunc (list 'e-1 'e-2) ;; TODO THIS HAS NO INHERITENCE!
+         (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CAttribute '__name__ (CId 'e-2)))
+         (list)
+         (list)
+         'no-vararg))
+         
                
 (define create-global-env
   (CFunc (list)
@@ -651,6 +659,7 @@ that calls the primitive `print`.
         (bind 'True (CTrue)) ;; not entirely sure these should be here, but we're passing more tests now...
         (bind 'False (CFalse))
         (bind 'create-global-env create-global-env)
+        (bind 'isinstance python-isinstance)
         
         ;; exceptions
         (bind 'TypeError type-error-def)
