@@ -44,6 +44,9 @@ ParselTongue.
   ;; TEMPORARY class
   [CClass (elts : (hashof CVal CVal)) (type : VType)]
   
+  ;; type to help create a new class
+  [CCreateClass (name : symbol) (body : CExp) (vlist : (listof (ScopeType * symbol)))]
+  
   ;; Exception handling types
   [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler)) (orelse : CExp)]
   [CTryFinally (body : CExp) (finalbody : CExp)]

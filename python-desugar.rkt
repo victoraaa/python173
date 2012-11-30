@@ -87,7 +87,7 @@
                (get-vars value)
                (type-case PyExpr lhs
                  [PyId (id) (list (values (Local) id))]
-                 [else (error 'get-vars-PySet "PySet should not be getting non-ids yet")]))]
+                 [else (list)]))]
     [PyAssign (targets value)
               (append
                (get-vars value)
@@ -95,7 +95,7 @@
                       (list)
                       (map (lambda (e) (type-case PyExpr e
                                          [PyId (id) (list (values (Local) id))]
-                                         [else (error 'get-vars-PyAssign "PyAssign should not be getting non-ids yet")])) 
+                                         [else (list)])) 
                            targets)))]
     
     [PyAugAssign (target op value)
@@ -217,6 +217,7 @@
     
     [PySet (lhs value) 
            (CSet (desugar lhs) (desugar value))]
+           
     [PyGlobalEnv () (CGlobalEnv)]
     [PyModule (exprs) 
               (let ([global-vars (get-vars exprs)]) ;gets all of the assignments in the global scope
@@ -250,7 +251,8 @@
                         (CLet 'some-class (Local) (CHash (hash-set (hash (list)) (CStr "__name__") (CStr (symbol->string name))) (Type "class" (map desugar bases)))
                               (CSeq
                                (CSet (CId name) (CId 'some-class))
-                               (desugar-class-innards name body)))))]
+                               (CCreateClass name (desugar body) (get-vars body))))))]
+                             ;  (CCreateClass (desugar-class-innards name body  )))))]
     
     
     [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (list)))]
@@ -269,15 +271,15 @@
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
-
+#|
 ;; desugar class innards
-(define (desugar-class-innards (name : symbol) (body : (listof PyExpr))) : CExp
-  (CPass))
+(define (desugar-class-innards (name : symbol) (body : (listof PyExpr)) ) : CExp
+  (CCreateClass name (foldl (lambda (e1 e2) (CSeq e2 (desugar e1))) (desugar (first body)) (rest body))))
 ;  (cond 
 ;    [(empty? body) ...]
 ;    [(= (length body) 1) ()]
 ;    [else (CSeq () (desugar-class-innards name (rest body)))]))
-
+|#
 
 ;; desugar class body
 ;(define (desugar-class-body (body : (listof PyExpr))) : (hashof CExp CExp)

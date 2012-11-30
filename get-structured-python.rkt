@@ -95,7 +95,7 @@ structure that you define in python-syntax.rkt
                  ('decorator_list decorator_list))
      (PyClassDef (string->symbol name)
                  (map get-structured-python bases)
-                 (map get-structured-python body))]
+                 (PySeq (map get-structured-python body)))]
     
     [(hash-table ('nodetype "Name")
                  ('ctx _)        ;; ignoring ctx for now

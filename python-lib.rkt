@@ -602,6 +602,9 @@ that calls the primitive `print`.
 (define TestClass
   (CClass (hash (list (values (VStr "f") (VClosure (hash (list)) (list) 'no-vararg (CPrim1 'print (CStr "printing")) (list) -1)))) (Type "TestClass" (list))))
 
+(define testObj
+  (CHash (hash (list)) (Type "Object" (list))))
+
 ;;STILL TO DO: assertRaises and fail
 (define lib-functions
   (list (bind 'print print-lambda)
@@ -656,6 +659,9 @@ that calls the primitive `print`.
         ;;binding of built-in classes
         (bind 'Exception Exception)
         (bind 'TestClass TestClass)
+        
+        ;;object for debugging
+        (bind 'testObj testObj)
 
 ))
 

@@ -31,7 +31,7 @@
   [PyLambda (arguments : PyExpr) (body : PyExpr)]
   [PyDef (name : symbol) (arguments : PyExpr) (body : PyExpr)] ;; deffun
   
-  [PyClassDef (name : symbol) (bases : (listof PyExpr)) (body : (listof PyExpr))]
+  [PyClassDef (name : symbol) (bases : (listof PyExpr)) (body : PyExpr)]
   
   [PyArguments (args : (listof symbol)) (defaults : (listof PyExpr)) (vararg : symbol)]
   
@@ -51,6 +51,11 @@
   [Py-NotExist] ;;THIS IS HERE ONLY SO THAT python-desugar won't complain about having completed all of the expressions
   )
 
+#|(define-type LHS
+  [LeftId (id : symbol)]
+  [LeftAttribute (attr : symbol) (obj : PyExpr)]
+  [LeftSubscript (obj : symbol) (subscript : PyExpr)])
+|#
 (define-type PyExceptHandler
   [PyExcHandler (name : symbol) (type : PyExpr) (body : PyExpr)])
 
