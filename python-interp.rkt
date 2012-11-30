@@ -39,7 +39,7 @@
 ;;this is the global variable with the global environment
 (define globalEnv
   (hash (list)))
-   
+
 ;;this should be called only once, at the beggining of the interpretation, 
 ;;to copy the initial environment and create the global one
 (define (createGlobalEnv [env : Env]) : Env
@@ -154,7 +154,7 @@
                                        false
                                        true)))
                      vlist)))
-      
+
 ;;Adds a new identifier to our environment, with its location
 (define (augmentEnv [id : symbol]
                     [sltuple : SLTuple]
@@ -189,13 +189,14 @@
   (type-case (optionof SLTuple) (hash-ref env id)
     [none () (error 'lookupEnv (string-append "Unbound indentifier error: " (symbol->string id)))]
     [some (v) (local [(define-values (t l) v)]
+                ;(begin (display (string-append (string-append (symbol->string id) " ") (to-string l)))l))]))
                 l)]))
-
+                
 ;;lookupStore searches the store for an specific location
 (define (lookupStore [loc : Location]
                      [store : Store]) : CVal
   (type-case (optionof CVal) (hash-ref store loc)
-    [none () (error 'lookupStore "Unbound location error.")]
+    [none () (error 'lookupStore (string-append (to-string loc) "Unbound location error."))]
     [some (v) (type-case CVal v
                 [VUnbound () (error 'lookupStore "Unbound Identifier: using identifier before assignment")]
                 [else v])]))
@@ -206,7 +207,9 @@
   (type-case (optionof SLTuple) (hash-ref env id)
     [none () (lookupEnv id globalEnv)]
     [some (v) (local [(define-values (t l) v)]
+                ;(begin (display (string-append (string-append (symbol->string id) " -- ") (to-string l)))l))]))
                 l)]))
+
 
 ;;puts the default args of the function in the places with CUnbounds
 (define (add-default-args [args : (listof CVal)]
@@ -245,8 +248,8 @@
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
-   
-   
+
+
 ;; Should implement starargs...
 ;; TODO this won't work yet. Needs to take a CVal.
 ;; requires VHash
@@ -281,12 +284,12 @@
      ;                                    star)]
      
      (interp-CApp body
-                              (allocateLocals closEnv)
-                              store
-                              argsIds
-                              (add-default-args (reverse interpretedArgs)
-                                                defargs))]
-                              #|
+                  (allocateLocals closEnv)
+                  store
+                  argsIds
+                  (add-default-args (reverse interpretedArgs)
+                                    defargs))]
+    #|
                               (append (reverse interpretedArgs)
                                       (list-tail defargs 
                                                  (- (length defargs)
@@ -349,7 +352,7 @@
                                 store)
                   (rest argsIds)
                   (rest args))]))
-     #|
+#|
      (let ([newLocation (new-loc)])
        (interp-CApp body
                     (augmentEnv (first argsIds)
@@ -375,8 +378,8 @@
   (type-case CVal val
     [VNum (n) ;"int"] ;; this really should distinguish ints from floats...
           (cond
-                [(fixnum? n) "int"]
-                [(flonum? n) "float"])]
+            [(fixnum? n) "int"]
+            [(flonum? n) "float"])]
     [VStr (s) "string"]
     [VClosure (e a varg b defargs uid) "function"]
     [VTrue () "bool"]
@@ -436,13 +439,13 @@
            h1
            (hash-keys h2))))
 
-   
-   
- ;;  (lambda (x) (hash-set h1 (VNum (+ (VNum-n x) keylenh)) (hash-ref h2 x)))
+
+
+;;  (lambda (x) (hash-set h1 (VNum (+ (VNum-n x) keylenh)) (hash-ref h2 x)))
 
 ;(make-new-map (map (lambda (x) (VNum x)) 
- ;                  (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
- ;             (repeat-list (hash-values tup) n))
+;                  (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
+;             (repeat-list (hash-values tup) n))
 
 
 
@@ -507,9 +510,9 @@
 ;;and returns e1 if its value is not truthy; else, 
 ;;returns e2's value
 (define (interp-and [e1 : CExp]
-                   [e2 : CExp]
-                   [env : Env]
-                   [store : Store]) : AnswerC
+                    [e2 : CExp]
+                    [env : Env]
+                    [store : Store]) : AnswerC
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v s) (if (not (isTruthy v))
                       (ValueA v s)
@@ -533,31 +536,31 @@
                    [store : Store]) : AnswerC
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v1 s1)
-      (type-case AnswerC (interp-env e2 env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (if (equal? n1 n2)
-                                        (ValueA (VTrue) s2)
-                                        (ValueA (VFalse) s2))]
-                         [else (ValueA (VFalse) s2)])]
-            [VNone () (type-case CVal v2
-                        [VNone () (ValueA (VTrue) s2)]
-                        [else (ValueA (VFalse) s2)])]
-            [VTrue () (type-case CVal v2
-                        [VTrue () (ValueA (VTrue) s2)]
-                        [else (ValueA (VFalse) s2)])]
-            [VFalse () (type-case CVal v2
-                        [VFalse () (ValueA (VTrue) s2)]
-                        [else (ValueA (VFalse) s2)])]
-            [VStr (str1) (if (equal? v1 v2)
-                             (ValueA (VTrue) s2)
-                             (ValueA (VFalse) s2))]
-            [else (if (equal? (get-uid v1) (get-uid v2))
-                      (ValueA (VTrue) s2)
-                      (ValueA (VFalse) s2))])]
-        [ExceptionA (v s) (ExceptionA v s)]
-        [ReturnA (v2 s2) (ReturnA v2 s2)])]
+            (type-case AnswerC (interp-env e2 env s1)
+              [ValueA (v2 s2)
+                      (type-case CVal v1
+                        [VNum (n1) (type-case CVal v2
+                                     [VNum (n2) (if (equal? n1 n2)
+                                                    (ValueA (VTrue) s2)
+                                                    (ValueA (VFalse) s2))]
+                                     [else (ValueA (VFalse) s2)])]
+                        [VNone () (type-case CVal v2
+                                    [VNone () (ValueA (VTrue) s2)]
+                                    [else (ValueA (VFalse) s2)])]
+                        [VTrue () (type-case CVal v2
+                                    [VTrue () (ValueA (VTrue) s2)]
+                                    [else (ValueA (VFalse) s2)])]
+                        [VFalse () (type-case CVal v2
+                                     [VFalse () (ValueA (VTrue) s2)]
+                                     [else (ValueA (VFalse) s2)])]
+                        [VStr (str1) (if (equal? v1 v2)
+                                         (ValueA (VTrue) s2)
+                                         (ValueA (VFalse) s2))]
+                        [else (if (equal? (get-uid v1) (get-uid v2))
+                                  (ValueA (VTrue) s2)
+                                  (ValueA (VFalse) s2))])]
+              [ExceptionA (v s) (ExceptionA v s)]
+              [ReturnA (v2 s2) (ReturnA v2 s2)])]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
@@ -568,18 +571,18 @@
                       [store : Store]) : AnswerC
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v1 s1)
-      (type-case AnswerC (interp-env e2 env s1)
-        [ValueA (v2 s2)
-          (type-case CVal v1
-            [VNum (n1) (type-case CVal v2
-                         [VNum (n2) (if (equal? n1 n2)
-                                        (ValueA (VFalse) s2)
-                                        (ValueA (VTrue) s2))]
-                         [else (ValueA (VTrue) s2)])]
-            [else (error 'interp-isNot (string-append "comparison not valid for arguments of this type" 
-                                                   (string-append (to-string v1) (to-string v2))))])]
-        [ExceptionA (v s) (ExceptionA v s)]
-        [ReturnA (v2 s2) (ReturnA v2 s2)])]
+            (type-case AnswerC (interp-env e2 env s1)
+              [ValueA (v2 s2)
+                      (type-case CVal v1
+                        [VNum (n1) (type-case CVal v2
+                                     [VNum (n2) (if (equal? n1 n2)
+                                                    (ValueA (VFalse) s2)
+                                                    (ValueA (VTrue) s2))]
+                                     [else (ValueA (VTrue) s2)])]
+                        [else (error 'interp-isNot (string-append "comparison not valid for arguments of this type" 
+                                                                  (string-append (to-string v1) (to-string v2))))])]
+              [ExceptionA (v s) (ExceptionA v s)]
+              [ReturnA (v2 s2) (ReturnA v2 s2)])]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
@@ -685,8 +688,8 @@
     ['print (begin (display (pretty arg)) arg)]
     ['not (if (isTruthy arg) (VFalse) (VTrue))]
     ['negative (type-case CVal arg
-                    [VNum (n) (VNum (- 0 n))] ;; gotta be a better way...
-                    [else (error 'interp "Tried to negate a non-number")])] ;; TODO handle errors outside...
+                 [VNum (n) (VNum (- 0 n))] ;; gotta be a better way...
+                 [else (error 'interp "Tried to negate a non-number")])] ;; TODO handle errors outside...
     ['invert (type-case CVal arg
                [VNum (n) (VNum (bitwise-not n))]
                [else (error 'handle-unary "Tried to invert a non-number")])]
@@ -719,11 +722,11 @@
                 [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "list" (list)))] ;; string to list
                 [else (error 'interp-to-list "Unsupported Type")])]
     ['to-tuple (type-case CVal arg
-                [VHash (elts uid type) (if (or (isInstanceOf arg (Type "list" (list))) (isInstanceOf arg (Type "tuple" (list))))
-                                           (VHash elts (new-uid) (Type "tuple" (list)))
-                                           (error 'interp-to-list "arguments of this type are not supported"))]
-                [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "tuple" (list)))] ;; string to list
-                [else (error 'interp-to-list "Unsupported Type")])]
+                 [VHash (elts uid type) (if (or (isInstanceOf arg (Type "list" (list))) (isInstanceOf arg (Type "tuple" (list))))
+                                            (VHash elts (new-uid) (Type "tuple" (list)))
+                                            (error 'interp-to-list "arguments of this type are not supported"))]
+                 [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "tuple" (list)))] ;; string to list
+                 [else (error 'interp-to-list "Unsupported Type")])]
     [else (error prim "handle-unary: Case not handled yet")]))
 
 ;; wrapper around unary operations
@@ -792,7 +795,7 @@
          (if (isInstanceOf exc (CExpToType (CExcHandler-type (first handlers)) env store))
              true
              (hasMatchingException exc (rest handlers) env store)))]))
-                      
+
 
 
 ;; THIS DOES NOT CATCH THE CORRECT EXCEPTION YET!!!!! WE NEED TO IMPLEMENT TYPES BEFORE WE DO THIS. FOR NOW, WE JUST MATCH THE FIRST RESULT
@@ -817,11 +820,11 @@
 
 
 ;(define-type DefArgHolder
-  
+
 
 ;; 
 ;(define (interp-defargs [defargs : (listof CExp)] [env : Env] [store : Store]) : DefArgHolder
-  
+
 
 (define (interp-func [args : (listof symbol)]
                      [vararg : symbol]
@@ -901,6 +904,7 @@
                          [args : (listof CExp)]
                          [keywargs : (listof (symbol * CExp))]
                          [nDefArgs : number]
+                         [nStarArgs : number]
                          [argList : (hashof symbol CExp)]
                          [varargs : (listof CExp)]) : (listof CExp)
   (cond
@@ -912,6 +916,7 @@
                       (list)
                       keywargs
                       nDefArgs
+                      nStarArgs
                       (group-positional-arguments ids args)
                       (if (< (length ids) (length args))
                           (list-tail args (length ids))
@@ -922,6 +927,7 @@
                       (list)
                       (list)
                       nDefArgs
+                      nStarArgs
                       (group-keyword-arguments ids keywargs argList)
                       varargs)]
     [else
@@ -931,9 +937,9 @@
                                              varargs))]
        (group-check-defaults ids
                              nDefArgs
-                             (if (equal? varargid 'no-vararg)
-                                 groupedArgs
-                                 (drop-right groupedArgs 1))))]))
+                             (drop-right (if (equal? varargid 'no-vararg)
+                                             groupedArgs
+                                             (drop-right groupedArgs 1)) nStarArgs)))]))
 
 
 ;; helper functions to create ranges of numbers
@@ -955,12 +961,12 @@
     [(and (empty? keys) (empty? vals)) (hash (list))]
     [(and (cons? keys) (cons? vals)) (hash-set (create-hash (rest keys) (rest vals)) (first keys) (first vals))]
     [else (error 'create-hash "key and value lists do not match")]))
- 
+
 (define (create-clist [exps : (listof CExp)]) : CExp
   (CHash (create-hash (cnum-range (length exps)) exps) (Type "list" (list))))
 
 
-    
+
 
 
 ;(define (collapse-and-interp [chash : CExp] 
@@ -969,8 +975,8 @@
 ;                             [store : Store]) : (listof CVal)
 ;  (type-case 
 
-    
- ;   [else (cons (hash-ref (CHash-elts chash) (CNum n)) (collapse-chash-args chash (+ n 1)))]))
+
+;   [else (cons (hash-ref (CHash-elts chash) (CNum n)) (collapse-chash-args chash (+ n 1)))]))
 
 ;; interp-env
 (define (interp-env [expr : CExp] 
@@ -980,42 +986,42 @@
     [CNum (n) (ValueA (VNum n) store)]
     [CStr (s) (ValueA (VStr s) store)]
     [CTrue () (ValueA (VTrue) store)]
-
+    
     [CError (e) (type-case AnswerC (interp-env e env store)
                   [ValueA (v s) (ExceptionA v s)]
                   [ExceptionA (v s) (ExceptionA v s)]
                   [ReturnA (v s) (error 'CError "should not get a Return statement when raising something")])]
-            ;(error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
-                  
+    ;(error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
+    
     [CReturn (value) (type-case AnswerC (interp-env value env store)
                        [ValueA (v s) (ReturnA v s)]
                        [ExceptionA (v s) (ExceptionA v s)]
                        [ReturnA (v s) (error 'interp "Return statement inside of Return...")])]
     
-
+    
     [CId (x) 
          (ValueA (lookupStore (lookupVar x env) store) store)]
-
+    
     [CLet (id scopeType bind body)
-      (type-case AnswerC (interp-env bind env store)
-        [ValueA (v s)
-                (let ([newLocation (new-loc)])
-                  (interp-env body
-                              (augmentEnv id (values scopeType newLocation) env)
-                              (augmentStore newLocation 
-                                            v
-                                            s)))]
-        [ExceptionA (v s) (ExceptionA v s)]
-        [ReturnA (v s) (ReturnA v s)])] ;; This is a bit suspicious...
-                         
-
+          (type-case AnswerC (interp-env bind env store)
+            [ValueA (v s)
+                    (let ([newLocation (new-loc)])
+                      (interp-env body
+                                  (augmentEnv id (values scopeType newLocation) env)
+                                  (augmentStore newLocation 
+                                                v
+                                                s)))]
+            [ExceptionA (v s) (ExceptionA v s)]
+            [ReturnA (v s) (ReturnA v s)])] ;; This is a bit suspicious...
+    
+    
     [CSeq (e1 e2)
-      (type-case AnswerC (interp-env e1 env store)
-        [ValueA (v s)
-                (interp-env e2 env s)]
-        [ExceptionA (v s) (ExceptionA v s)]
-        [ReturnA (v s) (ReturnA v s)])]
-
+          (type-case AnswerC (interp-env e1 env store)
+            [ValueA (v s)
+                    (interp-env e2 env s)]
+            [ExceptionA (v s) (ExceptionA v s)]
+            [ReturnA (v s) (ReturnA v s)])]
+    
     [CSet (id value)
           (type-case CExp id
             [CId (id-symbol) (type-case AnswerC (interp-env value env store)
@@ -1028,43 +1034,44 @@
             [else (error 'interp-CSet "For now, CSet only support ids that are symbols")])]
     
     [CApp (func args keywargs star)
-     (type-case AnswerC (interp-env func env store)
-       [ValueA (vf sf)
-               (type-case CVal vf
-                 [VClosure (e a varg b defargs uid)
-                           (type-case AnswerC (interp-env star env sf)
-                             [ValueA (vh sh) (type-case CVal vh
-                                               [VHash (elts uid t) 
-                                                      (interp-args-CApp b   
-                                                                        env
-                                                                        e
-                                                                        sh
-                                                                        a
-                                                                        ; (if (not (equal? varg 'no-vararg))
-                                                                        ;     (append a (list varg))
-                                                                        ;     a)
-                                                                        (group-arguments a 
-                                                                                         varg 
-                                                                                         args
-                                                                                         ;(append args (collapse-chash-args star 0))
-                                                                                         keywargs 
-                                                                                         (length defargs)
-                                                                                         (hash (list)) 
-                                                                                         (list))
-                                                                        (reverse (collapse-vhash-args vh 0))
-                                                                        defargs
-                                                                        ;star
-                                                                        )]
-                                               [else (error 'interp-args-CApp "needs a hash")])]
-                             [ExceptionA (v s) (ExceptionA v s)]
-                             [ReturnA (v s) (ReturnA v s)])]
-           ;;TEMPORARY CASE FOR APPLICATION
-           [VClass (elts type) (ValueA (VClass elts type) store)]
-           
-           [else (error 'CApp (string-append "Applied a non-function: " (pretty vf)))])]
-       [ExceptionA (v s) (ExceptionA v s)]
-       [ReturnA (v s) (ReturnA v s)] ;; or pass???
-       )]
+          (type-case AnswerC (interp-env func env store)
+            [ValueA (vf sf)
+                    (type-case CVal vf
+                      [VClosure (e a varg b defargs uid)
+                                (type-case AnswerC (interp-env star env sf)
+                                  [ValueA (vh sh) (type-case CVal vh
+                                                    [VHash (elts uid t) 
+                                                           (interp-args-CApp b   
+                                                                             env
+                                                                             e
+                                                                             sh
+                                                                             a
+                                                                             ; (if (not (equal? varg 'no-vararg))
+                                                                             ;     (append a (list varg))
+                                                                             ;     a)
+                                                                             (group-arguments a 
+                                                                                              varg 
+                                                                                              args
+                                                                                              ;(append args (collapse-chash-args star 0))
+                                                                                              keywargs 
+                                                                                              (length defargs)
+                                                                                              (length (reverse (collapse-vhash-args vh 0)))
+                                                                                              (hash (list)) 
+                                                                                              (list-tail args (- (length a) (length defargs))))
+                                                                             (reverse (collapse-vhash-args vh 0))
+                                                                             defargs
+                                                                             ;star
+                                                                             )]
+                                                    [else (error 'interp-args-CApp "needs a hash")])]
+                                  [ExceptionA (v s) (ExceptionA v s)]
+                                  [ReturnA (v s) (ReturnA v s)])]
+                      ;;TEMPORARY CASE FOR APPLICATION
+                      [VClass (elts type) (ValueA (VClass elts type) store)]
+                      
+                      [else (error 'CApp (string-append "Applied a non-function: " (pretty vf)))])]
+            [ExceptionA (v s) (ExceptionA v s)]
+            [ReturnA (v s) (ReturnA v s)] ;; or pass???
+            )]
     #|
     (type-case CVal (interp-env fun env)
        [VClosure (env argxs body)
@@ -1072,11 +1079,11 @@
           (interp-env body (bind-args argxs argvs env)))]
        [else (error 'interp "Not a closure")])]
     |#
-
+    
     [CFunc (args body vlist defargs vararg) 
            (interp-func args vararg body vlist defargs (list) env store)]
-           ;(ValueA (VClosure (newEnvScope env vlist args) args body () (new-uid)) store)] ;; TODO use vlist...
-
+    ;(ValueA (VClosure (newEnvScope env vlist args) args body () (new-uid)) store)] ;; TODO use vlist...
+    
     [CPrim1 (prim arg) (interp-unary prim arg env store)]
     
     [CPrim2 (op e1 e2)
@@ -1088,9 +1095,9 @@
               ['is (interp-is e1 e2 env store)] ;; might want to think about these...
               ['isNot (interp-isNot e1 e2 env store)]
               ['in (interp-in e1 e2 env store)]
-  ;            ['isinstance (if (isInstanceOf e1 (Type () (list))) 
-  ;                             (ValueA (VTrue) store)
-  ;                             (ValueA (VFalse) store))]
+              ;            ['isinstance (if (isInstanceOf e1 (Type () (list))) 
+              ;                             (ValueA (VTrue) store)
+              ;                             (ValueA (VFalse) store))]
               
               [else (interp-binop op e1 e2 env store)])
             ]
@@ -1154,12 +1161,12 @@
                                                         [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                                         [ReturnA (v2 s2) (ReturnA v2 s2)])]
                                     [ReturnA (v s) (type-case AnswerC (interp-env finalbody env s)
-                                                        [ValueA (v2 s2) (ReturnA v s2)]
-                                                        [ExceptionA (v2 s2) (ExceptionA v2 s2)]
-                                                        [ReturnA (v2 s2) (ReturnA v2 s2)])])]
+                                                     [ValueA (v2 s2) (ReturnA v s2)]
+                                                     [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                                                     [ReturnA (v2 s2) (ReturnA v2 s2)])])]
     
     [else (error 'interp (string-append "Haven't implemented a case yet:\n"
-                                       (to-string expr)))]
+                                        (to-string expr)))]
     ))
 
 (define (bind-args args vals env)
