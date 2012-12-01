@@ -248,13 +248,43 @@ that calls the primitive `print`.
                               (CPrim2 'or
                                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "float"))
                                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool")))))
-              (CIf (CPrim2 'eq (CPrim1 'to-float (CId 'e-2)) (CNum 0))
-                   (CError (CStr "/: Divide by zero"))
+              (CIf (CPrim2 'eq (CPrim1 'to-float (CId 'e-2)) (CNum 0.0))
+                   (CError (CId 'ZeroDivisionError))
                    (CPrim2 'num/ (CPrim1 'to-float (CId 'e-1)) (CPrim1 'to-float (CId 'e-2))))
               (CError (CStr "/: Not supported for this type.")))
          (list)
          (list)
          'no-vararg))
+
+;; floor div
+(define python-floor-div
+  (CFunc (list 'e-1 'e-2)
+         (CPrim1 'to-float (CPrim1 'to-int (CApp (CId 'python-div)
+                                                 (list (CId 'e-1) (CId 'e-2))
+                                                 (list)
+                                                 (CHash (hash (list)) (Type "list" (list))))))
+         (list)
+         (list)
+         'no-vararg))
+
+
+(define python-mod
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'and
+                      (CPrim2 'or 
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "float")))
+                      (CPrim2 'or 
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "float"))))
+              (CIf (CPrim2 'eq (CPrim1 'to-float (CId 'e-2)) (CNum 0.0))
+                   (CError (CId 'ZeroDivisionError))
+                   (CPrim2 'num% (CId 'e-1) (CId 'e-2)))
+              (CError (CStr "%: Not supported for this type.")))
+         (list)
+         (list)
+         'no-vararg))
+                                                 
 
 
 
@@ -593,11 +623,21 @@ that calls the primitive `print`.
 (define true-val
   (CTrue))
 
+
+
+;; TODO TODO TODO update these to work like the final classs system...
 (define type-error-def
   (CClass (hash (list)) (Type "TypeError" (list)))) ;; TEMPORARY TypeError definition...
 
 (define index-error-def
   (CClass (hash (list)) (Type "IndexError" (list))))
+
+(define zero-division-error
+  (CClass (hash (list)) (Type "ZeroDivisonError" (list))))
+  ;(CHash (hash-set (hash (list)) (CStr "__name__") (CStr "ZeroDivisonError")) (Type "class" (list))))
+
+
+
 
 
 (define-type LibBinding
@@ -630,6 +670,8 @@ that calls the primitive `print`.
         (bind 'python-sub python-sub)
         (bind 'python-mult python-mult)
         (bind 'python-div python-div)
+        (bind 'python-floor-div python-floor-div)
+        (bind 'python-mod python-mod)
         (bind 'python-lt python-lt)
         (bind 'python-lte python-lte)
         (bind 'python-gt python-gt)
@@ -661,13 +703,19 @@ that calls the primitive `print`.
         (bind 'create-global-env create-global-env)
         (bind 'isinstance python-isinstance)
         
-        ;; exceptions
+        ;; exceptions (prelim...)
         (bind 'TypeError type-error-def)
         (bind 'IndexError index-error-def)
+        (bind 'ZeroDivisionError zero-division-error)
         
         ;;binding of built-in classes
         (bind 'Exception Exception)
         (bind 'TestClass TestClass)
+        
+        
+        
+        ;; Some more permanent builtin classes
+      ;;  (bind 'ZeroDivisionError zero-division-error)
         
         ;;object for debugging
         (bind 'testObj testObj)

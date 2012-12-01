@@ -482,6 +482,7 @@
     ['num- (VNum (- (VNum-n v1) (VNum-n v2)))]
     ['num* (VNum (* (VNum-n v1) (VNum-n v2)))]
     ['num/ (VNum (/ (VNum-n v1) (VNum-n v2)))]
+    ['num% (VNum (modulo (VNum-n v1) (VNum-n v2)))]
     ['num-lt (if (< (VNum-n v1) (VNum-n v2)) (VTrue) (VFalse))]
     ['string-lt (if (string<? (VStr-s v1) (VStr-s v2)) (VTrue) (VFalse))]
     ['num-lte (if (<= (VNum-n v1) (VNum-n v2)) (VTrue) (VFalse))]

@@ -304,6 +304,10 @@ structure that you define in python-syntax.rkt
      'python-mult]
     [(hash-table ('nodetype "Div"))
      'python-div]
+    [(hash-table ('nodetype "FloorDiv"))
+     'python-floor-div]
+    [(hash-table ('nodetype "Mod"))
+     'python-mod]
  ;   [(hash-table ('nodetype "Pow")) ;; this will need to be recursive. Wait to implement...
  ;    'python-pow]
     
