@@ -680,6 +680,7 @@ that calls the primitive `print`.
                      (list)
                      'no-vararg))))
 
+
 #|
 ;; any
 (define python-any
@@ -687,10 +688,11 @@ that calls the primitive `print`.
          (CIf (CPrim2 'or 
                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) ; Should theoretically work on dicts too, if we have time...
-              (CApp (CId 'python-iter-help)
-                    (list (CId 'e-1) (CId 'bool) (CNum 0))
-                    (list)
-                    (CHash (hash (list)) (Type "list" (list))))
+              (CPrim1 'to-bool 
+                      (CApp (CId 'python-iter-help)
+                            (list (CId 'e-1) (CId 'bool) (CNum 0))
+                            (list)
+                            (CHash (hash (list)) (Type "list" (list)))))
               (CError (CId 'TypeError))) ;; TODO more specific?
          (list)
          (list)
@@ -702,19 +704,39 @@ that calls the primitive `print`.
          (CIf (CPrim2 'or 
                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) ; Should theoretically work on dicts too, if we have time...
-              (CApp (CId 'python-not)
-                    (list (CApp (CId 'python-iter-help)
-                                (list (CId 'e-1) (CId 'python-not) (CNum 0))
-                                (list)
-                                (CHash (hash (list)) (Type "list" (list)))))
-                    (list)
-                    (CHash (hash (list)) (Type "list" (list))))
+              (CPrim1 'not
+                      (CApp (CId 'python-iter-help)
+                            (list (CId 'e-1) (CId 'python-not) (CNum 0))
+                            (list)
+                            (CHash (hash (list)) (Type "list" (list)))))
               (CError (CId 'TypeError))) ;; TODO more specific?
          (list)
          (list)
          'no-vararg))
 
-;; helper for any and all
+;; filter
+(define python-filter
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'eq (CId 'e-1) (CNone))
+              (CApp (CId 'python-iter-help)
+                    (list (CId 'e-2) (CId 'bool) (CNum 0))
+                    (list)
+                    (CHash (hash (list)) (Type "list" (list))))
+              (CIf (CApp (CId 'callable)
+                         (list (CId 'e-1))
+                         (list)
+                         (CHash (hash (list)) (Type "list" (list))))
+                   (CApp (CId 'python-iter-help)
+                         (list (CId 'e-2) (CId 'e-1) (CNum 0))
+                         (list)
+                         (CHash (hash (list)) (Type "list" (list))))
+                   (CError (CId 'TypeError))))
+         (list)
+         (list)
+         'no-vararg))
+
+
+;;helper for any and all and filter
 (define python-iter-help
   (CLet 'python-iter-help
         (Local)
@@ -728,21 +750,26 @@ that calls the primitive `print`.
                                                            (CHash (hash (list)) (Type "list" (list)))))
                                 (list)
                                 (CHash (hash (list)) (Type "list" (list))))
-                          (CIf (CApp (CId 'e-test)
+                          (CIf (CApp (CId 'e-test) ;; TODO might want to check the type here. Or just in interpreter...
                                      () ;; check subscript 'e-index of list
                                      (list)
                                      (CHash (hash (list)) (Type "list" (list))))
-                               (CTrue)
+                               (CPrim2 'list+ ;; check for subscript on next line as well...
+                                       (CHash (hash-set (hash (list)) (CNum 0) (SUBSCRIPT 'e-index)) (Type "list" (list))) 
+                                       (CApp (CId 'python-iter-help)
+                                             (list (CId 'e-list) (CId 'e-test) (CPrim2 num+ (CId 'e-index) (CNum 1)))
+                                             (list)
+                                             (CHash (hash (list)) (Type "list" (list)))))
                                (CApp (CId 'python-iter-help)
                                      (list (CId 'e-list) (CId 'e-test) (CPrim2 num+ (CId 'e-index) (CNum 1)))
                                      (list)
                                      (CHash (hash (list)) (Type "list" (list)))))
-                          (CFalse))
+                          (CHash (hash (list)) (Type "list" (list))))
                      (list)
                      (list)
                      'no-vararg))))
-        
-|#
+|#        
+
 
 (define python-isinstance
   (CFunc (list 'e-1 'e-2) ;; TODO THIS HAS NO INHERITENCE! We'll want to return a list of inherited classes, and check membership...
