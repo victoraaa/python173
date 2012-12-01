@@ -1064,6 +1064,48 @@
           (hash-keys env)))
    
 
+;; interp application
+(define (interp-VClosure-App [e : Env] 
+                             [a : (listof symbol)] 
+                             [varg : symbol] 
+                             [b : CExp] 
+                             [defargs : (listof CVal)] 
+                             [args : (listof CExp)]
+                             [keywargs : (listof (symbol * CExp))]
+                             [star : CExp]
+                             [env : Env]
+                             [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env star env store)
+    [ValueA (vh sh) (type-case CVal vh
+                      [VHash (elts uid t) 
+                             (interp-args-CApp b   
+                                               env
+                                               e
+                                               sh
+                                               ;a
+                                               (if (not (equal? varg 'no-vararg))
+                                                   (append a (list varg))
+                                                   a)
+                                               (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
+                                               #|
+                                                                             (group-arguments a 
+                                                                                              varg 
+                                                                                              args
+                                                                                              ;(append args (collapse-chash-args star 0))
+                                                                                              keywargs 
+                                                                                              (length defargs)
+                                                                                              (length (reverse (collapse-vhash-args vh 0)))
+                                                                                              (hash (list)) 
+                                                                                              (list-tail args (- (length a) (length defargs))))
+                                                                             |#
+                                               (reverse (collapse-vhash-args vh 0))
+                                               defargs
+                                               ;star
+                                               )]
+                      [else (error 'interp-args-CApp "needs a hash, because star should be a list")])]
+    [ExceptionA (v s) (ExceptionA v s)]
+    [ReturnA (v s) (ReturnA v s)]))
+
 ;(define (collapse-and-interp [chash : CExp] 
 ;                             [n : number] 
 ;                             [env : Env] 
@@ -1150,7 +1192,8 @@
           (type-case AnswerC (interp-env func env store)
             [ValueA (vf sf)
                     (type-case CVal vf
-                      [VClosure (e a varg b defargs uid)
+                      [VClosure (e a varg b defargs uid) (interp-VClosure-App e a varg b defargs args keywargs star env sf)]
+                                #|
                                 (type-case AnswerC (interp-env star env sf)
                                   [ValueA (vh sh) (type-case CVal vh
                                                     [VHash (elts uid t) 
@@ -1180,15 +1223,32 @@
                                                                              )]
                                                     [else (error 'interp-args-CApp "needs a hash, because star should be a list")])]
                                   [ExceptionA (v s) (ExceptionA v s)]
-                                  [ReturnA (v s) (ReturnA v s)])]
+                                  [ReturnA (v s) (ReturnA v s)])
+                                |#
+                                ;]
                       ;;WE NEED TO ADD A CASE FOR THE __CALL__ THING
-                      [VHash (elts uid type) (if (equal? (Type-name type) "class")
-                                                 (ValueA (VHash (hash (list)) (new-uid) (Type (type-case (optionof CVal) (hash-ref elts (VStr "__name__"))
-                                                                                        [none () (error 'interp-env:CApp:VHash "Class lacks __name__ field")]
-                                                                                        [some (so) (type-case CVal so
-                                                                                                     [VStr (s) s]
-                                                                                                     [else (error 'interp-env:CApp:VHash "Non-string as name of class")])]) (list))) sf) ;; TODO inheritance...
-                                                 (error 'CApp (string-append "Applied a non-class hash: " (pretty vf))))]
+                      [VHash (elts uid type) 
+                             (cond 
+                               [(equal? (Type-name type) "class")
+                                (ValueA (VHash (hash (list)) 
+                                               (new-uid) 
+                                               (Type (type-case (optionof CVal) (hash-ref elts (VStr "__name__"))
+                                                       [none () (error 'interp-env:CApp:VHash "Class lacks __name__ field")]
+                                                       [some (so) (type-case CVal so
+                                                                    [VStr (s) s]
+                                                                    [else (error 'interp-env:CApp:VHash "Non-string as name of class")])]) 
+                                                     (list))) sf)] ;; TODO inheritance...
+                               [(equal? (Type-name type) "primitive-class")
+                                (type-case (optionof CVal) (hash-ref elts (VStr "__convert__"))
+                                  [none () (error 'interp-env:CApp:VHash "Primitive class lacks __convert__ field")]
+                                  [some (so)
+                                        (type-case CVal so
+                                          [VClosure (e a varg b defargs uid) 
+                                                    (interp-VClosure-App e a varg b defargs args keywargs star env sf)]
+                                          [else (error 'interp-env:CApp:VHash "Primitive class has non-VClosure as __convert__ field")])])]
+                               
+                               
+                               [else (error 'CApp (string-append "Applied a non-class hash: " (pretty vf)))])]
                       
                       ;;TEMPORARY CASE FOR APPLICATION
                       [VClass (elts type) (ValueA (VClass elts type) store)]

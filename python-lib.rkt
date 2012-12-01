@@ -515,13 +515,38 @@ that calls the primitive `print`.
          (list)
          (list)
          'no-vararg))
-
+#|
 (define bool ;; needs to handle arbitrary-arity input
   (CFunc (list 'e-1)
          (CPrim1 'to-bool (CId 'e-1))
          (list)
          (list (CFalse))
          'no-vararg))
+|#
+
+(define bool-primitive-class
+  (CHash (hash-set (hash-set (hash (list)) 
+                             (CStr "__name__") 
+                             (CStr "bool")) 
+                   (CStr "__convert__") 
+                   (CFunc (list 'e-1)
+                          (CPrim1 'to-bool (CId 'e-1))
+                          (list)
+                          (list (CFalse))
+                          'no-vararg)) 
+         (Type "primitive-class" (list))))
+
+(define int-primitive-class
+  (CHash (hash-set (hash-set (hash (list)) 
+                             (CStr "__name__") 
+                             (CStr "int")) 
+                   (CStr "__convert__") 
+                   (CFunc (list 'e-1)
+                          (CPrim1 'to-int (CId 'e-1))
+                          (list)
+                          (list (CNum 0))
+                          'no-vararg)) 
+         (Type "primitive-class" (list))))
 
 (define str
   (CFunc (list 'e-1)
@@ -536,13 +561,14 @@ that calls the primitive `print`.
          (list)
          (list)
          'no-vararg))
-
+#|
 (define int
   (CFunc (list 'e-1)
          (CPrim1 'to-int (CId 'e-1))
          (list)
          (list (CNum 0))
          'no-vararg))
+|#
 
 (define make-list
   (CFunc (list 'e-1)
@@ -605,8 +631,12 @@ that calls the primitive `print`.
                      'no-vararg))))
 
 (define python-isinstance
-  (CFunc (list 'e-1 'e-2) ;; TODO THIS HAS NO INHERITENCE!
-         (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CAttribute '__name__ (CId 'e-2)))
+  (CFunc (list 'e-1 'e-2) ;; TODO THIS HAS NO INHERITENCE! We'll want to return a list of inherited classes, and check membership...
+         (CPrim2 'or
+                 (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CAttribute '__name__ (CId 'e-2)))
+                 (CPrim2 'and
+                         (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
+                         (CPrim2 'eq (CAttribute '__name__ (CId 'e-2)) (CStr "int"))))
          (list)
          (list)
          'no-vararg))
@@ -635,6 +665,18 @@ that calls the primitive `print`.
 (define zero-division-error
   (CClass (hash (list)) (Type "ZeroDivisonError" (list))))
   ;(CHash (hash-set (hash (list)) (CStr "__name__") (CStr "ZeroDivisonError")) (Type "class" (list))))
+
+(define key-error
+  (CClass (hash (list)) (Type "KeyError" (list))))
+
+(define runtime-error
+  (CClass (hash (list)) (Type "RuntimeError" (list))))
+
+(define unbound-local-error
+  (CClass (hash (list)) (Type "UnboundLocalError" (list))))
+
+(define name-error
+  (CClass (hash (list)) (Type "NameError" (list))))
 
 
 
@@ -684,10 +726,12 @@ that calls the primitive `print`.
         (bind 'python-notIn python-notIn)
         (bind 'len len)
         (bind 'abs abs)
-        (bind 'bool bool)
+       ; (bind 'bool bool)
+        (bind 'bool bool-primitive-class)
         (bind 'str str)
         (bind 'float float)
-        (bind 'int int)
+       ; (bind 'int int)
+        (bind 'int int-primitive-class)
         (bind 'list make-list)
         (bind 'tuple make-tuple)
         (bind 'callable callable)
@@ -707,6 +751,10 @@ that calls the primitive `print`.
         (bind 'TypeError type-error-def)
         (bind 'IndexError index-error-def)
         (bind 'ZeroDivisionError zero-division-error)
+        (bind 'KeyError key-error)
+        (bind 'RuntimeError runtime-error)
+        (bind 'UnboundLocalError unbound-local-error)
+        (bind 'NameError name-error)
         
         ;;binding of built-in classes
         (bind 'Exception Exception)

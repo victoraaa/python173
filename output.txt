@@ -1,17 +1,6 @@
-53 tests succeeded.
-37 tests failed.
+56 tests succeeded.
+34 tests failed.
 == Output of failed tests ==
-=====================================================
-= Results for bool-isinstance.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: tried to get an attribute from a return expression
 =====================================================
 = Results for all.py =
 =====================================================
@@ -265,17 +254,6 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for except-reraise.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: KeyError
-=====================================================
 = Results for invalid-reraise.py =
 =====================================================
 === Expected stdout ===
@@ -285,7 +263,7 @@ lookupEnv: Unbound indentifier error: KeyError
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: RuntimeError
+lookupEnv: Unbound indentifier error: ___fail
 =====================================================
 = Results for reraise.py =
 =====================================================
@@ -297,17 +275,6 @@ lookupEnv: Unbound indentifier error: RuntimeError
 
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: e
-=====================================================
-= Results for test-finally-reraise.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupEnv: Unbound indentifier error: KeyError
 =====================================================
 = Results for iter-classes.py =
 =====================================================
@@ -871,7 +838,7 @@ getAttr: non-existent attribute
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: UnboundLocalError
+lookupStore: 66515Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
