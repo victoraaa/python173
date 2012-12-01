@@ -1048,7 +1048,7 @@
                                                  type)
                                           s))
                           store
-                          (getLocals env)))]
+                          (getLocals env)))] ;; TODO methods aren't working. 
     [else (error 'fill-class-object "when filling a class object, it should be a VHash, not anything else")]))
   
 
@@ -1248,7 +1248,14 @@
                                           [else (error 'interp-env:CApp:VHash "Primitive class has non-VClosure as __convert__ field")])])]
                                
                                
-                               [else (error 'CApp (string-append "Applied a non-class hash: " (pretty vf)))])]
+                               [else (type-case (optionof CVal) (hash-ref elts (VStr "__call__")) ;; TODO mutation? This is non-mutative...
+                                       [none () (error 'interp-env:CApp:VHash "Class lacks __call__ field and thus can't be called")]
+                                       [some (so)
+                                             (type-case CVal so
+                                               [VClosure (e a varg b defargs uid) ;; CNone in line below is to remind us that we need to
+                                                         ;; modify this portion of the code to allow mutation of object...
+                                                         (interp-VClosure-App e a varg b defargs (cons (CNone) args) keywargs star env sf)]
+                                               [else (error 'interp-env:CApp:VHash "Class has non-VClosure as __call__ field")])])])]
                       
                       ;;TEMPORARY CASE FOR APPLICATION
                       [VClass (elts type) (ValueA (VClass elts type) store)]

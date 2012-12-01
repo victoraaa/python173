@@ -548,6 +548,31 @@ that calls the primitive `print`.
                           'no-vararg)) 
          (Type "primitive-class" (list))))
 
+(define float-primitive-class
+  (CHash (hash-set (hash-set (hash (list)) 
+                             (CStr "__name__") 
+                             (CStr "float")) 
+                   (CStr "__convert__") 
+                   (CFunc (list 'e-1)
+                          (CPrim1 'to-float (CId 'e-1))
+                          (list)
+                          (list (CNum 0.0))
+                          'no-vararg)) 
+         (Type "primitive-class" (list))))
+
+(define str-primitive-class
+  (CHash (hash-set (hash-set (hash (list)) 
+                             (CStr "__name__") 
+                             (CStr "string")) 
+                   (CStr "__convert__") 
+                   (CFunc (list 'e-1)
+                          (CPrim1 'to-string (CId 'e-1))
+                          (list)
+                          (list (CStr ""))
+                          'no-vararg)) 
+         (Type "primitive-class" (list))))
+
+#|
 (define str
   (CFunc (list 'e-1)
          (CPrim1 'to-string (CId 'e-1))
@@ -561,7 +586,7 @@ that calls the primitive `print`.
          (list)
          (list)
          'no-vararg))
-#|
+
 (define int
   (CFunc (list 'e-1)
          (CPrim1 'to-int (CId 'e-1))
@@ -653,6 +678,13 @@ that calls the primitive `print`.
 (define true-val
   (CTrue))
 
+(define python-fail
+  (CFunc (list 'e-1)
+         (CError (CId 'e-1))
+         (list)
+         (list)
+         'no-vararg))
+
 
 
 ;; TODO TODO TODO update these to work like the final classs system...
@@ -708,6 +740,7 @@ that calls the primitive `print`.
         (bind '___assertIs assert-is-lambda)
         (bind '___assertIsNot assert-isNot-lambda)
         (bind '___assertRaises assert-raises-lambda)
+        (bind '___fail python-fail)
         (bind 'python-add python-add)
         (bind 'python-sub python-sub)
         (bind 'python-mult python-mult)
@@ -728,8 +761,10 @@ that calls the primitive `print`.
         (bind 'abs abs)
        ; (bind 'bool bool)
         (bind 'bool bool-primitive-class)
-        (bind 'str str)
-        (bind 'float float)
+       ; (bind 'str str)
+        (bind 'str str-primitive-class)
+       ; (bind 'float float)
+        (bind 'float float-primitive-class)
        ; (bind 'int int)
         (bind 'int int-primitive-class)
         (bind 'list make-list)

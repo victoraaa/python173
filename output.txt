@@ -263,7 +263,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: ___fail
+exception: No exception raised
 =====================================================
 = Results for reraise.py =
 =====================================================
@@ -794,7 +794,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-CApp: Applied a non-class hash: Adder
+interp-env:CApp:VHash: Class lacks __call__ field and thus can't be called
 =====================================================
 = Results for nonlocal-class.py =
 =====================================================
@@ -838,7 +838,7 @@ getAttr: non-existent attribute
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 66515Unbound location error.
+lookupStore: 66022Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
