@@ -838,7 +838,7 @@ getAttr: non-existent attribute
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 66022Unbound location error.
+lookupStore: 66077Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================

@@ -106,6 +106,8 @@ that calls the primitive `print`.
          (list)
          'vargs))
 
+;; TODO can this be re-written with instanceof?
+
 ;(define assert-raises-lambda
 ;  (CFunc (list 'e-1 'e-2)
 ; (CTryExcept (CApp (CId 'e-2) (CPrim1 'python-star (CId 'args)) (list)) (CExcHandler 'e () (CTrue)) (CFalse))
@@ -509,12 +511,16 @@ that calls the primitive `print`.
   (CFunc (list 'e-1)
          (CIf (CPrim2 'or 
                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "function"))
-                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "class")))
+                      (CPrim2 'or 
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "class"))
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "primitive-class"))))
               (CTrue)
               (CFalse))
          (list)
          (list)
          'no-vararg))
+
+
 #|
 (define bool ;; needs to handle arbitrary-arity input
   (CFunc (list 'e-1)
@@ -537,7 +543,7 @@ that calls the primitive `print`.
          (Type "primitive-class" (list))))
 
 (define int-primitive-class
-  (CHash (hash-set (hash-set (hash (list)) 
+  (CHash (hash-set (hash-set (hash (list)) ;; TYPES!
                              (CStr "__name__") 
                              (CStr "int")) 
                    (CStr "__convert__") 
@@ -549,7 +555,7 @@ that calls the primitive `print`.
          (Type "primitive-class" (list))))
 
 (define float-primitive-class
-  (CHash (hash-set (hash-set (hash (list)) 
+  (CHash (hash-set (hash-set (hash (list)) ; TODO TYPE CHECKING!
                              (CStr "__name__") 
                              (CStr "float")) 
                    (CStr "__convert__") 
@@ -567,6 +573,24 @@ that calls the primitive `print`.
                    (CStr "__convert__") 
                    (CFunc (list 'e-1)
                           (CPrim1 'to-string (CId 'e-1))
+                          (list)
+                          (list (CStr ""))
+                          'no-vararg)) 
+         (Type "primitive-class" (list))))
+
+(define list-primitive-class
+  (CHash (hash-set (hash-set (hash (list)) 
+                             (CStr "__name__") 
+                             (CStr "list")) 
+                   (CStr "__convert__") 
+                   (CFunc (list 'e-1)
+                          (CIf (CPrim2 'or
+                                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
+                                       (CPrim2 'or 
+                                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
+                                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))))
+                               (CPrim1 'to-list (CId 'e-1))
+                               (CError (CId 'TypeError))) ;; TODO be more specific!
                           (list)
                           (list (CStr ""))
                           'no-vararg)) 
@@ -593,7 +617,6 @@ that calls the primitive `print`.
          (list)
          (list (CNum 0))
          'no-vararg))
-|#
 
 (define make-list
   (CFunc (list 'e-1)
@@ -601,6 +624,8 @@ that calls the primitive `print`.
          (list)
          (list)
          'no-vararg))
+
+|#
 
 (define make-tuple
   (CFunc (list 'e-1)
@@ -654,6 +679,70 @@ that calls the primitive `print`.
                      (list)
                      (list)
                      'no-vararg))))
+
+#|
+;; any
+(define python-any
+  (CFunc (list 'e-1)
+         (CIf (CPrim2 'or 
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) ; Should theoretically work on dicts too, if we have time...
+              (CApp (CId 'python-iter-help)
+                    (list (CId 'e-1) (CId 'bool) (CNum 0))
+                    (list)
+                    (CHash (hash (list)) (Type "list" (list))))
+              (CError (CId 'TypeError))) ;; TODO more specific?
+         (list)
+         (list)
+         'no-vararg))
+
+;; all
+(define python-all
+  (CFunc (list 'e-1)
+         (CIf (CPrim2 'or 
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) ; Should theoretically work on dicts too, if we have time...
+              (CApp (CId 'python-not)
+                    (list (CApp (CId 'python-iter-help)
+                                (list (CId 'e-1) (CId 'python-not) (CNum 0))
+                                (list)
+                                (CHash (hash (list)) (Type "list" (list)))))
+                    (list)
+                    (CHash (hash (list)) (Type "list" (list))))
+              (CError (CId 'TypeError))) ;; TODO more specific?
+         (list)
+         (list)
+         'no-vararg))
+
+;; helper for any and all
+(define python-iter-help
+  (CLet 'python-iter-help
+        (Local)
+        (CFunc (list) (CError (CStr "Dummy! (python-iter-help)")) (list) (list) 'no-vararg)
+        (CSet (CId 'python-iter-help)
+              (CFunc (list 'e-list 'e-test 'e-index)
+                     (CIf (CApp (CId 'python-lte)
+                                (list (CId 'e-index) (CApp (CId 'len)
+                                                           (list (CId 'e-list))
+                                                           (list)
+                                                           (CHash (hash (list)) (Type "list" (list)))))
+                                (list)
+                                (CHash (hash (list)) (Type "list" (list))))
+                          (CIf (CApp (CId 'e-test)
+                                     () ;; check subscript 'e-index of list
+                                     (list)
+                                     (CHash (hash (list)) (Type "list" (list))))
+                               (CTrue)
+                               (CApp (CId 'python-iter-help)
+                                     (list (CId 'e-list) (CId 'e-test) (CPrim2 num+ (CId 'e-index) (CNum 1)))
+                                     (list)
+                                     (CHash (hash (list)) (Type "list" (list)))))
+                          (CFalse))
+                     (list)
+                     (list)
+                     'no-vararg))))
+        
+|#
 
 (define python-isinstance
   (CFunc (list 'e-1 'e-2) ;; TODO THIS HAS NO INHERITENCE! We'll want to return a list of inherited classes, and check membership...
@@ -767,7 +856,8 @@ that calls the primitive `print`.
         (bind 'float float-primitive-class)
        ; (bind 'int int)
         (bind 'int int-primitive-class)
-        (bind 'list make-list)
+       ; (bind 'list make-list)
+        (bind 'list list-primitive-class)
         (bind 'tuple make-tuple)
         (bind 'callable callable)
         (bind 'range make-range)

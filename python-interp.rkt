@@ -1193,40 +1193,6 @@
             [ValueA (vf sf)
                     (type-case CVal vf
                       [VClosure (e a varg b defargs uid) (interp-VClosure-App e a varg b defargs args keywargs star env sf)]
-                                #|
-                                (type-case AnswerC (interp-env star env sf)
-                                  [ValueA (vh sh) (type-case CVal vh
-                                                    [VHash (elts uid t) 
-                                                           (interp-args-CApp b   
-                                                                             env
-                                                                             e
-                                                                             sh
-                                                                             ;a
-                                                                             (if (not (equal? varg 'no-vararg))
-                                                                                 (append a (list varg))
-                                                                                 a)
-                                                                             (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
-                                                                             #|
-                                                                             (group-arguments a 
-                                                                                              varg 
-                                                                                              args
-                                                                                              ;(append args (collapse-chash-args star 0))
-                                                                                              keywargs 
-                                                                                              (length defargs)
-                                                                                              (length (reverse (collapse-vhash-args vh 0)))
-                                                                                              (hash (list)) 
-                                                                                              (list-tail args (- (length a) (length defargs))))
-                                                                             |#
-                                                                             (reverse (collapse-vhash-args vh 0))
-                                                                             defargs
-                                                                             ;star
-                                                                             )]
-                                                    [else (error 'interp-args-CApp "needs a hash, because star should be a list")])]
-                                  [ExceptionA (v s) (ExceptionA v s)]
-                                  [ReturnA (v s) (ReturnA v s)])
-                                |#
-                                ;]
-                      ;;WE NEED TO ADD A CASE FOR THE __CALL__ THING
                       [VHash (elts uid type) 
                              (cond 
                                [(equal? (Type-name type) "class")
