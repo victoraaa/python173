@@ -1,5 +1,5 @@
-52 tests succeeded.
-38 tests failed.
+53 tests succeeded.
+37 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for bool-isinstance.py =
@@ -274,7 +274,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-interp-AppC: 32Application failed with arity mismatch
+lookupEnv: Unbound indentifier error: KeyError
 =====================================================
 = Results for invalid-reraise.py =
 =====================================================
@@ -286,17 +286,6 @@ interp-AppC: 32Application failed with arity mismatch
 
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: RuntimeError
-=====================================================
-= Results for nested-reraise.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-interp-AppC: 32Application failed with arity mismatch
 =====================================================
 = Results for reraise.py =
 =====================================================
@@ -768,7 +757,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-interp-AppC: 32Application failed with arity mismatch
+group-arguments: arity mismatch - missing argument: throw TypeError exception
 =====================================================
 = Results for bound-and-free.py =
 =====================================================

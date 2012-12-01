@@ -262,7 +262,9 @@
             [some (s) (cons s (collapse-vhash-args vhash (+ n 1)))]
             [none () (error 'collapse-vhash-args "Missing element...")])]))
 
-;;helper method for our interpreter
+;; helper method for our interpreter
+;; this interps each argument to a CVal and calls 
+;; another helper that will put them in the env/store, before finally interpreting the body
 (define (interp-args-CApp [body : CExp]
                           [env : Env]
                           [closEnv : Env]
@@ -900,10 +902,12 @@
 ;;checks if the list of arguments has some CUnbound in a position that is not from some default argument
 (define (group-check-defaults [ids : (listof symbol)]
                               [nDefArgs : number]
-                              [argsList : (listof CExp)]) : (listof CExp)
+                              [argsList : (listof CExp)]) : boolean
   (if (member (CUnbound) (drop-right argsList nDefArgs))
-      (error 'group-arguments "missing argument: throw TypeError exception")
-      argsList))
+      false
+      true))
+      ;(error 'group-arguments "missing argument: throw TypeError exception")
+      ;argsList))
 
 ;; group-arguments create a list of arguments in the correct order from the list of positional args, keyword args and the number of existing default args.
 ;; if varargid is different from 'no-vararg, adds a new argument to the list of arguments, that is a list containing the positional arguments in excess
@@ -926,7 +930,7 @@
                       (group-positional-arguments ids args)
                       (if (< (length ids) (length args))
                           (list-tail args (length ids))
-                          (list)))]
+                          (list)))]; (CHash (hash (list)) (Type "list" (list))))))]
     [(not (empty? keywargs))
      (group-arguments ids
                       varargid
@@ -940,11 +944,13 @@
                                              argList
                                              varargid
                                              varargs))]
-       (group-check-defaults ids
-                             nDefArgs
-                             (if (equal? varargid 'no-vararg)
-                                 groupedArgs
-                                 (drop-right groupedArgs 1))))]))
+       (if (group-check-defaults ids
+                                 nDefArgs
+                                 (if (equal? varargid 'no-vararg)
+                                     groupedArgs
+                                     (drop-right groupedArgs 1)))
+           groupedArgs
+           (error 'group-arguments "arity mismatch - missing argument: throw TypeError exception")))]))
 #|
 (define (group-arguments [ids : (listof symbol)]
                          [varargid : symbol]
