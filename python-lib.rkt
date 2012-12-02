@@ -617,33 +617,57 @@ that calls the primitive `print`.
          (cType "primitive-class" (CNone))))
 
 (define dict-primitive-class
-  (CHash (hash-set (hash (list))
-                   (CStr "__name__")
-                   (CStr "dict"))
+  (CHash (hash (list (values (CStr "__name__") (CStr "dict"))
+            ;   (values (CStr "get") (CFunc (list 'self 'e-1)
+            ;                                 ()
+            ;                                 (list)
+            ;                                 (list)
+            ;                                 'no-vararg))
+               ))
          (cType "primitive-class" (CNone)))) ;; If we need a __convert__ method, we'll write one later. 
 
 
 (define make-range
   (CFunc (list 'e-1 'e-2 'e-3)
-         (CIf (CPrim2 'and 
-                      (CPrim2 'is (CId 'e-2) (CNone)) 
-                      (CPrim2 'is (CId 'e-3) (CNone)))
+         (CIf (CPrim2 'and
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                      (CPrim2 'and 
+                              (CPrim2 'is (CId 'e-2) (CNone)) 
+                              (CPrim2 'is (CId 'e-3) (CNone))))
               (CApp (CId 'python-make-range) 
                     (list (CNum 0) (CId 'e-1) (CNum 1)) 
                     (list)
                     (CHash (hash (list)) (cType "list" (CId 'list)))
                     )
-              (CIf (CPrim2 'is (CId 'e-3) (CNone))
+              (CIf (CPrim2 'and
+                           (CPrim2 'is (CId 'e-3) (CNone))
+                           (CPrim2 'and
+                                   (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                                   (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))))
                    (CApp (CId 'python-make-range) 
                          (list (CId 'e-1) (CId 'e-2) (CNum 1)) 
                          (list)
                          (CHash (hash (list)) (cType "list" (CId 'list)))
                          )
-                   (CApp (CId 'python-make-range) 
-                         (list (CId 'e-1) (CId 'e-2) (CId 'e-3)) 
-                         (list)
-                         (CHash (hash (list)) (cType "list" (CId 'list)))
-                         ))) 
+                   (CIf (CPrim2 'and 
+                                (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
+                                (CPrim2 'and
+                                        (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                                        (CPrim2 'eq (CPrim1 'tagof (CId 'e-3)) (CStr "int"))))
+                        (CIf (CPrim1 'not (CPrim2 'eq (CId 'e-3) (CNum 0)))
+                             (CApp (CId 'python-make-range) 
+                              (list (CId 'e-1) (CId 'e-2) (CId 'e-3)) 
+                              (list)
+                              (CHash (hash (list)) (cType "list" (CId 'list)))
+                              )
+                             (CError (CApp (CId 'ValueError)
+                                           (list)
+                                           (list)
+                                           (CHash (hash (list)) (cType "list" (CNone))))))
+                        (CApp (CId 'TypeError)
+                              (list)
+                              (list)
+                              (CHash (hash (list)) (cType "list" (CNone))))))) 
          (list)
          (list (CNone) (CNone))
          'no-vararg))
@@ -760,11 +784,18 @@ that calls the primitive `print`.
 
 (define python-isinstance
   (CFunc (list 'e-1 'e-2) ;; TODO THIS HAS NO INHERITENCE! We'll want to return a list of inherited classes, and check membership...
-         (CPrim2 'or
-                 (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CAttribute '__name__ (CId 'e-2)))
-                 (CPrim2 'and
-                         (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
-                         (CPrim2 'eq (CAttribute '__name__ (CId 'e-2)) (CStr "int"))))
+         (CIf (CPrim2 'or
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "class"))
+                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "primitive-class")))
+              (CPrim2 'or
+                      (CPrim2 'isinstance (CId 'e-1) (CAttribute '__name__ (CId 'e-2)))
+                      (CPrim2 'and
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "bool"))
+                              (CPrim2 'eq (CAttribute '__name__ (CId 'e-2)) (CStr "int"))))
+              (CError (CApp (CId 'TypeError)
+                            (list)
+                            (list)
+                            (CHash (hash (list)) (cType "list" (CNone))))))
          (list)
          (list)
          'no-vararg))
@@ -792,26 +823,32 @@ that calls the primitive `print`.
 
 ;; TODO TODO TODO update these to work like the final classs system...
 (define type-error-def
-  (CClass (hash (list)) (Type "TypeError" (VNone)))) ;; TEMPORARY TypeError definition...
+  ;(CClass (hash (list)) (Type "TypeError" (VNone)))) ;; TEMPORARY TypeError definition...
+  (CHash (hash (list (values (CStr "__name__") (CStr "TypeError")))) (cType "class" (CNone))))
 
 (define index-error-def
-  (CClass (hash (list)) (Type "IndexError" (VNone))))
+  ;(CClass (hash (list)) (Type "IndexError" (VNone))))
+  (CHash (hash (list (values (CStr "__name__") (CStr "IndexError")))) (cType "class" (CNone))))
 
 (define zero-division-error
   ;(CClass (hash (list)) (Type "ZeroDivisonError" (VNone))))
   (CHash (hash-set (hash (list)) (CStr "__name__") (CStr "ZeroDivisionError")) (cType "class" (CNone))))
 
 (define key-error
-  (CClass (hash (list)) (Type "KeyError" (VNone))))
+  ;(CClass (hash (list)) (Type "KeyError" (VNone))))
+  (CHash (hash (list (values (CStr "__name__") (CStr "KeyError")))) (cType "class" (CNone))))
 
 (define runtime-error
-  (CClass (hash (list)) (Type "RuntimeError" (VNone))))
+  ;(CClass (hash (list)) (Type "RuntimeError" (VNone))))
+  (CHash (hash (list (values (CStr "__name__") (CStr "RuntimeError")))) (cType "class" (CNone))))
 
 (define unbound-local-error
-  (CClass (hash (list)) (Type "UnboundLocalError" (VNone))))
+  ;(CClass (hash (list)) (Type "UnboundLocalError" (VNone))))
+  (CHash (hash (list (values (CStr "__name__") (CStr "UnboundLocalError")))) (cType "class" (CNone))))
 
 (define name-error
-  (CClass (hash (list)) (Type "NameError" (VNone))))
+  ;(CClass (hash (list)) (Type "NameError" (VNone))))
+  (CHash (hash (list (values (CStr "__name__") (CStr "NameError")))) (cType "class" (CNone))))
 
 (define Exception
   ;(CClass (hash (list)) (Type "Exception" (CNone))))

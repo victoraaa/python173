@@ -1,5 +1,3 @@
-
-C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
 58 tests succeeded.
 32 tests failed.
 == Output of failed tests ==
@@ -98,7 +96,7 @@ lookupEnv: Unbound indentifier error: filter
 === Expected stderr ===
 
 === Actual stderr ===
-exception: Assert failed: value is False
+group-arguments: arity mismatch - missing argument: throw TypeError exception
 =====================================================
 = Results for dict-clear.py =
 =====================================================
@@ -265,7 +263,7 @@ exception: No exception raised
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: e
+exception: No exception raised
 =====================================================
 = Results for iter-classes.py =
 =====================================================
@@ -818,7 +816,7 @@ group-arguments: arity mismatch - missing argument: throw TypeError exception
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 41718Unbound location error.
+lookupStore: 63024Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================

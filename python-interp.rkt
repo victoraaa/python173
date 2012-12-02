@@ -203,6 +203,24 @@
                 [VUnbound () (error 'lookupStore "Unbound Identifier: using identifier before assignment")]
                 [else v])]))
 
+; lookupEnvStore merges functionality and allows exceptions to be thrown. 
+(define (lookupEnvStore [id : symbol]
+                        [env : Env]
+                        [store : Store]) : AnswerC
+  (type-case (optionof SLTuple) (hash-ref env id)
+    [none () (interp-env (CApp (CId 'UnboundLocalError)
+                               (list)
+                               (list)
+                               (CHash (hash (list)) (cType "list" (CNone)))) env store)]
+    [some (loc) (type-case (optionof CVal) (hash-ref store (local [(define-values (t l) loc)] l))
+                [none () (error 'lookupEnvStore "Something is missing from the store")]
+                [some (v) (type-case CVal v
+                            [VUnbound () (interp-env (CApp (CId 'UnboundLocalError)
+                                                           (list)
+                                                           (list)
+                                                           (CHash (hash (list)) (cType "list" (CNone)))) env store)]
+                            [else (ValueA v store)])])]))
+
 ;;lookupVar searches for the identifier first at the given environment, then at the globalEnv.
 (define (lookupVar [id : symbol]
                    [env : Env]) : Location
@@ -253,11 +271,10 @@
 
 
 ;; Should implement starargs...
-;; TODO this won't work yet. Needs to take a CVal.
 ;; requires VHash
 (define (collapse-vhash-args [vhash : CVal] [n : number]) : (listof CVal)
   (cond
-    [(<= (length (hash-keys (unbox (VHash-elts vhash)))) n) empty]
+    [(<= (length (hash-keys (unbox (VHash-elts vhash)))) n) (list)]
     [else (type-case (optionof CVal) (hash-ref (unbox (VHash-elts vhash)) (VNum n))
             [some (s) (cons s (collapse-vhash-args vhash (+ n 1)))]
             [none () (error 'collapse-vhash-args "Missing element...")])]))
@@ -826,6 +843,25 @@
                       [store : Store]) : boolean
   (member type (get-typesList obj)))
 
+
+;; wrapper for isInstanceOf
+(define (interp-isinstance [obj : CExp]
+                           [type : CExp]
+                           [env : Env]
+                           [store : Store]) : AnswerC
+  (type-case AnswerC (interp-env obj env store)
+    [ValueA (v1 s1) (type-case AnswerC (interp-env type env s1) ;; This takes a string. Do we want to update it to take a class?
+                      [ValueA (v2 s2) (type-case CVal v2        ;; I think we probably should update it. But we can do that later. 
+                                        [VStr (ty) (if (isInstanceOf v1 ty env s2)
+                                                       (ValueA (VTrue) s2)
+                                                       (ValueA (VFalse) s2))]
+                                        [else (error 'interp-isinstance "This error should not appear.")])]
+                      [ExceptionA (v s) (ExceptionA v s)]
+                      [ReturnA (v s) (ReturnA v s)])]
+    [ExceptionA (v s) (ExceptionA v s)]
+    [ReturnA (v s) (ReturnA v s)]))
+                           
+
 ;; NOT NECSSARY ANYMORE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ;; helper function that interps a CExp (that is supposed to be a VHash) to a type
 (define (CExpToType [type : CExp]
@@ -863,7 +899,17 @@
 (define (interp-handlers [handlers : (listof CExceptionHandler)] [val : CVal] [env : Env] [store : Store]) : AnswerC 
   (cond
     [(empty? handlers) (ExceptionA val store)]
-    [(cons? handlers) (interp-env (CExcHandler-body (first handlers)) env store)]))
+    [(cons? handlers) (if (equal? (CExcHandler-name (first handlers)) 'no-name)
+                          (interp-env (CExcHandler-body (first handlers)) env store)
+                          (local [(define location (new-loc))]
+                            (interp-env (CExcHandler-body (first handlers)) 
+                                      (augmentEnv (CExcHandler-name (first handlers)) (values (Local) location) env) 
+                                      (augmentStore location val store))))]))
+     
+     
+     
+     
+  ;   (interp-env (CExcHandler-body (first handlers)) env store)]))
 
 ;; getAttr gets the attribute from an object (VHash) -----------------------------------------------------------throw an exception instead of an error
 (define (getAttr [attr : symbol]
@@ -1155,6 +1201,10 @@
   (type-case AnswerC (interp-env star env store)
     [ValueA (vh sh) (type-case CVal vh
                       [VHash (elts uid t) 
+                             ; (local [(try () )]
+                             
+                             
+                             ;      (try 
                              (interp-args-CApp b   
                                                env
                                                e
@@ -1175,10 +1225,17 @@
                                                                                               (hash (list)) 
                                                                                               (list-tail args (- (length a) (length defargs))))
                                                                              |#
-                                               (reverse (collapse-vhash-args vh 0))
+                                               (list)
                                                defargs
                                                ;star
-                                               )]
+                                               )
+                             ;   (lambda () (interp-env (CError (CApp (CId 'TypeError)
+                             ;                                        (list)
+                             ;                                        (list)
+                             ;                                        (CHash (hash (list)) (cType "list" (CNone)))))
+                             ;                          env
+                             ;                          sh)))
+                             ]
                       [else (error 'interp-args-CApp "needs a hash, because star should be a list")])]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
@@ -1344,10 +1401,7 @@
               ['in (interp-in e1 e2 env store)]
               ['list+ (merge-listy-things e1 e2 env store)]
               ['tuple+ (merge-listy-things e1 e2 env store)]
-              ;            ['isinstance (if (isInstanceOf e1 (Type () (list))) 
-              ;                             (ValueA (VTrue) store)
-              ;                             (ValueA (VFalse) store))]
-              
+              ['isinstance (interp-isinstance e1 e2 env store)]
               [else (interp-binop op e1 e2 env store)])
             ]
     
