@@ -1,20 +1,6 @@
-class C:
-  x=1
+try: 5.0 / 0.0
 
-x=C
-x.x=2
-print(C.x)
+except ZeroDivisionError: pass
 
+else: raise Exception("5.0 / 0.0 didn't raise ZeroDivisionError")
 
-#def f(x):
-#    class C:
-#        def m(self):
-#            return x
-#        a = x
-#    return C
-
-#obj=f(5)()
-#print(obj.a)
-
-#check if its checking arity mismatch in interp-args
-#test inheritance

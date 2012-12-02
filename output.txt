@@ -109,7 +109,7 @@ exception: Assert failed: value is False
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: dict
+getAttr: non-existent attribute, Unbound Identifier: clear
 =====================================================
 = Results for dict-get.py =
 =====================================================
@@ -120,7 +120,7 @@ lookupEnv: Unbound indentifier error: dict
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: dict
+getAttr: non-existent attribute, Unbound Identifier: get
 =====================================================
 = Results for dict-getitem.py =
 =====================================================
@@ -203,7 +203,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: dict
+getAttr: non-existent attribute, Unbound Identifier: update
 =====================================================
 = Results for dict-values-set.py =
 =====================================================
@@ -726,7 +726,7 @@ group-arguments: arity mismatch - missing argument: throw TypeError exception
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound indentifier error: C
+group-arguments: arity mismatch - missing argument: throw TypeError exception
 =====================================================
 = Results for freevar-in-method.py =
 =====================================================
@@ -737,7 +737,7 @@ lookupEnv: Unbound indentifier error: C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: Unbound Identifier: using identifier before assignment
+group-arguments: arity mismatch - missing argument: throw TypeError exception
 =====================================================
 = Results for locals-class.py =
 =====================================================
@@ -776,7 +776,7 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
-= Results for nesting-through-class.py =
+= Results for nonlocal-class.py =
 =====================================================
 === Expected stdout ===
 
@@ -785,7 +785,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-interp-env:CApp:VHash: Class lacks __call__ field and thus can't be called
+group-arguments: arity mismatch - missing argument: throw TypeError exception
 =====================================================
 = Results for nonlocal-function.py =
 =====================================================
@@ -798,6 +798,17 @@ interp-env:CApp:VHash: Class lacks __call__ field and thus can't be called
 === Actual stderr ===
 interp-CSet: For now, CSet only support ids that are symbols or CAttributes
 =====================================================
+= Results for nonlocal-method.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+group-arguments: arity mismatch - missing argument: throw TypeError exception
+=====================================================
 = Results for unbound-local.py =
 =====================================================
 === Expected stdout ===
@@ -807,7 +818,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 44141Unbound location error.
+lookupStore: 41718Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
@@ -819,17 +830,6 @@ lookupStore: 44141Unbound location error.
 
 === Actual stderr ===
 group-arguments: arity mismatch - missing argument: throw TypeError exception
-=====================================================
-= Results for test_div_zero.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: Exception
 =====================================================
 = Results for test_simple_string_ops.py =
 =====================================================

@@ -40,7 +40,7 @@ ParselTongue.
   ;[CDict (elts : (hashof CExp CExp))]
   ;[CTuple (elts : (hashof CExp CExp))]
   
-  [CHash (elts : (hashof CExp CExp)) (type : VType)]
+  [CHash (elts : (hashof CExp CExp)) (type : CType)]
   
   ;; TEMPORARY class
   [CClass (elts : (hashof CVal CVal)) (type : VType)]
@@ -72,12 +72,12 @@ ParselTongue.
   ;[VList (elts : (hashof CVal CVal)) (uid : Uid)] ;; lists must be keyed byintegers, though...
   ;[VDict (elts : (hashof CVal CVal)) (uid : Uid)]
   ;[VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
-  [VHash (elts : (hashof CVal CVal)) (uid : Uid) (type : VType)]
+  [VHash (elts : (boxof (hashof CVal CVal))) (uid : Uid) (type : VType)]
   [VClass (elts : (hashof CVal CVal)) (type : VType)]  ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE
   )
 
 (define-type VType
-  [Type (name : string) (baseType : CExp)])
+  [Type (name : string) (baseType : CVal)])
 
 (define-type CType
   [cType (name : string) (basetype : CExp)]) ;;this is used to create a VType from the desugarer

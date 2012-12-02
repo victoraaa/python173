@@ -148,7 +148,7 @@
                                                     (map (lambda (keyArg) (type-case keywargHelperType keyArg
                                                                             [keywarghelpertype (arg value) (values arg (desugar value))]))
                                                          keywordArguments)
-                                                   ; (CHash (hash (list)) (Type "list" (list)))
+                                                   ; (CHash (hash (list)) (cType "list" (list)))
                                                     (desugar star)
                                                     )]
     [PyId (x) (CId x)]
@@ -172,13 +172,13 @@
                (CApp (CId op) 
                      (list (desugar arg)) 
                      (list) 
-                     (CHash (hash (list)) (Type "list" (CNone)))
+                     (CHash (hash (list)) (cType "list" (CId 'list)))
                      )] ;; TODO this needs to desugar to a function application
     [PyBinOp (op left right)
              (CApp (CId op) 
                    (list (desugar left) (desugar right)) 
                    (list) 
-                   (CHash (hash (list)) (Type "list" (CNone)))
+                   (CHash (hash (list)) (cType "list" (CId 'list)))
                    )]
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
@@ -188,7 +188,7 @@
                        (CIf (CApp (CId (first ops))
                                   (list (CId 'left-comp) (CId 'right-comp))
                                   (list)
-                                  (CHash (hash (list)) (Type "list" (CNone)))
+                                  (CHash (hash (list)) (cType "list" (CId 'list)))
                                   )
                             (desugar (PyCompare (PyId 'right-comp)
                                                 (rest ops)
@@ -210,7 +210,7 @@
                              (CSet (desugar target) (CApp (CId op) 
                                                           (list (CId 'orig-value) (CId 'aug-value))
                                                           (list)
-                                                          (CHash (hash (list)) (Type "list" (CNone)))
+                                                          (CHash (hash (list)) (cType "list" (CId 'list)))
                                                           ))))] 
                               ;; may or may not work - side effects?
     
@@ -247,11 +247,11 @@
    ; c.f
     [PyClassDef (name bases body) 
                 (begin (CSeq
-                        (CSet (CId name) (CHash (hash (list)) (Type "dummy" (CUnbound))))
+                        (CSet (CId name) (CHash (hash (list)) (cType "dummy" (CUnbound))))
                         (CLet 'some-class 
                               (Local) 
                               (CHash (hash-set (hash (list)) (CStr "__name__") (CStr (symbol->string name))) 
-                                     (Type "class" (if (empty? bases)
+                                     (cType "class" (if (empty? bases)
                                                        (CNone)
                                                        (desugar (first bases)))))
                               ;;body of the CLet:
@@ -261,9 +261,9 @@
                              ;  (CCreateClass (desugar-class-innards name body  )))))]
     
     
-    [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (CNone)))]
-    [PyDict (keys vals) (CHash (desugar-hash keys vals) (Type "dict" (CNone)))]
-    [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "tuple" (CNone)))]
+    [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (cType "list" (CId 'list)))]
+    [PyDict (keys vals) (CHash (desugar-hash keys vals) (cType "dict" (CId 'dict)))]
+    [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (cType "tuple" (CId 'tuple)))]
     
     [PyAttribute (attr value) (CAttribute attr (desugar value))]
     
