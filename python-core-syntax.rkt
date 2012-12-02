@@ -39,6 +39,7 @@ ParselTongue.
   ;[CList (elts : (hashof CExp CExp))]
   ;[CDict (elts : (hashof CExp CExp))]
   ;[CTuple (elts : (hashof CExp CExp))]
+  
   [CHash (elts : (hashof CExp CExp)) (type : VType)]
   
   ;; TEMPORARY class
@@ -76,7 +77,10 @@ ParselTongue.
   )
 
 (define-type VType
-  [Type (name : string) (baseTypes : (listof CExp))])
+  [Type (name : string) (baseType : CExp)])
+
+(define-type CType
+  [cType (name : string) (basetype : CExp)]) ;;this is used to create a VType from the desugarer
 
 (define-type-alias Location number)
 (define-type ScopeType

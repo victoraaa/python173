@@ -22,7 +22,7 @@
 
 ;;Returns a new memory address to be used
 (define new-loc
-  (let ([n (box 0)])
+  (let ([n (box 1)])
     (lambda ()
       (begin
         (set-box! n (add1 (unbox n)))
@@ -394,7 +394,17 @@
     ;[VList (elts uid) "list"]
     ;[VDict (elts uid) "dict"]
     ;[VTuple (elts uid) "tuple"]
-    [VHash (elts uid type) (Type-name type)]
+    [VHash (elts uid type) 
+           (Type-name type)]
+           #|
+           (if (or (equal? (Type-name type) "class") (equal? (Type-name type) "primitive-class"))
+               (type-case (optionof CVal) (hash-ref elts (VStr "__name__"))
+                 [some (v) (type-case CVal v
+                             [VStr (str) str]
+                             [else (error 'get-attr "the name of a class should be a VStr")])]
+                 [none () (error 'get-tag "every class or primitive-class should have the __name__ field")])
+               (Type-name type))]
+;|#
     [VClass (elts type) (Type-name type)]))
 
 
@@ -479,8 +489,8 @@
     ['notEq (if (check-equality v1 v2) (VFalse) (VTrue))]
     ['num+ (VNum (+ (VNum-n v1) (VNum-n v2)))]
     ['string+ (VStr (string-append (VStr-s v1) (VStr-s v2)))]
-    ['list+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "list" (list)))]
-    ['tuple+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "tuple" (list)))]
+    ['list+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "list" (CNone)))]
+    ['tuple+ (VHash (merge-python-lists v1 v2) (new-uid) (Type "tuple" (CNone)))]
     ['num- (VNum (- (VNum-n v1) (VNum-n v2)))]
     ['num* (VNum (* (VNum-n v1) (VNum-n v2)))]
     ['num/ (VNum (/ (VNum-n v1) (VNum-n v2)))]
@@ -494,7 +504,7 @@
     ['num-gte (if (>= (VNum-n v1) (VNum-n v2)) (VTrue) (VFalse))]
     ['string-gte (if (string>=? (VStr-s v1) (VStr-s v2)) (VTrue) (VFalse))]
     ['duplicate (VStr (duplicate-string (VStr-s v1) (VNum-n v2)))] ;; throws exception if types are wrong.
-    ['duple (VHash (duplicate-tuple (VHash-elts v1) (VNum-n v2)) (new-uid) (Type "tuple" (list)))]
+    ['duple (VHash (duplicate-tuple (VHash-elts v1) (VNum-n v2)) (new-uid) (Type "tuple" (CNone)))]
     [else (error op "handle-op: case not implemented")]))
 
 
@@ -724,16 +734,18 @@
                [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
                [else (error 'interp-to-num "Should not be called on this type.")])]
     ['to-list (type-case CVal arg
-                [VHash (elts uid type) (if (or (isInstanceOf arg (Type "list" (list))) (isInstanceOf arg (Type "tuple" (list))))
-                                           (VHash elts (new-uid) (Type "list" (list)))
+                [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
+                                      ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
+                                           (VHash elts (new-uid) (Type "list" (CNone)))
                                            (error 'interp-to-list "arguments of this type are not supported"))]
-                [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "list" (list)))] ;; string to list
+                [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "list" (CNone)))] ;; string to list
                 [else (error 'interp-to-list "Unsupported Type")])]
     ['to-tuple (type-case CVal arg
-                 [VHash (elts uid type) (if (or (isInstanceOf arg (Type "list" (list))) (isInstanceOf arg (Type "tuple" (list))))
-                                            (VHash elts (new-uid) (Type "tuple" (list)))
+                 [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
+                                       ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
+                                            (VHash elts (new-uid) (Type "tuple" (CNone)))
                                             (error 'interp-to-list "arguments of this type are not supported"))]
-                 [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "tuple" (list)))] ;; string to list
+                 [VStr (s) (VHash (change-string-to-list s) (new-uid) (Type "tuple" (CNone)))] ;; string to list
                  [else (error 'interp-to-list "Unsupported Type")])]
     [else (error prim "handle-unary: Case not handled yet")]))
 
@@ -775,22 +787,45 @@
     [CId (s) (symbol->string s)]
     [else (error 'id-to-string "Not an ID")]))
 
+(define (get-typesList [obj : CVal]
+                       [env : Env]
+                       [store : Store]) : (listof string)
+  (type-case CVal obj
+    [VHash (elts uid type) 
+           (if (not (or (equal? (Type-name type) "class") (equal? (Type-name type) "primitive-class")))
+               (append (list (Type-name type))
+                       (get-typesList (lookupStore (lookupVar (string->symbol (Type-name type)) env) store) env store))
+               (type-case (optionof CVal) (hash-ref elts (VStr "__name__"))
+                 [some (v) (append (list (VStr-s v))
+                                   (type-case CExp (Type-baseType type)
+                                     [CNone () (list)]
+                                     [else (type-case AnswerC (interp-env (Type-baseType type) env store)
+                                             [ValueA (v s) (get-typesList v env s)]
+                                             [ExceptionA (v s) (error 'get-typesList "should not get an exception")]
+                                             [ReturnA (v s) (error 'get-typesList "should not get a return statement")])]))]
+                 [none () (error 'get-typesList "a class should have a name")]))]
+    [else (list (get-tag obj))]))
+
 ;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
 ;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
 ;; isInstanceOf checks whether 'obj' is of the same type or of one of the base types of 'type'
 (define (isInstanceOf [obj : CVal]
-                      [type : VType]) : boolean
-  (equal? (get-tag obj) (Type-name type)))
+                      [type : string]
+                      [env : Env]
+                      [store : Store]) : boolean
+  (member type (get-typesList obj env store)))
 
-;; helper function that interps a CExp (that is supposed to be a VClass) to a type
+;; NOT NECSSARY ANYMORE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+;; helper function that interps a CExp (that is supposed to be a VHash) to a type
 (define (CExpToType [type : CExp]
                     [env : Env]
                     [store : Store]) : VType
-  (VClass-type (lookupStore (lookupVar (CId-x type) env) store)))
+  (VHash-type (lookupStore (lookupVar (CId-x type) env) store)))
 
 ;; TODO This needs to be adapted to work with integers and other primitive types as well...
 
 ;; hasMatchingException checks whether any of the except clauses deal with the raised object
+;; we assume that the CExcHandler-type is always a CId
 (define (hasMatchingException [exc : CVal] 
                               [handlers : (listof CExceptionHandler)]
                               [env : Env]
@@ -800,7 +835,12 @@
     [(cons? handlers) 
      (if (CNone? (CExcHandler-type (first handlers)))
          true
-         (if (isInstanceOf exc (CExpToType (CExcHandler-type (first handlers)) env store))
+         (if (isInstanceOf exc 
+                           (type-case CExp (CExcHandler-type (first handlers))
+                             [CId (x) (symbol->string x)]
+                             [else (error 'hasMatchingException "some CExcHandler-type is not an ID")])
+                           env 
+                           store)
              true
              (hasMatchingException exc (rest handlers) env store)))]))
 
@@ -821,8 +861,32 @@
                  [store : Store]) : CVal
   (type-case CVal obj
     [VHash (elts uid type) (type-case (optionof CVal) (hash-ref elts (VStr (symbol->string attr)))
-                             [none () (error 'getAttr "non-existent attribute")]  ;;SHOULD LOOK AT THE CLASS IF IT HAS THE DESIRED ATTRIBUTE
-                             [some (v) v])]
+                             ;;if the object has the attribute we're looking for
+                             [some (v) v]
+                             ;;else, we search in its super/base class
+                             [none () (getAttr attr
+                                               #|
+                                               (if (equal? (Type-baseType type) (CNone))
+                                                       (error 'getAttr (string-append "non-existent attribute, Unbound Identifier: " (symbol->string attr)))
+                                                       ;;here, we assume that the tests just pass CId's to class constructors.
+                                                       (type-case CExp (Type-baseType type)
+                                                         [CId (id) (lookupStore (lookupVar id env) store)]
+                                                         [else (error 'getAttr "a class has something other than a CId as its baseType")]))
+                                               |#
+                                               ;#|
+                                               (if (not (equal? (Type-name type) "class"))
+                                                   ;;if we're not looking in a 'class object', we search for the attribute in the class of the object
+                                                   (lookupStore (lookupVar (string->symbol (Type-name type)) env) store)
+                                                   ;;else, we check if we're in a top-level class or if it inherits from another class
+                                                   (if (equal? (Type-baseType type) (CNone))
+                                                       (error 'getAttr (string-append "non-existent attribute, Unbound Identifier: " (symbol->string attr)))
+                                                       ;;here, we assume that the tests just pass CId's to class constructors.
+                                                       (type-case CExp (Type-baseType type)
+                                                         [CId (id) (lookupStore (lookupVar id env) store)]
+                                                         [else (error 'getAttr "a class has something other than a CId as its baseType")])))
+                                               ;|#
+                                               env
+                                               store)])]
     [VClass (elts type) (type-case (optionof CVal) (hash-ref elts (VStr (symbol->string attr)))
                           [none () (error 'getAttr "non-existent attribute")]
                           [some (v) v])]
@@ -1016,7 +1080,7 @@
     [else (error 'create-hash "key and value lists do not match")]))
 
 (define (create-clist [exps : (listof CExp)]) : CExp
-  (CHash (create-hash (cnum-range (length exps)) exps) (Type "list" (list))))
+  (CHash (create-hash (cnum-range (length exps)) exps) (Type "list" (CNone))))
 
 
 ;; create a new class
@@ -1114,7 +1178,14 @@
 
 
 ;   [else (cons (hash-ref (CHash-elts chash) (CNum n)) (collapse-chash-args chash (+ n 1)))]))
-
+#|
+(define (transform-ctype [ctype : CType]
+                         [env : Env]) : VType
+  (Type (Type-name ctype) 
+        (type-case CExp (cType-basetype ctype)
+          [CId (id) (lookupVar id env)]
+          [else (error 'transform-ctype "should not be a CExp other than CId")])))
+|#
 ;; interp-env
 (define (interp-env [expr : CExp] 
                     [env : Env] 
@@ -1203,7 +1274,8 @@
                                                        [some (so) (type-case CVal so
                                                                     [VStr (s) s]
                                                                     [else (error 'interp-env:CApp:VHash "Non-string as name of class")])]) 
-                                                     (list))) sf)] ;; TODO inheritance...
+                                                     (CNone)))
+                                        sf)] ;; TODO inheritance...
                                [(equal? (Type-name type) "primitive-class")
                                 (type-case (optionof CVal) (hash-ref elts (VStr "__convert__"))
                                   [none () (error 'interp-env:CApp:VHash "Primitive class lacks __convert__ field")]

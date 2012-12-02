@@ -172,13 +172,13 @@
                (CApp (CId op) 
                      (list (desugar arg)) 
                      (list) 
-                     (CHash (hash (list)) (Type "list" (list)))
+                     (CHash (hash (list)) (Type "list" (CNone)))
                      )] ;; TODO this needs to desugar to a function application
     [PyBinOp (op left right)
              (CApp (CId op) 
                    (list (desugar left) (desugar right)) 
                    (list) 
-                   (CHash (hash (list)) (Type "list" (list)))
+                   (CHash (hash (list)) (Type "list" (CNone)))
                    )]
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
@@ -188,7 +188,7 @@
                        (CIf (CApp (CId (first ops))
                                   (list (CId 'left-comp) (CId 'right-comp))
                                   (list)
-                                  (CHash (hash (list)) (Type "list" (list)))
+                                  (CHash (hash (list)) (Type "list" (CNone)))
                                   )
                             (desugar (PyCompare (PyId 'right-comp)
                                                 (rest ops)
@@ -210,7 +210,7 @@
                              (CSet (desugar target) (CApp (CId op) 
                                                           (list (CId 'orig-value) (CId 'aug-value))
                                                           (list)
-                                                          (CHash (hash (list)) (Type "list" (list)))
+                                                          (CHash (hash (list)) (Type "list" (CNone)))
                                                           ))))] 
                               ;; may or may not work - side effects?
     
@@ -247,17 +247,23 @@
    ; c.f
     [PyClassDef (name bases body) 
                 (begin (CSeq
-                        (CSet (CId name) (CHash (hash (list)) (Type "dummy" (list))))
-                        (CLet 'some-class (Local) (CHash (hash-set (hash (list)) (CStr "__name__") (CStr (symbol->string name))) (Type "class" (map desugar bases)))
+                        (CSet (CId name) (CHash (hash (list)) (Type "dummy" (CUnbound))))
+                        (CLet 'some-class 
+                              (Local) 
+                              (CHash (hash-set (hash (list)) (CStr "__name__") (CStr (symbol->string name))) 
+                                     (Type "class" (if (empty? bases)
+                                                       (CNone)
+                                                       (desugar (first bases)))))
+                              ;;body of the CLet:
                               (CSeq
                                (CSet (CId name) (CId 'some-class))
                                (CCreateClass name (desugar body) (get-vars body))))))]
                              ;  (CCreateClass (desugar-class-innards name body  )))))]
     
     
-    [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (list)))]
-    [PyDict (keys vals) (CHash (desugar-hash keys vals) (Type "dict" (list)))]
-    [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "tuple" (list)))]
+    [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (CNone)))]
+    [PyDict (keys vals) (CHash (desugar-hash keys vals) (Type "dict" (CNone)))]
+    [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "tuple" (CNone)))]
     
     [PyAttribute (attr value) (CAttribute attr (desugar value))]
     

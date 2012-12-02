@@ -23,7 +23,7 @@ that calls the primitive `print`.
     (CIf (CApp (CId 'python-eq) 
                (list (CId 'e-1) (CId 'e-2)) 
                (list) 
-               (CHash (hash (list)) (Type "list" (list)))
+               (CHash (hash (list)) (Type "list" (CNone)))
                )
          (CPass) 
          (CError (CStr "Assert failed: values are not Equal"))
@@ -264,7 +264,7 @@ that calls the primitive `print`.
          (CPrim1 'to-float (CPrim1 'to-int (CApp (CId 'python-div)
                                                  (list (CId 'e-1) (CId 'e-2))
                                                  (list)
-                                                 (CHash (hash (list)) (Type "list" (list))))))
+                                                 (CHash (hash (list)) (Type "list" (CNone))))))
          (list)
          (list)
          'no-vararg))
@@ -540,7 +540,7 @@ that calls the primitive `print`.
                           (list)
                           (list (CFalse))
                           'no-vararg)) 
-         (Type "primitive-class" (list))))
+         (Type "primitive-class" (CNone))))
 
 (define int-primitive-class
   (CHash (hash-set (hash-set (hash (list)) ;; TYPES!
@@ -552,7 +552,7 @@ that calls the primitive `print`.
                           (list)
                           (list (CNum 0))
                           'no-vararg)) 
-         (Type "primitive-class" (list))))
+         (Type "primitive-class" (CNone))))
 
 (define float-primitive-class
   (CHash (hash-set (hash-set (hash (list)) ; TODO TYPE CHECKING!
@@ -564,7 +564,7 @@ that calls the primitive `print`.
                           (list)
                           (list (CNum 0.0))
                           'no-vararg)) 
-         (Type "primitive-class" (list))))
+         (Type "primitive-class" (CNone))))
 
 (define str-primitive-class
   (CHash (hash-set (hash-set (hash (list)) 
@@ -576,7 +576,7 @@ that calls the primitive `print`.
                           (list)
                           (list (CStr ""))
                           'no-vararg)) 
-         (Type "primitive-class" (list))))
+         (Type "primitive-class" (CNone))))
 
 (define list-primitive-class
   (CHash (hash-set (hash-set (hash (list)) 
@@ -594,7 +594,7 @@ that calls the primitive `print`.
                           (list)
                           (list (CStr ""))
                           'no-vararg)) 
-         (Type "primitive-class" (list))))
+         (Type "primitive-class" (CNone))))
 
 #|
 (define str
@@ -633,7 +633,7 @@ that calls the primitive `print`.
               (CId 'e-1)
               (CPrim1 'to-tuple (CId 'e-1)))
          (list)
-         (list (CHash (hash (list)) (Type "tuple" (list))))
+         (list (CHash (hash (list)) (Type "tuple" (CNone))))
          'no-vararg))
 
 (define make-range
@@ -644,18 +644,18 @@ that calls the primitive `print`.
               (CApp (CId 'python-make-range) 
                     (list (CNum 0) (CId 'e-1) (CNum 1)) 
                     (list)
-                    (CHash (hash (list)) (Type "list" (list)))
+                    (CHash (hash (list)) (Type "list" (CNone)))
                     )
               (CIf (CPrim2 'is (CId 'e-3) (CNone))
                    (CApp (CId 'python-make-range) 
                          (list (CId 'e-1) (CId 'e-2) (CNum 1)) 
                          (list)
-                         (CHash (hash (list)) (Type "list" (list)))
+                         (CHash (hash (list)) (Type "list" (CNone)))
                          )
                    (CApp (CId 'python-make-range) 
                          (list (CId 'e-1) (CId 'e-2) (CId 'e-3)) 
                          (list)
-                         (CHash (hash (list)) (Type "list" (list)))
+                         (CHash (hash (list)) (Type "list" (CNone)))
                          ))) 
          (list)
          (list (CNone) (CNone))
@@ -668,13 +668,13 @@ that calls the primitive `print`.
         (CSet (CId 'python-make-range)
               (CFunc (list 'e-1 'e-2 'e-3)
                      (CIf (CPrim2 'eq (CId 'e-1) (CId 'e-2))
-                          (CHash (hash (list)) (Type "list" (list)))
+                          (CHash (hash (list)) (Type "list" (CNone)))
                           (CPrim2 'list+ 
-                                  (CHash (hash-set (hash (list)) (CNum 0) (CId 'e-1)) (Type "list" (list)))
+                                  (CHash (hash-set (hash (list)) (CNum 0) (CId 'e-1)) (Type "list" (CNone)))
                                   (CApp (CId 'python-make-range) 
                                         (list (CPrim2 'num+ (CId 'e-1) (CId 'e-3)) (CId 'e-2) (CId 'e-3))
                                         (list)
-                                        (CHash (hash (list)) (Type "list" (list)))
+                                        (CHash (hash (list)) (Type "list" (CNone)))
                                         )))
                      (list)
                      (list)
@@ -778,28 +778,30 @@ that calls the primitive `print`.
 
 ;; TODO TODO TODO update these to work like the final classs system...
 (define type-error-def
-  (CClass (hash (list)) (Type "TypeError" (list)))) ;; TEMPORARY TypeError definition...
+  (CClass (hash (list)) (Type "TypeError" (CNone)))) ;; TEMPORARY TypeError definition...
 
 (define index-error-def
-  (CClass (hash (list)) (Type "IndexError" (list))))
+  (CClass (hash (list)) (Type "IndexError" (CNone))))
 
 (define zero-division-error
-  (CClass (hash (list)) (Type "ZeroDivisonError" (list))))
+  (CClass (hash (list)) (Type "ZeroDivisonError" (CNone))))
   ;(CHash (hash-set (hash (list)) (CStr "__name__") (CStr "ZeroDivisonError")) (Type "class" (list))))
 
 (define key-error
-  (CClass (hash (list)) (Type "KeyError" (list))))
+  (CClass (hash (list)) (Type "KeyError" (CNone))))
 
 (define runtime-error
-  (CClass (hash (list)) (Type "RuntimeError" (list))))
+  (CClass (hash (list)) (Type "RuntimeError" (CNone))))
 
 (define unbound-local-error
-  (CClass (hash (list)) (Type "UnboundLocalError" (list))))
+  (CClass (hash (list)) (Type "UnboundLocalError" (CNone))))
 
 (define name-error
-  (CClass (hash (list)) (Type "NameError" (list))))
+  (CClass (hash (list)) (Type "NameError" (CNone))))
 
-
+(define Exception
+  ;(CClass (hash (list)) (Type "Exception" (CNone))))
+  (CHash (hash (list (values (CStr "__name__") (CStr "Exception")))) (Type "class" (CNone))))
 
 
 
@@ -807,14 +809,13 @@ that calls the primitive `print`.
   [bind (left : symbol) (right : CExp)])
 
 ;; Here, we define built-in CLASSES
-(define Exception
-  (CClass (hash (list)) (Type "Exception" (list))))
+
 
 (define TestClass
-  (CClass (hash (list (values (VStr "f") (VClosure (hash (list)) (list) 'no-vararg (CPrim1 'print (CStr "printing")) (list) -1)))) (Type "TestClass" (list))))
+  (CClass (hash (list (values (VStr "f") (VClosure (hash (list)) (list) 'no-vararg (CPrim1 'print (CStr "printing")) (list) -1)))) (Type "TestClass" (CNone))))
 
 (define testObj
-  (CHash (hash (list)) (Type "Object" (list))))
+  (CHash (hash (list)) (Type "Object" (CNone))))
 
 ;;STILL TO DO: assertRaises and fail
 (define lib-functions

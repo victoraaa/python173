@@ -1,11 +1,20 @@
 class C:
-  x = 1
-  y = x
-  print(y)
+  x=1
 
-print(C)
+x=C
+x.x=2
 print(C.x)
-print(C.y)
 
-c = C()
-print(isinstance(c, C))
+
+#def f(x):
+#    class C:
+#        def m(self):
+#            return x
+#        a = x
+#    return C
+
+#obj=f(5)()
+#print(obj.a)
+
+#check if its checking arity mismatch in interp-args
+#test inheritance
