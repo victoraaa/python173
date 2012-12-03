@@ -30,6 +30,7 @@ ParselTongue.
   [CReturn (value : CExp)]
   [CSet (id : CExp) (value : CExp)]
   [CAttribute (attr : symbol) (value : CExp)]
+  [CSubscript (value : CExp) (attr : CExp)]
   
   ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.
   [CUnbound]

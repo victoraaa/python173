@@ -45,6 +45,9 @@
               (get-vars right))]
     [PyAttribute (attr value)
                  (get-vars value)]
+    [PySubscript (value attr)
+                 (append (get-vars value)
+                         (get-vars attr))]
     [PyIf (test then orelse)
           (append
            (get-vars test)
@@ -266,6 +269,7 @@
     [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (cType "tuple" (CId 'tuple)))]
     
     [PyAttribute (attr value) (CAttribute attr (desugar value))]
+    [PySubscript (value attr) (CSubscript (desugar value) (desugar attr))]
     
     ;; exceptions
     [PyTryExcept (body handlers orelse) (CTryExcept (desugar body) (map desugar-handler handlers) (desugar orelse))]

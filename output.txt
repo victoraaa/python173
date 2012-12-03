@@ -1,5 +1,7 @@
-58 tests succeeded.
-32 tests failed.
+
+C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
+61 tests succeeded.
+29 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for all.py =
@@ -87,17 +89,6 @@ parse: error is described above.
 === Actual stderr ===
 lookupEnv: Unbound indentifier error: filter
 =====================================================
-= Results for isinstance.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-group-arguments: arity mismatch - missing argument: throw TypeError exception
-=====================================================
 = Results for dict-clear.py =
 =====================================================
 === Expected stdout ===
@@ -107,7 +98,7 @@ group-arguments: arity mismatch - missing argument: throw TypeError exception
 === Expected stderr ===
 
 === Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: clear
+getAttr: non-existent attribute, Unbound Identifier: (VStr "clear")
 =====================================================
 = Results for dict-get.py =
 =====================================================
@@ -118,7 +109,7 @@ getAttr: non-existent attribute, Unbound Identifier: clear
 === Expected stderr ===
 
 === Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: get
+getAttr: non-existent attribute, Unbound Identifier: (VStr "get")
 =====================================================
 = Results for dict-getitem.py =
 =====================================================
@@ -126,17 +117,20 @@ getAttr: non-existent attribute, Unbound Identifier: get
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((value
+#hasheq((targets
          .
-         #hasheq((id . "d")
-                 (nodetype . "Name")
-                 (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Subscript")
-        (ctx . #hasheq((nodetype . "Load")))
-        (slice
-         .
-         #hasheq((value . #hasheq((s . "a") (nodetype . "Str")))
-                 (nodetype . "Index"))))
+         (#hasheq((value
+                   .
+                   #hasheq((id . "d")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "Subscript")
+                  (ctx . #hasheq((nodetype . "Del")))
+                  (slice
+                   .
+                   #hasheq((value . #hasheq((s . "b") (nodetype . "Str")))
+                           (nodetype . "Index"))))))
+        (nodetype . "Delete"))
 
 === Expected stderr ===
 
@@ -201,7 +195,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: update
+getAttr: non-existent attribute, Unbound Identifier: (VStr "update")
 =====================================================
 = Results for dict-values-set.py =
 =====================================================
@@ -687,17 +681,195 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((value
+#hasheq((orelse . ())
+        (target
          .
-         #hasheq((id . "state")
+         #hasheq((id . "b")
                  (nodetype . "Name")
-                 (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Subscript")
-        (ctx . #hasheq((nodetype . "Load")))
-        (slice
+                 (ctx . #hasheq((nodetype . "Store")))))
+        (body
          .
-         #hasheq((value . #hasheq((n . 0) (nodetype . "Num")))
-                 (nodetype . "Index"))))
+         (#hasheq((value
+                   .
+                   #hasheq((args
+                            .
+                            (#hasheq((id . "a")
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load"))))))
+                           (nodetype . "Call")
+                           (keywords . ())
+                           (starargs . #\nul)
+                           (kwargs . #\nul)
+                           (func
+                            .
+                            #hasheq((id . "iter")
+                                    (nodetype . "Name")
+                                    (ctx . #hasheq((nodetype . "Load")))))))
+                  (targets
+                   .
+                   (#hasheq((id . "b")
+                            (nodetype . "Name")
+                            (ctx . #hasheq((nodetype . "Store"))))))
+                  (nodetype . "Assign"))
+          #hasheq((value
+                   .
+                   #hasheq((args
+                            .
+                            (#hasheq((args
+                                      .
+                                      (#hasheq((args
+                                                .
+                                                (#hasheq((id . "b")
+                                                         (nodetype . "Name")
+                                                         (ctx
+                                                          .
+                                                          #hasheq((nodetype
+                                                                   .
+                                                                   "Load"))))))
+                                               (nodetype . "Call")
+                                               (keywords . ())
+                                               (starargs . #\nul)
+                                               (kwargs . #\nul)
+                                               (func
+                                                .
+                                                #hasheq((id . "list")
+                                                        (nodetype . "Name")
+                                                        (ctx
+                                                         .
+                                                         #hasheq((nodetype
+                                                                  .
+                                                                  "Load"))))))))
+                                     (nodetype . "Call")
+                                     (keywords . ())
+                                     (starargs . #\nul)
+                                     (kwargs . #\nul)
+                                     (func
+                                      .
+                                      #hasheq((id . "len")
+                                              (nodetype . "Name")
+                                              (ctx
+                                               .
+                                               #hasheq((nodetype . "Load"))))))
+                             #hasheq((n . 5) (nodetype . "Num"))))
+                           (nodetype . "Call")
+                           (keywords . ())
+                           (starargs . #\nul)
+                           (kwargs . #\nul)
+                           (func
+                            .
+                            #hasheq((id . "___assertEqual")
+                                    (nodetype . "Name")
+                                    (ctx . #hasheq((nodetype . "Load")))))))
+                  (nodetype . "Expr"))
+          #hasheq((value
+                   .
+                   #hasheq((args
+                            .
+                            (#hasheq((args
+                                      .
+                                      (#hasheq((id . "b")
+                                               (nodetype . "Name")
+                                               (ctx
+                                                .
+                                                #hasheq((nodetype
+                                                         .
+                                                         "Load"))))))
+                                     (nodetype . "Call")
+                                     (keywords . ())
+                                     (starargs . #\nul)
+                                     (kwargs . #\nul)
+                                     (func
+                                      .
+                                      #hasheq((id . "list")
+                                              (nodetype . "Name")
+                                              (ctx
+                                               .
+                                               #hasheq((nodetype . "Load"))))))
+                             #hasheq((elts . ())
+                                     (nodetype . "List")
+                                     (ctx . #hasheq((nodetype . "Load"))))))
+                           (nodetype . "Call")
+                           (keywords . ())
+                           (starargs . #\nul)
+                           (kwargs . #\nul)
+                           (func
+                            .
+                            #hasheq((id . "___assertEqual")
+                                    (nodetype . "Name")
+                                    (ctx . #hasheq((nodetype . "Load")))))))
+                  (nodetype . "Expr"))))
+        (nodetype . "For")
+        (iter
+         .
+         #hasheq((elts
+                  .
+                  (#hasheq((args
+                            .
+                            (#hasheq((id . "a")
+                                     (nodetype . "Name")
+                                     (ctx . #hasheq((nodetype . "Load"))))))
+                           (nodetype . "Call")
+                           (keywords . ())
+                           (starargs . #\nul)
+                           (kwargs . #\nul)
+                           (func
+                            .
+                            #hasheq((id . "iter")
+                                    (nodetype . "Name")
+                                    (ctx . #hasheq((nodetype . "Load"))))))
+                   #hasheq((args . ())
+                           (nodetype . "Call")
+                           (keywords . ())
+                           (starargs . #\nul)
+                           (kwargs . #\nul)
+                           (func
+                            .
+                            #hasheq((attr . "keys")
+                                    (value
+                                     .
+                                     #hasheq((id . "a")
+                                             (nodetype . "Name")
+                                             (ctx
+                                              .
+                                              #hasheq((nodetype . "Load")))))
+                                    (nodetype . "Attribute")
+                                    (ctx . #hasheq((nodetype . "Load"))))))
+                   #hasheq((args . ())
+                           (nodetype . "Call")
+                           (keywords . ())
+                           (starargs . #\nul)
+                           (kwargs . #\nul)
+                           (func
+                            .
+                            #hasheq((attr . "items")
+                                    (value
+                                     .
+                                     #hasheq((id . "a")
+                                             (nodetype . "Name")
+                                             (ctx
+                                              .
+                                              #hasheq((nodetype . "Load")))))
+                                    (nodetype . "Attribute")
+                                    (ctx . #hasheq((nodetype . "Load"))))))
+                   #hasheq((args . ())
+                           (nodetype . "Call")
+                           (keywords . ())
+                           (starargs . #\nul)
+                           (kwargs . #\nul)
+                           (func
+                            .
+                            #hasheq((attr . "values")
+                                    (value
+                                     .
+                                     #hasheq((id . "a")
+                                             (nodetype . "Name")
+                                             (ctx
+                                              .
+                                              #hasheq((nodetype . "Load")))))
+                                    (nodetype . "Attribute")
+                                    (ctx . #hasheq((nodetype . "Load"))))))))
+                 (nodetype . "Tuple")
+                 (ctx . #hasheq((nodetype . "Load"))))))
 
 === Expected stderr ===
 
@@ -713,18 +885,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-group-arguments: arity mismatch - missing argument: throw TypeError exception
-=====================================================
-= Results for bound-and-free.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-group-arguments: arity mismatch - missing argument: throw TypeError exception
+lookupEnv: Unbound indentifier error: ValueError
 =====================================================
 = Results for freevar-in-method.py =
 =====================================================
@@ -735,7 +896,7 @@ group-arguments: arity mismatch - missing argument: throw TypeError exception
 === Expected stderr ===
 
 === Actual stderr ===
-group-arguments: arity mismatch - missing argument: throw TypeError exception
+exception: Assert failed: values are not Equal
 =====================================================
 = Results for locals-class.py =
 =====================================================
@@ -783,7 +944,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-group-arguments: arity mismatch - missing argument: throw TypeError exception
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__class__")
 =====================================================
 = Results for nonlocal-function.py =
 =====================================================
@@ -794,18 +955,7 @@ group-arguments: arity mismatch - missing argument: throw TypeError exception
 === Expected stderr ===
 
 === Actual stderr ===
-interp-CSet: For now, CSet only support ids that are symbols or CAttributes
-=====================================================
-= Results for nonlocal-method.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-group-arguments: arity mismatch - missing argument: throw TypeError exception
+interp-CSet: For now, CSet only support ids that are symbols or CAttributes or CSubscripts
 =====================================================
 = Results for unbound-local.py =
 =====================================================
@@ -816,7 +966,7 @@ group-arguments: arity mismatch - missing argument: throw TypeError exception
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 63024Unbound location error.
+lookupStore: 43350Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
@@ -827,7 +977,7 @@ lookupStore: 63024Unbound location error.
 === Expected stderr ===
 
 === Actual stderr ===
-group-arguments: arity mismatch - missing argument: throw TypeError exception
+lookupEnv: Unbound indentifier error: super
 =====================================================
 = Results for test_simple_string_ops.py =
 =====================================================
@@ -846,19 +996,7 @@ lookupEnv: Unbound indentifier error: min
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((value
-         .
-         #hasheq((id . "a")
-                 (nodetype . "Name")
-                 (ctx . #hasheq((nodetype . "Load")))))
-        (nodetype . "Subscript")
-        (ctx . #hasheq((nodetype . "Load")))
-        (slice
-         .
-         #hasheq((nodetype . "Slice")
-                 (upper . #\nul)
-                 (lower . #\nul)
-                 (step . #\nul))))
+#hasheq((nodetype . "Slice") (upper . #\nul) (lower . #\nul) (step . #\nul))
 
 === Expected stderr ===
 

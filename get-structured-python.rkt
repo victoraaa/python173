@@ -224,6 +224,19 @@ structure that you define in python-syntax.rkt
      (PyAttribute (string->symbol attr)
                   (get-structured-python value))]
     
+    ;; Subscript
+    [(hash-table ('nodetype "Subscript")
+                 ('value value)
+                 ('slice slice)
+                 ('ctx ctx))
+     (PySubscript (get-structured-python value)
+                  (get-structured-python slice))]
+    
+    ;; Index (this is only used in subscripts
+    [(hash-table ('nodetype "Index")
+                 ('value value))
+     (get-structured-python value)]
+    
     ;; lists
     [(hash-table ('nodetype "List")
                  ('elts elts)

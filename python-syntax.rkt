@@ -20,6 +20,7 @@
   [PyGlobal (ids : (listof symbol))]
   [PyNonlocal (ids : (listof symbol))]
   [PyAttribute (attr : symbol) (value : PyExpr)]
+  [PySubscript (value : PyExpr) (attr : PyExpr)]
   
   [PyAssign (targets : (listof PyExpr)) (value : PyExpr)]
   [PyAugAssign (target : PyExpr) (op : symbol) (value : PyExpr)]

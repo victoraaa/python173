@@ -355,10 +355,24 @@
                      [args : (listof CVal)]) : AnswerC
   (cond
     [(not (equal? (length argsIds) (length args)))
-     (error 'interp-AppC (string-append 
-                          (string-append (to-string (length argsIds)) 
-                                         (to-string (length args))) 
-                          "Application failed with arity mismatch"))]
+     (interp-env (CError (CApp (CId 'TypeError)
+                               (list)
+                               (list)
+                               (CHash (hash (list)) (cType "list" (CNone)))))
+                 env
+                 store)]
+    #|
+     (ExceptionA (VStr (string-append 
+                        "error in interp-CApp : " 
+                        (string-append 
+                         (string-append
+                          "number of expected arguments:"
+                          (to-string (length argsIds)))
+                         (string-append
+                          "number of received arguments:"
+                          (to-string (length args))))))
+                 store)]
+    ;|#
     [(empty? args) (type-case AnswerC (interp-env body 
                                                   closEnv
                                                   store)
@@ -912,19 +926,19 @@
   ;   (interp-env (CExcHandler-body (first handlers)) env store)]))
 
 ;; getAttr gets the attribute from an object (VHash) -----------------------------------------------------------throw an exception instead of an error
-(define (getAttr [attr : symbol]
+(define (getAttr [attr : CVal]
                  [obj : CVal]
                  [env : Env]
                  [store : Store]) : CVal
   (type-case CVal obj
-    [VHash (elts uid type) (type-case (optionof CVal) (hash-ref (unbox elts) (VStr (symbol->string attr)))
+    [VHash (elts uid type) (type-case (optionof CVal) (hash-ref (unbox elts) attr)
                              ;;if the object has the attribute we're looking for
                              [some (v) v]
                              ;;else, we search in its super/base class
                              [none () (getAttr attr
                                                ;#|
                                                (type-case CVal (Type-baseType type)
-                                                 [VNone () (error 'getAttr (string-append "non-existent attribute, Unbound Identifier: " (symbol->string attr)))]
+                                                 [VNone () (error 'getAttr (string-append "non-existent attribute, Unbound Identifier: " (to-string attr)))]
                                                  [VHash (elts uid t) (Type-baseType type)]
                                                  [else (error 'getAttr "a class has something other than a VNone or a VHash as its baseType")])
                                                ;|#
@@ -942,9 +956,9 @@
                                                ;|#
                                                env
                                                store)])]
-    [VClass (elts type) (type-case (optionof CVal) (hash-ref elts (VStr (symbol->string attr)))
-                          [none () (error 'getAttr "non-existent attribute")]
-                          [some (v) v])]
+    ;[VClass (elts type) (type-case (optionof CVal) (hash-ref elts (VStr (symbol->string attr)))
+    ;                      [none () (error 'getAttr "non-existent attribute")]
+    ;                      [some (v) v])]
     [else (error 'getAttr "tried to get attribute from non-object")]))
 
 
@@ -1069,7 +1083,9 @@
                                      groupedArgs
                                      (drop-right groupedArgs 1)))
            groupedArgs
-           (error 'group-arguments "arity mismatch - missing argument: throw TypeError exception")))]))
+           ;(try
+            (error 'group-arguments "arity mismatch - missing argument: throw TypeError exception")))]))
+            ;(lambda () (error 'group-arguments "pegou essa porra")))))]))
 #|
 (define (group-arguments [ids : (listof symbol)]
                          [varargid : symbol]
@@ -1201,20 +1217,25 @@
   (type-case AnswerC (interp-env star env store)
     [ValueA (vh sh) (type-case CVal vh
                       [VHash (elts uid t) 
-                             ; (local [(try () )]
-                             
-                             
-                             ;      (try 
-                             (interp-args-CApp b   
+                             (let ([_grouped-args (try (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
+                                                       (lambda () (list (CId '__group-arguments-exception))))])
+                               (if (and (not (empty? _grouped-args)) (CId? (first _grouped-args)) (equal? (CId-x (first _grouped-args)) '__group-arguments-exception))
+                                   (interp-env (CError (CApp (CId 'TypeError)
+                                                             (list)
+                                                             (list)
+                                                             (CHash (hash (list)) (cType "list" (CNone)))))
                                                env
-                                               e
-                                               sh
-                                               ;a
-                                               (if (not (equal? varg 'no-vararg))
-                                                   (append a (list varg))
-                                                   a)
-                                               (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
-                                               #|
+                                               sh)
+                                   (interp-args-CApp b   
+                                                     env
+                                                     e
+                                                     sh
+                                                     ;a
+                                                     (if (not (equal? varg 'no-vararg))
+                                                         (append a (list varg))
+                                                         a)
+                                                     (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
+                                                     #|
                                                                              (group-arguments a 
                                                                                               varg 
                                                                                               args
@@ -1225,17 +1246,10 @@
                                                                                               (hash (list)) 
                                                                                               (list-tail args (- (length a) (length defargs))))
                                                                              |#
-                                               (list)
-                                               defargs
-                                               ;star
-                                               )
-                             ;   (lambda () (interp-env (CError (CApp (CId 'TypeError)
-                             ;                                        (list)
-                             ;                                        (list)
-                             ;                                        (CHash (hash (list)) (cType "list" (CNone)))))
-                             ;                          env
-                             ;                          sh)))
-                             ]
+                                                     (list)
+                                                     defargs
+                                                     ;star
+                                                     )))]
                       [else (error 'interp-args-CApp "needs a hash, because star should be a list")])]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
@@ -1258,6 +1272,21 @@
           [CNone () (VNone)]
           [CUnbound () (VUnbound)]
           [else (error 'transform-ctype "should not be a CExp other than CId, CNone or CUnbound")])))
+
+(define (make-index-positive [n : number] 
+                             [listLen : number]) : number
+  (if (< n 0)
+      (+ n listLen)
+      n))
+
+(define (correct-list-subscript [val : CVal]
+                                [listLen : number]) : CVal
+  (type-case CVal val
+    [VNum (n)
+          (cond
+            [(fixnum? n) (VNum (make-index-positive n listLen))]
+            [else (error 'correct-list-subscript "non-Int passed as subscript for a list")])]
+    [else (error 'correct-list-subscript "non-VNum passed as subscript for a list")]))
 
 ;; interp-env
 (define (interp-env [expr : CExp] 
@@ -1334,13 +1363,70 @@
                                  [ExceptionA (v1 s1) (ExceptionA v1 s1)]
                                  [ReturnA (v1 s1) (ReturnA v1 s1)])]
                           [else (error 'CSet "CAttribute has an expression in the object position")])]
-            [else (error 'interp-CSet "For now, CSet only support ids that are symbols or CAttributes")])]
+            [CSubscript (objExpr attr) 
+                        (type-case CExp objExpr
+                          [CId (id-symbol) 
+                               (type-case AnswerC (interp-env objExpr env store)
+                                 [ValueA (v-obj s1) 
+                                         (type-case AnswerC (interp-env attr env s1)
+                                           [ValueA (v-attr s2)
+                                                   (type-case AnswerC (interp-env value env s2)
+                                                     [ValueA (v-value s3)
+                                                             (type-case CVal v-obj
+                                                               [VHash (elts uid type) 
+                                                                      (cond
+                                                                        [(isInstanceOf v-obj "list" env s3)
+                                                                         (let ([_listLen (VNum-n (getAttr (VStr "_size_") v-obj env s3))])
+                                                                           (let ([_index (VNum-n (correct-list-subscript v-attr _listLen))])
+                                                                             (if (< _listLen _index)
+                                                                                 (interp-env (CError (CApp (CId 'IndexError)
+                                                                                                           (list)
+                                                                                                           (list)
+                                                                                                           (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                             env
+                                                                                             s3)
+                                                                                 (ValueA v-value 
+                                                                                         (begin (set-box! elts (hash-set (unbox elts) (VNum _index) v-value))
+                                                                                                s3)))))]
+                                                                        [(isInstanceOf v-obj "dict" env s3)
+                                                                         (try (ValueA v-value 
+                                                                                      (begin (set-box! elts (hash-set (unbox elts) v-attr v-value))
+                                                                                             s3))
+                                                                              (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
+                                                                                                                   (list)
+                                                                                                                   (list)
+                                                                                                                   (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                                     env
+                                                                                                     s3)))]
+                                                                        [else (interp-env (CError (CStr "tried to get a subscript from a non-list, non-dictionary")) env s3)])]
+                                                               [else (error 'CSet "trying to set field of non-object")])]
+                                                     [ExceptionA (v3 s3) (ExceptionA v3 s3)]
+                                                     [ReturnA (v3 s3) (error 'CSubscript "should not get a return statement when evaluating the assigned value")])]
+                                           [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                                           [ReturnA (v2 s2) (error 'CSubscript "should not get a return statement when evaluating the attribute")])]
+                                 [ExceptionA (v1 s1) (ExceptionA v1 s1)]
+                                 [ReturnA (v1 s1) (error 'CSubscript "should not get a return statement when evaluating an object")])]
+                          [else (error 'CSet "CSubscript has an expression in the object position")])]
+            [else (error 'interp-CSet "For now, CSet only support ids that are symbols or CAttributes or CSubscripts")])]
     
     [CApp (func args keywargs star)
           (type-case AnswerC (interp-env func env store)
             [ValueA (vf sf)
                     (type-case CVal vf
-                      [VClosure (e a varg b defargs uid) (interp-VClosure-App e a varg b defargs args keywargs star env sf)]
+                      [VClosure (e a varg b defargs uid) 
+                                (type-case CExp func
+                                  [CAttribute (attr value)
+                                              (type-case AnswerC (interp-env value env sf)
+                                                [ValueA (v s) (type-case CVal v
+                                                                [VHash (elts uid type) 
+                                                                       (if (or (equal? (Type-name type) "class") (equal? (Type-name type) "primitive-class"))
+                                                                           (interp-VClosure-App e a varg b defargs args keywargs star env sf) ;we pass sf because we don't want modifications to be passed
+                                                                           (interp-VClosure-App e a varg b defargs (append (list value) args) keywargs star env sf))]
+                                                                [else (interp-env (CError (CStr "tried to get an attribute from a non-hash")) env s)])]
+                                                [ExceptionA (v s) (ExceptionA v s)]
+                                                [ReturnA (v s) (error 'CAttribute "should not get an attribute from a return expression")])]
+                                  [else (interp-VClosure-App e a varg b defargs args keywargs star env sf)])]
+                      
                       [VHash (elts uid type) 
                              (cond 
                                [(equal? (Type-name type) "class")
@@ -1363,7 +1449,7 @@
                                           [else (error 'interp-env:CApp:VHash "Primitive class has non-VClosure as __convert__ field")])])]
                                
                                
-                               [else (type-case CVal (getAttr (string->symbol "__call__") vf env sf) ;; TODO mutation? This is non-mutative...
+                               [else (type-case CVal (getAttr (VStr "__call__") vf env sf) ;; TODO mutation? This is non-mutative...
                                        [VClosure (e a varg b defargs uid) ;; CNone in line below is to remind us that we need to
                                                          ;; modify this portion of the code to allow mutation of object...
                                                          (interp-VClosure-App e a varg b defargs (cons (CNone) args) keywargs star env sf)]
@@ -1424,11 +1510,44 @@
     [CAttribute (attr value)
                 (type-case AnswerC (interp-env value env store)
                   [ValueA (v s) (type-case CVal v
-                                  [VHash (elts uid type) (ValueA (getAttr attr v env store) s)]
-                                  [VClass (elts type) (ValueA (getAttr attr v env store) s)]
-                                  [else (interp-env (CError (CStr "tried to get an attribute from a return expression")) env s)])]
+                                  [VHash (elts uid type) (ValueA (getAttr (VStr (symbol->string attr)) v env store) s)]
+                                  ;[VClass (elts type) (ValueA (getAttr (VStr (symbol->string attr)) v env store) s)]
+                                  [else (interp-env (CError (CStr "tried to get an attribute from a non-hash")) env s)])]
                   [ExceptionA (v s) (ExceptionA v s)]
                   [ReturnA (v s) (error 'CAttribute "should not get an attribute from a return expression")])]
+    [CSubscript (value attr)
+                (type-case AnswerC (interp-env value env store)
+                  [ValueA (v1 s1) 
+                          (type-case AnswerC (interp-env attr env s1)
+                            [ValueA (v2 s2)
+                                    (type-case CVal v1
+                                      [VHash (elts uid type)
+                                             (cond
+                                               [(isInstanceOf v1 "list" env s2)
+                                                (let ([_listLen (VNum-n (getAttr (VStr "_size_") v1 env s2))])
+                                                  (let ([_index (VNum-n (correct-list-subscript v2 _listLen))])
+                                                    (if (< _listLen _index)
+                                                        (interp-env (CError (CApp (CId 'IndexError)
+                                                                                  (list)
+                                                                                  (list)
+                                                                                  (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                    env
+                                                                    s2)
+                                                        (ValueA (getAttr (VNum _index) v1 env s2) s2))))]
+                                               [(isInstanceOf v1 "dict" env s2)
+                                                (try (ValueA (getAttr v2 v1 env s2) s2)
+                                                     (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
+                                                                                          (list)
+                                                                                          (list)
+                                                                                          (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                            env
+                                                                            s2)))]
+                                               [else (interp-env (CError (CStr "tried to get a subscript from a non-list, non-dictionary")) env s2)])]
+                                      [else (interp-env (CError (CStr "tried to get a subscript from a non-hash CVal")) env s2)])]
+                            [ExceptionA (v s) (ExceptionA v s)]
+                            [ReturnA (v s) (error 'CSubscript "should not get a return expression from a subscript attr")])]
+                  [ExceptionA (v s) (ExceptionA v s)]
+                  [ReturnA (v s) (error 'CSubscript "should not get a return expression from a subscript value")])]
     #|
     [CDict (dict) (type-case AnswerC (interp-dict-insides (hash-keys dict) dict env store)
                     [ValueA (v s) (ValueA v s)]

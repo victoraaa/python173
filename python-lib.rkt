@@ -824,7 +824,7 @@ that calls the primitive `print`.
 ;; TODO TODO TODO update these to work like the final classs system...
 (define type-error-def
   ;(CClass (hash (list)) (Type "TypeError" (VNone)))) ;; TEMPORARY TypeError definition...
-  (CHash (hash (list (values (CStr "__name__") (CStr "TypeError")))) (cType "class" (CNone))))
+  (CHash (hash (list (values (CStr "__name__") (CStr "TypeError")))) (cType "class" (CId 'Exception))))
 
 (define index-error-def
   ;(CClass (hash (list)) (Type "IndexError" (VNone))))
@@ -934,6 +934,7 @@ that calls the primitive `print`.
         (bind 'isinstance python-isinstance)
         
         ;; exceptions (prelim...)
+        (bind 'Exception Exception)
         (bind 'TypeError type-error-def)
         (bind 'IndexError index-error-def)
         (bind 'ZeroDivisionError zero-division-error)
@@ -943,7 +944,7 @@ that calls the primitive `print`.
         (bind 'NameError name-error)
         
         ;;binding of built-in classes
-        (bind 'Exception Exception)
+        
         (bind 'TestClass TestClass)
         
         

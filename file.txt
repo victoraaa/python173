@@ -1,6 +1,12 @@
-try: 5.0 / 0.0
+class C:
+  def d(self):
+    print(1)
 
-except ZeroDivisionError: pass
+c=C()
+c.d()
 
-else: raise Exception("5.0 / 0.0 didn't raise ZeroDivisionError")
 
+#TO DO:
+
+#subscript
+#exceptions
