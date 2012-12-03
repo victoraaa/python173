@@ -28,9 +28,14 @@ ParselTongue.
   [CNone]
   [CPass]
   [CReturn (value : CExp)]
+  [CBreak]
+  [CContinue]
   [CSet (id : CExp) (value : CExp)]
   [CAttribute (attr : symbol) (value : CExp)]
   [CSubscript (value : CExp) (attr : CExp)]
+  
+  ;; loops
+  [CWhile (test : CExp) (body : CExp) (orelse : CExp)]
   
   ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.
   [CUnbound]
@@ -99,7 +104,7 @@ ParselTongue.
   [ValueA (value : CVal) (store : Store)]
   [ExceptionA (value : CVal) (store : Store)]
   [ReturnA (value : CVal) (store : Store)]
- ; [BreakA (value : CVal) (store : Store)]
- ; [ContinueA (store : Store)]
+  [BreakA (value : CVal) (store : Store)]
+  [ContinueA (store : Store)]
   )
  

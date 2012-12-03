@@ -205,6 +205,13 @@ structure that you define in python-syntax.rkt
                  ('value value))
      (PyReturn (get-structured-python value))]
     
+    ;; break and continue
+    [(hash-table ('nodetype "Break"))
+     (PyBreak)]
+    
+    [(hash-table ('nodetype "Continue"))
+     (PyContinue)]
+    
     
     ;; global variable
     [(hash-table ('nodetype "Global")
@@ -305,6 +312,26 @@ structure that you define in python-syntax.rkt
                  ('attr attr)
                  ('ctx ctx))
      (PyPass)]
+    
+    
+    ;; Loops
+    [(hash-table ('nodetype "While")
+                 ('body body)
+                 ('orelse orelse)
+                 ('test test))
+     (PyWhile (get-structured-python test)
+              (PySeq (map get-structured-python body))
+              (PySeq (cons (PyPass) (map get-structured-python orelse))))]
+    [(hash-table ('nodetype "For")
+                 ('target target)
+                 ('iter iter)
+                 ('body body)
+                 ('orelse orelse))
+     (PyFor (get-structured-python target)
+            (get-structured-python iter)
+            (PySeq (map get-structured-python body))
+            (PySeq (cons (PyPass) (map get-structured-python orelse))))]
+    
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     

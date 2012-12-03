@@ -22,6 +22,10 @@
   [PyAttribute (attr : symbol) (value : PyExpr)]
   [PySubscript (value : PyExpr) (attr : PyExpr)]
   
+  ;; loops
+  [PyWhile (test : PyExpr) (body : PyExpr) (orelse : PyExpr)]
+  [PyFor (target : PyExpr) (iter : PyExpr) (body : PyExpr) (orelse : PyExpr)]
+  
   [PyAssign (targets : (listof PyExpr)) (value : PyExpr)]
   [PyAugAssign (target : PyExpr) (op : symbol) (value : PyExpr)]
   
@@ -37,6 +41,8 @@
   [PyArguments (args : (listof symbol)) (defaults : (listof PyExpr)) (vararg : symbol)]
   
   [PyReturn (value : PyExpr)] ;; return
+  [PyBreak] ;; break
+  [PyContinue] ;; continue
   
   
   ;; Lists, dict, etc

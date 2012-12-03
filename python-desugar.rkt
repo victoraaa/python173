@@ -37,6 +37,8 @@
                     (list)
                     (map (lambda (e) (get-vars e)) elts))]
     [PyReturn (value) (get-vars value)]
+    [PyBreak () (list)]
+    [PyContinue () (list)]
     [PyId (id) (list)]
     [PyStr (s) (list)]
     [PyBinOp (op left right)
@@ -48,6 +50,12 @@
     [PySubscript (value attr)
                  (append (get-vars value)
                          (get-vars attr))]
+    
+    ;; loops
+    [PyWhile (test body orelse) (list)] ;; really?
+    [PyWhile (target iter body orelse) (list)]
+    
+    
     [PyIf (test then orelse)
           (append
            (get-vars test)
@@ -271,6 +279,15 @@
     [PyAttribute (attr value) (CAttribute attr (desugar value))]
     [PySubscript (value attr) (CSubscript (desugar value) (desugar attr))]
     
+    ;; loops
+    [PyWhile (test body orelse) (CWhile (desugar test) (desugar body) (desugar orelse))]
+    [PyFor (target iter body orelse) (CLet 'index-counter
+                                           (Local)
+                                           (CNum -1)
+                                           (CWhile (CSeq () ()) 
+                                                   () 
+                                                   ()))]
+    
     ;; exceptions
     [PyTryExcept (body handlers orelse) (CTryExcept (desugar body) (map desugar-handler handlers) (desugar orelse))]
     [PyTryFinally (body finalbody) (CTryFinally (desugar body) (desugar finalbody))]
@@ -278,6 +295,8 @@
     
     ;; return
     [PyReturn (value) (CReturn (desugar value))]
+    [PyBreak () (CBreak)]
+    [PyContinue () (CContinue)]
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))

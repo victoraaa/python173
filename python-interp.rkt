@@ -330,6 +330,8 @@
                                  defargs
                                  ;star
                                  )]
+       [BreakA (v s) (error 'interp-args-CApp "Why a break?")]
+       [ContinueA (s) (error 'interp-args-CApp "Why a continue?")]
        [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v s) (ReturnA v s)])]))
 
@@ -377,6 +379,8 @@
                                                   closEnv
                                                   store)
                      [ValueA (v s) (ValueA v s)]
+                     [BreakA (v s) (error 'interp-CApp "Should not be a break in function call")]
+                     [ContinueA (s) (error 'interp-CApp "Should not be a continue in function call")]
                      [ExceptionA (v s) (ExceptionA v s)]
                      [ReturnA (v s) (ValueA v s)])]
     [else 
@@ -404,6 +408,8 @@
 (define (interp-tagof [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
     [ValueA (v s) (ValueA (VStr (get-tag v)) s)]
+    [BreakA (v s) (error 'interp-tagof "Should not be a break in input to tagof")]
+    [ContinueA (s) (error 'interp-tagof "Should not be a continue in input to tagof")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
@@ -445,8 +451,12 @@
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v1 s1) (type-case AnswerC (interp-env e2 env s1)
                       [ValueA (v2 s2) (ValueA (handle-op op v1 v2) s2)]
+                      [BreakA (v2 s2) (error 'interp-binop "Why is there a break in second arg?")]
+                      [ContinueA (s) (error 'interp-binop "Why is there a continue in second arg?")]
                       [ExceptionA (v s) (ExceptionA v s)]
                       [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [BreakA (v2 s2) (error 'interp-binop "Why is there a break in first arg?")]
+    [ContinueA (s) (error 'interp-binop "Why is there a continue in first arg?")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
@@ -548,6 +558,8 @@
     [ValueA (v s) (if (isTruthy v)
                       (ValueA v s)
                       (interp-env e2 env s))]
+    [BreakA (v s) (error 'interp-or "Break!")]
+    [ContinueA (s) (error 'interp-or "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
@@ -561,6 +573,8 @@
     [ValueA (v s) (if (not (isTruthy v))
                       (ValueA v s)
                       (interp-env e2 env s))]
+    [BreakA (v s) (error 'interp-and "Break!")]
+    [ContinueA (s) (error 'interp-and "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
@@ -603,12 +617,17 @@
                         [else (if (equal? (get-uid v1) (get-uid v2))
                                   (ValueA (VTrue) s2)
                                   (ValueA (VFalse) s2))])]
+              [BreakA (v s) (error 'interp-is "Break!")]
+              [ContinueA (s) (error 'interp-is "Continue!")]
               [ExceptionA (v s) (ExceptionA v s)]
               [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [BreakA (v s) (error 'interp-is "Break!")]
+    [ContinueA (s) (error 'interp-is "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
 ;;'is not' returns true if e1 and e2 are not the same object in python
+#|
 (define (interp-isNot [e1 : CExp]
                       [e2 : CExp]
                       [env : Env]
@@ -629,7 +648,7 @@
               [ReturnA (v2 s2) (ReturnA v2 s2)])]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
-
+|#
 
 ;; 
 (define (hash-values [h : (hashof 'a 'b)]) : (listof 'b)
@@ -668,8 +687,12 @@
                                                                              (ValueA (VTrue) s2)
                                                                              (ValueA (VFalse) s2))])]
                         [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])]
+              [BreakA (v s) (error 'interp-in "Break!")]
+              [ContinueA (s) (error 'interp-in "Continue!")]
               [ExceptionA (v s) (ExceptionA v s)]
               [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [BreakA (v s) (error 'interp-in "Break!")]
+    [ContinueA (s) (error 'interp-in "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
@@ -682,8 +705,12 @@
                                                  [VHash (elts-box2 uid2 type2) (ValueA (VHash (box (merge-python-lists v1 v2)) (new-uid) type1) s2)]
                                                  [else (error 'merge-listy-things "This also should never happen. ")])]
                                         [else (error 'merge-listy-things "This should never happen. ")])]
+                      [BreakA (v s) (error 'merge-listy-things "Break!")]
+                      [ContinueA (s) (error 'merge-listy-things "Continue!")]
                       [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                       [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [BreakA (v s) (error 'merge-listy-things "Break!")]
+    [ContinueA (s) (error 'merge-listy-things "Continue!")]
     [ExceptionA (v1 s1) (ExceptionA v1 s1)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
@@ -797,6 +824,8 @@
 (define (interp-unary [prim : symbol] [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
     [ValueA (v s) (ValueA (handle-unary prim v env s) s)]
+    [BreakA (v s) (error 'interp-unary "Break!")]
+    [ContinueA (s) (error 'interp-unary "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
@@ -820,10 +849,16 @@
                                                                           (VHash-uid v3) 
                                                                           type) 
                                                                    s3)]
+                                           [BreakA (v s) (error 'interp-CHash "Break!")]
+                                           [ContinueA (s) (error 'interp-CHash "Continue!")]
                                            [ExceptionA (v3 s3) (ExceptionA v3 s3)]
                                            [ReturnA (v3 s3) (error 'interp-CHash "Shouldn't see a return here...")])]
+                         [BreakA (v s) (error 'interp-CHash "Break!")]
+                         [ContinueA (s) (error 'interp-CHash "Continue!")]
                          [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                          [ReturnA (v2 s2) (error 'interp-CHash "This should never be a return.")])])]
+       [BreakA (v s) (error 'interp-CHash "Break!")]
+       [ContinueA (s) (error 'interp-CHash "Continue!")]
        [ExceptionA (v1 s1) (ExceptionA v1 s1)]
        [ReturnA (v1 s1) (error 'interp-CHash "This should never be a return!!")])]))
 
@@ -870,8 +905,12 @@
                                                        (ValueA (VTrue) s2)
                                                        (ValueA (VFalse) s2))]
                                         [else (error 'interp-isinstance "This error should not appear.")])]
+                      [BreakA (v s) (error 'interp-isi-instance "Break!")]
+                      [ContinueA (s) (error 'interp-is-instance "Continue!")]
                       [ExceptionA (v s) (ExceptionA v s)]
                       [ReturnA (v s) (ReturnA v s)])]
+    [BreakA (v s) (error 'interp-is-instance "Break!")]
+    [ContinueA (s) (error 'interp-is-instance "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
                            
@@ -987,6 +1026,8 @@
                               store)]
     [else (type-case AnswerC (interp-env (first defargs) env store)
             [ValueA (v s) (interp-func args vararg body vlist (rest defargs) (cons v defvals) env s)]
+            [BreakA (v s) (error 'interp-func "Break!")]
+            [ContinueA (s) (error 'interp-func "Continue!")]
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (error 'interp-func "I don't think this should even happen.")])]))
 
@@ -1162,6 +1203,8 @@
                              [store : Store]) : AnswerC
   (type-case AnswerC (interp-env body env store)
     [ValueA (v s) (fill-class-object name env s)]
+     [BreakA (v s) (error 'interp-create-class "Break!")]
+    [ContinueA (s) (error 'interp-create-class "Continue!")] ;; TODO really?
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ExceptionA (VStr "A class should not return") s)]))
 
@@ -1251,6 +1294,8 @@
                                                      ;star
                                                      )))]
                       [else (error 'interp-args-CApp "needs a hash, because star should be a list")])]
+    [BreakA (v s) (error 'interp-VClosure-App "Break!")]
+    [ContinueA (s) (error 'interp-VClosure-App "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
@@ -1299,14 +1344,21 @@
     
     [CError (e) (type-case AnswerC (interp-env e env store)
                   [ValueA (v s) (ExceptionA v s)]
+                  [BreakA (v s) (error 'CError "Should not have a break here")]
+                  [ContinueA (s) (error 'CError "Should not have a continue here")]
                   [ExceptionA (v s) (ExceptionA v s)]
                   [ReturnA (v s) (error 'CError "should not get a Return statement when raising something")])]
     ;(error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
     
     [CReturn (value) (type-case AnswerC (interp-env value env store)
                        [ValueA (v s) (ReturnA v s)]
+                       [BreakA (v s) (error 'CReturn "Should not have a break here")]
+                       [ContinueA (s) (error 'CReturn "Should not have a continue here")]
                        [ExceptionA (v s) (ExceptionA v s)]
                        [ReturnA (v s) (error 'interp "Return statement inside of Return...")])]
+    
+    [CBreak () (BreakA (VPass) store)] ;; TODO change this?
+    [CContinue () (ContinueA store)]
     
     
     [CId (x) 
@@ -1321,6 +1373,8 @@
                                   (augmentStore newLocation 
                                                 v
                                                 s)))]
+            [BreakA (v s) (BreakA v s)]
+            [ContinueA (s) (ContinueA s)] ;; TODO really?
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (ReturnA v s)])] ;; This is a bit suspicious...
     
@@ -1329,6 +1383,8 @@
           (type-case AnswerC (interp-env e1 env store)
             [ValueA (v s)
                     (interp-env e2 env s)]
+            [BreakA (v s) (BreakA v s)]
+            [ContinueA (s) (ContinueA s)]
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (ReturnA v s)])]
     
@@ -1339,6 +1395,8 @@
                                        (ValueA v (augmentStore (lookupEnv id-symbol env)
                                                                v
                                                                s))]
+                               [BreakA (v s) (error 'CSet:CId "Should not have a break here")]
+                               [ContinueA (s) (error 'CSet:CId "Should not have a continue here")]
                                [ExceptionA (v s) (ExceptionA v s)]
                                [ReturnA (v s) (ReturnA v s)])]
             [CAttribute (attr objExpr) 
@@ -1357,9 +1415,13 @@
                                                                     ;(augmentStore (lookupEnv id-symbol env)
                                                                     ;                 (VHash (set-box! elts (hash-set (unbox elts) (VStr (symbol->string attr)) v2)) uid type)
                                                                     ;                 s2))]
+                                                    [BreakA (v s) (error 'CSet:CAttribute "Should not have a break here")]
+                                                    [ContinueA (s) (error 'CSet:CAttribute "Should not have a continue here")]
                                                     [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                                     [ReturnA (v2 s2) (ReturnA v2 s2)])]
                                            [else (error 'CSet "trying to set field of non-object")])]
+                                 [BreakA (v s) (error 'CSet:CAttribute "Should not have a break here")]
+                                 [ContinueA (s) (error 'CSet:CAttribute "Should not have a continue here")]
                                  [ExceptionA (v1 s1) (ExceptionA v1 s1)]
                                  [ReturnA (v1 s1) (ReturnA v1 s1)])]
                           [else (error 'CSet "CAttribute has an expression in the object position")])]
@@ -1375,8 +1437,8 @@
                                                              (type-case CVal v-obj
                                                                [VHash (elts uid type) 
                                                                       (cond
-                                                                        [(isInstanceOf v-obj "list" env s3)
-                                                                         (let ([_listLen (VNum-n (getAttr (VStr "_size_") v-obj env s3))])
+                                                                        [(or (isInstanceOf v-obj "list" env s3) (isInstanceOf v-obj "tuple" env s3))
+                                                                         (let ([_listLen (VNum-n (getAttr (VStr "__size__") v-obj env s3))])
                                                                            (let ([_index (VNum-n (correct-list-subscript v-attr _listLen))])
                                                                              (if (< _listLen _index)
                                                                                  (interp-env (CError (CApp (CId 'IndexError)
@@ -1400,10 +1462,16 @@
                                                                                                      s3)))]
                                                                         [else (interp-env (CError (CStr "tried to get a subscript from a non-list, non-dictionary")) env s3)])]
                                                                [else (error 'CSet "trying to set field of non-object")])]
+                                                     [BreakA (v s) (error 'CSet:CSubscript "Should not have a break here")]
+                                                     [ContinueA (s) (error 'CSet:CSubscript "Should not have a continue here")]
                                                      [ExceptionA (v3 s3) (ExceptionA v3 s3)]
                                                      [ReturnA (v3 s3) (error 'CSubscript "should not get a return statement when evaluating the assigned value")])]
+                                           [BreakA (v s) (error 'CSet:CSubscript "Should not have a break here")]
+                                           [ContinueA (s) (error 'CSet:CSubscript "Should not have a continue here")]
                                            [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                            [ReturnA (v2 s2) (error 'CSubscript "should not get a return statement when evaluating the attribute")])]
+                                 [BreakA (v s) (error 'CSet:CSubscript "Should not have a break here")]
+                                 [ContinueA (s) (error 'CSet:CSubscript "Should not have a continue here")]
                                  [ExceptionA (v1 s1) (ExceptionA v1 s1)]
                                  [ReturnA (v1 s1) (error 'CSubscript "should not get a return statement when evaluating an object")])]
                           [else (error 'CSet "CSubscript has an expression in the object position")])]
@@ -1423,6 +1491,8 @@
                                                                            (interp-VClosure-App e a varg b defargs args keywargs star env sf) ;we pass sf because we don't want modifications to be passed
                                                                            (interp-VClosure-App e a varg b defargs (append (list value) args) keywargs star env sf))]
                                                                 [else (interp-env (CError (CStr "tried to get an attribute from a non-hash")) env s)])]
+                                                [BreakA (v s) (error 'CApp "Should not have a break here")]
+                                                [ContinueA (s) (error 'CApp "Should not have a continue here")]
                                                 [ExceptionA (v s) (ExceptionA v s)]
                                                 [ReturnA (v s) (error 'CAttribute "should not get an attribute from a return expression")])]
                                   [else (interp-VClosure-App e a varg b defargs args keywargs star env sf)])]
@@ -1459,6 +1529,8 @@
                       [VClass (elts type) (ValueA (VClass elts type) store)]
                       
                       [else (error 'CApp (string-append "Applied a non-function and non-hash: " (pretty vf)))])]
+            [BreakA (v s) (error 'CApp "Should not have a break here")]
+            [ContinueA (s) (error 'CApp "Should not have a continue here")]
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (ReturnA v s)] ;; or pass???
             )]
@@ -1469,6 +1541,22 @@
           (interp-env body (bind-args argxs argvs env)))]
        [else (error 'interp "Not a closure")])]
     |#
+    
+    
+    [CWhile (test body orelse)
+            (type-case AnswerC (interp-env test env store)
+              [ValueA (v s) (if (isTruthy v)
+                                (type-case AnswerC (interp-env body env s)
+                                  [ValueA (v2 s2) (interp-env expr env s2)]
+                                  [BreakA (v2 s2) (ValueA v2 s2)]
+                                  [ContinueA (s2) (interp-env expr env s2)]
+                                  [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                                  [ReturnA (v2 s2) (ReturnA v2 s2)])
+                                (ValueA (VPass) s))]
+              [BreakA (v s) (error 'interp-CWhile "Why are we breaking from the test in interp CWhile?")]
+              [ContinueA (s) (error 'interp-CWhile "Why are we continuing from the test in interp CWhile?")]
+              [ExceptionA (v s) (ExceptionA v s)]
+              [ReturnA (v s) (error 'interp-CWhile "Why are we returning from the test in interp CWhile?")])]
     
     [CFunc (args body vlist defargs vararg) 
            (interp-func args vararg body vlist defargs (list) env store)]
@@ -1483,7 +1571,7 @@
               ['or (interp-or e1 e2 env store)]
               ['and (interp-and e1 e2 env store)]
               ['is (interp-is e1 e2 env store)] ;; might want to think about these...
-              ['isNot (interp-isNot e1 e2 env store)]
+            ;  ['isNot (interp-isNot e1 e2 env store)]
               ['in (interp-in e1 e2 env store)]
               ['list+ (merge-listy-things e1 e2 env store)]
               ['tuple+ (merge-listy-things e1 e2 env store)]
@@ -1497,6 +1585,8 @@
                    (if (isTruthy v)
                        (interp-env t env s)
                        (interp-env e env s))]
+           [BreakA (v s) (error 'CIf "Should not have a break here")]
+           [ContinueA (s) (error 'CIf "Should not have a continue here")]
            [ExceptionA (v s) (ExceptionA v s)]
            [ReturnA (v s) (ReturnA v s)])]
     [CNone () (ValueA (VNone) store)]
@@ -1513,6 +1603,8 @@
                                   [VHash (elts uid type) (ValueA (getAttr (VStr (symbol->string attr)) v env store) s)]
                                   ;[VClass (elts type) (ValueA (getAttr (VStr (symbol->string attr)) v env store) s)]
                                   [else (interp-env (CError (CStr "tried to get an attribute from a non-hash")) env s)])]
+                  [BreakA (v s) (error 'CAttribute "Should not have a break here")]
+                  [ContinueA (s) (error 'CAttribute "Should not have a continue here")]
                   [ExceptionA (v s) (ExceptionA v s)]
                   [ReturnA (v s) (error 'CAttribute "should not get an attribute from a return expression")])]
     [CSubscript (value attr)
@@ -1523,8 +1615,8 @@
                                     (type-case CVal v1
                                       [VHash (elts uid type)
                                              (cond
-                                               [(isInstanceOf v1 "list" env s2)
-                                                (let ([_listLen (VNum-n (getAttr (VStr "_size_") v1 env s2))])
+                                               [(or (isInstanceOf v1 "list" env s2) (isInstanceOf v1 "tuple" env s2))
+                                                (let ([_listLen (VNum-n (getAttr (VStr "__size__") v1 env s2))])
                                                   (let ([_index (VNum-n (correct-list-subscript v2 _listLen))])
                                                     (if (< _listLen _index)
                                                         (interp-env (CError (CApp (CId 'IndexError)
@@ -1544,8 +1636,12 @@
                                                                             s2)))]
                                                [else (interp-env (CError (CStr "tried to get a subscript from a non-list, non-dictionary")) env s2)])]
                                       [else (interp-env (CError (CStr "tried to get a subscript from a non-hash CVal")) env s2)])]
+                            [BreakA (v s) (error 'CSubscript "Should not have a break here")]
+                            [ContinueA (s) (error 'CSubscript "Should not have a continue here")]
                             [ExceptionA (v s) (ExceptionA v s)]
                             [ReturnA (v s) (error 'CSubscript "should not get a return expression from a subscript attr")])]
+                  [BreakA (v s) (error 'CSubscript "Should not have a break here")]
+                  [ContinueA (s) (error 'CSubscript "Should not have a continue here")]
                   [ExceptionA (v s) (ExceptionA v s)]
                   [ReturnA (v s) (error 'CSubscript "should not get a return expression from a subscript value")])]
     #|
@@ -1578,6 +1674,8 @@
     [CTryExcept (body handlers orelse) 
                 (type-case AnswerC (interp-env body env store)
                   [ValueA (v s) (interp-env orelse env s)]
+                  [BreakA (v s) (BreakA v s)]
+                  [ContinueA (s) (ContinueA s)]
                   [ExceptionA (v s) (if (hasMatchingException v handlers env s)
                                         (interp-handlers handlers v env s)
                                         (interp-env orelse env s))]
@@ -1586,10 +1684,16 @@
                                     [ValueA (v s) (interp-env finalbody env s)]
                                     [ExceptionA (v s) (type-case AnswerC (interp-env finalbody env s)
                                                         [ValueA (v2 s2) (ExceptionA v s2)]
+                                                        [BreakA (v s) (error 'CTryFinally "Should not have a break here (???)")]
+                                                        [ContinueA (s) (error 'CTryFinally "Should not have a continue here (???)")]
                                                         [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                                         [ReturnA (v2 s2) (ReturnA v2 s2)])]
+                                    [BreakA (v s) (BreakA v s)]
+                                    [ContinueA (s) (ContinueA s)]
                                     [ReturnA (v s) (type-case AnswerC (interp-env finalbody env s)
                                                      [ValueA (v2 s2) (ReturnA v s2)]
+                                                     [BreakA (v s) (error 'CTryFinally "Should not have a break here (???)")]
+                                                     [ContinueA (s) (error 'CTryFinally "Should not have a continue here (???)")]
                                                      [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                                      [ReturnA (v2 s2) (ReturnA v2 s2)])])]
     
@@ -1611,6 +1715,8 @@
   (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
     [ValueA (v s) v]
     [ExceptionA (v s) (error 'exception (pretty v))] ;; really? 
+    [BreakA (v s) (error 'exception "A break got to the surface!")]
+    [ContinueA (s) (error 'exception "A continue got to the surface!")]
     [ReturnA (v s) (VStr "Error: Return outside of function.")]))
 
 

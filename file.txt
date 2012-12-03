@@ -1,9 +1,7 @@
-class C:
-  def d(self):
-    print(1)
-
-c=C()
-c.d()
+x=3
+for x in {1:11, 2:22, 3:33}:
+  print(x)
+print(x)
 
 
 #TO DO:
