@@ -845,7 +845,8 @@
                [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
                [else (error 'interp-to-num "Should not be called on this type.")])]
     ['to-list (type-case CVal arg
-                [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
+                [VHash (elts uid type) (cond 
+                                         [(or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
                                            ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
                                            (VHash (box (hash-set (unbox elts) 
                                                                  (VStr "__size__") 
@@ -853,8 +854,15 @@
                                                                    [some (s) s]
                                                                    [none () (error 'interp-to-list "no __size__ field")]))) 
                                                   (new-uid) 
-                                                  (transform-ctype (cType "list" (CId 'list)) env store))
-                                           (error 'interp-to-list "arguments of this type are not supported"))]
+                                                  (transform-ctype (cType "list" (CId 'list)) env store))]
+                                         [(equal? (get-tag arg) "set") 
+                                          (VHash (box (hash-set (make-new-map (vnum-range (+ 0 (length (hash-keys (unbox elts)))))
+                                                                              (hash-values (unbox elts)))
+                                                                (VStr "__size__")
+                                                                (VNum (length (hash-keys (unbox elts))))))
+                                                 (new-uid)
+                                                 (transform-ctype (cType "list" (CId 'list)) env store))]
+                                           [else (error 'interp-to-list "arguments of this type are not supported")])]
                 [VStr (s) (VHash (box (hash-set (change-string-to-list s) (VStr "__size__") (VNum (string-length s)))) 
                                  (new-uid) 
                                  (transform-ctype (cType "list" (CId 'list)) env store))] ;; string to list
