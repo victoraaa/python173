@@ -642,7 +642,16 @@ that calls the primitive `print`.
                                                          (list (CNone))
                                                          'no-vararg))
                      ;;(values (CStr "update") ())
-               ;;      (values (CStr "keys") ())
+                     (values (CStr "keys") (CFunc (list 'self)
+                                                  (CAttribute '__keys__ (CId 'self))
+                                                  (list)
+                                                  (list)
+                                                  'no-vararg))
+          ;           (values (CStr "values") (CFunc (list 'self)
+          ;                                          () ;; TODO want "for" here...
+          ;                                          (list)
+          ;                                          (list)
+          ;                                          'no-vararg))
                      ))
          (cType "primitive-class" (CNone)))) ;; If we need a __convert__ method, we'll write one later. 
 
@@ -840,7 +849,7 @@ that calls the primitive `print`.
                                      (list)
                                      (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                                (CPrim2 'list+ ;; check for subscript on next line as well...
-                                       (CHash (hash-set (hash (list (values (CStr "__size__") (CNum 0)))) (CNum 0) (CSubscript (CId 'e-list) (CId 'e-index))) (cType "list" (CNone))) 
+                                       (CHash (hash-set (hash (list (values (CStr "__size__") (CNum 1)))) (CNum 0) (CSubscript (CId 'e-list) (CId 'e-index))) (cType "list" (CNone))) 
                                        (CApp (CId 'python-iter-help)
                                              (list (CId 'e-list) (CId 'e-test) (CPrim2 'num+ (CId 'e-index) (CNum 1)))
                                              (list)
@@ -853,6 +862,10 @@ that calls the primitive `print`.
                      (list)
                      (list)
                      'no-vararg))))
+
+
+;; TODO write min and max
+
       
 
 

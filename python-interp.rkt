@@ -20,6 +20,10 @@
 (require (typed-in racket/list [drop-right : [(listof 'a) number -> (listof 'a)]]))
 (require (typed-in racket/list [last : [(listof 'a) -> 'a]]))
 
+;;Holds the exception to be reraised
+(define exn-to-reraise
+  (box (VUnbound)))
+
 ;;Returns a new memory address to be used
 (define new-loc
   (let ([n (box 1)])
@@ -528,14 +532,24 @@
 
 ;; We need separate float and intger values. 
 
+
+;; fold equality
+(define (fold-equality [h1 : (listof CVal)] [h2 : (listof CVal)]) : boolean
+  (cond
+    [(not (= (length h1) (length h2))) #f]
+    [(empty? h1) #t]
+    [else (and (check-equality (first h1) (first h2)) (fold-equality (rest h1) (rest h2)))]))
+
 ;; check-equality
 (define (check-equality [v1 : CVal] [v2 : CVal]) : boolean
   (type-case CVal v1
     [VHash (elts1 uid1 type1) (type-case CVal v2
                                 [VHash (elts2 uid2 type2) (if (equal? (Type-name type1) (Type-name type2))
                                                               ;                              (equal? (unbox elts1) (unbox elts2)) ;; TODO recur!
-                                                              (and (foldl (lambda (a x y) (and a (check-equality x y))) #t (hash-keys (unbox elts1)) (hash-keys (unbox elts2)))
-                                                                   (foldl (lambda (a x y) (and a (check-equality x y))) #t (hash-values (unbox elts1)) (hash-values (unbox elts2))))
+                                                              (and (fold-equality (hash-keys (unbox elts1)) (hash-keys (unbox elts2)))
+                                                                   (fold-equality (hash-values (unbox elts1)) (hash-values (unbox elts2))))
+                                                             ; (and (foldl (lambda (a x y) (and a (check-equality x y))) #t (hash-keys (unbox elts1)) (hash-keys (unbox elts2)))
+                                                             ;      (foldl (lambda (a x y) (and a (check-equality x y))) #t (hash-values (unbox elts1)) (hash-values (unbox elts2))))
                                                               false)]
                                 
                                 ; (and (foldl (lambda (a y) (and x y)) #t (map check-equality (hash-keys (unbox elts1)) (hash-keys (unbox elts2))))
@@ -1424,7 +1438,16 @@
     [CTrue () (ValueA (VTrue) store)]
     
     [CError (e) (type-case AnswerC (interp-env e env store)
-                  [ValueA (v s) (ExceptionA v s)]
+                  [ValueA (v s) (type-case CVal v
+                                  [VNone () (ExceptionA (unbox exn-to-reraise) s)]
+                                  [VUnbound () (interp-env (CError (CApp (CId 'RuntimeError)
+                                                                         (list) ;; TODO this needs to take an argument...
+                                                                         (list)
+                                                                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))) 
+                                                           env 
+                                                           s)]
+                                  [else (begin (set-box! exn-to-reraise v)
+                                               (ExceptionA v s))])]
                   [BreakA (v s) (error 'CError "Should not have a break here")]
                   [ContinueA (s) (error 'CError "Should not have a continue here")]
                   [ExceptionA (v s) (ExceptionA v s)]

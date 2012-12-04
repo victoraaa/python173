@@ -1,7 +1,5 @@
-
-C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
-63 tests succeeded.
-27 tests failed.
+66 tests succeeded.
+24 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for all.py =
@@ -87,7 +85,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-exception: Assert failed: values are not Equal: list(box (hash (VNum 0) (VStr "e") (VStr "__size__") (VNum 0)))list(box (hash (VNum 0) (VStr "e") (VNum 1) (VStr "l") (VNum 2) (VStr "l") (VNum 3) (VStr "o") (VNum 4) (VStr "o") (VNum 5) (VStr "r") (VNum 6) (VStr "l") (VNum 7) (VStr "d") (VStr "__size__") (VNum 8)))
+exception: TypeError'#&#hash()
 =====================================================
 = Results for dict-clear.py =
 =====================================================
@@ -100,17 +98,6 @@ exception: Assert failed: values are not Equal: list(box (hash (VNum 0) (VStr "e
 === Actual stderr ===
 getAttr: non-existent attribute, Unbound Identifier: (VStr "clear")
 =====================================================
-= Results for dict-getitem.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: Assert failed: values are not Equal: dict(box (hash #0=(VStr "a") (VNum 4) #1=(VStr "c") (VNum 3) (VStr "__keys__") (VHash (box (hash #0# #0# #1# #1#)) 1779 (Type "set" (VHash (box (hash (VStr "__name__") (VStr "set") (VStr "__convert__") (VClosure (hash 'list (vector (NonLocal) 3450) 'abs (vector (NonLocal) 3440) 'print (vector (NonLocal) 3359) 'str (vector (NonLocal) 3444) 'bool (vector (NonLocal) 3442) 'python-add (vector (NonLocal) 3391) 'python-sub (vector (NonLocal) 3394) 'python-mult (vector (NonLocal) 3397) 'python-div (vector (NonLocal) 3400) 'python-floor-div (vector (NonLocal) 3403) 'python-mod (vector (NonLocal) 3406) 'python-lt (vector (NonLocal) 3409) 'python-lte (vector (NonLocal) 3412) 'python-gt (vector (NonLocal) 3415) 'python-gte (vector (NonLocal) 3418) 'python-eq (vector (NonLocal) 3421) 'python-notEq (vector (NonLocal) 3424) 'python-is (vector (NonLocal) 3427) 'python-isNot (vector (NonLocal) 3430) 'python-in (vector (NonLocal) 3433) 'python-notIn (vector (NonLocal) 3436) 'len (vector (NonLocal) 3438) 'True (vector (NonLocal) 3360) '___assertTrue (vector (NonLocal) 3362) 'e-1 (vector (Local) 3461) '___assertFalse (vector (NonLocal) 3364) '___assertIn (vector (NonLocal) 3367) '___assertNotIn (vector (NonLocal) 3370) '___assertEqual (vector (NonLocal) 3373) '___assertNotEqual (vector (NonLocal) 3376) '___assertIs (vector (NonLocal) 3379) '___assertIsNot (vector (NonLocal) 3382) '___assertRaises (vector (NonLocal) 3386) '___fail (vector (NonLocal) 3388) 'float (vector (NonLocal) 3446) 'int (vector (NonLocal) 3448) 'tuple (vector (NonLocal) 3453) 'dict (vector (NonLocal) 3460)) '(e-1) 'no-vararg (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CId 'e-1) (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) (CPrim1 'to-set (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list))))))) (list (VHash (box (hash (VStr "__size__") (VNum 0))) 1750 (Type "list" (VHash (box (hash (VStr "__name__") (VStr "list") (VStr "__size__") (VNum 0) (VStr "__convert__") (VClosure (hash 'abs (vector (NonLocal) 3440) 'print (vector (NonLocal) 3359) 'str (vector (NonLocal) 3444) 'bool (vector (NonLocal) 3442) 'python-add (vector (NonLocal) 3391) 'python-sub (vector (NonLocal) 3394) 'python-mult (vector (NonLocal) 3397) 'python-div (vector (NonLocal) 3400) 'python-floor-div (vector (NonLocal) 3403) 'python-mod (vector (NonLocal) 3406) 'python-lt (vector (NonLocal) 3409) 'python-lte (vector (NonLocal) 3412) 'python-gt (vector (NonLocal) 3415) 'python-gte (vector (NonLocal) 3418) 'python-eq (vector (NonLocal) 3421) 'python-notEq (vector (NonLocal) 3424) 'python-is (vector (NonLocal) 3427) 'python-isNot (vector (NonLocal) 3430) 'python-in (vector (NonLocal) 3433) 'python-notIn (vector (NonLocal) 3436) 'len (vector (NonLocal) 3438) 'True (vector (NonLocal) 3360) '___assertTrue (vector (NonLocal) 3362) 'e-1 (vector (Local) 3449) '___assertFalse (vector (NonLocal) 3364) '___assertIn (vector (NonLocal) 3367) '___assertNotIn (vector (NonLocal) 3370) '___assertEqual (vector (NonLocal) 3373) '___assertNotEqual (vector (NonLocal) 3376) '___assertIs (vector (NonLocal) 3379) '___assertIsNot (vector (NonLocal) 3382) '___assertRaises (vector (NonLocal) 3386) '___fail (vector (NonLocal) 3388) 'float (vector (NonLocal) 3446) 'int (vector (NonLocal) 3448)) '(e-1) 'no-vararg (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list")) (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string")))) (CPrim1 'to-list (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list)))))) (list (VStr "")) 1742))) 1743 (Type "primitive-class" (VNone)))))) 1751))) 1752 (Type "primitive-class" (VNone))))) (VStr "__size__") (VNum 2)))dict(box (hash (VStr "a") (VNum 4) (VStr "c") (VNum 3) (VStr "__keys__") (VHash (box (hash (VStr "a") (VStr "a") (VStr "c") (VStr "c"))) 1790 (Type "set" (VHash (box (hash (VStr "__name__") (VStr "set") (VStr "__convert__") (VClosure (hash 'list (vector (NonLocal) 3450) 'abs (vector (NonLocal) 3440) 'print (vector (NonLocal) 3359) 'str (vector (NonLocal) 3444) 'bool (vector (NonLocal) 3442) 'python-add (vector (NonLocal) 3391) 'python-sub (vector (NonLocal) 3394) 'python-mult (vector (NonLocal) 3397) 'python-div (vector (NonLocal) 3400) 'python-floor-div (vector (NonLocal) 3403) 'python-mod (vector (NonLocal) 3406) 'python-lt (vector (NonLocal) 3409) 'python-lte (vector (NonLocal) 3412) 'python-gt (vector (NonLocal) 3415) 'python-gte (vector (NonLocal) 3418) 'python-eq (vector (NonLocal) 3421) 'python-notEq (vector (NonLocal) 3424) 'python-is (vector (NonLocal) 3427) 'python-isNot (vector (NonLocal) 3430) 'python-in (vector (NonLocal) 3433) 'python-notIn (vector (NonLocal) 3436) 'len (vector (NonLocal) 3438) 'True (vector (NonLocal) 3360) '___assertTrue (vector (NonLocal) 3362) 'e-1 (vector (Local) 3461) '___assertFalse (vector (NonLocal) 3364) '___assertIn (vector (NonLocal) 3367) '___assertNotIn (vector (NonLocal) 3370) '___assertEqual (vector (NonLocal) 3373) '___assertNotEqual (vector (NonLocal) 3376) '___assertIs (vector (NonLocal) 3379) '___assertIsNot (vector (NonLocal) 3382) '___assertRaises (vector (NonLocal) 3386) '___fail (vector (NonLocal) 3388) 'float (vector (NonLocal) 3446) 'int (vector (NonLocal) 3448) 'tuple (vector (NonLocal) 3453) 'dict (vector (NonLocal) 3460)) '(e-1) 'no-vararg (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CId 'e-1) (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) (CPrim1 'to-set (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list))))))) (list (VHash (box (hash (VStr "__size__") (VNum 0))) 1750 (Type "list" (VHash (box (hash (VStr "__name__") (VStr "list") (VStr "__size__") (VNum 0) (VStr "__convert__") (VClosure (hash 'abs (vector (NonLocal) 3440) 'print (vector (NonLocal) 3359) 'str (vector (NonLocal) 3444) 'bool (vector (NonLocal) 3442) 'python-add (vector (NonLocal) 3391) 'python-sub (vector (NonLocal) 3394) 'python-mult (vector (NonLocal) 3397) 'python-div (vector (NonLocal) 3400) 'python-floor-div (vector (NonLocal) 3403) 'python-mod (vector (NonLocal) 3406) 'python-lt (vector (NonLocal) 3409) 'python-lte (vector (NonLocal) 3412) 'python-gt (vector (NonLocal) 3415) 'python-gte (vector (NonLocal) 3418) 'python-eq (vector (NonLocal) 3421) 'python-notEq (vector (NonLocal) 3424) 'python-is (vector (NonLocal) 3427) 'python-isNot (vector (NonLocal) 3430) 'python-in (vector (NonLocal) 3433) 'python-notIn (vector (NonLocal) 3436) 'len (vector (NonLocal) 3438) 'True (vector (NonLocal) 3360) '___assertTrue (vector (NonLocal) 3362) 'e-1 (vector (Local) 3449) '___assertFalse (vector (NonLocal) 3364) '___assertIn (vector (NonLocal) 3367) '___assertNotIn (vector (NonLocal) 3370) '___assertEqual (vector (NonLocal) 3373) '___assertNotEqual (vector (NonLocal) 3376) '___assertIs (vector (NonLocal) 3379) '___assertIsNot (vector (NonLocal) 3382) '___assertRaises (vector (NonLocal) 3386) '___fail (vector (NonLocal) 3388) 'float (vector (NonLocal) 3446) 'int (vector (NonLocal) 3448)) '(e-1) 'no-vararg (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list")) (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string")))) (CPrim1 'to-list (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list)))))) (list (VStr "")) 1742))) 1743 (Type "primitive-class" (VNone)))))) 1751))) 1752 (Type "primitive-class" (VNone))))) (VStr "__size__") (VNum 2)))
-=====================================================
 = Results for dict-items.py =
 =====================================================
 === Expected stdout ===
@@ -121,17 +108,6 @@ exception: Assert failed: values are not Equal: dict(box (hash #0=(VStr "a") (VN
 
 === Actual stderr ===
 getAttr: non-existent attribute, Unbound Identifier: (VStr "items")
-=====================================================
-= Results for dict-keys.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: (VStr "keys")
 =====================================================
 = Results for dict-set-keys.py =
 =====================================================
@@ -182,17 +158,6 @@ parse: error is described above.
 getAttr: non-existent attribute, Unbound Identifier: (VStr "values")
 =====================================================
 = Results for invalid-reraise.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: No exception raised
-=====================================================
-= Results for reraise.py =
 =====================================================
 === Expected stdout ===
 
@@ -377,7 +342,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 12785Unbound location error.
+lookupStore: 13065Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
