@@ -33,7 +33,7 @@ ParselTongue.
   [CSet (id : CExp) (value : CExp)]
   [CAttribute (attr : symbol) (value : CExp)]
   [CSubscript (value : CExp) (attr : CExp)]
-  
+  [CDel (targets : (listof CExp))]
   ;; loops
   [CWhile (test : CExp) (body : CExp) (orelse : CExp) (vlist : (listof (ScopeType * symbol)))]
   

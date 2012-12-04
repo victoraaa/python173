@@ -188,6 +188,13 @@ structure that you define in python-syntax.rkt
               (get-structured-python left)
               (get-structured-python right))]
     
+    [(hash-table ('nodetype "Delete")
+                 ('targets targets))
+     (PyDel (map get-structured-python targets))]
+    
+    [(hash-table ('nodetype "Set")
+                 ('elts elts))
+     (PyCollectionSet (map get-structured-python elts))]
     
     ;; def
     [(hash-table ('nodetype "FunctionDef")

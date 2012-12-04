@@ -36,6 +36,10 @@
              (foldl (lambda (a b) (append b a))
                     (list)
                     (map (lambda (e) (get-vars e)) elts))]
+    [PyCollectionSet (elts)
+                     (foldl (lambda (a b) (append b a))
+                            (list)
+                            (map (lambda (e) (get-vars e)) elts))]
     [PyReturn (value) (get-vars value)]
     [PyBreak () (list)]
     [PyContinue () (list)]
@@ -50,6 +54,7 @@
     [PySubscript (value attr)
                  (append (get-vars value)
                          (get-vars attr))]
+    [PyDel (targets) (list)]
     
     ;; loops
     [PyWhile (test body orelse) (list)] ;; really?
@@ -93,6 +98,7 @@
     [PyRaise (exc) (get-vars exc)]
     [Py-NotExist () (list)]
     [PyUnaryOp (op arg) (get-vars arg)]
+    
     [PySet (lhs value) ;;PySet case may need to change, because it never actually appears since it only exists from use in PyAssign
            (append
                (get-vars value)
@@ -273,12 +279,19 @@
     
     
     [PyList (elts) (CHash (hash-set (desugar-hash (pynum-range (length elts)) elts) (CStr "__size__") (CNum (length elts))) (cType "list" (CId 'list)))]
-    [PyDict (keys vals) (CHash (hash-set (desugar-hash keys vals) (CStr "__size__") (CNum (length keys))) (cType "dict" (CId 'dict)))]
+    [PyDict (keys vals) (CHash (hash-set (hash-set (desugar-hash keys vals) 
+                                                   (CStr "__size__") 
+                                                   (CNum (length keys)))
+                                         (CStr "__keys__") 
+                                         (desugar (PyCollectionSet keys))) 
+                               (cType "dict" (CId 'dict)))]
     [PyTuple (elts) (CHash (hash-set (desugar-hash (pynum-range (length elts)) elts) (CStr "__size__") (CNum (length elts))) (cType "tuple" (CId 'tuple)))]
+    [PyCollectionSet (elts) (CHash (desugar-hash elts elts) (cType "set" (CId 'set)))]
     
     [PyAttribute (attr value) (CAttribute attr (desugar value))]
     [PySubscript (value attr) (CSubscript (desugar value) (desugar attr))]
-    
+    [PyDel (target)
+           (CDel (map desugar target))]
     ;; loops
     [PyWhile (test body orelse) (CWhile (desugar test) (desugar body) (desugar orelse) (list))]
     [PyFor (target iter body orelse) (CLet 'index-counter

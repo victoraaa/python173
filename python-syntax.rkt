@@ -21,6 +21,8 @@
   [PyNonlocal (ids : (listof symbol))]
   [PyAttribute (attr : symbol) (value : PyExpr)]
   [PySubscript (value : PyExpr) (attr : PyExpr)]
+  [PyDel (targets : (listof PyExpr))]
+  
   
   ;; loops
   [PyWhile (test : PyExpr) (body : PyExpr) (orelse : PyExpr)]
@@ -49,6 +51,7 @@
   [PyList (elts : (listof PyExpr))]
   [PyDict (keys : (listof PyExpr)) (values : (listof PyExpr))]
   [PyTuple (elts : (listof PyExpr))]
+  [PyCollectionSet (elts : (listof PyExpr))]
   
   ;; Exceptions
   [PyTryExcept (body : PyExpr) (handlers : (listof PyExceptHandler)) (orelse : PyExpr)]

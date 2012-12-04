@@ -624,19 +624,47 @@ that calls the primitive `print`.
 
 (define dict-primitive-class
   (CHash (hash (list (values (CStr "__name__") (CStr "dict"))
-                     (values (CStr "__size__") (CNum 0))
+                   ;  (values (CStr "__size__") (CNum 0))
                      (values (CStr "get") (CFunc (list 'self 'e-1 'e-2)
                                                  (CTryExcept 
                                                   (CReturn (CSubscript (CId 'self) (CId 'e-1))) ;; Check exception...
-                                                             (list (CExcHandler 'e (CId 'UnboundLocalError) (CId 'e-2)))
-                                                             (CPass))
+                                                  (list (CExcHandler 'e (CId 'UnboundLocalError) (CId 'e-2)))
+                                                  (CPass))
                                                  (list)
                                                  (list (CNone))
                                                  'no-vararg))
+                     (values (CStr "__getitem__") (CFunc (list 'self 'e-1 'e-2)
+                                                         (CTryExcept 
+                                                          (CReturn (CSubscript (CId 'self) (CId 'e-1))) ;; Check exception...
+                                                          (list (CExcHandler 'e (CId 'UnboundLocalError) (CId 'e-2)))
+                                                          (CPass))
+                                                         (list)
+                                                         (list (CNone))
+                                                         'no-vararg))
                      ;;(values (CStr "update") ())
                ;;      (values (CStr "keys") ())
                      ))
          (cType "primitive-class" (CNone)))) ;; If we need a __convert__ method, we'll write one later. 
+
+;; primitive class for sets
+(define set-primitive-class
+  (CHash (hash (list (values (CStr "__name__") (CStr "set"))
+                     (values (CStr "__convert__") (CFunc (list 'e-1)
+                                                         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set"))
+                                                              (CId 'e-1)
+                                                              (CIf (CPrim2 'or
+                                                                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
+                                                                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")))
+                                                                   (CPrim1 'to-set (CId 'e-1))
+                                                                   (CError (CApp (CId 'TypeError)
+                                                                                 (list)
+                                                                                 (list)
+                                                                                 (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))))
+                                                         (list)
+                                                         (list (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                                                         'no-vararg))
+                     ))
+         (cType "primitive-class" (CNone))))
 
 
 (define make-range
@@ -969,6 +997,7 @@ that calls the primitive `print`.
         (bind 'tuple (CNone))
         (bind 'tuple tuple-primitive-class)
         (bind 'dict dict-primitive-class)
+        (bind 'set set-primitive-class)
         (bind 'callable callable)
         (bind 'range make-range)
         (bind 'python-make-range python-make-range)

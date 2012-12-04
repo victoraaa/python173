@@ -1,7 +1,10 @@
-x=3
-for x in {1:11, 2:22, 3:33}:
-  print(x)
-print(x)
+s = set(['a', 'b', 'c'])
+
+#print(s)
+
+print('a' in s)
+print('b' in s)
+print('c' in s)
 
 
 #TO DO:

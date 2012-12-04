@@ -533,8 +533,14 @@
   (type-case CVal v1
     [VHash (elts1 uid1 type1) (type-case CVal v2
                                 [VHash (elts2 uid2 type2) (if (equal? (Type-name type1) (Type-name type2))
-                                                              (equal? (unbox elts1) (unbox elts2)) ;; TODO recur!
+                                                              ;                              (equal? (unbox elts1) (unbox elts2)) ;; TODO recur!
+                                                              (and (foldl (lambda (a x y) (and a (check-equality x y))) #t (hash-keys (unbox elts1)) (hash-keys (unbox elts2)))
+                                                                   (foldl (lambda (a x y) (and a (check-equality x y))) #t (hash-values (unbox elts1)) (hash-values (unbox elts2))))
                                                               false)]
+                                
+                                ; (and (foldl (lambda (a y) (and x y)) #t (map check-equality (hash-keys (unbox elts1)) (hash-keys (unbox elts2))))
+                               ;      (foldl (lambda (a y) (and x y)) #t (map check-equality (hash-values (unbox elts1) (hash-values (unbox elts2))))))
+                                
                                 [else false])]
     [else (equal? v1 v2)]))
 
@@ -699,7 +705,8 @@
                                                                        (ValueA (VTrue) s2)
                                                                        (ValueA (VFalse) s2))]
                                  [(or (equal? (Type-name type) "list")
-                                      (equal? (Type-name type) "tuple")) (if (member v1 (hash-values (unbox elts-box)))
+                                      (equal? (Type-name type) "tuple")
+                                      (equal? (Type-name type) "set")) (if (member v1 (hash-values (unbox elts-box)))
                                                                              (ValueA (VTrue) s2)
                                                                              (ValueA (VFalse) s2))])]
                         [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])]
@@ -853,6 +860,20 @@
                                   (new-uid) 
                                   (transform-ctype (cType "tuple" (CId 'tuple)) env store))] ;; string to list
                  [else (error 'interp-to-list "Unsupported Type")])]
+    ['to-set (type-case CVal arg
+               [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
+                                          (VHash (box (local [(define sz (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
+                                                                           [some (s) (VNum-n s)] ;; TODO could be unsafe...
+                                                                           [none () (error 'interp-to-set "List without a size field")]))]
+                                                        (hash (map (lambda (x) (local [(define v (type-case (optionof CVal) (hash-ref (unbox elts) x)
+                                                                                                   [some (sv) sv]
+                                                                                                   [none () (error 'interp-to-set "List or tuple with a missing element")]))]
+                                                                                 (values v v))) (vnum-range sz)))))
+                                                 (new-uid)
+                                                 (transform-ctype (cType "set" (CId 'set)) env store))
+                                          (error 'interp-to-set "Arguments of this type aren't supported here. "))]
+               [VStr (s) (error 'interp-to-set "We weren't expecting to need this case...")]
+               [else (error 'interp-to-set "Unsupported Type")])]
     [else (error prim "handle-unary: Case not handled yet")]))
 
 ;; wrapper around unary operations
@@ -1211,6 +1232,9 @@
 (define (cnum-range [n : number]) : (listof CExp)
   (map (lambda (x) (CNum x)) (range2 n)))
 
+(define (vnum-range [n : number]) : (listof CVal)
+  (map (lambda (x) (VNum x)) (range2 n)))
+
 (define (range2 [n : number]) : (listof number)
   (reverse (range-backwards n)))
 
@@ -1368,6 +1392,28 @@
             [else (error 'correct-list-subscript "non-Int passed as subscript for a list")])]
     [else (error 'correct-list-subscript "non-VNum passed as subscript for a list")]))
 
+(define (interp-delete [targets : (listof CExp)]
+                       [env : Env]
+                       [store : Store]) : Store
+  (cond
+    [(empty? targets) store]
+    [else
+     (type-case CExp (first targets)
+       [CId (id) (interp-delete (rest targets) env (augmentStore (lookupEnv id env) (VUnbound) store))]
+       [CSubscript (value attr)
+                   (type-case AnswerC (interp-env value env store)
+                     [ValueA (v1 s1) (type-case AnswerC (interp-env attr env s1)
+                                       [ValueA (v2 s2) (if (isInstanceOf v1 "dict" env s2)
+                                                           (begin (set-box! (VHash-elts v1) (hash-remove (unbox (VHash-elts v1)) v2))
+                                                                  (set-box! (VHash-elts (getAttr (VStr "__keys__") v1 env s2))
+                                                                            (hash-remove (unbox (VHash-elts (getAttr (VStr "__keys__") v1 env s2)))
+                                                                                         v2))
+                                                                  (interp-delete (rest targets) env s2))
+                                                           (error 'interp-delete "we're not expecting to get anything but dictionaries and ids for delete"))]
+                                       [else (error 'interp-delete "we expect that all attributes being deleted in the tests to be ValueA's")])]
+                     [else (error 'interp-delete "we expect that all values being deleted in the tests to be ValueA's")])]
+       [else (error 'interp-delete "we expect that delete will only receive CId's or dictionaries (CSubscript's)")])]))
+
 ;; interp-env
 (define (interp-env [expr : CExp] 
                     [env : Env] 
@@ -1488,6 +1534,10 @@
                                                                         [(isInstanceOf v-obj "dict" env s3)
                                                                          (try (ValueA v-value 
                                                                                       (begin (set-box! elts (hash-set (unbox elts) v-attr v-value))
+                                                                                             (set-box! (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))
+                                                                                                       (hash-set (unbox (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))) 
+                                                                                                                 v-attr
+                                                                                                                 v-attr))
                                                                                              s3))
                                                                               (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
                                                                                                                    (list)
@@ -1607,6 +1657,8 @@
     
     [CFunc (args body vlist defargs vararg) 
            (interp-func args vararg body vlist defargs (list) env store)]
+    [CDel (targets)
+          (ValueA (VPass) (interp-delete targets env store))]
     ;(ValueA (VClosure (newEnvScope env vlist args) args body () (new-uid)) store)] ;; TODO use vlist...
     
     [CPrim1 (prim arg) (interp-unary prim arg env store)]
