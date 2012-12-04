@@ -189,7 +189,7 @@
 (define (lookupEnv [id : symbol]
                    [env : Env]) : Location
   (type-case (optionof SLTuple) (hash-ref env id)
-    [none () (error 'lookupEnv (string-append "Unbound indentifier error: " (symbol->string id)))]
+    [none () (error 'lookupEnv (string-append "Unbound identifier error: " (symbol->string id)))]
     [some (v) (local [(define-values (t l) v)]
                 ;(begin (display (string-append (string-append (symbol->string id) " ") (to-string l)))l))]))
                 l)]))
@@ -479,20 +479,40 @@
     [(flonum? n) (error 'duplicate-tuple "does not work with floats...")]
     [(<= n 0) (hash (list))]
     [else (make-new-map (map (lambda (x) (VNum x)) 
-                             (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
+                             (range (* n 
+                                       ;(argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) 
+                                       (type-case (optionof CVal) 
+                                         (hash-ref tup (VStr "__size__"))
+                                         [some (s) (VNum-n s)]
+                                         [none () (error 'duple "no size field")]))))
                         (repeat-list (hash-values tup) n))]))
+
+(define (cval-range [n : number]) : (listof CVal)
+  (map (lambda (x) (VNum x)) (range n)))
 
 ;; Assumes we are dealing with VHashs
 (define (merge-python-lists (l1 : CVal) (l2 : CVal)) : (hashof CVal CVal)
   (local ([define h1 (unbox (VHash-elts l1))]
           [define h2 (unbox (VHash-elts l2))]
-          [define keylenh (length (hash-keys h1))])
-    (foldl (lambda (x h) (hash-set h (VNum (+ (VNum-n x) keylenh)) 
-                                   (type-case (optionof CVal) (hash-ref h2 x)
-                                     [some (s) s]
-                                     [none () (error 'merge-python-lists "???")])))
-           h1
-           (hash-keys h2))))
+          [define len2 (type-case (optionof CVal) (hash-ref h2 (VStr "__size__"))
+                         [some (s) (VNum-n s)]
+                         [none () (error 'merge-python-lists (string-append "?? "
+                                                                            (to-string h2)))])]
+          [define len1 (type-case (optionof CVal) (hash-ref h1 (VStr "__size__"))
+                         [some (s) (VNum-n s)]
+                         [none () (error 'merge-python-lists (string-append "?? "
+                                                                            (to-string h1)))])]
+          [define keylenh (type-case (optionof CVal) (hash-ref h1 (VStr "__size__"))
+                            [some (s) (VNum-n s)]
+                            [none () (error 'merge-python-lists "???1")])])
+    (hash-set (foldl (lambda (x h) (hash-set h (VNum (+ (VNum-n x) keylenh)) 
+                                             (type-case (optionof CVal) (hash-ref h2 x)
+                                               [some (s) s]
+                                               [none () (error 'merge-python-lists "???")])))
+                     h1
+                     (cval-range len2)) 
+              (VStr "__size__") 
+              (VNum (+ len1 len2)))))
 
 
 
@@ -734,7 +754,10 @@
            (cond
              [(and (or (equal? (Type-name t) "list")
                        (or (equal? (Type-name t) "tuple")
-                           (equal? (Type-name t) "dict"))) (empty? (hash-keys (unbox elts)))) false]
+                           (equal? (Type-name t) "dict"))) (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
+                                                             [none () (error 'isTruthy (string-append "Does not have size field:"
+                                                                                                      (to-string value)))]
+                                                             [some (s) (= (VNum-n s) 0)])) false]
              [else true])]
     [VClosure (e a varg body defargs uid) true]
     #|
@@ -806,17 +829,33 @@
                [else (error 'interp-to-num "Should not be called on this type.")])]
     ['to-list (type-case CVal arg
                 [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
-                                      ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
-                                           (VHash (box (unbox elts)) (new-uid) (transform-ctype (cType "list" (CId 'list)) env store))
+                                           ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
+                                           (VHash (box (hash-set (unbox elts) 
+                                                                 (VStr "__size__") 
+                                                                 (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
+                                                                   [some (s) s]
+                                                                   [none () (error 'interp-to-list "no __size__ field")]))) 
+                                                  (new-uid) 
+                                                  (transform-ctype (cType "list" (CId 'list)) env store))
                                            (error 'interp-to-list "arguments of this type are not supported"))]
-                [VStr (s) (VHash (box (change-string-to-list s)) (new-uid) (transform-ctype (cType "list" (CId 'list)) env store))] ;; string to list
+                [VStr (s) (VHash (box (hash-set (change-string-to-list s) (VStr "__size__") (VNum (string-length s)))) 
+                                 (new-uid) 
+                                 (transform-ctype (cType "list" (CId 'list)) env store))] ;; string to list
                 [else (error 'interp-to-list "Unsupported Type")])]
     ['to-tuple (type-case CVal arg
                  [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
-                                       ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
-                                            (VHash (box (unbox elts)) (new-uid) (transform-ctype (cType "tuple" (CId 'tuple)) env store))
-                                            (error 'interp-to-list "arguments of this type are not supported"))]
-                 [VStr (s) (VHash (box (change-string-to-list s)) (new-uid) (transform-ctype (cType "tuple" (CId 'tuple)) env store))] ;; string to list
+                                            ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
+                                            (VHash (box (hash-set (unbox elts) 
+                                                                  (VStr "__size__") 
+                                                                  (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
+                                                                    [some (s) s]
+                                                                    [none () (error 'interp-to-tuple "no __size__ field")])))
+                                                   (new-uid) 
+                                                   (transform-ctype (cType "tuple" (CId 'tuple)) env store))
+                                            (error 'interp-to-tuple "arguments of this type are not supported"))]
+                 [VStr (s) (VHash (box (hash-set (change-string-to-list s) (VStr "__size__") (VNum (string-length s)))) 
+                                  (new-uid) 
+                                  (transform-ctype (cType "tuple" (CId 'tuple)) env store))] ;; string to list
                  [else (error 'interp-to-list "Unsupported Type")])]
     [else (error prim "handle-unary: Case not handled yet")]))
 
@@ -1543,13 +1582,25 @@
     |#
     
     
-    [CWhile (test body orelse)
-            (type-case AnswerC (interp-env test env store)
+    [CWhile (test body orelse vlist)
+            (type-case AnswerC (interp-env test 
+                                           env
+                                           ;  (newEnvScope env
+                                         ;               vlist
+                                         ;               (list)
+                                         ;               'no-vararg) 
+                                           store)
               [ValueA (v s) (if (isTruthy v)
-                                (type-case AnswerC (interp-env body env s)
+                                (type-case AnswerC (interp-env body 
+                                                               env
+                                                               ;(newEnvScope env
+                                                               ;             vlist
+                                                               ;             (list)
+                                                               ;             'no-vararg)  
+                                                               s)
                                   [ValueA (v2 s2) (interp-env expr env s2)]
                                   [BreakA (v2 s2) (ValueA v2 s2)]
-                                  [ContinueA (s2) (interp-env expr env s2)]
+                                  [ContinueA (s2) (interp-env expr env s2)] ;; TODO maybe...
                                   [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                   [ReturnA (v2 s2) (ReturnA v2 s2)])
                                 (ValueA (VPass) s))]

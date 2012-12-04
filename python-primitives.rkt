@@ -21,7 +21,7 @@ primitives here.
     [VTrue () "True"]
     [VClosure (env args varg body defargs uid) (error 'prim "Can't print closures yet")]
     ;;Non-TA code:
-    [VNone () "void"]
+    [VNone () "None"]
     [VFalse () "False"]
     [VPass () ""]
     [VUnbound () "Unbound"]

@@ -23,7 +23,7 @@ that calls the primitive `print`.
     (CIf (CApp (CId 'python-eq) 
                (list (CId 'e-1) (CId 'e-2)) 
                (list) 
-               (CHash (hash (list)) (cType "list" (CNone)))
+               (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
                )
          (CPass) 
          (CError (CStr "Assert failed: values are not Equal"))
@@ -254,7 +254,7 @@ that calls the primitive `print`.
                    (CError (CApp (CId 'ZeroDivisionError)
                                  (list)
                                  (list)
-                                 (CHash (hash (list)) (cType "list" (CId 'list)))))
+                                (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
                    (CPrim2 'num/ (CPrim1 'to-float (CId 'e-1)) (CPrim1 'to-float (CId 'e-2))))
               (CError (CStr "/: Not supported for this type.")))
          (list)
@@ -267,7 +267,7 @@ that calls the primitive `print`.
          (CPrim1 'to-float (CPrim1 'to-int (CApp (CId 'python-div)
                                                  (list (CId 'e-1) (CId 'e-2))
                                                  (list)
-                                                 (CHash (hash (list)) (cType "list" (CId 'list))))))
+                                                 (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))))
          (list)
          (list)
          'no-vararg))
@@ -286,7 +286,7 @@ that calls the primitive `print`.
                    (CError (CApp (CId 'ZeroDivisionError)
                                  (list)
                                  (list)
-                                 (CHash (hash (list)) (cType "list" (CId 'list)))))
+                                 (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
                    (CPrim2 'num% (CId 'e-1) (CId 'e-2)))
               (CError (CStr "%: Not supported for this type.")))
          (list)
@@ -483,15 +483,15 @@ that calls the primitive `print`.
 
 (define len 
   (CFunc (list 'e-1)
-         (CIf (CPrim2 'or
-                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
-                      (CPrim2 'or
-                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
-                              (CPrim2 'or
-                                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "dict"))
-                                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")))))
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
               (CPrim1 'length (CId 'e-1))
-              (CError (CStr "len: Argument must be a string, list or dict (so far...).")))
+              (CIf (CPrim2 'or
+                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
+                           (CPrim2 'or
+                                   (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "dict"))
+                                   (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))))
+                   (CAttribute '__size__ (CId 'e-1))
+                   (CError (CStr "len: Argument must be a string, list, tuple or dict (so far...)."))))
          (list)
          (list)
          'no-vararg))
@@ -585,25 +585,27 @@ that calls the primitive `print`.
          (cType "primitive-class" (CNone))))
 
 (define list-primitive-class
-  (CHash (hash-set (hash-set (hash (list)) 
+  (CHash (hash-set (hash-set (hash (list (values (CStr "__size__") (CNum 0))))
                              (CStr "__name__") 
                              (CStr "list")) 
                    (CStr "__convert__") 
                    (CFunc (list 'e-1)
-                          (CIf (CPrim2 'or
-                                       (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
-                                       (CPrim2 'or 
-                                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
-                                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))))
-                               (CPrim1 'to-list (CId 'e-1))
-                               (CError (CId 'TypeError))) ;; TODO be more specific!
+                          (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
+                               (CPrim2 'or 
+                                            (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
+                                            (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))))
+                                    (CPrim1 'to-list (CId 'e-1))
+                                    (CError (CApp (CId 'TypeError)
+                                                  (list)
+                                                  (list)
+                                                  (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))) ;; TODO be more specific!
                           (list)
                           (list (CStr ""))
                           'no-vararg)) 
          (cType "primitive-class" (CNone))))
 
 (define tuple-primitive-class
-  (CHash (hash-set (hash-set (hash (list)) 
+  (CHash (hash-set (hash-set (hash (list (values (CStr "__size__") (CNum 0)))) 
                              (CStr "__name__") 
                              (CStr "tuple")) 
                    (CStr "__convert__") 
@@ -612,18 +614,24 @@ that calls the primitive `print`.
                                (CId 'e-1)
                                (CPrim1 'to-tuple (CId 'e-1)))
                           (list)
-                          (list (CHash (hash (list)) (cType "tuple" (CId 'tuple))))
+                          (list (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "tuple" (CId 'list))))
                           'no-vararg)) 
          (cType "primitive-class" (CNone))))
 
 (define dict-primitive-class
   (CHash (hash (list (values (CStr "__name__") (CStr "dict"))
-            ;   (values (CStr "get") (CFunc (list 'self 'e-1)
-            ;                                 ()
-            ;                                 (list)
-            ;                                 (list)
-            ;                                 'no-vararg))
-               ))
+                     (values (CStr "__size__") (CNum 0))
+                     (values (CStr "get") (CFunc (list 'self 'e-1 'e-2)
+                                                 (CTryExcept 
+                                                  (CReturn (CSubscript (CId 'self) (CId 'e-1))) ;; Check exception...
+                                                             (list (CExcHandler 'e (CId 'UnboundLocalError) (CId 'e-2)))
+                                                             (CPass))
+                                                 (list)
+                                                 (list (CNone))
+                                                 'no-vararg))
+                     ;;(values (CStr "update") ())
+               ;;      (values (CStr "keys") ())
+                     ))
          (cType "primitive-class" (CNone)))) ;; If we need a __convert__ method, we'll write one later. 
 
 
@@ -637,7 +645,7 @@ that calls the primitive `print`.
               (CApp (CId 'python-make-range) 
                     (list (CNum 0) (CId 'e-1) (CNum 1)) 
                     (list)
-                    (CHash (hash (list)) (cType "list" (CId 'list)))
+                    (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
                     )
               (CIf (CPrim2 'and
                            (CPrim2 'is (CId 'e-3) (CNone))
@@ -647,7 +655,7 @@ that calls the primitive `print`.
                    (CApp (CId 'python-make-range) 
                          (list (CId 'e-1) (CId 'e-2) (CNum 1)) 
                          (list)
-                         (CHash (hash (list)) (cType "list" (CId 'list)))
+                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
                          )
                    (CIf (CPrim2 'and 
                                 (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "int"))
@@ -656,18 +664,18 @@ that calls the primitive `print`.
                                         (CPrim2 'eq (CPrim1 'tagof (CId 'e-3)) (CStr "int"))))
                         (CIf (CPrim1 'not (CPrim2 'eq (CId 'e-3) (CNum 0)))
                              (CApp (CId 'python-make-range) 
-                              (list (CId 'e-1) (CId 'e-2) (CId 'e-3)) 
-                              (list)
-                              (CHash (hash (list)) (cType "list" (CId 'list)))
-                              )
+                                   (list (CId 'e-1) (CId 'e-2) (CId 'e-3)) 
+                                   (list)
+                                   (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
+                                   )
                              (CError (CApp (CId 'ValueError)
                                            (list)
                                            (list)
-                                           (CHash (hash (list)) (cType "list" (CNone))))))
+                                           (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))))
                         (CApp (CId 'TypeError)
                               (list)
                               (list)
-                              (CHash (hash (list)) (cType "list" (CNone))))))) 
+                              (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))))) 
          (list)
          (list (CNone) (CNone))
          'no-vararg))
@@ -678,21 +686,21 @@ that calls the primitive `print`.
         (CFunc (list) (CError (CStr "Dummy! (python-make-range)")) (list) (list) 'no-vararg)
         (CSet (CId 'python-make-range)
               (CFunc (list 'e-1 'e-2 'e-3)
-                     (CIf (CPrim2 'eq (CId 'e-1) (CId 'e-2))
-                          (CHash (hash (list)) (cType "list" (CId 'list)))
+                     (CIf (CPrim2 'num-gte (CId 'e-1) (CId 'e-2))
+                          (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
                           (CPrim2 'list+ 
-                                  (CHash (hash-set (hash (list)) (CNum 0) (CId 'e-1)) (cType "list" (CId 'list)))
+                                  (CHash (hash-set (hash (list (values (CStr "__size__") (CNum 1)))) (CNum 0) (CId 'e-1)) (cType "list" (CId 'list)))
                                   (CApp (CId 'python-make-range) 
                                         (list (CPrim2 'num+ (CId 'e-1) (CId 'e-3)) (CId 'e-2) (CId 'e-3))
                                         (list)
-                                        (CHash (hash (list)) (cType "list" (CId 'list)))
+                                        (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
                                         )))
                      (list)
                      (list)
                      'no-vararg))))
 
 
-#|
+
 ;; any
 (define python-any
   (CFunc (list 'e-1)
@@ -703,7 +711,7 @@ that calls the primitive `print`.
                       (CApp (CId 'python-iter-help)
                             (list (CId 'e-1) (CId 'bool) (CNum 0))
                             (list)
-                            (CHash (hash (list)) (Type "list" (list)))))
+                            (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
               (CError (CId 'TypeError))) ;; TODO more specific?
          (list)
          (list)
@@ -719,7 +727,7 @@ that calls the primitive `print`.
                       (CApp (CId 'python-iter-help)
                             (list (CId 'e-1) (CId 'python-not) (CNum 0))
                             (list)
-                            (CHash (hash (list)) (Type "list" (list)))))
+                            (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
               (CError (CId 'TypeError))) ;; TODO more specific?
          (list)
          (list)
@@ -732,15 +740,15 @@ that calls the primitive `print`.
               (CApp (CId 'python-iter-help)
                     (list (CId 'e-2) (CId 'bool) (CNum 0))
                     (list)
-                    (CHash (hash (list)) (Type "list" (list))))
+                    (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
               (CIf (CApp (CId 'callable)
                          (list (CId 'e-1))
                          (list)
-                         (CHash (hash (list)) (Type "list" (list))))
+                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                    (CApp (CId 'python-iter-help)
                          (list (CId 'e-2) (CId 'e-1) (CNum 0))
                          (list)
-                         (CHash (hash (list)) (Type "list" (list))))
+                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                    (CError (CId 'TypeError))))
          (list)
          (list)
@@ -758,28 +766,28 @@ that calls the primitive `print`.
                                 (list (CId 'e-index) (CApp (CId 'len)
                                                            (list (CId 'e-list))
                                                            (list)
-                                                           (CHash (hash (list)) (Type "list" (list)))))
+                                                           (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
                                 (list)
-                                (CHash (hash (list)) (Type "list" (list))))
+                                (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                           (CIf (CApp (CId 'e-test) ;; TODO might want to check the type here. Or just in interpreter...
-                                     () ;; check subscript 'e-index of list
+                                     (list (CSubscript (CId 'e-list) (CId 'e-index))) ;; check subscript 'e-index of list
                                      (list)
-                                     (CHash (hash (list)) (Type "list" (list))))
+                                     (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                                (CPrim2 'list+ ;; check for subscript on next line as well...
-                                       (CHash (hash-set (hash (list)) (CNum 0) (SUBSCRIPT 'e-index)) (Type "list" (list))) 
+                                       (CHash (hash-set (hash (list)) (CNum 0) (CSubscript (CId 'e-list) (CId 'e-index))) (cType "list" (CNone))) 
                                        (CApp (CId 'python-iter-help)
-                                             (list (CId 'e-list) (CId 'e-test) (CPrim2 num+ (CId 'e-index) (CNum 1)))
+                                             (list (CId 'e-list) (CId 'e-test) (CPrim2 'num+ (CId 'e-index) (CNum 1)))
                                              (list)
-                                             (CHash (hash (list)) (Type "list" (list)))))
+                                             (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
                                (CApp (CId 'python-iter-help)
-                                     (list (CId 'e-list) (CId 'e-test) (CPrim2 num+ (CId 'e-index) (CNum 1)))
+                                     (list (CId 'e-list) (CId 'e-test) (CPrim2 'num+ (CId 'e-index) (CNum 1)))
                                      (list)
-                                     (CHash (hash (list)) (Type "list" (list)))))
-                          (CHash (hash (list)) (Type "list" (list))))
+                                     (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
+                          (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                      (list)
                      (list)
                      'no-vararg))))
-|#        
+      
 
 
 (define python-isinstance
@@ -795,7 +803,7 @@ that calls the primitive `print`.
               (CError (CApp (CId 'TypeError)
                             (list)
                             (list)
-                            (CHash (hash (list)) (cType "list" (CNone))))))
+                            (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))))
          (list)
          (list)
          'no-vararg))
@@ -849,6 +857,9 @@ that calls the primitive `print`.
 (define name-error
   ;(CClass (hash (list)) (Type "NameError" (VNone))))
   (CHash (hash (list (values (CStr "__name__") (CStr "NameError")))) (cType "class" (CNone))))
+
+(define value-error
+  (CHash (hash (list (values (CStr "__name__") (CStr "ValueError")))) (cType "class" (CNone))))
 
 (define Exception
   ;(CClass (hash (list)) (Type "Exception" (CNone))))
@@ -932,6 +943,8 @@ that calls the primitive `print`.
         (bind 'False (CFalse))
         (bind 'create-global-env create-global-env)
         (bind 'isinstance python-isinstance)
+        (bind 'python-iter-help python-iter-help)
+        (bind 'filter python-filter)
         
         ;; exceptions (prelim...)
         (bind 'Exception Exception)
@@ -942,6 +955,7 @@ that calls the primitive `print`.
         (bind 'RuntimeError runtime-error)
         (bind 'UnboundLocalError unbound-local-error)
         (bind 'NameError name-error)
+        (bind 'ValueError value-error)
         
         ;;binding of built-in classes
         

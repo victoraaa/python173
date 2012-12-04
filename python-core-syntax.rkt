@@ -35,7 +35,7 @@ ParselTongue.
   [CSubscript (value : CExp) (attr : CExp)]
   
   ;; loops
-  [CWhile (test : CExp) (body : CExp) (orelse : CExp)]
+  [CWhile (test : CExp) (body : CExp) (orelse : CExp) (vlist : (listof (ScopeType * symbol)))]
   
   ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.
   [CUnbound]
