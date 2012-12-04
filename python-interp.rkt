@@ -1426,7 +1426,9 @@
                    (type-case AnswerC (interp-env value env store)
                      [ValueA (v1 s1) (type-case AnswerC (interp-env attr env s1)
                                        [ValueA (v2 s2) (if (isInstanceOf v1 "dict" env s2)
-                                                           (begin (set-box! (VHash-elts v1) (hash-remove (unbox (VHash-elts v1)) v2))
+                                                           (begin (set-box! (VHash-elts v1) (hash-set (hash-remove (unbox (VHash-elts v1)) v2)
+                                                                                                      (VStr "__size__")
+                                                                                                      (VNum (- (VNum-n (getAttr (VStr "__size__") v1 env s2)) 1))))
                                                                   (set-box! (VHash-elts (getAttr (VStr "__keys__") v1 env s2))
                                                                             (hash-remove (unbox (VHash-elts (getAttr (VStr "__keys__") v1 env s2)))
                                                                                          v2))
@@ -1562,7 +1564,7 @@
                                                                                  (ValueA v-value 
                                                                                          (begin (set-box! elts (hash-set (unbox elts) (VNum _index) v-value))
                                                                                                 s3)))))]
-                                                                        [(isInstanceOf v-obj "dict" env s3)
+                                                                        [(isInstanceOf v-obj "dict" env s3) ;;TODO TODO TODO handle size here...
                                                                          (try (ValueA v-value 
                                                                                       (begin (set-box! elts (hash-set (unbox elts) v-attr v-value))
                                                                                              (set-box! (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))
@@ -1624,7 +1626,7 @@
                                                                     [VStr (s) s]
                                                                     [else (error 'interp-env:CApp:VHash "Non-string as name of class")])]) 
                                                      vf))
-                                        sf)] ;; TODO inheritance...
+                                        sf)] ;; TODO inheritance... TODO TODO TODO call __init__ if it exists!
                                [(equal? (Type-name type) "primitive-class")
                                 (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__convert__"))
                                   [none () (error 'interp-env:CApp:VHash "Primitive class lacks __convert__ field")]
