@@ -1,5 +1,5 @@
-61 tests succeeded.
-29 tests failed.
+63 tests succeeded.
+27 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for all.py =
@@ -85,7 +85,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-exception: tried to get a subscript from a non-hash CVal
+getAttr: non-existent attribute, Unbound Identifier: (VNum 11)
 =====================================================
 = Results for dict-clear.py =
 =====================================================
@@ -356,28 +356,6 @@ lookupEnv: Unbound identifier error: iter
 === Actual stderr ===
 lookupEnv: Unbound identifier error: iter
 =====================================================
-= Results for range-list.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: Assert failed: values are not Equal
-=====================================================
-= Results for range-vars.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: Assert failed: values are not Equal
-=====================================================
 = Results for freevar-in-method.py =
 =====================================================
 === Expected stdout ===
@@ -387,7 +365,7 @@ exception: Assert failed: values are not Equal
 === Expected stderr ===
 
 === Actual stderr ===
-exception: Assert failed: values are not Equal
+exception: Assert failed: values are not Equal: functionvar
 =====================================================
 = Results for locals-class.py =
 =====================================================
@@ -457,7 +435,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 11312Unbound location error.
+lookupStore: 11792Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================

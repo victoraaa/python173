@@ -498,10 +498,6 @@
                          [some (s) (VNum-n s)]
                          [none () (error 'merge-python-lists (string-append "?? "
                                                                             (to-string h2)))])]
-          [define len1 (type-case (optionof CVal) (hash-ref h1 (VStr "__size__"))
-                         [some (s) (VNum-n s)]
-                         [none () (error 'merge-python-lists (string-append "?? "
-                                                                            (to-string h1)))])]
           [define keylenh (type-case (optionof CVal) (hash-ref h1 (VStr "__size__"))
                             [some (s) (VNum-n s)]
                             [none () (error 'merge-python-lists "???1")])])
@@ -512,7 +508,7 @@
                      h1
                      (cval-range len2)) 
               (VStr "__size__") 
-              (VNum (+ len1 len2)))))
+              (VNum (+ keylenh len2)))))
 
 
 

@@ -19,7 +19,7 @@ primitives here.
     [VNum (n) (to-string n)]
     [VStr (s) s]
     [VTrue () "True"]
-    [VClosure (env args varg body defargs uid) (error 'prim "Can't print closures yet")]
+    [VClosure (env args varg body defargs uid) "function"] ;;TODO try and print...
     ;;Non-TA code:
     [VNone () "None"]
     [VFalse () "False"]
@@ -28,7 +28,7 @@ primitives here.
     ;[VDict (h uid) "VDict - for now. We should make this recursively later"]
     ;[VList (h uid) "VList - for now. We should make this recursively later"]
     ;[VTuple (h uid) "VTuple - for now. We'll make it recursive later. "]
-    [VHash (h uid type) (Type-name type)]
+    [VHash (h uid type) (string-append (Type-name type) (to-string h))]
     [VClass (elts type) (Type-name type)]
     ))
   
