@@ -1,8 +1,14 @@
-try:
-  pass
-except StopIteration:
-  pass
+def test():
+    method_and_var = "var"
+    class Test:
+        def method_and_var(self):
+            return "method"
+        def test(self):
+            return method_and_var
+    return Test()
 
+t=test()
+print(t.test())
 
 #a = {1:1, 2:2}
 
