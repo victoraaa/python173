@@ -382,6 +382,12 @@ structure that you define in python-syntax.rkt
      'python-in]
     [(hash-table ('nodetype "NotIn"))
      'python-notIn]
+    [(hash-table ('nodetype "BitAnd"))
+     'python-bitand]
+    [(hash-table ('nodetype "BitOr"))
+     'python-bitor]
+    [(hash-table ('nodetype "BitXor"))
+     'python-bitxor]
 
     
     ;; Unary

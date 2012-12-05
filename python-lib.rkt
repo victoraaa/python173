@@ -20,6 +20,13 @@ that calls the primitive `print`.
 (define (Make-tuple-pair [ele1 : CExp] [ele2 : CExp]) : CExp
   (CHash (hash (list (values (CStr "__size__") (CNum 2)) (values (CNum 0) ele1) (values (CNum 1) ele2))) (cType "tuple" (CId 'tuple))))
 
+(define (Create-test-sub [ele : CExp]) : CExp
+  (CPrim2 'or 
+          (CPrim2 'or 
+                  (CPrim2 'eq (CPrim1 'tagof ele) (CStr "list"))
+                  (CPrim2 'eq (CPrim1 'tagof ele) (CStr "tuple")))
+          (CPrim2 'eq (CPrim1 'tagof ele) (CStr "set"))))
+
 (define print-lambda
   (CFunc (list 'to-print)
          (CPrim1 'print (CId 'to-print)) (list) (list) 'no-vararg))
@@ -200,7 +207,67 @@ that calls the primitive `print`.
                         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "bool"))
                              (CPrim2 'num- (CPrim1 'to-int (CId 'e-1)) (CPrim1 'to-int (CId 'e-2)))
                              (CError (CStr "-: Cannot do math on this type!"))))
-                   (CError (CStr "-: Cannot do math on this type... Sorry!"))))
+                   (CIf (CPrim2 'and (Create-test-sub (CId 'e-1)) (Create-test-sub (CId 'e-2))) 
+                        (CApp (CId 'subtract-sets-helper)
+                              (list (CId 'e-1) (CId 'e-2))
+                              (list)
+                              (Empty-list))
+                        (CError (CStr "-: Cannot do math on this type... Sorry!")))))
+         (list)
+         (list)
+         'no-vararg))
+
+;; helper function for set subtraction
+;(define subtract-sets-helper
+;  (CFunc (list 'e-1 'e-2)
+;         (CLet 'sub-iter
+;               (Local)
+;               (CApp (CId 'iter)
+;                     (list (CId 'e-1))
+;                     (list)
+;                     (Empty-list))
+;               (CLet 'build-list ;; Needs to be finished... 
+;                     (Local)
+;                     (Empty-list)
+;                     (CTryExcept (CWhile (CTrue)
+;                                         (CIf ()
+;                                              (CApp (CAttribute 'append (CId 'build-list))
+;                                               (list (CApp (CId 'next)
+;                                                           (list (CId 'sub-iter))
+;                                                           (list)
+;                                                           (Empty-list)))
+;                                               (list)
+;                                               (Empty-list))
+;                                              (CPass))
+;                                         (CPass)
+;                                         (list))
+;                                 (list (CExcHandler 'no-name (CId 'StopIteration) (CReturn (CApp (CId 'set)
+;                                                                                                 (list (CId 'build-list))
+;                                                                                                 (list)
+;                                                                                                 (Empty-list)))))
+;                                 (CPass))))
+;         (list)
+;         (list)
+;         'no-vararg))
+
+;; bit and is here, since it also works on lists...
+(define python-bitand
+  (CFunc (list 'e-1 'e-2)
+         (CError (Make-throw 'Exception "Bitwise and not implemented yet!"))
+         (list)
+         (list)
+         'no-vararg))
+
+(define python-bitor
+  (CFunc (list 'e-1 'e-2)
+         (CError (Make-throw 'Exception "Bitwise or not implemented yet!"))
+         (list)
+         (list)
+         'no-vararg))
+
+(define python-bitxor
+  (CFunc (list 'e-1 'e-2)
+         (CError (Make-throw 'Exception "Bitwise xor not implemented yet!"))
          (list)
          (list)
          'no-vararg))
@@ -604,8 +671,37 @@ that calls the primitive `print`.
          (list)
          (list)
          'no-vararg))
-   
-   
+
+#|
+(CFunc (list 'self 'e-1)
+       (CLet 'e-list
+             (Local)
+             (CApp (CId 'list)
+                   (list (CId 'e-1))
+                   (list)
+                   (Empty-list))
+             (CLet 'e-it
+                   (Local)
+                   (CApp (CId 'iter)
+                         (list (Cid 'e-list))
+                         (list)
+                         (Empty-list))
+                   
+                   (CTryExcept (CLet 'e-curr
+                                     (Local)
+                                     (CApp (CId 'next)
+                                           (list (CId 'e-it))
+                                           (list)
+                                           (Empty-list))
+                                     (CWhile (CTrue)
+                                             (CSet (CSubscript (CId 'self) (CId 'e-curr))
+                                                   (CSubscript (CId 'e-list) (CId 'e-curr)))
+                                             (CPass)
+                                             (list))
+                                     (list (CExcHandler 'no-name (CId 'StopIteration) (CReturn (CPass))))
+                                     (CPass))))))
+
+   |#
               
 ;; Callable
 ;; may need to re-write this in the future - it depends. I don't know yet. 
@@ -727,7 +823,27 @@ that calls the primitive `print`.
                                                          (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
                                                          (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))))
                                          (CPrim1 'to-list (CId 'e-1))
-                                         (CError (Make-throw 'TypeError "Cannot convert this type to a list"))) ;; TODO be more specific!
+                                         (CIf (CPrim2 'or
+                                                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "oldIterator"))
+                                                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "doubleIterator")))
+                                              (CLet 'build-list
+                                                    (Local)
+                                                    (Empty-list)
+                                                    (CTryExcept (CWhile (CTrue) 
+                                                                        (CSet (CId 'build-list)
+                                                                              (CPrim2 'list+ 
+                                                                                      (CId 'build-list)
+                                                                                      (One-list (CApp (CId 'next)
+                                                                                                      (list (CId 'e-1))
+                                                                                                      (list)
+                                                                                                      (Empty-list))))) 
+                                                                        (CPass) 
+                                                                        (list))
+                                                                (list (CExcHandler 'no-name
+                                                                                   (CId 'StopIteration)
+                                                                                   (CReturn (CId 'build-list))))
+                                                                (CPass)))
+                                              (CError (Make-throw 'TypeError "Cannot convert this type to a list")))) ;; TODO be more specific!
                                     (list)
                                     (list (CStr ""))
                                     'no-vararg))
@@ -845,6 +961,49 @@ that calls the primitive `print`.
                                                       )))
                                     (list)
                                     (list)
+                                    'no-vararg))
+                     
+                     (values (CStr "update") ;; TODO test!
+                             (CFunc (list 'self 'e-1)
+                                    (CIf (CPrim2 'is (CId 'e-1) (CNone))
+                                         (CPass)
+                                         (CLet 'e-list
+                                               (Local)
+                                               (CApp (CId 'list)
+                                                     (list (CApp (CAttribute 'keys (CId 'e-1))
+                                                                 (list)
+                                                                 (list)
+                                                                 (Empty-list)))
+                                                     (list)
+                                                     (Empty-list))
+                                               (CLet 'e-it
+                                                     (Local)
+                                                     (CApp (CId 'iter)
+                                                           (list (CId 'e-list))
+                                                           (list)
+                                                           (Empty-list))
+                                                     
+                                                     (CTryExcept (CLet 'e-curr
+                                                                       (Local)
+                                                                       (CApp (CId 'next)
+                                                                             (list (CId 'e-it))
+                                                                             (list)
+                                                                             (Empty-list))
+                                                                       (CWhile (CTrue)
+                                                                               (CSeq (CSet (CSubscript (CId 'self) (CId 'e-curr))
+                                                                                           (CSubscript (CId 'e-1)
+                                                                                                       ;(CSubscript (CId 'e-list) 
+                                                                                                       (CId 'e-curr)))
+                                                                                     (CSet (CId 'e-curr) (CApp (CId 'next)
+                                                                                                               (list (CId 'e-it))
+                                                                                                               (list)
+                                                                                                               (Empty-list))))
+                                                                               (CPass)
+                                                                               (list)))
+                                                                 (list (CExcHandler 'no-name (CId 'StopIteration) (CReturn (CPass))))
+                                                                 (CPass)))))
+                                    (list)
+                                    (list (CNone))
                                     'no-vararg))
                      
                      ;; I did this wrong. It needs to create key, value tuples...
@@ -1026,7 +1185,7 @@ that calls the primitive `print`.
 
 ;; this will be the builtin class for iterators that have a function and a value
 (define python-doubleIterator-class
-  (CHash (hash (list (values (CStr "__name__") (CStr "oldIterator"))
+  (CHash (hash (list (values (CStr "__name__") (CStr "doubleIterator"))
                      (values (CStr "__init__")
                              (CFunc (list 'self 'func 'value); 3 arguments: self, func and value
                                     (CSeq (CSet (CAttribute 'func (CId 'self)) (CId 'func))
@@ -1067,28 +1226,30 @@ that calls the primitive `print`.
   (CFunc (list 'e-1 'e-2)
          (CIf (CPrim2 'is (CId 'e-2) (CNone))
               ;; when iter is called with just one argument
-              (CSeq (CIf (CPrim2 'or 
+              (CLet 'e-one
+                    (Local)
+                    (CIf (CPrim2 'or 
                                  (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
                                  (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")))
-                         (CSet (CId 'e-1) (CApp (CId 'list)
-                                                (list (CId 'e-1))
-                                                (list)
-                                                (Empty-list)))
-                         (CPass))
-                    (CIf (CPrim2 'has-field (CId 'e-1) (CStr "__iter__"))
+                         (CApp (CId 'list)
+                               (list (CId 'e-1))
+                               (list)
+                               (Empty-list))
+                         (CId 'e-1))
+                    (CIf (CPrim2 'has-field (CId 'e-one) (CStr "__iter__"))
                          ;;IF ('E-1 IS A TRING)
                          ;;   (CALL ITER(LIST('E-1)))
                          ;;   (ELSE, CONTINUE WITH WHAT'S BELOW)
                          
-                         (CReturn (CApp  (CAttribute '__iter__ (CId 'e-1))
-                                (list)
-                                (list)
-                                (Empty-list)));'e-1.__iter__())
-                         (CIf (CPrim2 'has-field (CId 'e-1) (CStr "__getitem__"));(has attribute __getItem__)
+                         (CReturn (CApp  (CAttribute '__iter__ (CId 'e-one))
+                                         (list)
+                                         (list)
+                                         (Empty-list)));'e-1.__iter__())
+                         (CIf (CPrim2 'has-field (CId 'e-one) (CStr "__getitem__"));(has attribute __getItem__)
                               (CReturn (CApp (CId '_oldIterator)
-                                    (list (CId 'e-1))
-                                    (list)
-                                    (Empty-list)))
+                                             (list (CId 'e-one))
+                                             (list)
+                                             (Empty-list)))
                               (CError (Make-throw 'TypeError "Object lacks __getitem__ field, and thus can't be made into oldIterator")))))
               ;; when iter is called with two arguments
               (CApp (CId '_doubleIterator)
@@ -1395,6 +1556,12 @@ that calls the primitive `print`.
 (define stop-iteration
   (CHash (hash (list (values (CStr "__name__") (CStr "StopIteration")))) (cType "class" (CId 'Exception))))
 
+(define attribute-error
+  (CHash (hash (list (values (CStr "__name__") (CStr "AttributeError")))) (cType "class" (CId 'Exception))))
+
+(define assertion-error
+  (CHash (hash (list (values (CStr "__name__") (CStr "AssertionError")))) (cType "class" (CId 'Exception))))
+
 (define Exception
   ;(CClass (hash (list)) (Type "Exception" (CNone))))
   (CHash (hash (list (values (CStr "__name__") (CStr "Exception"))
@@ -1525,6 +1692,8 @@ that calls the primitive `print`.
         (bind 'NameError name-error)
         (bind 'ValueError value-error)
         (bind 'StopIteration stop-iteration)
+        (bind 'AttributeError attribute-error)
+        (bind 'AssertionError assertion-error)
         
         ;;binding of built-in classes
         
