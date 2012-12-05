@@ -1,0 +1,358 @@
+68 tests succeeded.
+22 tests failed.
+== Output of failed tests ==
+=====================================================
+= Results for all.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((nodetype . "GeneratorExp")
+        (generators
+         .
+         (#hasheq((target
+                   .
+                   #hasheq((id . "x")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (iter
+                   .
+                   #hasheq((id . "S")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "comprehension")
+                  (ifs . ()))))
+        (elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare"))))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
+=====================================================
+= Results for any.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((nodetype . "GeneratorExp")
+        (generators
+         .
+         (#hasheq((target
+                   .
+                   #hasheq((id . "x")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (iter
+                   .
+                   #hasheq((id . "S")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "comprehension")
+                  (ifs . ()))))
+        (elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare"))))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
+=====================================================
+= Results for filter.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: TypeError'#&#hash()
+=====================================================
+= Results for dict-items.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: Assert failed: values are not Equal: set(box (hash #0=(VNum 1) #0# #1=(VNum 2) #1#))set(box (hash (VHash (box (hash (VNum 0) (VNum 1) (VNum 1) (VNum 2) (VStr "__size__") (VNum 2))) 2185 (Type "tuple" #0=(VHash (box (hash (VStr "__name__") (VStr "tuple") (VStr "__size__") (VNum 0) (VStr "__convert__") (VClosure (hash 'list (vector (NonLocal) 3950) 'abs (vector (NonLocal) 3938) 'print (vector (NonLocal) 3857) 'str (vector (NonLocal) 3944) 'bool (vector (NonLocal) 3942) 'python-add (vector (NonLocal) 3889) 'python-sub (vector (NonLocal) 3892) 'python-mult (vector (NonLocal) 3895) 'python-div (vector (NonLocal) 3898) 'python-floor-div (vector (NonLocal) 3901) 'python-mod (vector (NonLocal) 3904) 'python-lt (vector (NonLocal) 3907) 'python-lte (vector (NonLocal) 3910) 'python-gt (vector (NonLocal) 3913) 'python-gte (vector (NonLocal) 3916) 'python-eq (vector (NonLocal) 3919) 'python-notEq (vector (NonLocal) 3922) 'python-is (vector (NonLocal) 3925) 'python-isNot (vector (NonLocal) 3928) 'python-in (vector (NonLocal) 3931) 'python-notIn (vector (NonLocal) 3934) 'len (vector (NonLocal) 3936) 'True (vector (NonLocal) 3858) '___assertTrue (vector (NonLocal) 3860) 'e-1 (vector (Local) 3952) '___assertFalse (vector (NonLocal) 3862) '___assertIn (vector (NonLocal) 3865) '___assertNotIn (vector (NonLocal) 3868) '___assertEqual (vector (NonLocal) 3871) '___assertNotEqual (vector (NonLocal) 3874) '___assertIs (vector (NonLocal) 3877) '___assertIsNot (vector (NonLocal) 3880) '___assertRaises (vector (NonLocal) 3884) '___fail (vector (NonLocal) 3886) '_Object (vector (NonLocal) 3940) 'float (vector (NonLocal) 3946) 'int (vector (NonLocal) 3948) 'tuple (vector (NonLocal) 3951)) '(e-1) 'no-vararg (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")) (CId 'e-1) (CPrim1 'to-tuple (CId 'e-1))) (list (VHash (box (hash (VStr "__size__") (VNum 0))) 2113 (Type "tuple" (VNone)))) 2114))) 2115 (Type "primitive-class" (VHash (box (hash (VStr "__name__") (VStr "Object") (VStr "__init__") (VClosure (hash 'abs (vector (NonLocal) 3938) 'print (vector (NonLocal) 3857) 'python-add (vector (NonLocal) 3889) 'python-sub (vector (NonLocal) 3892) 'python-mult (vector (NonLocal) 3895) 'python-div (vector (NonLocal) 3898) 'python-floor-div (vector (NonLocal) 3901) 'python-mod (vector (NonLocal) 3904) 'python-lt (vector (NonLocal) 3907) 'python-lte (vector (NonLocal) 3910) 'python-gt (vector (NonLocal) 3913) 'python-gte (vector (NonLocal) 3916) 'python-eq (vector (NonLocal) 3919) 'python-notEq (vector (NonLocal) 3922) 'python-is (vector (NonLocal) 3925) 'python-isNot (vector (NonLocal) 3928) 'python-in (vector (NonLocal) 3931) 'python-notIn (vector (NonLocal) 3934) 'len (vector (NonLocal) 3936) 'True (vector (NonLocal) 3858) '___assertTrue (vector (NonLocal) 3860) 'e-1 (vector (Local) 3939) '___assertFalse (vector (NonLocal) 3862) '___assertIn (vector (NonLocal) 3865) '___assertNotIn (vector (NonLocal) 3868) '___assertEqual (vector (NonLocal) 3871) '___assertNotEqual (vector (NonLocal) 3874) '___assertIs (vector (NonLocal) 3877) '___assertIsNot (vector (NonLocal) 3880) '___assertRaises (vector (NonLocal) 3884) '___fail (vector (NonLocal) 3886)) '(e-1) 'no-vararg (CPass) (list (VFalse)) 2101))) 2102 (Type "class" (VNone))))))) (VHash (box (hash (VNum 0) (VNum 1) (VNum 1) (VNum 2) (VStr "__size__") (VNum 2))) 2186 (Type "tuple" #0#))))
+=====================================================
+= Results for dict-set-keys.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((nodetype . "BitAnd"))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
+=====================================================
+= Results for dict-update.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "update")
+=====================================================
+= Results for dict-values-set.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((nodetype . "BitAnd"))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
+=====================================================
+= Results for invalid-reraise.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: No exception raised
+=====================================================
+= Results for iter-classes.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: TypeError'#&#hash()
+=====================================================
+= Results for iter-comprehensions.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((nodetype . "ListComp")
+        (generators
+         .
+         (#hasheq((target
+                   .
+                   #hasheq((id . "i")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (iter
+                   .
+                   #hasheq((id . "seq")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "comprehension")
+                  (ifs . ()))
+          #hasheq((target
+                   .
+                   #hasheq((id . "j")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (iter
+                   .
+                   #hasheq((id . "seq")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "comprehension")
+                  (ifs . ()))
+          #hasheq((target
+                   .
+                   #hasheq((id . "k")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (iter
+                   .
+                   #hasheq((id . "seq")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "comprehension")
+                  (ifs . ()))))
+        (elt
+         .
+         #hasheq((elts
+                  .
+                  (#hasheq((id . "i")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load"))))
+                   #hasheq((id . "j")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load"))))
+                   #hasheq((id . "k")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load"))))))
+                 (nodetype . "Tuple")
+                 (ctx . #hasheq((nodetype . "Load"))))))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
+=====================================================
+= Results for iter-misc.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: iter
+=====================================================
+= Results for iter-simple.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: iter
+=====================================================
+= Results for iter-stop.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: iter
+=====================================================
+= Results for freevar-in-method.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: Assert failed: values are not Equal: functionvar
+=====================================================
+= Results for locals-class.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: locals
+=====================================================
+= Results for locals-function.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: locals
+=====================================================
+= Results for nonlocal-class.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__class__")
+=====================================================
+= Results for nonlocal-function.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+interp-CSet: For now, CSet only support ids that are symbols or CAttributes or CSubscripts
+=====================================================
+= Results for unbound-local.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupStore: 13464Unbound location error.
+=====================================================
+= Results for test-super.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: super
+=====================================================
+= Results for test_simple_string_ops.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: min
+=====================================================
+= Results for test_string_slices.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((nodetype . "Slice") (upper . #\nul) (lower . #\nul) (step . #\nul))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
