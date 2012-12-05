@@ -1,6 +1,6 @@
-v = [x+3 for x in [1,2,3]]
-print(v)
-
+dict = {}
+for i in range(10):
+    dict[i] = None
 
 #def test():
 #    method_and_var = "var"

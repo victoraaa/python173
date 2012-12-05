@@ -1,5 +1,7 @@
-74 tests succeeded.
-16 tests failed.
+
+C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
+76 tests succeeded.
+14 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for all.py =
@@ -8,7 +10,16 @@
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((nodetype . "GeneratorExp")
+#hasheq((elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare")))
         (generators
          .
          (#hasheq((target
@@ -23,16 +34,7 @@ PARSING: Haven't handled a case yet:
                            (ctx . #hasheq((nodetype . "Load")))))
                   (nodetype . "comprehension")
                   (ifs . ()))))
-        (elt
-         .
-         #hasheq((left
-                  .
-                  #hasheq((id . "x")
-                          (nodetype . "Name")
-                          (ctx . #hasheq((nodetype . "Load")))))
-                 (ops . (#hasheq((nodetype . "Gt"))))
-                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
-                 (nodetype . "Compare"))))
+        (nodetype . "GeneratorExp"))
 
 === Expected stderr ===
 
@@ -45,7 +47,16 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((nodetype . "GeneratorExp")
+#hasheq((elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare")))
         (generators
          .
          (#hasheq((target
@@ -60,16 +71,7 @@ PARSING: Haven't handled a case yet:
                            (ctx . #hasheq((nodetype . "Load")))))
                   (nodetype . "comprehension")
                   (ifs . ()))))
-        (elt
-         .
-         #hasheq((left
-                  .
-                  #hasheq((id . "x")
-                          (nodetype . "Name")
-                          (ctx . #hasheq((nodetype . "Load")))))
-                 (ops . (#hasheq((nodetype . "Gt"))))
-                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
-                 (nodetype . "Compare"))))
+        (nodetype . "GeneratorExp"))
 
 === Expected stderr ===
 
@@ -108,83 +110,6 @@ lookupEnv: Unbound identifier error: subtract-sets-helper
 
 === Actual stderr ===
 lookupEnv: Unbound identifier error: subtract-sets-helper
-=====================================================
-= Results for iter-comprehensions.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((nodetype . "ListComp")
-        (generators
-         .
-         (#hasheq((target
-                   .
-                   #hasheq((id . "i")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Store")))))
-                  (iter
-                   .
-                   #hasheq((id . "seq")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load")))))
-                  (nodetype . "comprehension")
-                  (ifs . ()))
-          #hasheq((target
-                   .
-                   #hasheq((id . "j")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Store")))))
-                  (iter
-                   .
-                   #hasheq((id . "seq")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load")))))
-                  (nodetype . "comprehension")
-                  (ifs . ()))
-          #hasheq((target
-                   .
-                   #hasheq((id . "k")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Store")))))
-                  (iter
-                   .
-                   #hasheq((id . "seq")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load")))))
-                  (nodetype . "comprehension")
-                  (ifs . ()))))
-        (elt
-         .
-         #hasheq((elts
-                  .
-                  (#hasheq((id . "i")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load"))))
-                   #hasheq((id . "j")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load"))))
-                   #hasheq((id . "k")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load"))))))
-                 (nodetype . "Tuple")
-                 (ctx . #hasheq((nodetype . "Load"))))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for iter-misc.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-lookupStore: Unbound Identifier: using identifier before assignment
 =====================================================
 = Results for iter-stop.py =
 =====================================================
@@ -261,7 +186,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 18988Unbound location error.
+lookupStore: 20664Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================

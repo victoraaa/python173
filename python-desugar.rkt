@@ -295,7 +295,7 @@
                                                    (CNum (length keys)))
                                          (CStr "__keys__") 
                                          (desugar (PyCollectionSet keys))) 
-                               (cType "dict" (CId 'dict)))]
+                               (cType "_dict" (CId '_dict)))]
     [PyTuple (elts) (CHash (hash-set (desugar-hash (pynum-range (length elts)) elts) (CStr "__size__") (CNum (length elts))) (cType "tuple" (CId 'tuple)))]
     [PyCollectionSet (elts) (CHash (desugar-hash elts elts) (cType "set" (CId 'set)))]
     

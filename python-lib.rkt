@@ -565,7 +565,7 @@ that calls the primitive `print`.
               (CIf (CPrim2 'or
                            (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
                            (CPrim2 'or
-                                   (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "dict"))
+                                   (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "_dict"))
                                    (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))))
                    (CAttribute '__size__ (CId 'e-1))
                    (CError (Make-throw 'TypeError "len: Argument must be a string, list, tuple or dict (so far...)."))))
@@ -882,7 +882,7 @@ that calls the primitive `print`.
          (cType "primitive-class" (CId '_Object))))
 
 (define dict-primitive-class
-  (CHash (hash (list (values (CStr "__name__") (CStr "dict"))
+  (CHash (hash (list (values (CStr "__name__") (CStr "_dict"))
                      ;  (values (CStr "__size__") (CNum 0))
                      (values (CStr "get") 
                              (CFunc (list 'self 'e-1 'e-2)
@@ -1650,7 +1650,7 @@ that calls the primitive `print`.
         ; (bind 'tuple make-tuple)
         (bind 'tuple (CNone))
         (bind 'tuple tuple-primitive-class)
-        (bind 'dict dict-primitive-class)
+        (bind '_dict dict-primitive-class)
         (bind 'set set-primitive-class)
         (bind 'callable callable)
         (bind 'range make-range)
