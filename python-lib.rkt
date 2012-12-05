@@ -781,7 +781,16 @@ that calls the primitive `print`.
 ;                     ()
 ;                     ()
 ;                     'no-vararg))))
-
+#|
+(define call-iter
+  (CFunc (list 'a-1 'a-2)
+         (CIf ()
+              ()
+              ())
+         (list)
+         (list (CNone))
+         'no-vararg))
+|#
 
 (define make-range
   (CFunc (list 'e-1 'e-2 'e-3)
@@ -956,7 +965,7 @@ that calls the primitive `print`.
                                      (list)
                                      (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                                (CPrim2 'list+ ;; check for subscript on next line as well...
-                                       (CHash (hash-set (hash (list (values (CStr "__size__") (CNum 1)))) (CNum 0) (CSubscript (CId 'e-list) (CId 'e-index))) (cType "list" (CNone))) 
+                                       (CHash (hash-set (hash (list (values (CStr "__size__") (CNum 1)))) (CNum 0) (CSubscript (CId 'e-list) (CId 'e-index))) (cType "list" (CId 'list))) 
                                        (CApp (CId 'python-iter-help)
                                              (list (CId 'e-list) (CId 'e-test) (CPrim2 'num+ (CId 'e-index) (CNum 1)))
                                              (list)

@@ -269,7 +269,7 @@
                               (Local) 
                               (CHash (hash-set (hash (list)) (CStr "__name__") (CStr (symbol->string name))) 
                                      (cType "class" (if (empty? bases)
-                                                       (CNone)
+                                                       (CId '_Object)
                                                        (desugar (first bases)))))
                               ;;body of the CLet:
                               (CSeq
