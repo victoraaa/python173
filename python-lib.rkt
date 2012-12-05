@@ -14,91 +14,97 @@ that calls the primitive `print`.
 
 (define-type-alias Lib (CExp -> CExp))
 
+(define (Empty-list) : CExp
+  (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))) ;; convenience function
+
+(define (One-list [ele : CExp]) : CExp
+  (CHash (hash (list (values (CStr "__size__") (CNum 1)) (values (CNum 0) ele))) (cType "list" (CId 'list))))
+
 (define print-lambda
   (CFunc (list 'to-print)
-    (CPrim1 'print (CId 'to-print)) (list) (list) 'no-vararg))
+         (CPrim1 'print (CId 'to-print)) (list) (list) 'no-vararg))
 
 (define assert-equal-lambda
   (CFunc (list 'e-1 'e-2)
-    (CIf (CApp (CId 'python-eq) 
-               (list (CId 'e-1) (CId 'e-2)) 
-               (list) 
-               (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
-               )
-         (CPass) 
-         (CError (CPrim2 'string+ 
-                         (CStr "Assert failed: values are not Equal: ")
-                         (CPrim2 'string+ 
-                                 (CPrim1 'to-string (CId 'e-1))
-                                 (CPrim1 'to-string (CId 'e-2)))))
-         ) 
-    (list)
-    (list)
-    'no-vararg))
+         (CIf (CApp (CId 'python-eq) 
+                    (list (CId 'e-1) (CId 'e-2)) 
+                    (list) 
+                    (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
+                    )
+              (CPass) 
+              (CError (CPrim2 'string+ 
+                              (CStr "Assert failed: values are not Equal: ")
+                              (CPrim2 'string+ 
+                                      (CPrim1 'to-string (CId 'e-1))
+                                      (CPrim1 'to-string (CId 'e-2)))))
+              ) 
+         (list)
+         (list)
+         'no-vararg))
 
 (define assert-notEqual-lambda
   (CFunc (list 'e-1 'e-2)
-    (CIf (CPrim2 'eq (CId 'e-1) (CId 'e-2))  
-         (CError (CStr "Assert failed: values are Equal"))
-         (CPass)
-         )
-    (list)
-    (list)
-    'no-vararg))
+         (CIf (CPrim2 'eq (CId 'e-1) (CId 'e-2))  
+              (CError (CStr "Assert failed: values are Equal"))
+              (CPass)
+              )
+         (list)
+         (list)
+         'no-vararg))
 
 (define assert-true-lambda
   (CFunc (list 'check-true)
-    (CIf (CId 'check-true) (CPass) (CError (CStr "Assert failed: value is False")))
-    (list)
-    (list)
-    'no-vararg))
+         (CIf (CId 'check-true) (CPass) (CError (CStr "Assert failed: value is False")))
+         (list)
+         (list)
+         'no-vararg))
 
 (define assert-false-lambda
   (CFunc (list 'check-false)
-    (CIf (CId 'check-false) (CError (CStr "Assert failed: value is True")) (CPass) )
-    (list)
-    (list)
-    'no-vararg))
+         (CIf (CId 'check-false) (CError (CStr "Assert failed: value is True")) (CPass) )
+         (list)
+         (list)
+         'no-vararg))
 
 (define assert-is-lambda
   (CFunc (list 'e-1 'e-2)
-    (CIf (CPrim2 'is (CId 'e-1) (CId 'e-2)) 
-         (CPass) 
-         (CError (CStr "Assert failed: first argument is not second argument"))
-         )
-    (list)
-    (list)
-    'no-vararg))
+         (CIf (CPrim2 'is (CId 'e-1) (CId 'e-2)) 
+              (CPass) 
+              (CError (CStr "Assert failed: first argument is not second argument"))
+              )
+         (list)
+         (list)
+         'no-vararg))
 
 (define assert-isNot-lambda
   (CFunc (list 'e-1 'e-2)
-    (CIf (CPrim2 'is (CId 'e-1) (CId 'e-2)) 
-         (CError (CStr "Assert failed: first argument is second argument"))
-         (CPass) 
-         )
-    (list)
-    (list)
-    'no-vararg))
+         (CIf (CPrim2 'is (CId 'e-1) (CId 'e-2)) 
+              (CError (CStr "Assert failed: first argument is second argument"))
+              (CPass) 
+              )
+         (list)
+         (list)
+         'no-vararg))
 
 (define assert-in-lambda
   (CFunc (list 'e-1 'e-2)
-    (CIf (CPrim2 'in (CId 'e-1) (CId 'e-2)) 
-         (CPass) 
-         (CError (CStr "Assert failed: element not found"))
-         )
-    (list)
-    (list)
-    'no-vararg))
+         (CIf (CPrim2 'in (CId 'e-1) (CId 'e-2)) 
+              (CPass) 
+              (CError (CStr "Assert failed: element not found"))
+              )
+         (list)
+         (list)
+         'no-vararg))
 
 (define assert-notIn-lambda
   (CFunc (list 'e-1 'e-2)
-    (CIf (CPrim2 'is (CId 'e-1) (CId 'e-2)) 
-         (CError (CStr "Assert failed: element found"))
-         (CPass)
-         )
-    (list)
-    (list)
-    'no-vararg))
+         (CIf (CPrim2 'is (CId 'e-1) (CId 'e-2)) 
+              (CError (CStr "Assert failed: element found"))
+              (CPass)
+              )
+         (list)
+         (list)
+         'no-vararg))
 
 
 (define assert-raises-lambda
@@ -115,7 +121,7 @@ that calls the primitive `print`.
 ;(define assert-raises-lambda
 ;  (CFunc (list 'e-1 'e-2)
 ; (CTryExcept (CApp (CId 'e-2) (CPrim1 'python-star (CId 'args)) (list)) (CExcHandler 'e () (CTrue)) (CFalse))
-                                       ;; Or however it ends up working...
+;; Or however it ends up working...
 ; (list)
 ; (list)
 ; 'args))
@@ -228,14 +234,14 @@ that calls the primitive `print`.
                              (CPrim2 'num* (CPrim1 'to-int (CId 'e-1)) (CPrim1 'to-int (CId 'e-2)))
                              (CError (CStr "*: Cannot do math on this type!"))))
                    (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))
-                       (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
-                            (CPrim2 'duplicate (CId 'e-1) (CId 'e-2))
-                            (CError (CStr "*: Cannot do math on these types... Sorry!")))
-                       (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
-                            (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
-                                 (CPrim2 'duple (CId 'e-1) (CId 'e-2))
-                                 (CError (CStr "*: Cannot do math on these types... Sorry!")))
-                            (CError (CStr "*: Cannot do math on this type... Sorry!"))))))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                             (CPrim2 'duplicate (CId 'e-1) (CId 'e-2))
+                             (CError (CStr "*: Cannot do math on these types... Sorry!")))
+                        (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
+                             (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "int"))
+                                  (CPrim2 'duple (CId 'e-1) (CId 'e-2))
+                                  (CError (CStr "*: Cannot do math on these types... Sorry!")))
+                             (CError (CStr "*: Cannot do math on this type... Sorry!"))))))
          (list)
          (list)
          'no-vararg))
@@ -258,7 +264,7 @@ that calls the primitive `print`.
                    (CError (CApp (CId 'ZeroDivisionError)
                                  (list)
                                  (list)
-                                (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
+                                 (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
                    (CPrim2 'num/ (CPrim1 'to-float (CId 'e-1)) (CPrim1 'to-float (CId 'e-2))))
               (CError (CStr "/: Not supported for this type.")))
          (list)
@@ -296,7 +302,7 @@ that calls the primitive `print`.
          (list)
          (list)
          'no-vararg))
-                                                 
+
 
 
 
@@ -594,15 +600,18 @@ that calls the primitive `print`.
                              (CStr "list")) 
                    (CStr "__convert__") 
                    (CFunc (list 'e-1)
-                          (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
-                               (CPrim2 'or 
-                                            (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
-                                            (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))))
-                                    (CPrim1 'to-list (CId 'e-1))
-                                    (CError (CApp (CId 'TypeError)
-                                                  (list)
-                                                  (list)
-                                                  (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))) ;; TODO be more specific!
+                          (CIf (CPrim2 'or 
+                                       (CPrim2 'or
+                                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set"))
+                                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list")))
+                                       (CPrim2 'or 
+                                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))
+                                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string"))))
+                               (CPrim1 'to-list (CId 'e-1))
+                               (CError (CApp (CId 'TypeError)
+                                             (list)
+                                             (list)
+                                             (Empty-list)))) ;; TODO be more specific!
                           (list)
                           (list (CStr ""))
                           'no-vararg)) 
@@ -618,62 +627,148 @@ that calls the primitive `print`.
                                (CId 'e-1)
                                (CPrim1 'to-tuple (CId 'e-1)))
                           (list)
-                          (list (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "tuple" (CId 'list))))
+                          (list (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "tuple" (CId 'tuple))))
                           'no-vararg)) 
          (cType "primitive-class" (CNone))))
 
 (define dict-primitive-class
   (CHash (hash (list (values (CStr "__name__") (CStr "dict"))
-                   ;  (values (CStr "__size__") (CNum 0))
-                     (values (CStr "get") (CFunc (list 'self 'e-1 'e-2)
-                                                 (CTryExcept 
-                                                  (CReturn (CSubscript (CId 'self) (CId 'e-1))) ;; Check exception...
-                                                  (list (CExcHandler 'e (CId 'UnboundLocalError) (CId 'e-2)))
-                                                  (CPass))
-                                                 (list)
-                                                 (list (CNone))
-                                                 'no-vararg))
-                     (values (CStr "__getitem__") (CFunc (list 'self 'e-1 'e-2)
-                                                         (CTryExcept 
-                                                          (CReturn (CSubscript (CId 'self) (CId 'e-1))) ;; Check exception...
-                                                          (list (CExcHandler 'e (CId 'UnboundLocalError) (CId 'e-2)))
-                                                          (CPass))
-                                                         (list)
-                                                         (list (CNone))
-                                                         'no-vararg))
+                     ;  (values (CStr "__size__") (CNum 0))
+                     (values (CStr "get") 
+                             (CFunc (list 'self 'e-1 'e-2)
+                                    (CTryExcept 
+                                     (CReturn (CSubscript (CId 'self) (CId 'e-1))) ;; Check exception...
+                                     (list (CExcHandler 'e (CId 'UnboundLocalError) (CId 'e-2)))
+                                     (CPass))
+                                    (list)
+                                    (list (CNone))
+                                    'no-vararg))
+                     (values (CStr "__getitem__") 
+                             (CFunc (list 'self 'e-1 'e-2)
+                                    (CTryExcept 
+                                     (CReturn (CSubscript (CId 'self) (CId 'e-1))) ;; Check exception...
+                                     (list (CExcHandler 'e (CId 'UnboundLocalError) (CId 'e-2)))
+                                     (CPass))
+                                    (list)
+                                    (list (CNone))
+                                    'no-vararg))
                      ;;(values (CStr "update") ())
-                     (values (CStr "keys") (CFunc (list 'self)
-                                                  (CAttribute '__keys__ (CId 'self))
-                                                  (list)
-                                                  (list)
-                                                  'no-vararg))
-          ;           (values (CStr "values") (CFunc (list 'self)
-          ;                                          () ;; TODO want "for" here...
-          ;                                          (list)
-          ;                                          (list)
-          ;                                          'no-vararg))
+                     (values (CStr "keys") 
+                             (CFunc (list 'self)
+                                    (CAttribute '__keys__ (CId 'self))
+                                    (list)
+                                    (list)
+                                    'no-vararg))
+                     (values (CStr "values") 
+                             (CFunc (list 'self)
+                                    (CLet 'keys-list
+                                          (Local)
+                                          (CApp (CId 'list)
+                                                (list (CAttribute '__keys__ (CId 'self)))
+                                                (list)
+                                                (Empty-list)) ;; get keys
+                                          (CLet 'index-var
+                                                (Local)
+                                                (CNum 0)
+                                                (CLet 'size-var
+                                                      (Local)
+                                                      (CAttribute '__size__ (CId 'self))
+                                                      ;  (CIf (CPrim2 'num-gt (CId 'size-var) (CNum 0))
+                                                      (CLet 'build-list
+                                                            (Local)
+                                                            (Empty-list)
+                                                            (CSeq (CWhile (CPrim2 'num-lt 
+                                                                                  (CId 'index-var) 
+                                                                                  (CId 'size-var))
+                                                                          (CSeq (CSet (CId 'build-list)
+                                                                                      (CPrim2 'list+ 
+                                                                                              (CId 'build-list) 
+                                                                                              (One-list 
+                                                                                               (CSubscript
+                                                                                                (CId 'self)
+                                                                                                (CSubscript 
+                                                                                                 (CId 'keys-list) 
+                                                                                                 (CId 'index-var))))))
+                                                                                (CSet (CId 'index-var) 
+                                                                                      (CPrim2 'num+ (CId 'index-var) 
+                                                                                              (CNum 1))))
+                                                                          (CPass)
+                                                                          (list))
+                                                                  (CReturn (CId 'build-list))))
+                                                      ; (Empty-list))
+                                                      )))
+                                    (list)
+                                    (list)
+                                    'no-vararg))
+                     
+                     (values (CStr "clear") ;; deletes everything in the dictionary
+                             (CFunc (list 'self)
+                                    (CLet 'keys-list
+                                          (Local)
+                                          (CApp (CId 'list)
+                                                (list (CAttribute '__keys__ (CId 'self)))
+                                                (list)
+                                                (Empty-list)) ;; get keys
+                                          (CLet 'index-var
+                                                (Local)
+                                                (CNum 0)
+                                                (CLet 'size-var
+                                                      (Local)
+                                                      (CAttribute '__size__ (CId 'self))
+                                                      ;(CIf (CPrim2 'num-gt (CId 'size-var) (CNum 0))
+                                                      (CWhile (CPrim2 'num-lt 
+                                                                      (CId 'index-var) 
+                                                                      (CId 'size-var))
+                                                              (CSeq (CDel (list (CSubscript
+                                                                                 (CId 'self)
+                                                                                 (CSubscript 
+                                                                                  (CId 'keys-list) 
+                                                                                  (CId 'index-var)))))
+                                                                    (CSet (CId 'index-var) 
+                                                                          (CPrim2 'num+ (CId 'index-var) 
+                                                                                  (CNum 1))))
+                                                              (CPass)
+                                                              (list))
+                                                      ;(CPass)
+                                                      )))
+                                    (list)
+                                    (list)
+                                    'no-vararg))
                      ))
          (cType "primitive-class" (CNone)))) ;; If we need a __convert__ method, we'll write one later. 
 
 ;; primitive class for sets
 (define set-primitive-class
   (CHash (hash (list (values (CStr "__name__") (CStr "set"))
-                     (values (CStr "__convert__") (CFunc (list 'e-1)
-                                                         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set"))
-                                                              (CId 'e-1)
-                                                              (CIf (CPrim2 'or
-                                                                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
-                                                                           (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")))
-                                                                   (CPrim1 'to-set (CId 'e-1))
-                                                                   (CError (CApp (CId 'TypeError)
-                                                                                 (list)
-                                                                                 (list)
-                                                                                 (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))))
-                                                         (list)
-                                                         (list (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
-                                                         'no-vararg))
+                     (values (CStr "__convert__") 
+                             (CFunc (list 'e-1)
+                                    (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set"))
+                                         (CId 'e-1)
+                                         (CIf (CPrim2 'or
+                                                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
+                                                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")))
+                                              (CPrim1 'to-set (CId 'e-1))
+                                              (CError (CApp (CId 'TypeError)
+                                                            (list)
+                                                            (list)
+                                                            (Empty-list)))))
+                                    (list)
+                                    (list (Empty-list))
+                                    'no-vararg))
                      ))
          (cType "primitive-class" (CNone))))
+
+
+;(define recursive-values-help
+;  (CLet 'recursive-values-help
+;        (Local)
+;        (CFunc (list) (CError (CStr "Dummy! (python-make-range)")) (list) (list) 'no-vararg)
+;        (CSet (CId 'recursive-values-help)
+;              (CFunc ()
+;                     ()
+;                     ()
+;                     ()
+;                     'no-vararg))))
 
 
 (define make-range
@@ -745,7 +840,7 @@ that calls the primitive `print`.
                                                   (CApp (CId 'abs)
                                                         (list (CId 'e-3))
                                                         (list)
-                                                        (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))) 
+                                                        (Empty-list)))) 
                                   (CPrim2 'num* 
                                           (CId 'e-2)
                                           (CPrim2 'num/ 
@@ -753,14 +848,14 @@ that calls the primitive `print`.
                                                   (CApp (CId 'abs)
                                                         (list (CId 'e-3))
                                                         (list)
-                                                        (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))))
-                          (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
+                                                        (Empty-list)))))
+                          (Empty-list)
                           (CPrim2 'list+ 
-                                  (CHash (hash-set (hash (list (values (CStr "__size__") (CNum 1)))) (CNum 0) (CId 'e-1)) (cType "list" (CId 'list)))
+                                  (One-list (CId 'e-1))
                                   (CApp (CId 'python-make-range) 
                                         (list (CPrim2 'num+ (CId 'e-1) (CId 'e-3)) (CId 'e-2) (CId 'e-3))
                                         (list)
-                                        (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
+                                        (Empty-list)
                                         )))
                      (list)
                      (list)
@@ -778,7 +873,7 @@ that calls the primitive `print`.
                       (CApp (CId 'python-iter-help)
                             (list (CId 'e-1) (CId 'bool) (CNum 0))
                             (list)
-                            (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
+                            (Empty-list)))
               (CError (CId 'TypeError))) ;; TODO more specific?
          (list)
          (list)
@@ -794,7 +889,7 @@ that calls the primitive `print`.
                       (CApp (CId 'python-iter-help)
                             (list (CId 'e-1) (CId 'python-not) (CNum 0))
                             (list)
-                            (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
+                            (Empty-list)))
               (CError (CId 'TypeError))) ;; TODO more specific?
          (list)
          (list)
@@ -807,24 +902,24 @@ that calls the primitive `print`.
               (CApp (CId 'python-iter-help)
                     (list (CId 'e-2) (CId 'bool) (CNum 0))
                     (list)
-                    (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                    (Empty-list))
               (CIf (CApp (CId 'callable)
                          (list (CId 'e-1))
                          (list)
-                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                         (Empty-list))
                    (CApp (CId 'python-iter-help)
                          (list (CApp (CId 'list)
                                      (list (CId 'e-2))
                                      (list)
-                                     (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))) 
+                                     (Empty-list)) 
                                (CId 'e-1) 
                                (CNum 0))
                          (list)
-                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                         (Empty-list))
                    (CError (CApp (CId 'TypeError)
                                  (list)
                                  (list)
-                                 (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))))
+                                 (Empty-list)))))
          (list)
          (list)
          'no-vararg))
@@ -866,7 +961,22 @@ that calls the primitive `print`.
 
 ;; TODO write min and max
 
-      
+
+
+;; this will be the builtin class for all iterators
+;; It is not in the binding yet, since it doesn't yet work...
+(define python-iterator-class
+  (CHash (hash (list (values (CStr "__name__") (CStr "iterator"))
+;                     (values (CStr "__init__")
+ ;                            (CFunc ()
+  ;                                  ()
+   ;                                 ()
+    ;                                ()
+     ;                               'no-vararg))
+                     ))
+         (cType "class" (CNone))))
+
+
 
 
 (define python-isinstance
@@ -886,15 +996,15 @@ that calls the primitive `print`.
          (list)
          (list)
          'no-vararg))
-         
-               
+
+
 (define create-global-env
   (CFunc (list)
          (CGlobalEnv)
          (list)
          (list)
          'no-vararg))
-         
+
 
 (define true-val
   (CTrue))
@@ -996,17 +1106,17 @@ that calls the primitive `print`.
         (bind 'python-notIn python-notIn)
         (bind 'len len)
         (bind 'abs abs)
-       ; (bind 'bool bool)
+        ; (bind 'bool bool)
         (bind 'bool bool-primitive-class)
-       ; (bind 'str str)
+        ; (bind 'str str)
         (bind 'str str-primitive-class)
-       ; (bind 'float float)
+        ; (bind 'float float)
         (bind 'float float-primitive-class)
-       ; (bind 'int int)
+        ; (bind 'int int)
         (bind 'int int-primitive-class)
-       ; (bind 'list make-list)
+        ; (bind 'list make-list)
         (bind 'list list-primitive-class)
-       ; (bind 'tuple make-tuple)
+        ; (bind 'tuple make-tuple)
         (bind 'tuple (CNone))
         (bind 'tuple tuple-primitive-class)
         (bind 'dict dict-primitive-class)
@@ -1044,12 +1154,12 @@ that calls the primitive `print`.
         
         
         ;; Some more permanent builtin classes
-      ;;  (bind 'ZeroDivisionError zero-division-error)
+        ;;  (bind 'ZeroDivisionError zero-division-error)
         
         ;;object for debugging
         (bind 'testObj testObj)
-
-))
+        
+        ))
 
 
 (define (python-lib expr)

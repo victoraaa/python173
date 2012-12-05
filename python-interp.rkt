@@ -845,7 +845,8 @@
                [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
                [else (error 'interp-to-num "Should not be called on this type.")])]
     ['to-list (type-case CVal arg
-                [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
+                [VHash (elts uid type) (cond 
+                                         [(or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
                                            ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
                                            (VHash (box (hash-set (unbox elts) 
                                                                  (VStr "__size__") 
@@ -853,8 +854,15 @@
                                                                    [some (s) s]
                                                                    [none () (error 'interp-to-list "no __size__ field")]))) 
                                                   (new-uid) 
-                                                  (transform-ctype (cType "list" (CId 'list)) env store))
-                                           (error 'interp-to-list "arguments of this type are not supported"))]
+                                                  (transform-ctype (cType "list" (CId 'list)) env store))]
+                                         [(equal? (get-tag arg) "set") 
+                                          (VHash (box (hash-set (make-new-map (vnum-range (+ 0 (length (hash-keys (unbox elts)))))
+                                                                              (hash-values (unbox elts)))
+                                                                (VStr "__size__")
+                                                                (VNum (length (hash-keys (unbox elts))))))
+                                                 (new-uid)
+                                                 (transform-ctype (cType "list" (CId 'list)) env store))]
+                                           [else (error 'interp-to-list "arguments of this type are not supported")])]
                 [VStr (s) (VHash (box (hash-set (change-string-to-list s) (VStr "__size__") (VNum (string-length s)))) 
                                  (new-uid) 
                                  (transform-ctype (cType "list" (CId 'list)) env store))] ;; string to list
@@ -1418,7 +1426,9 @@
                    (type-case AnswerC (interp-env value env store)
                      [ValueA (v1 s1) (type-case AnswerC (interp-env attr env s1)
                                        [ValueA (v2 s2) (if (isInstanceOf v1 "dict" env s2)
-                                                           (begin (set-box! (VHash-elts v1) (hash-remove (unbox (VHash-elts v1)) v2))
+                                                           (begin (set-box! (VHash-elts v1) (hash-set (hash-remove (unbox (VHash-elts v1)) v2)
+                                                                                                      (VStr "__size__")
+                                                                                                      (VNum (- (VNum-n (getAttr (VStr "__size__") v1 env s2)) 1))))
                                                                   (set-box! (VHash-elts (getAttr (VStr "__keys__") v1 env s2))
                                                                             (hash-remove (unbox (VHash-elts (getAttr (VStr "__keys__") v1 env s2)))
                                                                                          v2))
@@ -1554,7 +1564,7 @@
                                                                                  (ValueA v-value 
                                                                                          (begin (set-box! elts (hash-set (unbox elts) (VNum _index) v-value))
                                                                                                 s3)))))]
-                                                                        [(isInstanceOf v-obj "dict" env s3)
+                                                                        [(isInstanceOf v-obj "dict" env s3) ;;TODO TODO TODO handle size here...
                                                                          (try (ValueA v-value 
                                                                                       (begin (set-box! elts (hash-set (unbox elts) v-attr v-value))
                                                                                              (set-box! (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))
@@ -1616,7 +1626,7 @@
                                                                     [VStr (s) s]
                                                                     [else (error 'interp-env:CApp:VHash "Non-string as name of class")])]) 
                                                      vf))
-                                        sf)] ;; TODO inheritance...
+                                        sf)] ;; TODO inheritance... TODO TODO TODO call __init__ if it exists!
                                [(equal? (Type-name type) "primitive-class")
                                 (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__convert__"))
                                   [none () (error 'interp-env:CApp:VHash "Primitive class lacks __convert__ field")]
