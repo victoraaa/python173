@@ -18,6 +18,45 @@ structure that you define in python-syntax.rkt
      (PyModule (PySeq (map get-structured-python expr-list)))]
     [(hash-table ('nodetype "Expr") ('value expr))
      (get-structured-python expr)]
+    
+    
+    [(hash-table ('nodetype "Call")
+                 ('keywords #\nul) ;; ignoring keywords for now
+                 ('kwargs kwargs)     ;; ignoring kwargs for now
+                 ('starargs #\nul) ;; ignoring starargs for now
+                 ('args args-list)
+                 ('func func-expr))
+     (PyApp (get-structured-python func-expr)
+            (map get-structured-python args-list)
+            (list)
+            (PyList (hash (list)))
+            )]
+    
+    ;;The base case for "Call" outputs an empty list for keyword arguments
+    [(hash-table ('nodetype "Call")
+                 ('keywords #\nul) ;; ignoring keywords for now
+                 ('kwargs kwargs)     ;; ignoring kwargs for now
+                 ('starargs starargs) ;; ignoring starargs for now
+                 ('args args-list)
+                 ('func func-expr))
+     (PyApp (get-structured-python func-expr)
+            (map get-structured-python args-list)
+            (list)
+            (get-structured-python starargs)
+            )]
+    
+    [(hash-table ('nodetype "Call")
+                 ('keywords keywords) ;; ignoring keywords for now
+                 ('kwargs kwargs)     ;; ignoring kwargs for now
+                 ('starargs #\nul) ;; ignoring starargs for now
+                 ('args args-list)
+                 ('func func-expr))
+     (PyApp (get-structured-python func-expr)
+            (map get-structured-python args-list)
+            (map get-structured-python keywords)
+            (PyList (list))
+            )]
+    
     [(hash-table ('nodetype "Call")
                  ('keywords keywords) ;; ignoring keywords for now
                  ('kwargs kwargs)     ;; ignoring kwargs for now
@@ -25,7 +64,15 @@ structure that you define in python-syntax.rkt
                  ('args args-list)
                  ('func func-expr))
      (PyApp (get-structured-python func-expr)
-            (map get-structured-python args-list))]
+            (map get-structured-python args-list)
+            (map get-structured-python keywords)
+            (get-structured-python starargs)
+            )]
+    
+    [(hash-table ('nodetype "keyword")
+                 ('arg arg)
+                 ('value value))
+     (keywarghelpertype (string->symbol arg) (get-structured-python value))]
     
     ;; Catching None up here, before we hit the identifer case
     [(hash-table ('nodetype "Name")
@@ -36,6 +83,19 @@ structure that you define in python-syntax.rkt
     ;; Should these cases be in lib? This is something to ask at design check...   
     ;; Alternatively, they could be handled in desugaring. This is a decision we need to make
     ;; before we can proceed. I vote for desugaring. 
+    
+    ;; Stuff for classes
+    [(hash-table ('nodetype "ClassDef")
+                 ('name name)
+                 ('bases bases)
+                 ('keywords keywords)
+                 ('starargs starargs)
+                 ('kwargs kwargs)
+                 ('body body)
+                 ('decorator_list decorator_list))
+     (PyClassDef (string->symbol name)
+                 (map get-structured-python bases)
+                 (PySeq (map get-structured-python body)))]
     
     [(hash-table ('nodetype "Name")
                  ('ctx _)        ;; ignoring ctx for now
@@ -90,7 +150,10 @@ structure that you define in python-syntax.rkt
                  ('defaults defaults)
                  ('kw_defaults kw_defaults))
      (PyArguments (map get-structured-python args)
-                  (map get-structured-python defaults))
+                  (map get-structured-python defaults)
+                  (if (string? vararg)
+                      (string->symbol vararg)
+                      'no-vararg))]
     [(hash-table ('nodetype "arg")
                  ('arg arg)
                  ('annotation annotation))
@@ -125,6 +188,13 @@ structure that you define in python-syntax.rkt
               (get-structured-python left)
               (get-structured-python right))]
     
+    [(hash-table ('nodetype "Delete")
+                 ('targets targets))
+     (PyDel (map get-structured-python targets))]
+    
+    [(hash-table ('nodetype "Set")
+                 ('elts elts))
+     (PyCollectionSet (map get-structured-python elts))]
     
     ;; def
     [(hash-table ('nodetype "FunctionDef")
@@ -141,6 +211,13 @@ structure that you define in python-syntax.rkt
     [(hash-table ('nodetype "Return")
                  ('value value))
      (PyReturn (get-structured-python value))]
+    
+    ;; break and continue
+    [(hash-table ('nodetype "Break"))
+     (PyBreak)]
+    
+    [(hash-table ('nodetype "Continue"))
+     (PyContinue)]
     
     
     ;; global variable
@@ -160,6 +237,19 @@ structure that you define in python-syntax.rkt
                  ('ctx ctx))
      (PyAttribute (string->symbol attr)
                   (get-structured-python value))]
+    
+    ;; Subscript
+    [(hash-table ('nodetype "Subscript")
+                 ('value value)
+                 ('slice slice)
+                 ('ctx ctx))
+     (PySubscript (get-structured-python value)
+                  (get-structured-python slice))]
+    
+    ;; Index (this is only used in subscripts
+    [(hash-table ('nodetype "Index")
+                 ('value value))
+     (get-structured-python value)]
     
     ;; lists
     [(hash-table ('nodetype "List")
@@ -229,6 +319,26 @@ structure that you define in python-syntax.rkt
                  ('attr attr)
                  ('ctx ctx))
      (PyPass)]
+    
+    
+    ;; Loops
+    [(hash-table ('nodetype "While")
+                 ('body body)
+                 ('orelse orelse)
+                 ('test test))
+     (PyWhile (get-structured-python test)
+              (PySeq (map get-structured-python body))
+              (PySeq (cons (PyPass) (map get-structured-python orelse))))]
+    [(hash-table ('nodetype "For")
+                 ('target target)
+                 ('iter iter)
+                 ('body body)
+                 ('orelse orelse))
+     (PyFor (get-structured-python target)
+            (get-structured-python iter)
+            (PySeq (map get-structured-python body))
+            (PySeq (cons (PyPass) (map get-structured-python orelse))))]
+    
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     
@@ -241,6 +351,10 @@ structure that you define in python-syntax.rkt
      'python-mult]
     [(hash-table ('nodetype "Div"))
      'python-div]
+    [(hash-table ('nodetype "FloorDiv"))
+     'python-floor-div]
+    [(hash-table ('nodetype "Mod"))
+     'python-mod]
  ;   [(hash-table ('nodetype "Pow")) ;; this will need to be recursive. Wait to implement...
  ;    'python-pow]
     
