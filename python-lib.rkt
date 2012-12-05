@@ -911,7 +911,6 @@ that calls the primitive `print`.
          (cType "class" (CId '_Object))))
 |#
 
-
 (define call-iter
   (CFunc (list 'e-1 'e-2)
          (CIf (CPrim2 'is (CId 'e-2) (CNone))

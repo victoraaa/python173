@@ -26,7 +26,7 @@
   
   ;; loops
   [PyWhile (test : PyExpr) (body : PyExpr) (orelse : PyExpr)]
-  [PyFor (target : PyExpr) (iter : PyExpr) (body : PyExpr) (orelse : PyExpr)]
+  [PyFor (target : PyExpr) (iter : PyExpr) (body : PyExpr)]
   
   [PyAssign (targets : (listof PyExpr)) (value : PyExpr)]
   [PyAugAssign (target : PyExpr) (op : symbol) (value : PyExpr)]

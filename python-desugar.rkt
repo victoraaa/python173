@@ -58,7 +58,11 @@
     
     ;; loops
     [PyWhile (test body orelse) (list)] ;; really?
-    [PyFor (target iter body orelse) (get-vars (PySeq (cons target (PySeq-es body))))]
+    [PyFor (target iter body)
+           (append (type-case PyExpr target
+                               [PyId (id) (list (values (Local) id))]
+                               [else (get-vars target)])
+                             (get-vars body))]
     
     
     [PyIf (test then orelse)
@@ -294,27 +298,52 @@
            (CDel (map desugar target))]
     ;; loops
     [PyWhile (test body orelse) (CWhile (desugar test) (desugar body) (desugar orelse) (list))]
-    [PyFor (target iter body orelse) (CLet 'index-counter
-                                           (Local)
-                                           (CNum -1)
-                                           (CLet 'iter-list
-                                                 (Local)
-                                                 (desugar iter)
-                                             ;    (CSeq (CSet (desugar target) (CUnbound))
-                                                 (CWhile (CSeq (CSet (CId 'index-counter) (CPrim2 'num+ (CId 'index-counter) (CNum 1))) 
-                                                               (CPrim2 'num-lt 
-                                                                       (CId 'index-counter) 
-                                                                       (CAttribute '__size__ (CId 'iter-list)))) ;; TODO check field name
-                                                         ;  (CApp (CId )
-                                                         ;        (list (CId 'iter-list))
-                                                         ;        (list)
-                                                         ;        (CHash (hash (list)) (cType "list" (CNone))))
-                                                         ; )) 
-                                                         (CSeq (CSet (desugar target) (CSubscript (CId 'iter-list) (CId 'index-counter)))
-                                                               (desugar body)) 
-                                                         (desugar orelse)
-                                                         (get-vars (PySeq (cons target (PySeq-es body)))))))]
-    
+    #|
+    [PyFor (target iter body) (CLet 'index-counter
+                                    (Local)
+                                    (CNum -1)
+                                    (CLet 'iter-list
+                                          (Local)
+                                          (desugar iter)
+                                          ;    (CSeq (CSet (desugar target) (CUnbound))
+                                          (CWhile (CSeq (CSet (CId 'index-counter) (CPrim2 'num+ (CId 'index-counter) (CNum 1))) 
+                                                        (CPrim2 'num-lt 
+                                                                (CId 'index-counter) 
+                                                                (CAttribute '__size__ (CId 'iter-list)))) ;; TODO check field name
+                                                  ;  (CApp (CId )
+                                                  ;        (list (CId 'iter-list))
+                                                  ;        (list)
+                                                  ;        (CHash (hash (list)) (cType "list" (CNone))))
+                                                  ; )) 
+                                                  (CSeq (CSet (desugar target) (CSubscript (CId 'iter-list) (CId 'index-counter)))
+                                                        (desugar body)) 
+                                                  (desugar (PyId 'a))
+                                                  (get-vars (PySeq (cons target (PySeq-es body)))))))]
+    |#
+    ;#|
+    [PyFor (target iter body)
+           (CLet '_it
+                 (Local)
+                 (CApp (CId 'iter) 
+                       (list (desugar iter))
+                       (list)
+                       (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                 (CTryExcept (CWhile (CTrue)
+                                     (CSeq (CSet (desugar target)
+                                                 (CApp (CId 'next)
+                                                       (list (CId '_it))
+                                                       (list)
+                                                       (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
+                                           (desugar body))
+                                     (CPass)
+                                     (list))
+                             (list (CExcHandler 'no-name
+                                                (CId 'StopIteration)
+                                                (CPass))) ;[CExcHandler (name : symbol) (type : CExp) (body : CExp)]
+                             (CPass)))]
+
+  ;|#
+   
     ;; exceptions
     [PyTryExcept (body handlers orelse) (CTryExcept (desugar body) (map desugar-handler handlers) (desugar orelse))]
     [PyTryFinally (body finalbody) (CTryFinally (desugar body) (desugar finalbody))]

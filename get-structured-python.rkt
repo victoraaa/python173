@@ -329,6 +329,7 @@ structure that you define in python-syntax.rkt
      (PyWhile (get-structured-python test)
               (PySeq (map get-structured-python body))
               (PySeq (cons (PyPass) (map get-structured-python orelse))))]
+    
     [(hash-table ('nodetype "For")
                  ('target target)
                  ('iter iter)
@@ -336,8 +337,7 @@ structure that you define in python-syntax.rkt
                  ('orelse orelse))
      (PyFor (get-structured-python target)
             (get-structured-python iter)
-            (PySeq (map get-structured-python body))
-            (PySeq (cons (PyPass) (map get-structured-python orelse))))]
+            (PySeq (map get-structured-python body)))]
     
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
