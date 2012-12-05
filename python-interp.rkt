@@ -1566,12 +1566,17 @@
                                                                                                 s3)))))]
                                                                         [(isInstanceOf v-obj "dict" env s3) ;;TODO TODO TODO handle size here...
                                                                          (try (ValueA v-value 
-                                                                                      (begin (set-box! elts (hash-set (unbox elts) v-attr v-value))
+                                                                                      (let ([_dictlen (VNum-n (getAttr (VStr "__size__") v-obj env s3))])
+                                                                                        (begin (set-box! elts (hash-set (hash-set (unbox elts) v-attr v-value)
+                                                                                                                      (VStr "__size__")
+                                                                                                                      (type-case (optionof CVal) (hash-ref (unbox elts) v-attr)
+                                                                                                                        [some (s) (VNum _dictlen)]
+                                                                                                                        [none () (VNum (+ _dictlen 1))])))
                                                                                              (set-box! (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))
                                                                                                        (hash-set (unbox (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))) 
                                                                                                                  v-attr
                                                                                                                  v-attr))
-                                                                                             s3))
+                                                                                             s3)))
                                                                               (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
                                                                                                                    (list)
                                                                                                                    (list)

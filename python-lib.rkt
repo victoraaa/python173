@@ -713,6 +713,25 @@ that calls the primitive `print`.
                                     (list)
                                     'no-vararg))
                      
+                     ;; I did this wrong. It needs to create key, value tuples...
+             ;        (values (CStr "items")
+             ;                (CFunc (list 'self)
+             ;                       (CPrim2 'list+ 
+             ;                               (CApp (CAttribute 'values (CId 'self))
+             ;                                     (list) ;; I think this is okay - no need to explicitly pass class
+             ;                                     (list)
+             ;                                     (Empty-list))
+             ;                               (CApp (CId 'list)
+             ;                                     (list (CApp (CAttribute 'keys (CId 'self))
+             ;                                                 (list)
+             ;                                                 (list)
+             ;                                                 (Empty-list)))
+             ;                                     (list)
+             ;                                     (Empty-list)))
+             ;                       (list)
+             ;                       (list)
+             ;                       'no-vararg))
+                     
                      (values (CStr "clear") ;; deletes everything in the dictionary
                              (CFunc (list 'self)
                                     (CLet 'keys-list
