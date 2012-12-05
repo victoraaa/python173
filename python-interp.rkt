@@ -19,6 +19,7 @@
 (require (typed-in racket/list [argmax : [('a -> number) (listof 'a) -> 'a]]))
 (require (typed-in racket/list [drop-right : [(listof 'a) number -> (listof 'a)]]))
 (require (typed-in racket/list [last : [(listof 'a) -> 'a]]))
+(require (typed-in racket/base [substring : [string number number -> string]]))
 
 ;;Holds the exception to be reraised
 (define exn-to-reraise
@@ -454,7 +455,13 @@
 (define (interp-binop [op : symbol] [e1 : CExp] [e2 : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v1 s1) (type-case AnswerC (interp-env e2 env s1)
-                      [ValueA (v2 s2) (ValueA (handle-op op v1 v2) s2)]
+                      [ValueA (v2 s2) (ValueA (case op
+                                                ['has-field (type-case CVal v1
+                                                              [VHash (elts uid t) (try (begin (getAttr v2 v1 env store)
+                                                                                              (VTrue))
+                                                                                       (lambda () (VFalse)))]
+                                                              [else (VFalse)])]
+                                                [else (handle-op op v1 v2)]) s2)]
                       [BreakA (v2 s2) (error 'interp-binop "Why is there a break in second arg?")]
                       [ContinueA (s) (error 'interp-binop "Why is there a continue in second arg?")]
                       [ExceptionA (v s) (ExceptionA v s)]
@@ -692,6 +699,14 @@
                      [none () (error 'hash-values "This exists...")]
                      [some (v) v])) (hash-keys h)))
 
+;; convenience function
+(define (is-substring (str1 : string) (str2 : string) (index : number)) : boolean
+  (cond
+    [(>= (+ index (string-length str1)) (string-length str2)) (equal? (substring str2 index (+ (string-length str1) index)) str1)]
+    [else (if (equal? (substring str2 index (+ (string-length str1) index)) str1)
+              #t
+              (is-substring str1 str2 (+ index 1)))]))
+
 
 ;; interp-in
 (define (interp-in (left : CExp) (right : CExp) (env : Env) (store : Store)) : AnswerC
@@ -701,8 +716,8 @@
               [ValueA (v2 s2)
                       (type-case CVal v2
                         [VStr (str2) (type-case CVal v1
-                                       [VStr (str1) (if false ;; False, so that it typechecks. Need actual
-                                                        (ValueA (VTrue) s2) ;; condition. 
+                                       [VStr (str1) (if (is-substring str1 str2 0) ;;
+                                                        (ValueA (VTrue) s2)  
                                                         (ValueA (VFalse) s2))]
                                        [else (error 'interp-in "\"in\" not valid for these (differing?) types")])]
                         #|
@@ -1451,9 +1466,9 @@
                   [ValueA (v s) (type-case CVal v
                                   [VNone () (ExceptionA (unbox exn-to-reraise) s)]
                                   [VUnbound () (interp-env (CError (CApp (CId 'RuntimeError)
-                                                                         (list) ;; TODO this needs to take an argument...
+                                                                         (list (CStr "No active exception")) ;; TODO this needs to take an argument...
                                                                          (list)
-                                                                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))) 
+                                                                         (Empty-list))) 
                                                            env 
                                                            s)]
                                   [else (begin (set-box! exn-to-reraise v)
@@ -1568,15 +1583,15 @@
                                                                          (try (ValueA v-value 
                                                                                       (let ([_dictlen (VNum-n (getAttr (VStr "__size__") v-obj env s3))])
                                                                                         (begin (set-box! elts (hash-set (hash-set (unbox elts) v-attr v-value)
-                                                                                                                      (VStr "__size__")
-                                                                                                                      (type-case (optionof CVal) (hash-ref (unbox elts) v-attr)
-                                                                                                                        [some (s) (VNum _dictlen)]
-                                                                                                                        [none () (VNum (+ _dictlen 1))])))
-                                                                                             (set-box! (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))
-                                                                                                       (hash-set (unbox (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))) 
-                                                                                                                 v-attr
-                                                                                                                 v-attr))
-                                                                                             s3)))
+                                                                                                                        (VStr "__size__")
+                                                                                                                        (type-case (optionof CVal) (hash-ref (unbox elts) v-attr)
+                                                                                                                          [some (s) (VNum _dictlen)]
+                                                                                                                          [none () (VNum (+ _dictlen 1))])))
+                                                                                               (set-box! (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))
+                                                                                                         (hash-set (unbox (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))) 
+                                                                                                                   v-attr
+                                                                                                                   v-attr))
+                                                                                               s3)))
                                                                               (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
                                                                                                                    (list)
                                                                                                                    (list)
@@ -1718,7 +1733,7 @@
               ['or (interp-or e1 e2 env store)]
               ['and (interp-and e1 e2 env store)]
               ['is (interp-is e1 e2 env store)] ;; might want to think about these...
-            ;  ['isNot (interp-isNot e1 e2 env store)]
+              ;  ['isNot (interp-isNot e1 e2 env store)]
               ['in (interp-in e1 e2 env store)]
               ['list+ (merge-listy-things e1 e2 env store)]
               ['tuple+ (merge-listy-things e1 e2 env store)]
