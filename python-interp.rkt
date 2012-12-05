@@ -728,7 +728,7 @@
                         |#
                         [VHash (elts-box uid type) 
                                (cond 
-                                 [(equal? (Type-name type) "dict") (if (member v1 (hash-keys (unbox elts-box)))
+                                 [(equal? (Type-name type) "_dict") (if (member v1 (hash-keys (unbox elts-box)))
                                                                        (ValueA (VTrue) s2)
                                                                        (ValueA (VFalse) s2))]
                                  [(or (equal? (Type-name type) "list")
@@ -784,7 +784,7 @@
            (cond
              [(and (or (equal? (Type-name t) "list")
                        (or (equal? (Type-name t) "tuple")
-                           (equal? (Type-name t) "dict"))) (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
+                           (equal? (Type-name t) "_dict"))) (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
                                                              [none () (error 'isTruthy (string-append "Does not have size field:"
                                                                                                       (to-string value)))]
                                                              [some (s) (= (VNum-n s) 0)])) false]
@@ -1435,7 +1435,7 @@
        [CSubscript (value attr)
                    (type-case AnswerC (interp-env value env store)
                      [ValueA (v1 s1) (type-case AnswerC (interp-env attr env s1)
-                                       [ValueA (v2 s2) (if (isInstanceOf v1 "dict" env s2)
+                                       [ValueA (v2 s2) (if (isInstanceOf v1 "_dict" env s2)
                                                            (begin (set-box! (VHash-elts v1) (hash-set (hash-remove (unbox (VHash-elts v1)) v2)
                                                                                                       (VStr "__size__")
                                                                                                       (VNum (- (VNum-n (getAttr (VStr "__size__") v1 env s2)) 1))))
@@ -1584,7 +1584,7 @@
                                                                                                                                                                   (+ _listLen 1)
                                                                                                                                                                   _listLen))))
                                                                                                 s3)))))]
-                                                                        [(isInstanceOf v-obj "dict" env s3) ;;TODO TODO TODO handle size here...
+                                                                        [(isInstanceOf v-obj "_dict" env s3) ;;TODO TODO TODO handle size here...
                                                                          (try (ValueA v-value 
                                                                                       (let ([_dictlen (VNum-n (getAttr (VStr "__size__") v-obj env s3))])
                                                                                         (begin (set-box! elts (hash-set (hash-set (unbox elts) v-attr v-value)
@@ -1795,7 +1795,7 @@
                                                                     env
                                                                     s2)
                                                         (ValueA (getAttr (VNum _index) v1 env s2) s2))))]
-                                               [(isInstanceOf v1 "dict" env s2)
+                                               [(isInstanceOf v1 "_dict" env s2)
                                                 (try (ValueA (getAttr v2 v1 env s2) s2)
                                                      (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
                                                                                           (list)
