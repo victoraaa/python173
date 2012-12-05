@@ -1,13 +1,4 @@
-s = set(['a', 'b', 'c'])
+a = {1:1, 2:2}
 
-#print(s)
-
-print('a' in s)
-print('b' in s)
-print('c' in s)
-
-
-#TO DO:
-
-#subscript
-#exceptions
+for b in iter(a), a.keys(), a.items():
+    print(b)
