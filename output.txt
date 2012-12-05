@@ -1,3 +1,5 @@
+
+C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
 69 tests succeeded.
 21 tests failed.
 == Output of failed tests ==
@@ -144,7 +146,7 @@ exception: No exception raised
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound identifier error: iter
+getAttr: non-existent attribute, Unbound Identifier: (VStr "append")
 =====================================================
 = Results for iter-comprehensions.py =
 =====================================================
@@ -221,7 +223,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound identifier error: iter
+exception: TypeError'#&#hash()
 =====================================================
 = Results for iter-simple.py =
 =====================================================
@@ -232,7 +234,7 @@ lookupEnv: Unbound identifier error: iter
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound identifier error: iter
+exception: TypeError'#&#hash()
 =====================================================
 = Results for iter-stop.py =
 =====================================================
@@ -243,7 +245,7 @@ lookupEnv: Unbound identifier error: iter
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound identifier error: iter
+exception: TypeError'#&#hash()
 =====================================================
 = Results for freevar-in-method.py =
 =====================================================
@@ -309,7 +311,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 13743Unbound location error.
+lookupStore: 14949Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================

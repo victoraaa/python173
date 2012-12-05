@@ -1299,7 +1299,7 @@
                              [store : Store]) : AnswerC
   (type-case AnswerC (interp-env body env store)
     [ValueA (v s) (fill-class-object name env s)]
-     [BreakA (v s) (error 'interp-create-class "Break!")]
+    [BreakA (v s) (error 'interp-create-class "Break!")]
     [ContinueA (s) (error 'interp-create-class "Continue!")] ;; TODO really?
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ExceptionA (VStr "A class should not return") s)]))
@@ -1326,7 +1326,7 @@
                                       ;           type)
                                       ;    s))
                           store
-                          (getLocals env)))] ;; TODO methods aren't working. 
+                          (getLocals env)))] 
     [else (error 'fill-class-object "when filling a class object, it should be a VHash, not anything else")]))
   
 
@@ -1521,9 +1521,9 @@
           (type-case CExp id
             [CId (id-symbol) (type-case AnswerC (interp-env value env store)
                                [ValueA (v s)
-                                       (ValueA v (augmentStore (lookupEnv id-symbol env)
-                                                               v
-                                                               s))]
+                                        (ValueA v (augmentStore (lookupEnv id-symbol env)
+                                                                v
+                                                                s))]
                                [BreakA (v s) (error 'CSet:CId "Should not have a break here")]
                                [ContinueA (s) (error 'CSet:CId "Should not have a continue here")]
                                [ExceptionA (v s) (ExceptionA v s)]
