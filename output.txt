@@ -1,5 +1,5 @@
-68 tests succeeded.
-22 tests failed.
+69 tests succeeded.
+21 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for all.py =
@@ -87,17 +87,6 @@ parse: error is described above.
 === Actual stderr ===
 exception: TypeError'#&#hash()
 =====================================================
-= Results for dict-items.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: (VStr "items")
-=====================================================
 = Results for dict-set-keys.py =
 =====================================================
 === Expected stdout ===
@@ -155,7 +144,7 @@ exception: No exception raised
 === Expected stderr ===
 
 === Actual stderr ===
-exception: TypeError'#&#hash()
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__size__")
 =====================================================
 = Results for iter-comprehensions.py =
 =====================================================
@@ -320,7 +309,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 13364Unbound location error.
+lookupStore: 13529Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================

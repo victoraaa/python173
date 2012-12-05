@@ -454,7 +454,13 @@
 (define (interp-binop [op : symbol] [e1 : CExp] [e2 : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v1 s1) (type-case AnswerC (interp-env e2 env s1)
-                      [ValueA (v2 s2) (ValueA (handle-op op v1 v2) s2)]
+                      [ValueA (v2 s2) (ValueA (case op
+                                                ['has-field (type-case CVal v1
+                                                              [VHash (elts uid t) (try (begin (getAttr v2 v1 env store)
+                                                                                              (VTrue))
+                                                                                       (lambda () (VFalse)))]
+                                                              [else (VFalse)])]
+                                                [else (handle-op op v1 v2)]) s2)]
                       [BreakA (v2 s2) (error 'interp-binop "Why is there a break in second arg?")]
                       [ContinueA (s) (error 'interp-binop "Why is there a continue in second arg?")]
                       [ExceptionA (v s) (ExceptionA v s)]
@@ -1634,7 +1640,7 @@
                                   (begin
                                     ;;we call init and then return the new object
                                     (type-case AnswerC (interp-env (CApp (CAttribute '__init__ (CHolder new-obj)) 
-                                                                         (list) 
+                                                                         args 
                                                                          (list) 
                                                                          (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                                                                    env 
@@ -1718,7 +1724,7 @@
               ['or (interp-or e1 e2 env store)]
               ['and (interp-and e1 e2 env store)]
               ['is (interp-is e1 e2 env store)] ;; might want to think about these...
-            ;  ['isNot (interp-isNot e1 e2 env store)]
+              ;  ['isNot (interp-isNot e1 e2 env store)]
               ['in (interp-in e1 e2 env store)]
               ['list+ (merge-listy-things e1 e2 env store)]
               ['tuple+ (merge-listy-things e1 e2 env store)]
