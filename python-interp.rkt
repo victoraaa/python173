@@ -19,6 +19,7 @@
 (require (typed-in racket/list [argmax : [('a -> number) (listof 'a) -> 'a]]))
 (require (typed-in racket/list [drop-right : [(listof 'a) number -> (listof 'a)]]))
 (require (typed-in racket/list [last : [(listof 'a) -> 'a]]))
+(require (typed-in racket/base [substring : [string number number -> string]]))
 
 ;;Holds the exception to be reraised
 (define exn-to-reraise
@@ -698,6 +699,14 @@
                      [none () (error 'hash-values "This exists...")]
                      [some (v) v])) (hash-keys h)))
 
+;; convenience function
+(define (is-substring (str1 : string) (str2 : string) (index : number)) : boolean
+  (cond
+    [(>= (+ index (string-length str1)) (string-length str2)) (equal? (substring str2 index (+ (string-length str1) index)) str1)]
+    [else (if (equal? (substring str2 index (+ (string-length str1) index)) str1)
+              #t
+              (is-substring str1 str2 (+ index 1)))]))
+
 
 ;; interp-in
 (define (interp-in (left : CExp) (right : CExp) (env : Env) (store : Store)) : AnswerC
@@ -707,8 +716,8 @@
               [ValueA (v2 s2)
                       (type-case CVal v2
                         [VStr (str2) (type-case CVal v1
-                                       [VStr (str1) (if false ;; False, so that it typechecks. Need actual
-                                                        (ValueA (VTrue) s2) ;; condition. 
+                                       [VStr (str1) (if (is-substring str1 str2 0) ;;
+                                                        (ValueA (VTrue) s2)  
                                                         (ValueA (VFalse) s2))]
                                        [else (error 'interp-in "\"in\" not valid for these (differing?) types")])]
                         #|
@@ -1457,9 +1466,9 @@
                   [ValueA (v s) (type-case CVal v
                                   [VNone () (ExceptionA (unbox exn-to-reraise) s)]
                                   [VUnbound () (interp-env (CError (CApp (CId 'RuntimeError)
-                                                                         (list) ;; TODO this needs to take an argument...
+                                                                         (list (CStr "No active exception")) ;; TODO this needs to take an argument...
                                                                          (list)
-                                                                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))) 
+                                                                         (Empty-list))) 
                                                            env 
                                                            s)]
                                   [else (begin (set-box! exn-to-reraise v)

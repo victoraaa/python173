@@ -63,6 +63,9 @@ ParselTongue.
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
 
+(define (Empty-list) : CExp
+  (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))) ;; convenience function
+
 (define-type CExceptionHandler
   [CExcHandler (name : symbol) (type : CExp) (body : CExp)])
 

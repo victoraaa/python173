@@ -14,9 +14,6 @@ that calls the primitive `print`.
 
 (define-type-alias Lib (CExp -> CExp))
 
-(define (Empty-list) : CExp
-  (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))) ;; convenience function
-
 (define (One-list [ele : CExp]) : CExp
   (CHash (hash (list (values (CStr "__size__") (CNum 1)) (values (CNum 0) ele))) (cType "list" (CId 'list))))
 
@@ -598,15 +595,18 @@ that calls the primitive `print`.
          (cType "primitive-class" (CId '_Object))))
 
 (define str-primitive-class
-  (CHash (hash-set (hash-set (hash (list)) 
-                             (CStr "__name__") 
-                             (CStr "string")) 
-                   (CStr "__convert__") 
-                   (CFunc (list 'e-1)
-                          (CPrim1 'to-string (CId 'e-1))
-                          (list)
-                          (list (CStr ""))
-                          'no-vararg)) 
+  (CHash (hash (list (values (CStr "__name__") (CStr "string")) 
+                     (values (CStr "__convert__") 
+                             (CFunc (list 'e-1)
+                                    (CIf (CPrim2 'has-field (CId 'e-1) (CStr "tostring"))
+                                         (CApp (CAttribute 'tostring (CId 'e-1))
+                                               (list)
+                                               (list)
+                                               (Empty-list))
+                                         (CPrim1 'to-string (CId 'e-1)))
+                                    (list)
+                                    (list (CStr ""))
+                                    'no-vararg)))) 
          (cType "primitive-class" (CId '_Object))))
 
 (define list-primitive-class
@@ -883,33 +883,45 @@ that calls the primitive `print`.
          (cType "class" (CId '_Object))))
 
 
-#|
+
 ;; this will be the builtin class for iterators that have a function and a value
 (define python-doubleIterator-class
   (CHash (hash (list (values (CStr "__name__") (CStr "oldIterator"))
-;                     (values (CStr "__init__")
- ;                            (CFunc () 3 arguments: self, func and value
-  ;                                  () set self.func=func and self.val=value
-   ;                                 ()
-    ;                                ()
-     ;                               'no-vararg))
+                     (values (CStr "__init__")
+                             (CFunc (list 'self 'func 'value); 3 arguments: self, func and value
+                                    (CSeq (CSet (CAttribute 'func (CId 'self)) (CId 'func))
+                                          (CSet (CAttribute 'val (CId 'self)) (CId 'value))) ;set self.func=func and self.val=value
+                                    (list)
+                                    (list)
+                                    'no-vararg))
                      (values (CStr "__next__")
-                             (CFunc () ; 1 argument: self
-                                    ()
-                                       ;     i = self.func()
-                                       ;     if (i==value) then raise StopIteration else return i
-                                    ()
-                                    ()
+                             (CFunc (list 'self) ; 1 argument: self
+                                    (CLet 'i
+                                          (Local)
+                                          (CApp (CAttribute 'func (CId 'self))
+                                                (list)
+                                                (list)
+                                                (Empty-list))
+                                          (CIf (CPrim2 'eq (CId 'i) (CAttribute 'val (CId 'self)))
+                                               (CError (CApp (CId 'StopIteration)
+                                                             (list)
+                                                             (list)
+                                                             (Empty-list)))
+                                               (CReturn (CId 'i))))
+                                    ;     i = self.func()
+                                    ;     if (i==value) then raise StopIteration else return i
+                                    (list)
+                                    (list)
                                     'no-vararg))
                      (values (CStr "__iter__")
-                             (CFunc () ;1 argument: self
-                                    () ;return self
-                                    ()
-                                    ()
+                             (CFunc (list 'self) ;1 argument: self
+                                    (CReturn (CId 'self)) ;return self
+                                    (list)
+                                    (list)
                                     'no-vararg))
                      ))
          (cType "class" (CId '_Object))))
-|#
+
 
 (define call-iter
   (CFunc (list 'e-1 'e-2)

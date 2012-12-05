@@ -144,7 +144,7 @@ exception: No exception raised
 === Expected stderr ===
 
 === Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: (VStr "__size__")
+lookupEnv: Unbound identifier error: iter
 =====================================================
 = Results for iter-comprehensions.py =
 =====================================================
@@ -309,7 +309,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 13529Unbound location error.
+lookupStore: 13743Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
