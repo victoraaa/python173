@@ -1,5 +1,6 @@
 #lang plai-typed
 
+(require "python-core-syntax.rkt")
 (require (typed-in racket/list [drop-right : [(listof 'a) number -> (listof 'a)]]))
 
 (define-type PyExpr
@@ -22,11 +23,13 @@
   [PyAttribute (attr : symbol) (value : PyExpr)]
   [PySubscript (value : PyExpr) (attr : PyExpr)]
   [PyDel (targets : (listof PyExpr))]
-  
+  [PyHolder (expr : CExp)] ;;only used to pass CExps aroudn the desugarer
   
   ;; loops
   [PyWhile (test : PyExpr) (body : PyExpr) (orelse : PyExpr)]
   [PyFor (target : PyExpr) (iter : PyExpr) (body : PyExpr)]
+  [PyListComp (elt : PyExpr) (generators : (listof PyExpr))]
+  [PyComprehension (target : PyExpr) (iter : PyExpr)]
   
   [PyAssign (targets : (listof PyExpr)) (value : PyExpr)]
   [PyAugAssign (target : PyExpr) (op : symbol) (value : PyExpr)]

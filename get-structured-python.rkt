@@ -339,6 +339,18 @@ structure that you define in python-syntax.rkt
             (get-structured-python iter)
             (PySeq (map get-structured-python body)))]
     
+    [(hash-table ('nodetype "ListComp")
+                 ('elt elt)
+                 ('generators generators))
+     (PyListComp (get-structured-python elt)
+                 (map get-structured-python generators))]
+    
+    [(hash-table ('nodetype "comprehension")
+                 ('target target)
+                 ('iter iter)
+                 ('ifs ifs))
+     (PyComprehension (get-structured-python target)
+                      (get-structured-python iter))]
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     

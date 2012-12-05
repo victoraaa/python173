@@ -64,7 +64,12 @@
                                [PyId (id) (list (values (Local) id))]
                                [else (get-vars target)])
                              (get-vars body))]
-    
+    [PyListComp (elt generators) (foldl (lambda (a b) (append b a))
+                                        (list)
+                                        (map (lambda (e) (get-vars e)) generators))]
+    [PyComprehension (target iter) (type-case PyExpr target
+                                     [PyId (id) (list (values (Local) id))]
+                                     [else (get-vars target)])]
     
     [PyIf (test then orelse)
           (append
@@ -88,6 +93,7 @@
                                    (map (lambda (e) (get-vars e)) comparators)))]
     [PyPass () (list)]
     [PyNone () (list)]
+    [PyHolder (expr) (list)]
     [PyLambda (args body) (get-vars args)]
     [PyDef (name args body)
            (append (list (values (Local) name))
@@ -299,29 +305,7 @@
            (CDel (map desugar target))]
     ;; loops
     [PyWhile (test body orelse) (CWhile (desugar test) (desugar body) (desugar orelse) (list))]
-    #|
-    [PyFor (target iter body) (CLet 'index-counter
-                                    (Local)
-                                    (CNum -1)
-                                    (CLet 'iter-list
-                                          (Local)
-                                          (desugar iter)
-                                          ;    (CSeq (CSet (desugar target) (CUnbound))
-                                          (CWhile (CSeq (CSet (CId 'index-counter) (CPrim2 'num+ (CId 'index-counter) (CNum 1))) 
-                                                        (CPrim2 'num-lt 
-                                                                (CId 'index-counter) 
-                                                                (CAttribute '__size__ (CId 'iter-list)))) ;; TODO check field name
-                                                  ;  (CApp (CId )
-                                                  ;        (list (CId 'iter-list))
-                                                  ;        (list)
-                                                  ;        (CHash (hash (list)) (cType "list" (CNone))))
-                                                  ; )) 
-                                                  (CSeq (CSet (desugar target) (CSubscript (CId 'iter-list) (CId 'index-counter)))
-                                                        (desugar body)) 
-                                                  (desugar (PyId 'a))
-                                                  (get-vars (PySeq (cons target (PySeq-es body)))))))]
-    |#
-    ;#|
+    
     [PyFor (target iter body)
            (CLet '_it
                  (Local)
@@ -343,7 +327,18 @@
                                                 (CPass))) ;[CExcHandler (name : symbol) (type : CExp) (body : CExp)]
                              (CPass)))]
 
-  ;|#
+    [PyListComp (elt generators)
+                ;create an empty list (LST),
+                ;create a loop with the fors
+                ;the inner-most body of the loop will be (LST.append(elt))
+                (CLet '_lst
+                      (Local)
+                      (CApp (CId 'list)
+                            (list)
+                            (list)
+                            (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                      (CSeq (desugar (loop-listcomp elt generators))
+                            (CId '_lst)))]
    
     ;; exceptions
     [PyTryExcept (body handlers orelse) (CTryExcept (desugar body) (map desugar-handler handlers) (desugar orelse))]
@@ -354,9 +349,27 @@
     [PyReturn (value) (CReturn (desugar value))]
     [PyBreak () (CBreak)]
     [PyContinue () (CContinue)]
+    [PyHolder (exp) exp]
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
+
+
+(define (loop-listcomp [elt : PyExpr]
+                       [generators : (listof PyExpr)]) : PyExpr
+  (cond
+    [(empty? generators) (PyApp (PyAttribute 'append (PyId '_lst)) ;the _lst identifier comes from the declared list in the [PyListComp] case in the desugarer
+                                (list elt)
+                                (list)
+                                (PyHolder (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))]
+    [else (type-case PyExpr (first generators)
+            [PyComprehension (target iter) 
+                             (PyFor target iter (loop-listcomp elt (rest generators)))]
+            [else (error 'desugar-listcomp "every generator should be a PyComprehension")])]))
+     
+
+
+
 #|
 ;; desugar class innards
 (define (desugar-class-innards (name : symbol) (body : (listof PyExpr)) ) : CExp
