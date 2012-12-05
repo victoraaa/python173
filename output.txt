@@ -1,5 +1,5 @@
-74 tests succeeded.
-16 tests failed.
+75 tests succeeded.
+15 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for all.py =
@@ -8,7 +8,16 @@
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((nodetype . "GeneratorExp")
+#hasheq((elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare")))
         (generators
          .
          (#hasheq((target
@@ -23,16 +32,7 @@ PARSING: Haven't handled a case yet:
                            (ctx . #hasheq((nodetype . "Load")))))
                   (nodetype . "comprehension")
                   (ifs . ()))))
-        (elt
-         .
-         #hasheq((left
-                  .
-                  #hasheq((id . "x")
-                          (nodetype . "Name")
-                          (ctx . #hasheq((nodetype . "Load")))))
-                 (ops . (#hasheq((nodetype . "Gt"))))
-                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
-                 (nodetype . "Compare"))))
+        (nodetype . "GeneratorExp"))
 
 === Expected stderr ===
 
@@ -45,7 +45,16 @@ parse: error is described above.
 
 === Actual stdout ===
 PARSING: Haven't handled a case yet: 
-#hasheq((nodetype . "GeneratorExp")
+#hasheq((elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare")))
         (generators
          .
          (#hasheq((target
@@ -60,16 +69,7 @@ PARSING: Haven't handled a case yet:
                            (ctx . #hasheq((nodetype . "Load")))))
                   (nodetype . "comprehension")
                   (ifs . ()))))
-        (elt
-         .
-         #hasheq((left
-                  .
-                  #hasheq((id . "x")
-                          (nodetype . "Name")
-                          (ctx . #hasheq((nodetype . "Load")))))
-                 (ops . (#hasheq((nodetype . "Gt"))))
-                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
-                 (nodetype . "Compare"))))
+        (nodetype . "GeneratorExp"))
 
 === Expected stderr ===
 
@@ -96,7 +96,7 @@ exception: TypeError(box (hash (VStr "message") (VStr "Something is up with the 
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound identifier error: subtract-sets-helper
+lookupEnv: Unbound identifier error: python-bitand
 =====================================================
 = Results for dict-values-set.py =
 =====================================================
@@ -107,73 +107,7 @@ lookupEnv: Unbound identifier error: subtract-sets-helper
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound identifier error: subtract-sets-helper
-=====================================================
-= Results for iter-comprehensions.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((nodetype . "ListComp")
-        (generators
-         .
-         (#hasheq((target
-                   .
-                   #hasheq((id . "i")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Store")))))
-                  (iter
-                   .
-                   #hasheq((id . "seq")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load")))))
-                  (nodetype . "comprehension")
-                  (ifs . ()))
-          #hasheq((target
-                   .
-                   #hasheq((id . "j")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Store")))))
-                  (iter
-                   .
-                   #hasheq((id . "seq")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load")))))
-                  (nodetype . "comprehension")
-                  (ifs . ()))
-          #hasheq((target
-                   .
-                   #hasheq((id . "k")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Store")))))
-                  (iter
-                   .
-                   #hasheq((id . "seq")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load")))))
-                  (nodetype . "comprehension")
-                  (ifs . ()))))
-        (elt
-         .
-         #hasheq((elts
-                  .
-                  (#hasheq((id . "i")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load"))))
-                   #hasheq((id . "j")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load"))))
-                   #hasheq((id . "k")
-                           (nodetype . "Name")
-                           (ctx . #hasheq((nodetype . "Load"))))))
-                 (nodetype . "Tuple")
-                 (ctx . #hasheq((nodetype . "Load"))))))
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-parse: error is described above.
+exception: Assert failed: values are not Equal: set(box (hash #0=(VHash (box (hash (VNum 0) (VNum 1) (VNum 1) (VNum 1) (VStr "__size__") (VNum 2))) 3364 (Type "tuple" #1=(VHash (box (hash (VStr "__getitem__") (VClosure (hash 'list (vector (NonLocal) 5890) 'abs (vector (NonLocal) 5873) 'print (vector (NonLocal) 5789) 'str (vector (NonLocal) 5880) 'bool (vector (NonLocal) 5877) 'python-add (vector (NonLocal) 5821) 'subtract-sets-helper (vector (NonLocal) 5824) 'python-sub (vector (NonLocal) 5827) 'python-mult (vector (NonLocal) 5830) 'python-div (vector (NonLocal) 5833) 'python-floor-div (vector (NonLocal) 5836) 'python-mod (vector (NonLocal) 5839) 'python-lt (vector (NonLocal) 5842) 'python-lte (vector (NonLocal) 5845) 'python-gt (vector (NonLocal) 5848) 'python-gte (vector (NonLocal) 5851) 'python-eq (vector (NonLocal) 5854) 'python-notEq (vector (NonLocal) 5857) 'python-is (vector (NonLocal) 5860) 'python-isNot (vector (NonLocal) 5863) 'python-in (vector (NonLocal) 5866) 'python-notIn (vector (NonLocal) 5869) 'len (vector (NonLocal) 5871) 'True (vector (NonLocal) 5790) '___assertTrue (vector (NonLocal) 5792) 'e-1 (vector (Local) 5892) '___assertFalse (vector (NonLocal) 5794) '___assertIn (vector (NonLocal) 5797) '___assertNotIn (vector (NonLocal) 5800) '___assertEqual (vector (NonLocal) 5803) '___assertNotEqual (vector (NonLocal) 5806) '___assertIs (vector (NonLocal) 5809) '___assertIsNot (vector (NonLocal) 5812) '___assertRaises (vector (NonLocal) 5816) 'self (vector (Local) 5893) '___fail (vector (NonLocal) 5818) '_Object (vector (NonLocal) 5875) 'float (vector (NonLocal) 5882) 'int (vector (NonLocal) 5884) 'tuple (vector (NonLocal) 5891)) '(self e-1) 'no-vararg (CReturn (CSubscript (CId 'self) (CId 'e-1))) '() 3293) (VStr "__name__") (VStr "tuple") (VStr "__size__") (VNum 0) (VStr "__convert__") (VClosure (hash 'list (vector (NonLocal) 5890) 'abs (vector (NonLocal) 5873) 'print (vector (NonLocal) 5789) 'str (vector (NonLocal) 5880) 'bool (vector (NonLocal) 5877) 'python-add (vector (NonLocal) 5821) 'subtract-sets-helper (vector (NonLocal) 5824) 'python-sub (vector (NonLocal) 5827) 'python-mult (vector (NonLocal) 5830) 'python-div (vector (NonLocal) 5833) 'python-floor-div (vector (NonLocal) 5836) 'python-mod (vector (NonLocal) 5839) 'python-lt (vector (NonLocal) 5842) 'python-lte (vector (NonLocal) 5845) 'python-gt (vector (NonLocal) 5848) 'python-gte (vector (NonLocal) 5851) 'python-eq (vector (NonLocal) 5854) 'python-notEq (vector (NonLocal) 5857) 'python-is (vector (NonLocal) 5860) 'python-isNot (vector (NonLocal) 5863) 'python-in (vector (NonLocal) 5866) 'python-notIn (vector (NonLocal) 5869) 'len (vector (NonLocal) 5871) 'True (vector (NonLocal) 5790) '___assertTrue (vector (NonLocal) 5792) 'e-1 (vector (Local) 5894) '___assertFalse (vector (NonLocal) 5794) '___assertIn (vector (NonLocal) 5797) '___assertNotIn (vector (NonLocal) 5800) '___assertEqual (vector (NonLocal) 5803) '___assertNotEqual (vector (NonLocal) 5806) '___assertIs (vector (NonLocal) 5809) '___assertIsNot (vector (NonLocal) 5812) '___assertRaises (vector (NonLocal) 5816) '___fail (vector (NonLocal) 5818) '_Object (vector (NonLocal) 5875) 'float (vector (NonLocal) 5882) 'int (vector (NonLocal) 5884) 'tuple (vector (NonLocal) 5891)) '(e-1) 'no-vararg (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")) (CId 'e-1) (CPrim1 'to-tuple (CId 'e-1))) (list (VHash (box (hash (VStr "__size__") (VNum 0))) 3294 (Type "tuple" (VNone)))) 3295))) 3296 (Type "primitive-class" (VHash (box (hash (VStr "__name__") (VStr "Object") (VStr "__init__") (VClosure (hash 'abs (vector (NonLocal) 5873) 'print (vector (NonLocal) 5789) 'python-add (vector (NonLocal) 5821) 'subtract-sets-helper (vector (NonLocal) 5824) 'python-sub (vector (NonLocal) 5827) 'python-mult (vector (NonLocal) 5830) 'python-div (vector (NonLocal) 5833) 'python-floor-div (vector (NonLocal) 5836) 'python-mod (vector (NonLocal) 5839) 'python-lt (vector (NonLocal) 5842) 'python-lte (vector (NonLocal) 5845) 'python-gt (vector (NonLocal) 5848) 'python-gte (vector (NonLocal) 5851) 'python-eq (vector (NonLocal) 5854) 'python-notEq (vector (NonLocal) 5857) 'python-is (vector (NonLocal) 5860) 'python-isNot (vector (NonLocal) 5863) 'python-in (vector (NonLocal) 5866) 'python-notIn (vector (NonLocal) 5869) 'len (vector (NonLocal) 5871) 'True (vector (NonLocal) 5790) '___assertTrue (vector (NonLocal) 5792) 'e-1 (vector (Local) 5874) '___assertFalse (vector (NonLocal) 5794) '___assertIn (vector (NonLocal) 5797) '___assertNotIn (vector (NonLocal) 5800) '___assertEqual (vector (NonLocal) 5803) '___assertNotEqual (vector (NonLocal) 5806) '___assertIs (vector (NonLocal) 5809) '___assertIsNot (vector (NonLocal) 5812) '___assertRaises (vector (NonLocal) 5816) '___fail (vector (NonLocal) 5818)) '(e-1) 'no-vararg (CPass) (list (VFalse)) 3278))) 3279 (Type "class" (VNone))))))) #0# #2=(VHash (box (hash (VNum 0) (VNum 2) (VNum 1) (VNum 2) (VStr "__size__") (VNum 2))) 3367 (Type "tuple" #1#)) #2#))set'#&#hash()
 =====================================================
 = Results for iter-misc.py =
 =====================================================
@@ -261,7 +195,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 18988Unbound location error.
+lookupStore: 20839Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
