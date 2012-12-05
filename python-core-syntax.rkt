@@ -66,6 +66,12 @@ ParselTongue.
 (define (Empty-list) : CExp
   (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))) ;; convenience function
 
+(define (Make-throw [ex : symbol] [msg : string]) : CExp
+  (CApp (CId ex)
+        (list (CStr msg))
+        (list)
+        (Empty-list)))
+
 (define-type CExceptionHandler
   [CExcHandler (name : symbol) (type : CExp) (body : CExp)])
 

@@ -362,10 +362,7 @@
                      [args : (listof CVal)]) : AnswerC
   (cond
     [(not (equal? (length argsIds) (length args)))
-     (interp-env (CError (CApp (CId 'TypeError)
-                               (list)
-                               (list)
-                               (CHash (hash (list)) (cType "list" (CNone)))))
+     (interp-env (CError (Make-throw 'TypeError "(interp-CApp) Arity mismatch"))
                  env
                  store)]
     #|
@@ -829,7 +826,7 @@
 ;; handle unary operations - akin to handle-op
 (define (handle-unary [prim : symbol] [arg : CVal] [env : Env] [store : Store]) : CVal
   (case prim
-    ['print (begin (display (pretty arg)) arg)]
+    ['print (begin (display (string-append (pretty arg) "\n")) arg)]
     ['not (if (isTruthy arg) (VFalse) (VTrue))]
     ['negative (type-case CVal arg
                  [VNum (n) (VNum (- 0 n))] ;; gotta be a better way...
@@ -1359,10 +1356,7 @@
                              (let ([_grouped-args (try (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
                                                        (lambda () (list (CId '__group-arguments-exception))))])
                                (if (and (not (empty? _grouped-args)) (CId? (first _grouped-args)) (equal? (CId-x (first _grouped-args)) '__group-arguments-exception))
-                                   (interp-env (CError (CApp (CId 'TypeError)
-                                                             (list)
-                                                             (list)
-                                                             (CHash (hash (list)) (cType "list" (CNone)))))
+                                   (interp-env (CError (Make-throw 'TypeError "Something is up with the arguments..."))
                                                env
                                                sh)
                                    (interp-args-CApp b   
@@ -1580,11 +1574,14 @@
                                                                                  (interp-env (CError (CApp (CId 'IndexError)
                                                                                                            (list)
                                                                                                            (list)
-                                                                                                           (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                                           (Empty-list)))
                                                                                              env
                                                                                              s3)
                                                                                  (ValueA v-value 
                                                                                          (begin (set-box! elts (hash-set (unbox elts) (VNum _index) v-value))
+                                                                                                (set-box! elts (hash-set (unbox elts) (VStr "__size__") (VNum (if (= _listLen _index)
+                                                                                                                                                                  (+ _listLen 1)
+                                                                                                                                                                  _listLen))))
                                                                                                 s3)))))]
                                                                         [(isInstanceOf v-obj "dict" env s3) ;;TODO TODO TODO handle size here...
                                                                          (try (ValueA v-value 
@@ -1787,7 +1784,9 @@
                                                [(or (isInstanceOf v1 "list" env s2) (isInstanceOf v1 "tuple" env s2))
                                                 (let ([_listLen (VNum-n (getAttr (VStr "__size__") v1 env s2))])
                                                   (let ([_index (VNum-n (correct-list-subscript v2 _listLen))])
-                                                    (if (< _listLen _index)
+                                                    (if 
+                                                     ;(begin (display (string-append (string-append (to-string _listLen) " e index: ") (to-string _index)))
+                                                     (<= _listLen _index);)
                                                         (interp-env (CError (CApp (CId 'IndexError)
                                                                                   (list)
                                                                                   (list)

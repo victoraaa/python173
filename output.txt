@@ -1,5 +1,5 @@
-69 tests succeeded.
-21 tests failed.
+72 tests succeeded.
+18 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for all.py =
@@ -85,7 +85,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-exception: TypeError(box (hash (VStr "message") (VNone)))
+exception: TypeError(box (hash (VStr "message") (VStr "Something is up with the arguments...")))
 =====================================================
 = Results for dict-set-keys.py =
 =====================================================
@@ -134,17 +134,6 @@ parse: error is described above.
 
 === Actual stderr ===
 exception: Exception(box (hash (VStr "message") (VStr "No exception raised")))
-=====================================================
-= Results for iter-classes.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: (VStr "append")
 =====================================================
 = Results for iter-comprehensions.py =
 =====================================================
@@ -221,18 +210,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-exception: TypeError(box (hash (VStr "message") (VNone)))
-=====================================================
-= Results for iter-simple.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: TypeError(box (hash (VStr "message") (VNone)))
+lookupStore: Unbound Identifier: using identifier before assignment
 =====================================================
 = Results for iter-stop.py =
 =====================================================
@@ -243,7 +221,7 @@ exception: TypeError(box (hash (VStr "message") (VNone)))
 === Expected stderr ===
 
 === Actual stderr ===
-exception: TypeError(box (hash (VStr "message") (VNone)))
+exception: TypeError(box (hash (VStr "message") (VStr "Cannot convert this type to a list")))
 =====================================================
 = Results for freevar-in-method.py =
 =====================================================
@@ -309,7 +287,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 15479Unbound location error.
+lookupStore: 18067Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
@@ -321,17 +299,6 @@ lookupStore: 15479Unbound location error.
 
 === Actual stderr ===
 lookupEnv: Unbound identifier error: super
-=====================================================
-= Results for test_simple_string_ops.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: TypeError(box (hash (VStr "message") (VNone)))
 =====================================================
 = Results for test_string_slices.py =
 =====================================================
