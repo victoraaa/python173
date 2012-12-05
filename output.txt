@@ -1,7 +1,5 @@
-
-C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
-67 tests succeeded.
-23 tests failed.
+61 tests succeeded.
+29 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for all.py =
@@ -78,6 +76,17 @@ PARSING: Haven't handled a case yet:
 === Actual stderr ===
 parse: error is described above.
 =====================================================
+= Results for callable.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__init__")
+=====================================================
 = Results for filter.py =
 =====================================================
 === Expected stdout ===
@@ -89,6 +98,17 @@ parse: error is described above.
 === Actual stderr ===
 exception: TypeError'#&#hash()
 =====================================================
+= Results for isinstance.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__init__")
+=====================================================
 = Results for dict-getitem.py =
 =====================================================
 === Expected stdout ===
@@ -98,7 +118,7 @@ exception: TypeError'#&#hash()
 === Expected stderr ===
 
 === Actual stderr ===
-exception: Assert failed: values are not Equal: dict(box (hash #0=(VStr "a") (VNum 4) #1=(VStr "c") (VNum 3) (VStr "__keys__") (VHash (box (hash #0# #0# #1# #1#)) 1986 (Type "set" (VHash (box (hash (VStr "__name__") (VStr "set") (VStr "__convert__") (VClosure (hash 'list (vector (NonLocal) 3698) 'abs (vector (NonLocal) 3688) 'print (vector (NonLocal) 3607) 'str (vector (NonLocal) 3692) 'bool (vector (NonLocal) 3690) 'python-add (vector (NonLocal) 3639) 'python-sub (vector (NonLocal) 3642) 'python-mult (vector (NonLocal) 3645) 'python-div (vector (NonLocal) 3648) 'python-floor-div (vector (NonLocal) 3651) 'python-mod (vector (NonLocal) 3654) 'python-lt (vector (NonLocal) 3657) 'python-lte (vector (NonLocal) 3660) 'python-gt (vector (NonLocal) 3663) 'python-gte (vector (NonLocal) 3666) 'python-eq (vector (NonLocal) 3669) 'python-notEq (vector (NonLocal) 3672) 'python-is (vector (NonLocal) 3675) 'python-isNot (vector (NonLocal) 3678) 'python-in (vector (NonLocal) 3681) 'python-notIn (vector (NonLocal) 3684) 'len (vector (NonLocal) 3686) 'True (vector (NonLocal) 3608) '___assertTrue (vector (NonLocal) 3610) 'e-1 (vector (Local) 3712) '___assertFalse (vector (NonLocal) 3612) '___assertIn (vector (NonLocal) 3615) '___assertNotIn (vector (NonLocal) 3618) '___assertEqual (vector (NonLocal) 3621) '___assertNotEqual (vector (NonLocal) 3624) '___assertIs (vector (NonLocal) 3627) '___assertIsNot (vector (NonLocal) 3630) '___assertRaises (vector (NonLocal) 3634) '___fail (vector (NonLocal) 3636) 'float (vector (NonLocal) 3694) 'int (vector (NonLocal) 3696) 'tuple (vector (NonLocal) 3701) 'dict (vector (NonLocal) 3711)) '(e-1) 'no-vararg (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CId 'e-1) (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) (CPrim1 'to-set (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list))))))) (list (VHash (box (hash (VStr "__size__") (VNum 0))) 1957 (Type "list" (VHash (box (hash (VStr "__name__") (VStr "list") (VStr "__size__") (VNum 0) (VStr "__convert__") (VClosure (hash 'abs (vector (NonLocal) 3688) 'print (vector (NonLocal) 3607) 'str (vector (NonLocal) 3692) 'bool (vector (NonLocal) 3690) 'python-add (vector (NonLocal) 3639) 'python-sub (vector (NonLocal) 3642) 'python-mult (vector (NonLocal) 3645) 'python-div (vector (NonLocal) 3648) 'python-floor-div (vector (NonLocal) 3651) 'python-mod (vector (NonLocal) 3654) 'python-lt (vector (NonLocal) 3657) 'python-lte (vector (NonLocal) 3660) 'python-gt (vector (NonLocal) 3663) 'python-gte (vector (NonLocal) 3666) 'python-eq (vector (NonLocal) 3669) 'python-notEq (vector (NonLocal) 3672) 'python-is (vector (NonLocal) 3675) 'python-isNot (vector (NonLocal) 3678) 'python-in (vector (NonLocal) 3681) 'python-notIn (vector (NonLocal) 3684) 'len (vector (NonLocal) 3686) 'True (vector (NonLocal) 3608) '___assertTrue (vector (NonLocal) 3610) 'e-1 (vector (Local) 3697) '___assertFalse (vector (NonLocal) 3612) '___assertIn (vector (NonLocal) 3615) '___assertNotIn (vector (NonLocal) 3618) '___assertEqual (vector (NonLocal) 3621) '___assertNotEqual (vector (NonLocal) 3624) '___assertIs (vector (NonLocal) 3627) '___assertIsNot (vector (NonLocal) 3630) '___assertRaises (vector (NonLocal) 3634) '___fail (vector (NonLocal) 3636) 'float (vector (NonLocal) 3694) 'int (vector (NonLocal) 3696)) '(e-1) 'no-vararg (CIf (CPrim2 'or (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))) (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string")))) (CPrim1 'to-list (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list)))))) (list (VStr "")) 1946))) 1947 (Type "primitive-class" (VNone)))))) 1958))) 1959 (Type "primitive-class" (VNone))))) (VStr "__size__") (VNum 1)))dict(box (hash (VStr "a") (VNum 4) (VStr "c") (VNum 3) (VStr "__keys__") (VHash (box (hash (VStr "a") (VStr "a") (VStr "c") (VStr "c"))) 1997 (Type "set" (VHash (box (hash (VStr "__name__") (VStr "set") (VStr "__convert__") (VClosure (hash 'list (vector (NonLocal) 3698) 'abs (vector (NonLocal) 3688) 'print (vector (NonLocal) 3607) 'str (vector (NonLocal) 3692) 'bool (vector (NonLocal) 3690) 'python-add (vector (NonLocal) 3639) 'python-sub (vector (NonLocal) 3642) 'python-mult (vector (NonLocal) 3645) 'python-div (vector (NonLocal) 3648) 'python-floor-div (vector (NonLocal) 3651) 'python-mod (vector (NonLocal) 3654) 'python-lt (vector (NonLocal) 3657) 'python-lte (vector (NonLocal) 3660) 'python-gt (vector (NonLocal) 3663) 'python-gte (vector (NonLocal) 3666) 'python-eq (vector (NonLocal) 3669) 'python-notEq (vector (NonLocal) 3672) 'python-is (vector (NonLocal) 3675) 'python-isNot (vector (NonLocal) 3678) 'python-in (vector (NonLocal) 3681) 'python-notIn (vector (NonLocal) 3684) 'len (vector (NonLocal) 3686) 'True (vector (NonLocal) 3608) '___assertTrue (vector (NonLocal) 3610) 'e-1 (vector (Local) 3712) '___assertFalse (vector (NonLocal) 3612) '___assertIn (vector (NonLocal) 3615) '___assertNotIn (vector (NonLocal) 3618) '___assertEqual (vector (NonLocal) 3621) '___assertNotEqual (vector (NonLocal) 3624) '___assertIs (vector (NonLocal) 3627) '___assertIsNot (vector (NonLocal) 3630) '___assertRaises (vector (NonLocal) 3634) '___fail (vector (NonLocal) 3636) 'float (vector (NonLocal) 3694) 'int (vector (NonLocal) 3696) 'tuple (vector (NonLocal) 3701) 'dict (vector (NonLocal) 3711)) '(e-1) 'no-vararg (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CId 'e-1) (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) (CPrim1 'to-set (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list))))))) (list (VHash (box (hash (VStr "__size__") (VNum 0))) 1957 (Type "list" (VHash (box (hash (VStr "__name__") (VStr "list") (VStr "__size__") (VNum 0) (VStr "__convert__") (VClosure (hash 'abs (vector (NonLocal) 3688) 'print (vector (NonLocal) 3607) 'str (vector (NonLocal) 3692) 'bool (vector (NonLocal) 3690) 'python-add (vector (NonLocal) 3639) 'python-sub (vector (NonLocal) 3642) 'python-mult (vector (NonLocal) 3645) 'python-div (vector (NonLocal) 3648) 'python-floor-div (vector (NonLocal) 3651) 'python-mod (vector (NonLocal) 3654) 'python-lt (vector (NonLocal) 3657) 'python-lte (vector (NonLocal) 3660) 'python-gt (vector (NonLocal) 3663) 'python-gte (vector (NonLocal) 3666) 'python-eq (vector (NonLocal) 3669) 'python-notEq (vector (NonLocal) 3672) 'python-is (vector (NonLocal) 3675) 'python-isNot (vector (NonLocal) 3678) 'python-in (vector (NonLocal) 3681) 'python-notIn (vector (NonLocal) 3684) 'len (vector (NonLocal) 3686) 'True (vector (NonLocal) 3608) '___assertTrue (vector (NonLocal) 3610) 'e-1 (vector (Local) 3697) '___assertFalse (vector (NonLocal) 3612) '___assertIn (vector (NonLocal) 3615) '___assertNotIn (vector (NonLocal) 3618) '___assertEqual (vector (NonLocal) 3621) '___assertNotEqual (vector (NonLocal) 3624) '___assertIs (vector (NonLocal) 3627) '___assertIsNot (vector (NonLocal) 3630) '___assertRaises (vector (NonLocal) 3634) '___fail (vector (NonLocal) 3636) 'float (vector (NonLocal) 3694) 'int (vector (NonLocal) 3696)) '(e-1) 'no-vararg (CIf (CPrim2 'or (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))) (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string")))) (CPrim1 'to-list (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list)))))) (list (VStr "")) 1946))) 1947 (Type "primitive-class" (VNone)))))) 1958))) 1959 (Type "primitive-class" (VNone))))) (VStr "__size__") (VNum 2)))
+exception: Assert failed: values are not Equal: dict(box (hash #1=(VStr "a") (VNum 4) #2=(VStr "c") (VNum 3) (VStr "__keys__") (VHash (box (hash #1# #1# #2# #2#)) 2005 (Type "set" (VHash (box (hash (VStr "__name__") (VStr "set") (VStr "__convert__") (VClosure (hash 'list (vector (NonLocal) 3710) 'abs (vector (NonLocal) 3698) 'print (vector (NonLocal) 3617) 'str (vector (NonLocal) 3704) 'bool (vector (NonLocal) 3702) 'python-add (vector (NonLocal) 3649) 'python-sub (vector (NonLocal) 3652) 'python-mult (vector (NonLocal) 3655) 'python-div (vector (NonLocal) 3658) 'python-floor-div (vector (NonLocal) 3661) 'python-mod (vector (NonLocal) 3664) 'python-lt (vector (NonLocal) 3667) 'python-lte (vector (NonLocal) 3670) 'python-gt (vector (NonLocal) 3673) 'python-gte (vector (NonLocal) 3676) 'python-eq (vector (NonLocal) 3679) 'python-notEq (vector (NonLocal) 3682) 'python-is (vector (NonLocal) 3685) 'python-isNot (vector (NonLocal) 3688) 'python-in (vector (NonLocal) 3691) 'python-notIn (vector (NonLocal) 3694) 'len (vector (NonLocal) 3696) 'True (vector (NonLocal) 3618) '___assertTrue (vector (NonLocal) 3620) 'e-1 (vector (Local) 3724) '___assertFalse (vector (NonLocal) 3622) '___assertIn (vector (NonLocal) 3625) '___assertNotIn (vector (NonLocal) 3628) '___assertEqual (vector (NonLocal) 3631) '___assertNotEqual (vector (NonLocal) 3634) '___assertIs (vector (NonLocal) 3637) '___assertIsNot (vector (NonLocal) 3640) '___assertRaises (vector (NonLocal) 3644) '___fail (vector (NonLocal) 3646) '_Object (vector (NonLocal) 3700) 'float (vector (NonLocal) 3706) 'int (vector (NonLocal) 3708) 'tuple (vector (NonLocal) 3713) 'dict (vector (NonLocal) 3723)) '(e-1) 'no-vararg (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CId 'e-1) (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) (CPrim1 'to-set (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list))))))) (list (VHash (box (hash (VStr "__size__") (VNum 0))) 1976 (Type "list" (VHash (box (hash (VStr "__name__") (VStr "list") (VStr "__size__") (VNum 0) (VStr "__convert__") (VClosure (hash 'abs (vector (NonLocal) 3698) 'print (vector (NonLocal) 3617) 'str (vector (NonLocal) 3704) 'bool (vector (NonLocal) 3702) 'python-add (vector (NonLocal) 3649) 'python-sub (vector (NonLocal) 3652) 'python-mult (vector (NonLocal) 3655) 'python-div (vector (NonLocal) 3658) 'python-floor-div (vector (NonLocal) 3661) 'python-mod (vector (NonLocal) 3664) 'python-lt (vector (NonLocal) 3667) 'python-lte (vector (NonLocal) 3670) 'python-gt (vector (NonLocal) 3673) 'python-gte (vector (NonLocal) 3676) 'python-eq (vector (NonLocal) 3679) 'python-notEq (vector (NonLocal) 3682) 'python-is (vector (NonLocal) 3685) 'python-isNot (vector (NonLocal) 3688) 'python-in (vector (NonLocal) 3691) 'python-notIn (vector (NonLocal) 3694) 'len (vector (NonLocal) 3696) 'True (vector (NonLocal) 3618) '___assertTrue (vector (NonLocal) 3620) 'e-1 (vector (Local) 3709) '___assertFalse (vector (NonLocal) 3622) '___assertIn (vector (NonLocal) 3625) '___assertNotIn (vector (NonLocal) 3628) '___assertEqual (vector (NonLocal) 3631) '___assertNotEqual (vector (NonLocal) 3634) '___assertIs (vector (NonLocal) 3637) '___assertIsNot (vector (NonLocal) 3640) '___assertRaises (vector (NonLocal) 3644) '___fail (vector (NonLocal) 3646) '_Object (vector (NonLocal) 3700) 'float (vector (NonLocal) 3706) 'int (vector (NonLocal) 3708)) '(e-1) 'no-vararg (CIf (CPrim2 'or (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))) (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string")))) (CPrim1 'to-list (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list)))))) (list (VStr "")) 1965))) 1966 (Type "primitive-class" #0=(VHash (box (hash (VStr "__name__") (VStr "Object") (VStr "__init__") (VClosure (hash 'abs (vector (NonLocal) 3698) 'print (vector (NonLocal) 3617) 'python-add (vector (NonLocal) 3649) 'python-sub (vector (NonLocal) 3652) 'python-mult (vector (NonLocal) 3655) 'python-div (vector (NonLocal) 3658) 'python-floor-div (vector (NonLocal) 3661) 'python-mod (vector (NonLocal) 3664) 'python-lt (vector (NonLocal) 3667) 'python-lte (vector (NonLocal) 3670) 'python-gt (vector (NonLocal) 3673) 'python-gte (vector (NonLocal) 3676) 'python-eq (vector (NonLocal) 3679) 'python-notEq (vector (NonLocal) 3682) 'python-is (vector (NonLocal) 3685) 'python-isNot (vector (NonLocal) 3688) 'python-in (vector (NonLocal) 3691) 'python-notIn (vector (NonLocal) 3694) 'len (vector (NonLocal) 3696) 'True (vector (NonLocal) 3618) '___assertTrue (vector (NonLocal) 3620) 'e-1 (vector (Local) 3699) '___assertFalse (vector (NonLocal) 3622) '___assertIn (vector (NonLocal) 3625) '___assertNotIn (vector (NonLocal) 3628) '___assertEqual (vector (NonLocal) 3631) '___assertNotEqual (vector (NonLocal) 3634) '___assertIs (vector (NonLocal) 3637) '___assertIsNot (vector (NonLocal) 3640) '___assertRaises (vector (NonLocal) 3644) '___fail (vector (NonLocal) 3646)) '(e-1) 'no-vararg (CPass) (list (VFalse)) 1955))) 1956 (Type "class" (VNone)))))))) 1977))) 1978 (Type "primitive-class" #0#)))) (VStr "__size__") (VNum 1)))dict(box (hash (VStr "a") (VNum 4) (VStr "c") (VNum 3) (VStr "__keys__") (VHash (box (hash (VStr "a") (VStr "a") (VStr "c") (VStr "c"))) 2016 (Type "set" (VHash (box (hash (VStr "__name__") (VStr "set") (VStr "__convert__") (VClosure (hash 'list (vector (NonLocal) 3710) 'abs (vector (NonLocal) 3698) 'print (vector (NonLocal) 3617) 'str (vector (NonLocal) 3704) 'bool (vector (NonLocal) 3702) 'python-add (vector (NonLocal) 3649) 'python-sub (vector (NonLocal) 3652) 'python-mult (vector (NonLocal) 3655) 'python-div (vector (NonLocal) 3658) 'python-floor-div (vector (NonLocal) 3661) 'python-mod (vector (NonLocal) 3664) 'python-lt (vector (NonLocal) 3667) 'python-lte (vector (NonLocal) 3670) 'python-gt (vector (NonLocal) 3673) 'python-gte (vector (NonLocal) 3676) 'python-eq (vector (NonLocal) 3679) 'python-notEq (vector (NonLocal) 3682) 'python-is (vector (NonLocal) 3685) 'python-isNot (vector (NonLocal) 3688) 'python-in (vector (NonLocal) 3691) 'python-notIn (vector (NonLocal) 3694) 'len (vector (NonLocal) 3696) 'True (vector (NonLocal) 3618) '___assertTrue (vector (NonLocal) 3620) 'e-1 (vector (Local) 3724) '___assertFalse (vector (NonLocal) 3622) '___assertIn (vector (NonLocal) 3625) '___assertNotIn (vector (NonLocal) 3628) '___assertEqual (vector (NonLocal) 3631) '___assertNotEqual (vector (NonLocal) 3634) '___assertIs (vector (NonLocal) 3637) '___assertIsNot (vector (NonLocal) 3640) '___assertRaises (vector (NonLocal) 3644) '___fail (vector (NonLocal) 3646) '_Object (vector (NonLocal) 3700) 'float (vector (NonLocal) 3706) 'int (vector (NonLocal) 3708) 'tuple (vector (NonLocal) 3713) 'dict (vector (NonLocal) 3723)) '(e-1) 'no-vararg (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CId 'e-1) (CIf (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) (CPrim1 'to-set (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list))))))) (list (VHash (box (hash (VStr "__size__") (VNum 0))) 1976 (Type "list" (VHash (box (hash (VStr "__name__") (VStr "list") (VStr "__size__") (VNum 0) (VStr "__convert__") (VClosure (hash 'abs (vector (NonLocal) 3698) 'print (vector (NonLocal) 3617) 'str (vector (NonLocal) 3704) 'bool (vector (NonLocal) 3702) 'python-add (vector (NonLocal) 3649) 'python-sub (vector (NonLocal) 3652) 'python-mult (vector (NonLocal) 3655) 'python-div (vector (NonLocal) 3658) 'python-floor-div (vector (NonLocal) 3661) 'python-mod (vector (NonLocal) 3664) 'python-lt (vector (NonLocal) 3667) 'python-lte (vector (NonLocal) 3670) 'python-gt (vector (NonLocal) 3673) 'python-gte (vector (NonLocal) 3676) 'python-eq (vector (NonLocal) 3679) 'python-notEq (vector (NonLocal) 3682) 'python-is (vector (NonLocal) 3685) 'python-isNot (vector (NonLocal) 3688) 'python-in (vector (NonLocal) 3691) 'python-notIn (vector (NonLocal) 3694) 'len (vector (NonLocal) 3696) 'True (vector (NonLocal) 3618) '___assertTrue (vector (NonLocal) 3620) 'e-1 (vector (Local) 3709) '___assertFalse (vector (NonLocal) 3622) '___assertIn (vector (NonLocal) 3625) '___assertNotIn (vector (NonLocal) 3628) '___assertEqual (vector (NonLocal) 3631) '___assertNotEqual (vector (NonLocal) 3634) '___assertIs (vector (NonLocal) 3637) '___assertIsNot (vector (NonLocal) 3640) '___assertRaises (vector (NonLocal) 3644) '___fail (vector (NonLocal) 3646) '_Object (vector (NonLocal) 3700) 'float (vector (NonLocal) 3706) 'int (vector (NonLocal) 3708)) '(e-1) 'no-vararg (CIf (CPrim2 'or (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "set")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))) (CPrim2 'or (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple")) (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "string")))) (CPrim1 'to-list (CId 'e-1)) (CError (CApp (CId 'TypeError) '() '() (CHash (hash (CStr "__size__") (CNum 0)) (cType "list" (CId 'list)))))) (list (VStr "")) 1965))) 1966 (Type "primitive-class" #0=(VHash (box (hash (VStr "__name__") (VStr "Object") (VStr "__init__") (VClosure (hash 'abs (vector (NonLocal) 3698) 'print (vector (NonLocal) 3617) 'python-add (vector (NonLocal) 3649) 'python-sub (vector (NonLocal) 3652) 'python-mult (vector (NonLocal) 3655) 'python-div (vector (NonLocal) 3658) 'python-floor-div (vector (NonLocal) 3661) 'python-mod (vector (NonLocal) 3664) 'python-lt (vector (NonLocal) 3667) 'python-lte (vector (NonLocal) 3670) 'python-gt (vector (NonLocal) 3673) 'python-gte (vector (NonLocal) 3676) 'python-eq (vector (NonLocal) 3679) 'python-notEq (vector (NonLocal) 3682) 'python-is (vector (NonLocal) 3685) 'python-isNot (vector (NonLocal) 3688) 'python-in (vector (NonLocal) 3691) 'python-notIn (vector (NonLocal) 3694) 'len (vector (NonLocal) 3696) 'True (vector (NonLocal) 3618) '___assertTrue (vector (NonLocal) 3620) 'e-1 (vector (Local) 3699) '___assertFalse (vector (NonLocal) 3622) '___assertIn (vector (NonLocal) 3625) '___assertNotIn (vector (NonLocal) 3628) '___assertEqual (vector (NonLocal) 3631) '___assertNotEqual (vector (NonLocal) 3634) '___assertIs (vector (NonLocal) 3637) '___assertIsNot (vector (NonLocal) 3640) '___assertRaises (vector (NonLocal) 3644) '___fail (vector (NonLocal) 3646)) '(e-1) 'no-vararg (CPass) (list (VFalse)) 1955))) 1956 (Type "class" (VNone)))))))) 1977))) 1978 (Type "primitive-class" #0#)))) (VStr "__size__") (VNum 2)))
 =====================================================
 = Results for dict-items.py =
 =====================================================
@@ -168,7 +188,7 @@ exception: No exception raised
 === Expected stderr ===
 
 === Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: (VStr "__size__")
+exception: TypeError'#&#hash()
 =====================================================
 = Results for iter-comprehensions.py =
 =====================================================
@@ -269,6 +289,17 @@ lookupEnv: Unbound identifier error: iter
 === Actual stderr ===
 lookupEnv: Unbound identifier error: iter
 =====================================================
+= Results for bound-and-free.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__init__")
+=====================================================
 = Results for freevar-in-method.py =
 =====================================================
 === Expected stdout ===
@@ -278,7 +309,7 @@ lookupEnv: Unbound identifier error: iter
 === Expected stderr ===
 
 === Actual stderr ===
-exception: Assert failed: values are not Equal: functionvar
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__init__")
 =====================================================
 = Results for locals-class.py =
 =====================================================
@@ -302,6 +333,17 @@ lookupEnv: Unbound identifier error: locals
 === Actual stderr ===
 lookupEnv: Unbound identifier error: locals
 =====================================================
+= Results for nesting-through-class.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__init__")
+=====================================================
 = Results for nonlocal-class.py =
 =====================================================
 === Expected stdout ===
@@ -311,7 +353,7 @@ lookupEnv: Unbound identifier error: locals
 === Expected stderr ===
 
 === Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: (VStr "__class__")
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__init__")
 =====================================================
 = Results for nonlocal-function.py =
 =====================================================
@@ -324,6 +366,17 @@ getAttr: non-existent attribute, Unbound Identifier: (VStr "__class__")
 === Actual stderr ===
 interp-CSet: For now, CSet only support ids that are symbols or CAttributes or CSubscripts
 =====================================================
+= Results for nonlocal-method.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__init__")
+=====================================================
 = Results for unbound-local.py =
 =====================================================
 === Expected stdout ===
@@ -333,7 +386,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 13241Unbound location error.
+lookupStore: 13235Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
@@ -344,7 +397,7 @@ lookupStore: 13241Unbound location error.
 === Expected stderr ===
 
 === Actual stderr ===
-lookupEnv: Unbound identifier error: super
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__init__")
 =====================================================
 = Results for test_simple_string_ops.py =
 =====================================================
@@ -369,3 +422,14 @@ PARSING: Haven't handled a case yet:
 
 === Actual stderr ===
 parse: error is described above.
+=====================================================
+= Results for types_truthy2.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__init__")
