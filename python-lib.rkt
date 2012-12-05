@@ -933,7 +933,7 @@ that calls the primitive `print`.
                           (list)
                           (Empty-list));'e-1.__iter__())
                    (CIf (CPrim2 'has-field (CId 'e-1) (CStr "__getItem__"));(has attribute __getItem__)
-                        (CApp (CId 'oldIterator)
+                        (CApp (CId '_oldIterator)
                               (list (CId 'e-1))
                               (list)
                               (Empty-list));(calls _oldIterator('e-1))
@@ -942,7 +942,7 @@ that calls the primitive `print`.
                                       (list)
                                       (Empty-list)))));(throw exception TypeError, not iterable)))
               ;; when iter is called with two arguments
-              (CApp (CId 'doubleIterator)
+              (CApp (CId '_doubleIterator)
                     (list (CId 'e-1) (CId 'e-2))
                     (list)
                     (Empty-list)));(call _doubleIterator('e-1,'e-2)))
@@ -951,14 +951,18 @@ that calls the primitive `print`.
          'no-vararg))
 
 
-#|
+
 (define call-next
   (CFunc (list 'e-1)
-         (call 'e-1.next)
-         ()
-         ()
+         ;'e-1.next
+         (CApp (CAttribute '__next__ (CId 'e-1))
+               (list)
+               (list)
+               (Empty-list))
+         (list)
+         (list)
          'no-vararg))
-|#
+
 
 (define make-range
   (CFunc (list 'e-1 'e-2 'e-3)
@@ -1332,6 +1336,10 @@ that calls the primitive `print`.
         (bind 'isinstance python-isinstance)
         (bind 'python-iter-help python-iter-help)
         (bind 'filter python-filter)
+        (bind '_oldIterator python-oldIterator-class)
+        (bind '_doubleIterator python-doubleIterator-class)
+        (bind 'iter call-iter)
+        (bind 'next call-next)
         
         ;; exceptions (prelim...)
         (bind 'Exception Exception)
