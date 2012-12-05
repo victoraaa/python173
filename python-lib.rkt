@@ -951,14 +951,17 @@ that calls the primitive `print`.
          'no-vararg))
 
 
-#|
+
 (define call-next
   (CFunc (list 'e-1)
-         (call 'e-1.next)
-         ()
-         ()
+         (CApp (CAttribute 'next (CId 'e-1))
+               (list)
+               (list)
+               (Empty-list));'e-1.next)
+         (list)
+         (list)
          'no-vararg))
-|#
+
 
 (define make-range
   (CFunc (list 'e-1 'e-2 'e-3)
@@ -1332,6 +1335,12 @@ that calls the primitive `print`.
         (bind 'isinstance python-isinstance)
         (bind 'python-iter-help python-iter-help)
         (bind 'filter python-filter)
+        
+        ;; iterator functions and classes
+        (bind 'next call-next)
+        (bind 'iter call-iter)
+        (bind 'oldIterator python-oldIterator-class)
+        (bind 'doubleIterator python-doubleIterator-class)
         
         ;; exceptions (prelim...)
         (bind 'Exception Exception)
