@@ -1618,15 +1618,25 @@
                       [VHash (elts uid type) 
                              (cond 
                                [(equal? (Type-name type) "class")
-                                (ValueA (VHash (box (hash (list)))
-                                               (new-uid)
-                                               (Type (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__name__"))
-                                                       [none () (error 'interp-env:CApp:VHash "Class lacks __name__ field")]
-                                                       [some (so) (type-case CVal so
-                                                                    [VStr (s) s]
-                                                                    [else (error 'interp-env:CApp:VHash "Non-string as name of class")])]) 
-                                                     vf))
-                                        sf)] ;; TODO inheritance... TODO TODO TODO call __init__ if it exists!
+                                (let ([new-obj (VHash (box (hash (list)))
+                                                      (new-uid)
+                                                      (Type (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__name__"))
+                                                              [none () (error 'interp-env:CApp:VHash "Class lacks __name__ field")]
+                                                              [some (so) (type-case CVal so
+                                                                           [VStr (s) s]
+                                                                           [else (error 'interp-env:CApp:VHash "Non-string as name of class")])]) 
+                                                            vf))])
+                                  (begin
+                                    ;;we call init and then return the new object
+                                    (type-case AnswerC (interp-env (CApp (CAttribute '__init__ (CHolder new-obj)) 
+                                                                         (list) 
+                                                                         (list) 
+                                                                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                                                                   env 
+                                                                   sf)
+                                      [ValueA (v-init s-init) (ValueA new-obj s-init)]
+                                      [ExceptionA (v-init s-init) (ExceptionA v-init s-init)]
+                                      [else (error 'interp-env:CApp:VHash:__init__ "should not receive anything that is not a ValueA or an ExceptionA")])))]
                                [(equal? (Type-name type) "primitive-class")
                                 (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__convert__"))
                                   [none () (error 'interp-env:CApp:VHash "Primitive class lacks __convert__ field")]
@@ -1660,7 +1670,7 @@
        [else (error 'interp "Not a closure")])]
     |#
     
-    
+    [CHolder (hold) (ValueA hold store)]
     [CWhile (test body orelse vlist)
             (type-case AnswerC (interp-env test 
                                            env

@@ -58,6 +58,7 @@ ParselTongue.
   [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler)) (orelse : CExp)]
   [CTryFinally (body : CExp) (finalbody : CExp)]
   
+  [CHolder (hold : CVal)]
   
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )

@@ -1,4 +1,13 @@
-a = {1:1, 2:2}
+class C:
+  def __init__(self):
+    self.msg="funcionou"
 
-for b in iter(a), a.keys(), a.items():
-    print(b)
+c=C()
+print(c.msg)
+
+
+
+#a = {1:1, 2:2}
+
+#for b in iter(a), a.keys(), a.items():
+#    print(b)
