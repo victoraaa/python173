@@ -1,5 +1,5 @@
-72 tests succeeded.
-18 tests failed.
+74 tests succeeded.
+16 tests failed.
 == Output of failed tests ==
 =====================================================
 = Results for all.py =
@@ -92,48 +92,22 @@ exception: TypeError(box (hash (VStr "message") (VStr "Something is up with the 
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((nodetype . "BitAnd"))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for dict-update.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-getAttr: non-existent attribute, Unbound Identifier: (VStr "update")
+lookupEnv: Unbound identifier error: subtract-sets-helper
 =====================================================
 = Results for dict-values-set.py =
 =====================================================
 === Expected stdout ===
 
 === Actual stdout ===
-PARSING: Haven't handled a case yet: 
-#hasheq((nodetype . "BitAnd"))
 
 === Expected stderr ===
 
 === Actual stderr ===
-parse: error is described above.
-=====================================================
-= Results for invalid-reraise.py =
-=====================================================
-=== Expected stdout ===
-
-=== Actual stdout ===
-
-=== Expected stderr ===
-
-=== Actual stderr ===
-exception: Exception(box (hash (VStr "message") (VStr "No exception raised")))
+lookupEnv: Unbound identifier error: subtract-sets-helper
 =====================================================
 = Results for iter-comprehensions.py =
 =====================================================
@@ -221,7 +195,7 @@ lookupStore: Unbound Identifier: using identifier before assignment
 === Expected stderr ===
 
 === Actual stderr ===
-exception: TypeError(box (hash (VStr "message") (VStr "Cannot convert this type to a list")))
+getAttr: non-existent attribute, Unbound Identifier: (VStr "extend")
 =====================================================
 = Results for freevar-in-method.py =
 =====================================================
@@ -287,7 +261,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 18067Unbound location error.
+lookupStore: 18988Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================

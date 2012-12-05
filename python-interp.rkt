@@ -654,9 +654,10 @@
                         [VStr (str1) (if (equal? v1 v2)
                                          (ValueA (VTrue) s2)
                                          (ValueA (VFalse) s2))]
-                        [else (if (equal? (get-uid v1) (get-uid v2))
-                                  (ValueA (VTrue) s2)
-                                  (ValueA (VFalse) s2))])]
+                        [else (try (if (equal? (get-uid v1) (get-uid v2))
+                                       (ValueA (VTrue) s2)
+                                       (ValueA (VFalse) s2))
+                                   (lambda () (ValueA (VFalse) s2)))])]
               [BreakA (v s) (error 'interp-is "Break!")]
               [ContinueA (s) (error 'interp-is "Continue!")]
               [ExceptionA (v s) (ExceptionA v s)]
@@ -1632,7 +1633,7 @@
                                                                        (if (or (equal? (Type-name type) "class") (equal? (Type-name type) "primitive-class"))
                                                                            (interp-VClosure-App e a varg b defargs args keywargs star env sf) ;we pass sf because we don't want modifications to be passed
                                                                            (interp-VClosure-App e a varg b defargs (append (list value) args) keywargs star env sf))]
-                                                                [else (interp-env (CError (CStr "tried to get an attribute from a non-hash")) env s)])]
+                                                                [else (interp-env (CError (Make-throw 'TypeError "tried to get an attribute from a non-hash")) env s)])]
                                                 [BreakA (v s) (error 'CApp "Should not have a break here")]
                                                 [ContinueA (s) (error 'CApp "Should not have a continue here")]
                                                 [ExceptionA (v s) (ExceptionA v s)]
@@ -1768,7 +1769,7 @@
                   [ValueA (v s) (type-case CVal v
                                   [VHash (elts uid type) (ValueA (getAttr (VStr (symbol->string attr)) v env store) s)]
                                   ;[VClass (elts type) (ValueA (getAttr (VStr (symbol->string attr)) v env store) s)]
-                                  [else (interp-env (CError (CStr "tried to get an attribute from a non-hash")) env s)])]
+                                  [else (interp-env (CError (Make-throw 'TypeError "tried to get an attribute from a non-hash")) env s)])]
                   [BreakA (v s) (error 'CAttribute "Should not have a break here")]
                   [ContinueA (s) (error 'CAttribute "Should not have a continue here")]
                   [ExceptionA (v s) (ExceptionA v s)]
@@ -1888,12 +1889,13 @@
 
 ;; regular interpret
 (define (interp (expr : CExp)) : CVal
-  (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
+  (begin (set-box! exn-to-reraise (VUnbound)) ;; clean up exception to reraise
+         (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
     [ValueA (v s) v]
     [ExceptionA (v s) (error 'exception (pretty v))] ;; really? 
     [BreakA (v s) (error 'exception "A break got to the surface!")]
     [ContinueA (s) (error 'exception "A continue got to the surface!")]
-    [ReturnA (v s) (VStr "Error: Return outside of function.")]))
+    [ReturnA (v s) (VStr "Error: Return outside of function.")])))
 
 
 ;; basic test cases
