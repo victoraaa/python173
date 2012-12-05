@@ -829,7 +829,7 @@
 ;; handle unary operations - akin to handle-op
 (define (handle-unary [prim : symbol] [arg : CVal] [env : Env] [store : Store]) : CVal
   (case prim
-    ['print (begin (display (pretty arg)) arg)]
+    ['print (begin (display (string-append (pretty arg) "\n")) arg)]
     ['not (if (isTruthy arg) (VFalse) (VTrue))]
     ['negative (type-case CVal arg
                  [VNum (n) (VNum (- 0 n))] ;; gotta be a better way...
@@ -1780,7 +1780,9 @@
                                                [(or (isInstanceOf v1 "list" env s2) (isInstanceOf v1 "tuple" env s2))
                                                 (let ([_listLen (VNum-n (getAttr (VStr "__size__") v1 env s2))])
                                                   (let ([_index (VNum-n (correct-list-subscript v2 _listLen))])
-                                                    (if (< _listLen _index)
+                                                    (if 
+                                                     ;(begin (display (string-append (string-append (to-string _listLen) " e index: ") (to-string _index)))
+                                                     (<= _listLen _index);)
                                                         (interp-env (CError (CApp (CId 'IndexError)
                                                                                   (list)
                                                                                   (list)

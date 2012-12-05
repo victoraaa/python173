@@ -633,7 +633,14 @@ that calls the primitive `print`.
          (cType "primitive-class" (CId '_Object))))
 
 (define tuple-primitive-class
-  (CHash (hash-set (hash-set (hash (list (values (CStr "__size__") (CNum 0)))) 
+  (CHash (hash-set (hash-set (hash (list 
+                                    (values (CStr "__size__") (CNum 0))
+                                    (values (CStr "__getitem__") 
+                                            (CFunc (list 'self 'e-1)
+                                                   (CReturn (CSubscript (CId 'self) (CId 'e-1)))
+                                                   (list)
+                                                   (list)
+                                                   'no-vararg) ))) 
                              (CStr "__name__") 
                              (CStr "tuple")) 
                    (CStr "__convert__") 
@@ -846,9 +853,9 @@ that calls the primitive `print`.
                                     'no-vararg))
                      (values (CStr "__next__")
                              (CFunc (list 'self) ; 1 argument: self
-                                    (CTryExcept (CLet 'i
+                                    (CTryExcept (CLet '_i
                                                       (Local)
-                                                      (CApp (CAttribute '__getItem__ (CAttribute 'obj (CId 'self)))
+                                                      (CApp (CAttribute '__getitem__ (CAttribute 'obj (CId 'self)))
                                                             (list (CAttribute 'n (CId 'self)))
                                                             (list)
                                                             (Empty-list))
@@ -857,19 +864,19 @@ that calls the primitive `print`.
                                                                         (list (CAttribute 'n (CId 'self)) (CNum 1))
                                                                         (list)
                                                                         (Empty-list))) 
-                                                            (CReturn (CId 'i))))
+                                                            (CReturn (CId '_i))))
                                                 (list (CExcHandler 'no-name 
-                                                                   (CId 'IndexError) 
+                                                                   (CId 'IndexError)
                                                                    (CError (CApp (CId 'StopIteration)
                                                                                  (list)
                                                                                  (list)
                                                                                  (Empty-list))))) ;; TODO except case
                                                 (CPass)) ;try: 
-                                       ;     i = self.obj.__getItem__(self.n)
-                                       ;     self.n+=1
-                                       ;     return i
-                                       ;except IndexError:
-                                       ;     raise StopIteration
+                                    ;     i = self.obj.__getItem__(self.n)
+                                    ;     self.n+=1
+                                    ;     return i
+                                    ;except IndexError:
+                                    ;     raise StopIteration
                                     (list)
                                     (list) ;; default args? 
                                     'no-vararg))
@@ -928,19 +935,19 @@ that calls the primitive `print`.
          (CIf (CPrim2 'is (CId 'e-2) (CNone))
               ;; when iter is called with just one argument
                (CIf (CPrim2 'has-field (CId 'e-1) (CStr "__iter__")) ;(has attribute __iter__)
-                   (CApp  (CAttribute '__iter__ (CId 'e-1))
-                          (list)
-                          (list)
-                          (Empty-list));'e-1.__iter__())
-                   (CIf (CPrim2 'has-field (CId 'e-1) (CStr "__getItem__"));(has attribute __getItem__)
-                        (CApp (CId '_oldIterator)
-                              (list (CId 'e-1))
-                              (list)
-                              (Empty-list));(calls _oldIterator('e-1))
-                        (CError (CApp (CId 'TypeError)
-                                      (list) ;; can give this an argument if we want...
-                                      (list)
-                                      (Empty-list)))));(throw exception TypeError, not iterable)))
+                    (CApp  (CAttribute '__iter__ (CId 'e-1))
+                           (list)
+                           (list)
+                           (Empty-list));'e-1.__iter__())
+                    (CIf (CPrim2 'has-field (CId 'e-1) (CStr "__getitem__"));(has attribute __getItem__)
+                         (CApp (CId '_oldIterator)
+                               (list (CId 'e-1))
+                               (list)
+                               (Empty-list));(calls _oldIterator('e-1))
+                         (CError (CApp (CId 'TypeError)
+                                       (list) ;; can give this an argument if we want...
+                                       (list)
+                                       (Empty-list)))));(throw exception TypeError, not iterable)))
               ;; when iter is called with two arguments
               (CApp (CId '_doubleIterator)
                     (list (CId 'e-1) (CId 'e-2))
@@ -1253,6 +1260,8 @@ that calls the primitive `print`.
                      )) 
          (cType "class" (CId '_Object))))
 
+(define stop-iteration-error
+  (CHash (hash (list (values (CStr "__name__") (CStr "StopIterationError")))) (cType "class" (CId 'Exception))))
 
 
 (define-type LibBinding
@@ -1357,6 +1366,7 @@ that calls the primitive `print`.
         (bind 'UnboundLocalError unbound-local-error)
         (bind 'NameError name-error)
         (bind 'ValueError value-error)
+        (bind 'StopIteration stop-iteration-error)
         
         ;;binding of built-in classes
         
