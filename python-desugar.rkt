@@ -57,7 +57,8 @@
     [PyDel (targets) (list)]
     
     ;; loops
-    [PyWhile (test body orelse) (list)] ;; really?
+    [PyWhile (test body orelse) (append (get-vars test)
+                                        (get-vars body))] ;; really?
     [PyFor (target iter body)
            (append (type-case PyExpr target
                                [PyId (id) (list (values (Local) id))]

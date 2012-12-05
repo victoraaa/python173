@@ -223,7 +223,7 @@ parse: error is described above.
 === Expected stderr ===
 
 === Actual stderr ===
-exception: TypeError'#&#hash()
+getAttr: non-existent attribute, Unbound Identifier: (VStr "append")
 =====================================================
 = Results for iter-simple.py =
 =====================================================
@@ -234,7 +234,7 @@ exception: TypeError'#&#hash()
 === Expected stderr ===
 
 === Actual stderr ===
-exception: TypeError'#&#hash()
+getAttr: non-existent attribute, Unbound Identifier: (VStr "append")
 =====================================================
 = Results for iter-stop.py =
 =====================================================
@@ -311,7 +311,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 14949Unbound location error.
+lookupStore: 15595Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================
