@@ -1,10 +1,7 @@
-class C:
-  def __init__(self):
-    self.msg="funcionou"
+class BasicIterClass:
+  pass
 
-c=C()
-print(c.msg)
-
+c = BasicIterClass(1,2)
 
 
 #a = {1:1, 2:2}

@@ -781,14 +781,89 @@ that calls the primitive `print`.
 ;                     ()
 ;                     ()
 ;                     'no-vararg))))
+
+#|
+;; this will be the builtin class for old iterators
+(define python-oldIterator-class
+  (CHash (hash (list (values (CStr "__name__") (CStr "oldIterator"))
+;                     (values (CStr "__init__")
+ ;                            (CFunc () 2 arguments: self and 'anObject'
+  ;                                  () set self.n=0 and self.obj=anObject
+   ;                                 ()
+    ;                                ()
+     ;                               'no-vararg))
+                     (values (CStr "__next__")
+                             (CFunc () ; 1 argument: self
+                                    () ;try: 
+                                       ;     i = self.obj.__getItem__(self.n)
+                                       ;     self.n+=1
+                                       ;     return i
+                                       ;except IndexError:
+                                       ;     raise StopIteration
+                                    ()
+                                    ()
+                                    'no-vararg))
+                     (values (CStr "__iter__")
+                             (CFunc () ;1 argument: self
+                                    () ;return self
+                                    ()
+                                    ()
+                                    'no-vararg))
+                     ))
+         (cType "class" (CId '_Object))))
+|#
+
+#|
+;; this will be the builtin class for iterators that have a function and a value
+(define python-doubleIterator-class
+  (CHash (hash (list (values (CStr "__name__") (CStr "oldIterator"))
+;                     (values (CStr "__init__")
+ ;                            (CFunc () 3 arguments: self, func and value
+  ;                                  () set self.func=func and self.val=value
+   ;                                 ()
+    ;                                ()
+     ;                               'no-vararg))
+                     (values (CStr "__next__")
+                             (CFunc () ; 1 argument: self
+                                    ()
+                                       ;     i = self.func()
+                                       ;     if (i==value) then raise StopIteration else return i
+                                    ()
+                                    ()
+                                    'no-vararg))
+                     (values (CStr "__iter__")
+                             (CFunc () ;1 argument: self
+                                    () ;return self
+                                    ()
+                                    ()
+                                    'no-vararg))
+                     ))
+         (cType "class" (CId '_Object))))
+|#
+
 #|
 (define call-iter
-  (CFunc (list 'a-1 'a-2)
-         (CIf ()
-              ()
-              ())
+  (CFunc (list 'e-1 'e-2)
+         (CIf (CPrim2 'is (CId 'e-2) (CNone))
+              ;; when iter is called with just one argument
+              ; if (has attribute __iter__)
+                   (CALL 'e-1.__iter__())
+                   (if (has attribute __getItem__)
+                       (calls _oldIterator('e-1))
+                       (throw exception TypeError, not iterable)))
+              ;; when iter is called with two arguments
+              (call _doubleIterator('e-1,'e-2)))
          (list)
          (list (CNone))
+         'no-vararg))
+|#
+
+#|
+(define call-next
+  (CFunc (list 'e-1)
+         (call 'e-1.next)
+         ()
+         ()
          'no-vararg))
 |#
 
@@ -983,20 +1058,8 @@ that calls the primitive `print`.
 ;; TODO write min and max
 
 
-#|
-;; this will be the builtin class for all iterators
-;; It is not in the binding yet, since it doesn't yet work...
-(define python-iterator-class
-  (CHash (hash (list (values (CStr "__name__") (CStr "iterator"))
-;                     (values (CStr "__init__")
- ;                            (CFunc ()
-  ;                                  ()
-   ;                                 ()
-    ;                                ()
-     ;                               'no-vararg))
-                     ))
-         (cType "class" (CNone))))
-|#
+
+
 
 
 

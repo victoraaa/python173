@@ -168,7 +168,7 @@ exception: No exception raised
 === Expected stderr ===
 
 === Actual stderr ===
-exception: TypeError'#&#hash()
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__size__")
 =====================================================
 = Results for iter-comprehensions.py =
 =====================================================
@@ -333,7 +333,7 @@ interp-CSet: For now, CSet only support ids that are symbols or CAttributes or C
 === Expected stderr ===
 
 === Actual stderr ===
-lookupStore: 13360Unbound location error.
+lookupStore: 13427Unbound location error.
 =====================================================
 = Results for test-super.py =
 =====================================================

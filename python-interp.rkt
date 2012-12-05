@@ -1629,7 +1629,7 @@
                                   (begin
                                     ;;we call init and then return the new object
                                     (type-case AnswerC (interp-env (CApp (CAttribute '__init__ (CHolder new-obj)) 
-                                                                         (list) 
+                                                                         args 
                                                                          (list) 
                                                                          (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                                                                    env 
