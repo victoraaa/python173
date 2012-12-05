@@ -1464,7 +1464,14 @@
     
     [CError (e) (type-case AnswerC (interp-env e env store)
                   [ValueA (v s) (type-case CVal v
-                                  [VNone () (ExceptionA (unbox exn-to-reraise) s)]
+                                  [VNone () (type-case CVal (unbox exn-to-reraise)
+                                                          [VUnbound () (interp-env (CError (CApp (CId 'RuntimeError)
+                                                                                                 (list (CStr "No active exception")) ;; TODO this needs to take an argument...
+                                                                                                 (list)
+                                                                                                 (Empty-list))) 
+                                                                                   env 
+                                                                                   s)]
+                                                          [else (ExceptionA (unbox exn-to-reraise) s)])]
                                   [VUnbound () (interp-env (CError (CApp (CId 'RuntimeError)
                                                                          (list (CStr "No active exception")) ;; TODO this needs to take an argument...
                                                                          (list)
@@ -1870,6 +1877,14 @@
         [(and (cons? args) (cons? vals))
          (hash-set (bind-args (rest args) (rest vals) env)
                    (first args) (first vals))]))
+
+(define (wrap (exp : CExp)) : CExp
+  (CTryExcept exp 
+              (list (CExcHandler 'e (CId 'Exception) (CPrim1 'print (CApp (CId 'str)
+                                                                          (list (CId 'e))
+                                                                          (list)
+                                                                          (Empty-list)))))
+              (CPass)))
 
 
 ;; regular interpret

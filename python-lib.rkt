@@ -521,6 +521,92 @@ that calls the primitive `print`.
          (list)
          'no-vararg))
 
+;; max
+(define python-max
+  (CFunc (list 'e-1)
+         (CLet 'e-list
+               (Local)
+               (CApp (CId 'list)
+                     (list (CId 'e-1))
+                     (list)
+                     (Empty-list))
+               (CLet 'e-it
+                     (Local)
+                     (CApp (CId 'iter)
+                           (list (CId 'e-list))
+                           (list)
+                           (Empty-list))
+                     (CLet 'e-curr
+                           (Local)
+                           (CNone)
+                           (CTryExcept (CWhile (CTrue) 
+                                               (CLet 'e-tmp
+                                                     (Local)
+                                                     (CApp (CId 'next)
+                                                           (list (CId 'e-it))
+                                                           (list)
+                                                           (Empty-list))
+                                                     (CSet (CId 'e-curr) (CIf (CPrim2 'eq (CId 'e-curr) (CNone))
+                                                                              (CId 'e-tmp)
+                                                                              (CIf (CApp (CId 'python-gt)
+                                                                                         (list (CId 'e-tmp) (CId 'e-curr))
+                                                                                         (list)
+                                                                                         (Empty-list))
+                                                                                   (CId 'e-tmp)
+                                                                                   (CId 'e-curr))))) 
+                                               (CPass) 
+                                               (list))
+                                       (list (CExcHandler 'no-name (CId 'StopIteration) (CReturn (CId 'e-curr))))
+                                       (CPass)))))
+         (list)
+         (list)
+         'no-vararg))
+
+
+
+;; min
+(define python-min
+  (CFunc (list 'e-1)
+         (CLet 'e-list
+               (Local)
+               (CApp (CId 'list)
+                     (list (CId 'e-1))
+                     (list)
+                     (Empty-list))
+               (CLet 'e-it
+                     (Local)
+                     (CApp (CId 'iter)
+                           (list (CId 'e-list))
+                           (list)
+                           (Empty-list))
+                     (CLet 'e-curr
+                           (Local)
+                           (CNone)
+                           (CTryExcept (CWhile (CTrue) 
+                                               (CLet 'e-tmp
+                                                     (Local)
+                                                     (CApp (CId 'next)
+                                                           (list (CId 'e-it))
+                                                           (list)
+                                                           (Empty-list))
+                                                     (CSet (CId 'e-curr) (CIf (CPrim2 'eq (CId 'e-curr) (CNone))
+                                                                              (CId 'e-tmp)
+                                                                              (CIf (CApp (CId 'python-lt)
+                                                                                         (list (CId 'e-tmp) (CId 'e-curr))
+                                                                                         (list)
+                                                                                         (Empty-list))
+                                                                                   (CId 'e-tmp)
+                                                                                   (CId 'e-curr))))) 
+                                               (CPass) 
+                                               (list))
+                                       (list (CExcHandler 'no-name (CId 'StopIteration) (CReturn (CId 'e-curr))))
+                                       (CPass)))))
+         (list)
+         (list)
+         'no-vararg))
+   
+   
+              
 ;; Callable
 ;; may need to re-write this in the future - it depends. I don't know yet. 
 (define callable
@@ -848,7 +934,7 @@ that calls the primitive `print`.
                              (CFunc (list 'self) ; 1 argument: self
                                     (CTryExcept (CLet 'i
                                                       (Local)
-                                                      (CApp (CAttribute '__getItem__ (CAttribute 'obj (CId 'self)))
+                                                      (CApp (CAttribute '__getitem__ (CAttribute 'obj (CId 'self)))
                                                             (list (CAttribute 'n (CId 'self)))
                                                             (list)
                                                             (Empty-list))
@@ -932,7 +1018,7 @@ that calls the primitive `print`.
                           (list)
                           (list)
                           (Empty-list));'e-1.__iter__())
-                   (CIf (CPrim2 'has-field (CId 'e-1) (CStr "__getItem__"));(has attribute __getItem__)
+                   (CIf (CPrim2 'has-field (CId 'e-1) (CStr "__getitem__"));(has attribute __getItem__)
                         (CApp (CId '_oldIterator)
                               (list (CId 'e-1))
                               (list)
@@ -1192,7 +1278,10 @@ that calls the primitive `print`.
 
 (define python-fail
   (CFunc (list 'e-1)
-         (CError (CId 'e-1))
+         (CError (CApp (CId 'Exception)
+                       (list (CId 'e-1))
+                       (list)
+                       (Empty-list)))
          (list)
          (list)
          'no-vararg))
@@ -1240,6 +1329,9 @@ that calls the primitive `print`.
 (define value-error
   (CHash (hash (list (values (CStr "__name__") (CStr "ValueError")))) (cType "class" (CId 'Exception))))
 
+(define stop-iteration
+  (CHash (hash (list (values (CStr "__name__") (CStr "StopIteration")))) (cType "class" (CId 'Exception))))
+
 (define Exception
   ;(CClass (hash (list)) (Type "Exception" (CNone))))
   (CHash (hash (list (values (CStr "__name__") (CStr "Exception"))
@@ -1249,6 +1341,12 @@ that calls the primitive `print`.
                                     (CAttribute 'message (CId 'self))
                                     (list)
                                     (list)
+                                    'no-vararg))
+                     (values (CStr "__init__")
+                             (CFunc (list 'self 'e-1)
+                                    (CSet (CAttribute 'message (CId 'self)) (CId 'e-1))
+                                    (list)
+                                    (list (CNone))
                                     'no-vararg))
                      )) 
          (cType "class" (CId '_Object))))
@@ -1341,6 +1439,9 @@ that calls the primitive `print`.
         (bind 'iter call-iter)
         (bind 'next call-next)
         
+        (bind 'min python-min)
+        (bind 'max python-max)
+        
         ;; iterator functions and classes
      ;   (bind 'next call-next)
      ;   (bind 'iter call-iter)
@@ -1357,6 +1458,7 @@ that calls the primitive `print`.
         (bind 'UnboundLocalError unbound-local-error)
         (bind 'NameError name-error)
         (bind 'ValueError value-error)
+        (bind 'StopIteration stop-iteration)
         
         ;;binding of built-in classes
         
