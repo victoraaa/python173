@@ -714,8 +714,10 @@ that calls the primitive `print`.
          'no-vararg))
 
 (define python-in
-  (CFunc (list 'e-1 'e-2)
-         (CPrim2 'in (CId 'e-1) (CId 'e-2))
+  (CFunc (list 'e-1 'e-2) ;; TODO TODO TODO re-write this to use a for loop for lists and their ilk. 
+         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "string"))
+              (CPrim2 'in (CId 'e-1) (CId 'e-2))
+              (CPrim2 'in (CId 'e-1) (CId 'e-2))) ;; this false branch should become an iterator or recursive function. 
          (list)
          (list)
          'no-vararg))
