@@ -1060,7 +1060,39 @@ that calls the primitive `print`.
                                           (CId 'e-1))
                                     (list)
                                     (list)
-                                    'no-vararg))))
+                                    'no-vararg))
+                     (values (CStr "extend") 
+                             (CFunc (list 'self 'e-1)
+                                    (Create-for-loop 'e-curr 
+                                                     (CId 'e-1) 
+                                                     (CApp (CAttribute 'append (CId 'self))
+                                                           (list (CId 'e-curr))
+                                                           (list)
+                                                           (Empty-list)))
+                                    (list)
+                                    (list)
+                                    'no-vararg))
+                     (values (CStr "tostring") 
+                             (CFunc (list 'self)
+                                    (CLet 'build-str
+                                          (Local)
+                                          (CStr "[ ")
+                                          (CSeq (Create-for-loop 'e-curr
+                                                                 (CId 'self) 
+                                                                 (CSet (CId 'build-str)
+                                                                       (CPrim2 'string+ 
+                                                                               (CId 'build-str) 
+                                                                               (CPrim2 'string+
+                                                                                       (CApp (CId 'str)
+                                                                                             (list (CId 'e-curr))
+                                                                                             (list)
+                                                                                             (Empty-list))
+                                                                                       (CStr " ")))))
+                                                (CReturn (CPrim2 'string+ (CId 'build-str) (CStr "]")))))
+                                    (list)
+                                    (list)
+                                    'no-vararg))
+                     ))
                      (cType "primitive-class" (CId '_Object))))
 
 

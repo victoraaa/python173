@@ -380,10 +380,10 @@
 |#
 
 (define (desugar-tuple-pysets [targets : (listof PyExpr)]
-                              [values : (listof PyExpr)]) : (listof PyExpr)
+                              [vals : (listof PyExpr)]) : (listof PyExpr)
   (cond
-    [(or (empty? targets) (empty? values)) (list)]
-    [else (cons (PySet (first targets) (first values)) (desugar-tuple-pysets (rest targets) (rest values)))]))
+    [(or (empty? targets) (empty? vals)) (list)]
+    [else (cons (PySet (first targets) (first vals)) (desugar-tuple-pysets (rest targets) (rest vals)))]))
 
 
 (define (loop-listcomp [elt : PyExpr]
