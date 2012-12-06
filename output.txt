@@ -1,1 +1,200 @@
+77 tests succeeded.
+13 tests failed.
+== Output of failed tests ==
+=====================================================
+= Results for all.py =
+=====================================================
+=== Expected stdout ===
 
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare")))
+        (generators
+         .
+         (#hasheq((target
+                   .
+                   #hasheq((id . "x")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (iter
+                   .
+                   #hasheq((id . "S")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "comprehension")
+                  (ifs . ()))))
+        (nodetype . "GeneratorExp"))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
+=====================================================
+= Results for any.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((elt
+         .
+         #hasheq((left
+                  .
+                  #hasheq((id . "x")
+                          (nodetype . "Name")
+                          (ctx . #hasheq((nodetype . "Load")))))
+                 (ops . (#hasheq((nodetype . "Gt"))))
+                 (comparators . (#hasheq((n . 42) (nodetype . "Num"))))
+                 (nodetype . "Compare")))
+        (generators
+         .
+         (#hasheq((target
+                   .
+                   #hasheq((id . "x")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Store")))))
+                  (iter
+                   .
+                   #hasheq((id . "S")
+                           (nodetype . "Name")
+                           (ctx . #hasheq((nodetype . "Load")))))
+                  (nodetype . "comprehension")
+                  (ifs . ()))))
+        (nodetype . "GeneratorExp"))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
+=====================================================
+= Results for filter.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: TypeError(box (hash (VStr "message") (VStr "Something is up with the arguments...")))
+=====================================================
+= Results for dict-values-set.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: Assert failed: values are not Equal: { ( 2 2 ) ( 1 1 ) }{ }
+=====================================================
+= Results for iter-stop.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "extend")
+=====================================================
+= Results for freevar-in-method.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: Assert failed: values are not Equal: functionvar
+=====================================================
+= Results for locals-class.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: locals
+=====================================================
+= Results for locals-function.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: locals
+=====================================================
+= Results for nonlocal-class.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "__class__")
+=====================================================
+= Results for nonlocal-function.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+interp-CSet: For now, CSet only support ids that are symbols or CAttributes or CSubscripts
+=====================================================
+= Results for unbound-local.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupStore: 22462Unbound location error.
+=====================================================
+= Results for test-super.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: super
+=====================================================
+= Results for test_string_slices.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((nodetype . "Slice") (upper . #\nul) (lower . #\nul) (step . #\nul))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.
