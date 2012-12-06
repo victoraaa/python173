@@ -217,14 +217,14 @@
     [none () (interp-env (CApp (CId 'UnboundLocalError)
                                (list)
                                (list)
-                               (CHash (hash (list)) (cType "list" (CNone)))) env store)]
+                               (CHash (hash (list)) (cType "list" (CId 'list)))) env store)]
     [some (loc) (type-case (optionof CVal) (hash-ref store (local [(define-values (t l) loc)] l))
                 [none () (error 'lookupEnvStore "Something is missing from the store")]
                 [some (v) (type-case CVal v
                             [VUnbound () (interp-env (CApp (CId 'UnboundLocalError)
                                                            (list)
                                                            (list)
-                                                           (CHash (hash (list)) (cType "list" (CNone)))) env store)]
+                                                           (CHash (hash (list)) (cType "list" (CId 'list)))) env store)]
                             [else (ValueA v store)])])]))
 
 ;;lookupVar searches for the identifier first at the given environment, then at the globalEnv.
@@ -1410,6 +1410,7 @@
                                    (interp-env (CError (Make-throw 'TypeError "Something is up with the arguments..."))
                                                env
                                                sh)
+
                                    (interp-args-CApp b   
                                                      env
                                                      e
@@ -1549,7 +1550,7 @@
                (interp-env (CError (CApp (CId 'NameError)
                                                     (list (CStr (string-append ": " (symbol->string x))))
                                                     (list)
-                                                    (CHash (hash (list)) (cType "list" (CNone)))))
+                                                    (CHash (hash (list)) (cType "list" (CId 'list)))))
                                       env
                                       store)
                (let ([_val (try (lookupStore (lookupVar x env) store)
@@ -1558,7 +1559,7 @@
                      (interp-env (CError (CApp (CId 'UnboundLocalError)
                                                           (list)
                                                           (list)
-                                                          (CHash (hash (list)) (cType "list" (CNone)))))
+                                                          (CHash (hash (list)) (cType "list" (CId 'list)))))
                                             env
                                             store)
                      (ValueA (lookupStore (lookupVar x env) store) store)))))]
@@ -1668,7 +1669,7 @@
                                                                               (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
                                                                                                                    (list)
                                                                                                                    (list)
-                                                                                                                   (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                                                   (CHash (hash (list)) (cType "list" (CId 'list)))))
                                                                                                      env
                                                                                                      s3)))]
                                                                         [else (interp-env (CError (CStr "tried to get a subscript from a non-list, non-dictionary")) env s3)])]
@@ -1752,7 +1753,7 @@
                       [else (interp-env (CError (CApp (CId 'TypeError)
                                                       (list)
                                                       (list)
-                                                      (CHash (hash (list)) (cType "list" (CNone)))))
+                                                      (CHash (hash (list)) (cType "list" (CId 'list)))))
                                         env
                                         sf)])]
             [BreakA (v s) (error 'CApp "Should not have a break here")]
@@ -1864,7 +1865,7 @@
                                                         (interp-env (CError (CApp (CId 'IndexError)
                                                                                   (list)
                                                                                   (list)
-                                                                                  (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                  (CHash (hash (list)) (cType "list" (CId 'list)))))
                                                                     env
                                                                     s2)
                                                         (ValueA (getAttr (VNum _index) v1 env s2) s2))))]
@@ -1873,7 +1874,7 @@
                                                      (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
                                                                                           (list)
                                                                                           (list)
-                                                                                          (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                          (CHash (hash (list)) (cType "list" (CId 'list)))))
                                                                             env
                                                                             s2)))]
                                                [else (interp-env (CError (CStr "tried to get a subscript from a non-list, non-dictionary")) env s2)])]

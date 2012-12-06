@@ -1435,7 +1435,12 @@ that calls the primitive `print`.
                      (values (CStr "__init__")
                              (CFunc (list 'self 'anObject) ;2 arguments: self and 'anObject'
                                     (CSeq (CSet (CAttribute 'n (CId 'self)) (CNum 0))
-                                          (CSet (CAttribute 'obj (CId 'self)) (CId 'anObject))) ;set self.n=0 and self.obj=anObject
+                                          (CSet (CAttribute 'obj (CId 'self)) (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'anObject)) (CStr "list"))
+                                                                                   (CApp (CId 'list)
+                                                                                         (list (CId 'anObject))
+                                                                                         (list)
+                                                                                         (Empty-list))
+                                                                                   (CId 'anObject)))) ;set self.n=0 and self.obj=anObject
                                     (list)
                                     (list)
                                     'no-vararg))
@@ -1485,29 +1490,58 @@ that calls the primitive `print`.
                      (values (CStr "__init__")
                              (CFunc (list 'self 'func 'value); 3 arguments: self, func and value
                                     (CSeq (CSet (CAttribute 'func (CId 'self)) (CId 'func))
-                                          (CSet (CAttribute 'val (CId 'self)) (CId 'value))) ;set self.func=func and self.val=value
+                                          (CSeq (CSet (CAttribute 'val (CId 'self)) (CId 'value))
+                                                (CSet (CAttribute '_i (CId 'self)) (CNone)))) ;set self.func=func and self.val=value
                                     (list)
                                     (list)
                                     'no-vararg))
                      (values (CStr "__next__")
                              (CFunc (list 'self) ; 1 argument: self
-                                    (CLet 'i
-                                          (Local)
-                                          (CApp (CAttribute 'func (CId 'self))
-                                                (list)
-                                                (list)
-                                                (Empty-list))
-                                          (CIf (CPrim2 'eq (CId 'i) (CAttribute 'val (CId 'self)))
+                                    (CSeq (CIf (CPrim2 'eq (CAttribute '_i (CId 'self)) (CAttribute 'val (CId 'self)))
                                                (CError (CApp (CId 'StopIteration)
                                                              (list)
                                                              (list)
                                                              (Empty-list)))
-                                               (CReturn (CId 'i))))
+                                               (CSet (CAttribute '_i (CId 'self))
+                                                     (CLet 'funcHelper
+                                                           (Local)
+                                                           (CAttribute 'func (CId 'self))
+                                                           (CApp (CId 'funcHelper)
+                                                                 (list)
+                                                                 (list)
+                                                                 (Empty-list)))))
+                                          (CIf (CPrim2 'eq (CAttribute '_i (CId 'self)) (CAttribute 'val (CId 'self)))
+                                               (CError (CApp (CId 'StopIteration)
+                                                             (list)
+                                                             (list)
+                                                             (Empty-list)))
+                                               (CReturn (CAttribute '_i (CId 'self)))))
                                     ;     i = self.func()
                                     ;     if (i==value) then raise StopIteration else return i
                                     (list)
                                     (list)
                                     'no-vararg))
+                     #|
+                     (values (CStr "__next__")
+                             (CFunc (list 'self) ; 1 argument: self
+                                    (CLet '_i
+                                          (Local)
+                                          (CApp (CAttribute 'func (CId 'self))
+                                                (list)
+                                                (list)
+                                                (Empty-list))
+                                          (CIf (CPrim2 'eq (CId '_i) (CAttribute 'val (CId 'self)))
+                                               (CError (CApp (CId 'StopIteration)
+                                                             (list)
+                                                             (list)
+                                                             (Empty-list)))
+                                                      (CReturn (CId '_i))))
+                                    ;     i = self.func()
+                                    ;     if (i==value) then raise StopIteration else return i
+                                    (list)
+                                    (list)
+                                    'no-vararg))
+|#         
                      (values (CStr "__iter__")
                              (CFunc (list 'self) ;1 argument: self
                                     (CReturn (CId 'self)) ;return self
@@ -1548,10 +1582,10 @@ that calls the primitive `print`.
                                              (Empty-list)))
                               (CError (Make-throw 'TypeError "Object lacks __getitem__ field, and thus can't be made into oldIterator")))))
               ;; when iter is called with two arguments
-              (CApp (CId '_doubleIterator)
-                    (list (CId 'e-1) (CId 'e-2))
-                    (list)
-                    (Empty-list)));(call _doubleIterator('e-1,'e-2)))
+              (CReturn (CApp (CId '_doubleIterator)
+                             (list (CId 'e-1) (CId 'e-2))
+                             (list)
+                             (Empty-list))));(call _doubleIterator('e-1,'e-2)))
          (list)
          (list (CNone))
          'no-vararg))
