@@ -123,6 +123,12 @@
                       (list)
                       (map (lambda (e) (type-case PyExpr e
                                          [PyId (id) (list (values (Local) id))]
+                                         [PyTuple (tuple-elts) (foldl (lambda (a b) (append b a))
+                                                                (list)
+                                                                (map (lambda (e) (type-case PyExpr e
+                                                                                   [PyId (id) (list (values (Local) id))]
+                                                                                   [else (list)])) 
+                                                                     tuple-elts))]
                                          [else (list)])) 
                            targets)))]
     
@@ -230,8 +236,10 @@
     
     [PyRaise (exc) (CError (desugar exc))]
     [PyAssign (targets value) 
-              (CLet 'assign-value (Local) (desugar value)
-                    (desugar (PySeq (map (lambda (e) (PySet e (PyId 'assign-value))) targets))))]
+              (if (PyTuple? (first targets))
+                  (desugar-assign-tuple targets value)
+                  (CLet 'assign-value (Local) (desugar value)
+                        (desugar (PySeq (map (lambda (e) (PySet e (PyId 'assign-value))) targets)))))]
     [PyAugAssign (target op value)
                  (CLet 'aug-value (Local) (desugar value)
                        (CLet 'orig-value (Local) (desugar target)
@@ -353,6 +361,29 @@
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
+
+(define (desugar-assign-tuple [targets : (listof PyExpr)]
+                              [value : PyExpr]) : CExp
+  (CLet 'assign-value 
+        (Local) 
+        (desugar value)
+        (desugar (PySeq
+                  (list (PySet (first (PyTuple-elts (first targets))) (PySubscript (PyId 'assign-value) (PyNum 0))) 
+                        (PySet (second (PyTuple-elts (first targets))) (PySubscript (PyId 'assign-value) (PyNum 1))))))))
+  #|
+  (type-case PyExpr value
+    [PyTuple (elts) (desugar (PySeq (desugar-tuple-pysets (PyTuple-elts (first targets)) elts)))]
+    [else (CError (CApp (CId 'TypeError)
+                        (list)
+                        (list)
+                        (Empty-list)))]))
+|#
+
+(define (desugar-tuple-pysets [targets : (listof PyExpr)]
+                              [values : (listof PyExpr)]) : (listof PyExpr)
+  (cond
+    [(or (empty? targets) (empty? values)) (list)]
+    [else (cons (PySet (first targets) (first values)) (desugar-tuple-pysets (rest targets) (rest values)))]))
 
 
 (define (loop-listcomp [elt : PyExpr]

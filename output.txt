@@ -1,2 +1,95 @@
 
 C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173>Racket python-main.rkt --python-path C:\Python32\python.exe --test "C:\Dropbox\Brown\! Programming Languages\Homework\Python\python173\python-reference\\" 
+82 tests succeeded.
+8 tests failed.
+== Output of failed tests ==
+=====================================================
+= Results for dict-values-set.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: Assert failed: values are not Equal: { ( 2 2 ) ( 1 1 ) }{ }
+=====================================================
+= Results for iter-stop.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+getAttr: non-existent attribute, Unbound Identifier: (VStr "extend")
+=====================================================
+= Results for freevar-in-method.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: Assert failed: values are not Equal: functionvar
+=====================================================
+= Results for locals-class.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: locals
+=====================================================
+= Results for locals-function.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: locals
+=====================================================
+= Results for unbound-local.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupStore: 24058Unbound location error.
+=====================================================
+= Results for test-super.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+lookupEnv: Unbound identifier error: super
+=====================================================
+= Results for test_string_slices.py =
+=====================================================
+=== Expected stdout ===
+
+=== Actual stdout ===
+PARSING: Haven't handled a case yet: 
+#hasheq((nodetype . "Slice") (upper . #\nul) (lower . #\nul) (step . #\nul))
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+parse: error is described above.

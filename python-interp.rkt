@@ -1,6 +1,7 @@
 #lang plai-typed
 
 (require "python-core-syntax.rkt"
+         "python-syntax.rkt"
          "python-primitives.rkt"
          "python-desugar.rkt")
 
@@ -1311,20 +1312,28 @@
   (type-case CVal (lookupStore (lookupVar  name env) store)
     [VHash (elts uid type)
            (ValueA (VUnbound)
+                   (begin (set-box! elts (hash-set (unbox elts)
+                                                   (VStr "__dict__") ;;this just creates __dict__, but we never really work with this again
+                                                   (ValueA-value (interp-env (desugar (PyDict (map (lambda (e) (PyStr (symbol->string e)))
+                                                                                                   (getLocals env)) 
+                                                                                              (map (lambda (e) (PyStr (symbol->string e)))
+                                                                                                   (getLocals env))))
+                                                                             env
+                                                                             store))))
                    (foldl (lambda (localVar s)
                             (begin (set-box! elts (hash-set (unbox elts)
-                                                           (VStr (symbol->string localVar)) 
-                                                           (lookupStore (lookupEnv localVar env) s))) 
+                                                            (VStr (symbol->string localVar)) 
+                                                            (lookupStore (lookupEnv localVar env) s))) 
                                    s))
-                           ; (augmentStore (lookupVar name env)
-                                      ;    (VHash (hash-set (unbox (VHash-elts (lookupStore (lookupVar name env) s)))
-                                      ;                     (VStr (symbol->string localVar)) 
-                                      ;                     (lookupStore (lookupEnv localVar env) s))
-                                      ;           uid 
-                                      ;           type)
-                                      ;    s))
+                          ; (augmentStore (lookupVar name env)
+                          ;    (VHash (hash-set (unbox (VHash-elts (lookupStore (lookupVar name env) s)))
+                          ;                     (VStr (symbol->string localVar)) 
+                          ;                     (lookupStore (lookupEnv localVar env) s))
+                          ;           uid 
+                          ;           type)
+                          ;    s))
                           store
-                          (getLocals env)))] 
+                          (getLocals env))))] 
     [else (error 'fill-class-object "when filling a class object, it should be a VHash, not anything else")]))
   
 
@@ -1618,7 +1627,7 @@
                                  [ExceptionA (v1 s1) (ExceptionA v1 s1)]
                                  [ReturnA (v1 s1) (error 'CSubscript "should not get a return statement when evaluating an object")])]
                           [else (error 'CSet "CSubscript has an expression in the object position")])]
-            [else (error 'interp-CSet "For now, CSet only support ids that are symbols or CAttributes or CSubscripts")])]
+            [else (error 'interp-CSet "For now, CSet only support ids that are symbols or CAttributes or CSubscripts or Tuples")])]
     
     [CApp (func args keywargs star)
           (type-case AnswerC (interp-env func env store)
@@ -1643,7 +1652,7 @@
                       [VHash (elts uid type) 
                              (cond 
                                [(equal? (Type-name type) "class")
-                                (let ([new-obj (VHash (box (hash (list)))
+                                (let ([new-obj (VHash (box (hash (list (values (VStr "__class__") vf) )))
                                                       (new-uid)
                                                       (Type (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__name__"))
                                                               [none () (error 'interp-env:CApp:VHash "Class lacks __name__ field")]
@@ -1681,7 +1690,12 @@
                       ;;TEMPORARY CASE FOR APPLICATION
                       [VClass (elts type) (ValueA (VClass elts type) store)]
                       
-                      [else (error 'CApp (string-append "Applied a non-function and non-hash: " (pretty vf)))])]
+                      [else (interp-env (CError (CApp (CId 'TypeError)
+                                                      (list)
+                                                      (list)
+                                                      (CHash (hash (list)) (cType "list" (CNone)))))
+                                        env
+                                        sf)])]
             [BreakA (v s) (error 'CApp "Should not have a break here")]
             [ContinueA (s) (error 'CApp "Should not have a continue here")]
             [ExceptionA (v s) (ExceptionA v s)]
