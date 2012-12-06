@@ -1,5 +1,7 @@
 #lang plai-typed
 
+(require "python-desugar.rkt")
+(require "python-syntax.rkt")
 (require "python-core-syntax.rkt")
 
 #|
@@ -1365,38 +1367,48 @@ that calls the primitive `print`.
                      'no-vararg))))
 
 
-
 ;; any
 (define python-any
   (CFunc (list 'e-1)
-         (CIf (CPrim2 'or 
-                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
-                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) ; Should theoretically work on dicts too, if we have time...
-              (CPrim1 'to-bool 
-                      (CApp (CId 'python-iter-help)
-                            (list (CId 'e-1) (CId 'bool) (CNum 0))
-                            (list)
-                            (Empty-list)))
-              (CError (CId 'TypeError))) ;; TODO more specific?
+         (CLet '_x
+               (Local)
+               (CUnbound)
+               (desugar (PySeq
+                         (list (PyFor (PyId '_x) 
+                                      (PyId 'e-1)
+                                      (PyIf (PyApp (PyId 'bool)
+                                                   (list (PyId '_x))
+                                                   (list)
+                                                   (PyHolder (Empty-list)))
+                                            (list (PyReturn (PyHolder (CTrue))))
+                                            (list (PyPass))))
+                               (PyReturn (PyHolder (CFalse)))))))
          (list)
          (list)
-         'no-vararg))
+         'no-vararg
+         ))
+
 
 ;; all
 (define python-all
   (CFunc (list 'e-1)
-         (CIf (CPrim2 'or 
-                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "list"))
-                      (CPrim2 'eq (CPrim1 'tagof (CId 'e-1)) (CStr "tuple"))) ; Should theoretically work on dicts too, if we have time...
-              (CPrim1 'not
-                      (CApp (CId 'python-iter-help)
-                            (list (CId 'e-1) (CId 'python-not) (CNum 0))
-                            (list)
-                            (Empty-list)))
-              (CError (CId 'TypeError))) ;; TODO more specific?
+         (CLet '_x
+               (Local)
+               (CUnbound)
+               (desugar (PySeq
+                         (list (PyFor (PyId '_x) 
+                                      (PyId 'e-1)
+                                      (PyIf (PyApp (PyId 'bool)
+                                                   (list (PyId '_x))
+                                                   (list)
+                                                   (PyHolder (Empty-list)))
+                                            (list (PyPass))
+                                            (list (PyReturn (PyHolder (CFalse))))))
+                               (PyReturn (PyHolder (CTrue)))))))
          (list)
          (list)
-         'no-vararg))
+         'no-vararg
+         ))
 
 ;; filter
 (define python-filter
@@ -1674,6 +1686,8 @@ that calls the primitive `print`.
         
         (bind 'min python-min)
         (bind 'max python-max)
+        (bind 'any python-any)
+        (bind 'all python-all)
         
         ;; iterator functions and classes
      ;   (bind 'next call-next)

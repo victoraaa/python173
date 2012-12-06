@@ -1,6 +1,4 @@
-dict = {}
-for i in range(10):
-    dict[i] = None
+print(any([1,2]))
 
 #def test():
 #    method_and_var = "var"

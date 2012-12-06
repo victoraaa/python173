@@ -345,6 +345,12 @@ structure that you define in python-syntax.rkt
      (PyListComp (get-structured-python elt)
                  (map get-structured-python generators))]
     
+    [(hash-table ('nodetype "GeneratorExp")
+                 ('elt elt)
+                 ('generators generators))
+     (PyListComp (get-structured-python elt)
+                 (map get-structured-python generators))]
+    
     [(hash-table ('nodetype "comprehension")
                  ('target target)
                  ('iter iter)
