@@ -717,8 +717,25 @@ that calls the primitive `print`.
 
 (define python-in
   (CFunc (list 'e-1 'e-2) ;; TODO TODO TODO re-write this to use a for loop for lists and their ilk. 
-         (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "string"))
-              (CPrim2 'in (CId 'e-1) (CId 'e-2))
+         (CIf (CPrim2 'or
+                      (CPrim2 'or
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "list"))
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "set")))
+                      (CPrim2 'or 
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "tuple"))
+                              (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "dict")))
+              )
+              (CSeq (Create-for-loop 'e-curr 
+                                     (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "dict"))
+                                          (CApp (CAttribute 'keys (CId 'e-2))
+                                                (list)
+                                                (list)
+                                                (Empty-list))
+                                          (CId 'e-2))
+                                     (CIf (CPrim2 'eq (CId 'e-curr) (CId 'e-1))
+                                          (CReturn (CTrue))
+                                          (CPass)))
+                    (CReturn (CFalse)))
               (CPrim2 'in (CId 'e-1) (CId 'e-2))) ;; this false branch should become an iterator or recursive function. 
          (list)
          (list)
@@ -727,7 +744,10 @@ that calls the primitive `print`.
 
 (define python-notIn
   (CFunc (list 'e-1 'e-2)
-         (CPrim1 'not (CPrim2 'in (CId 'e-1) (CId 'e-2)))
+         (CPrim1 'not (CApp (CId 'python-in)
+                            (list (CId 'e-1) (CId 'e-2))
+                            (list)
+                            (Empty-list)))
          (list)
          (list)
          'no-vararg))
@@ -1857,7 +1877,14 @@ that calls the primitive `print`.
                      (values (CStr "message") (CStr "Exception"))
                      (values (CStr "tostring") 
                              (CFunc (list 'self)
-                                    (CAttribute 'message (CId 'self))
+                                    (CPrim2 'string+
+                                            (CAttribute '__name__ (CId 'self))
+                                            (CPrim2 'string+
+                                                    (CStr ": ")
+                                                    (CApp (CId 'str)
+                                                          (list (CAttribute 'message (CId 'self)))
+                                                          (list)
+                                                          (Empty-list))))
                                     (list)
                                     (list)
                                     'no-vararg))

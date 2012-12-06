@@ -539,11 +539,34 @@
 
 
 ;; fold equality
-(define (fold-equality [h1 : (listof CVal)] [h2 : (listof CVal)]) : boolean
+;(define (fold-equality [h1 : (listof CVal)] [h2 : (listof CVal)]) : boolean
+;  (cond
+;    [(not (= (length h1) (length h2))) #f]
+;    [(empty? h1) #t]
+;    [else (and (check-equality (first h1) (first h2)) (fold-equality (rest h1) (rest h2)))]))
+
+
+(define (fold-equality [h1 : (hashof CVal CVal)] [h2 : (hashof CVal CVal)]) : boolean
   (cond
-    [(not (= (length h1) (length h2))) #f]
-    [(empty? h1) #t]
-    [else (and (check-equality (first h1) (first h2)) (fold-equality (rest h1) (rest h2)))]))
+    [(not (= (length (hash-keys h1)) (length (hash-keys h2)))) #f]
+    [else (foldl (lambda (x y) (and y (type-case (optionof CVal) (hash-ref h1 x)
+                                        [some (s1) (type-case (optionof CVal) (fold-eq-contains (hash-keys h2) x)
+                                                     [some (vk) (type-case (optionof CVal) (hash-ref h2 vk)
+                                                                  [some (s2) (check-equality s1 s2)]
+                                                                  [none () #f])]
+                                                     [none () #f])]
+                                        [none () (error 'fold-equality "something is terribly wrong here...")]))) 
+                 #t 
+                 (hash-keys h1))]))
+
+(define (fold-eq-contains [lst : (listof CVal)] [val : CVal]) : (optionof CVal)
+  (cond
+    [(empty? lst) (none)]
+    [(check-equality val (first lst)) (some (first lst))]
+    [else (fold-eq-contains (rest lst) val)]))
+
+;(define (fold-equality [h1 : (listof CVal)] [h2 : (listof CVal)]) : boolean
+;  (cond 
 
 ;; check-equality
 (define (check-equality [v1 : CVal] [v2 : CVal]) : boolean
@@ -551,9 +574,12 @@
     [VHash (elts1 uid1 type1) (type-case CVal v2
                                 [VHash (elts2 uid2 type2) (if (equal? (Type-name type1) (Type-name type2))
                                                               ;                              (equal? (unbox elts1) (unbox elts2)) ;; TODO recur!
-                                                              (and (fold-equality (hash-keys (unbox elts1)) (hash-keys (unbox elts2)))
-                                                                   (fold-equality (hash-values (unbox elts1)) (hash-values (unbox elts2))))
-                                                             ; (and (foldl (lambda (a x y) (and a (check-equality x y))) #t (hash-keys (unbox elts1)) (hash-keys (unbox elts2)))
+                                                              
+                                                              (fold-equality (unbox elts1) (unbox elts2))
+                                                              ;(and (fold-equality (hash-keys (unbox elts1)) (hash-keys (unbox elts2)))
+                                                              ;     (fold-equality (hash-values (unbox elts1)) (hash-values (unbox elts2))))
+                                                             
+                                                              ; (and (foldl (lambda (a x y) (and a (check-equality x y))) #t (hash-keys (unbox elts1)) (hash-keys (unbox elts2)))
                                                              ;      (foldl (lambda (a x y) (and a (check-equality x y))) #t (hash-values (unbox elts1)) (hash-values (unbox elts2))))
                                                               false)]
                                 
@@ -755,7 +781,8 @@
                                         [VHash (elts-box1 uid1 type1) (type-case CVal v2
                                                  [VHash (elts-box2 uid2 type2) (ValueA (VHash (box (merge-python-lists v1 v2)) (new-uid) type1) s2)]
                                                  [else (error 'merge-listy-things "This also should never happen. ")])]
-                                        [else (error 'merge-listy-things "This should never happen. ")])]
+                                        [else (error 'merge-listy-things (string-append "This should never happen. "
+                                                                                        (to-string v1)))])]
                       [BreakA (v s) (error 'merge-listy-things "Break!")]
                       [ContinueA (s) (error 'merge-listy-things "Continue!")]
                       [ExceptionA (v2 s2) (ExceptionA v2 s2)]
@@ -823,6 +850,20 @@
 (define (change-string-to-list (s : string)) : (hashof CVal CVal)
   (make-new-map (map (lambda (x) (VNum x)) (range (string-length s))) 
                 (map (lambda (x) (VStr (list->string (list x)))) (string->list s))))
+
+
+;; adds an element to set's hash map only if it isn't already there
+(define (set-no-duplicates [lst : (listof CVal)]) : (hashof CVal CVal)
+  (cond
+    [(empty? lst) (hash (list))]
+    [else (local [(define rec (set-no-duplicates (rest lst)))]
+            (if (foldl (lambda (x y) (or y (check-equality x (first lst)))) #f (hash-values rec))
+                rec
+                (hash-set (set-no-duplicates (rest lst)) (first lst) (first lst))))]))
+    
+ ;   [(foldl () #f ()) (set-no-duplicates (rest lst))]
+ ;   [else (hash-set (set-no-duplicates (rest lst)) (first lst) (first lst))]))
+    
 
 
 ;; handle unary operations - akin to handle-op
@@ -900,11 +941,11 @@
                [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
                                           (VHash (box (local [(define sz (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
                                                                            [some (s) (VNum-n s)] ;; TODO could be unsafe...
-                                                                           [none () (error 'interp-to-set "List without a size field")]))]
-                                                        (hash (map (lambda (x) (local [(define v (type-case (optionof CVal) (hash-ref (unbox elts) x)
-                                                                                                   [some (sv) sv]
-                                                                                                   [none () (error 'interp-to-set "List or tuple with a missing element")]))]
-                                                                                 (values v v))) (vnum-range sz)))))
+                                                                           [none () (error 'interp-to-set "List without a size field")]))] ;; TODO don't add duplicates by check-equality!
+                                                        (set-no-duplicates (map (lambda (x) (local [(define v (type-case (optionof CVal) (hash-ref (unbox elts) x)
+                                                                                                                [some (sv) sv]
+                                                                                                                [none () (error 'interp-to-set "List or tuple with a missing element")]))]
+                                                                                              v)) (vnum-range sz)))))
                                                  (new-uid)
                                                  (transform-ctype (cType "set" (CId 'set)) env store))
                                           (error 'interp-to-set "Arguments of this type aren't supported here. "))]
