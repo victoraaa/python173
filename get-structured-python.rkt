@@ -246,6 +246,20 @@ structure that you define in python-syntax.rkt
      (PySubscript (get-structured-python value)
                   (get-structured-python slice))]
     
+    [(hash-table ('nodetype "Slice")
+                 ('lower lower)
+                 ('upper upper)
+                 ('step step))
+     (PySlice (if (equal? lower #\nul)
+                  (PyNone)
+                  (get-structured-python lower))
+              (if (equal? upper #\nul)
+                  (PyNone)
+                  (get-structured-python upper))
+              (if (equal? step #\nul)
+                  (PyNum 1)
+                  (get-structured-python step)))]
+    
     ;; Index (this is only used in subscripts
     [(hash-table ('nodetype "Index")
                  ('value value))

@@ -54,6 +54,10 @@
     [PySubscript (value attr)
                  (append (get-vars value)
                          (get-vars attr))]
+    [PySlice (lower upper step)
+             (append (get-vars lower)
+                     (append (get-vars upper)
+                             (get-vars step)))]
     [PyDel (targets) (list)]
     
     ;; loops
@@ -308,7 +312,45 @@
     [PyCollectionSet (elts) (CHash (desugar-hash elts elts) (cType "set" (CId 'set)))]
     
     [PyAttribute (attr value) (CAttribute attr (desugar value))]
-    [PySubscript (value attr) (CSubscript (desugar value) (desugar attr))]
+    [PySubscript (value attr) 
+                 (type-case PyExpr attr
+                   [PySlice (lower upper step) (CApp (CId 'make-slice)
+                                                     (list (CApp (CId 'list)
+                                                                 (list (desugar value))
+                                                                 (list)
+                                                                 (Empty-list)) 
+                                                           (desugar lower) 
+                                                           (desugar upper) 
+                                                           (desugar step))
+                                                     (list)
+                                                     (Empty-list))]
+            ;                (CLet 'build-string
+            ;                      (Local)
+            ;                      (CStr "")
+            ;                      (CLet 'e-elem
+            ;                            (Local)
+            ;                            (CNum 0)
+            ;                            (desugar (PySeq 
+            ;                                      (list (PyFor (PyId 'e-elem)
+            ;                                                   (PyApp (PyId 'range) 
+            ;                                                          (list lower 
+            ;                                                                (PyIf (PyCompare upper 
+            ;                                                                                 (list 'python-lte) 
+            ;                                                                                 (list (PyNum 0)))
+            ;                                                                      (list (PyApp (PyId 'len)
+            ;                                                                                   (list value)
+            ;                                                                                   (list)
+            ;                                                                                   (PyList (list))))
+            ;                                                                      (list upper))
+            ;                                                                step) 
+            ;                                                          (list) 
+            ;                                                          (PyList (list)))
+            ;                                                   (PyAugAssign (PyId 'build-string) 
+            ;                                                                'python-add 
+           ;                                                                 (PySubscript value (PyId 'e-elem))))
+            ;                                            (PyReturn (PyId 'build-string)))))))]
+                   [else (CSubscript (desugar value) (desugar attr))])]
+    [PySlice (lower upper step) (error 'desugar "lone, wandering PySlice...")]
     [PyDel (target)
            (CDel (map desugar target))]
     ;; loops
