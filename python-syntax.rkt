@@ -24,6 +24,7 @@
   [PySubscript (value : PyExpr) (attr : PyExpr)]
   [PyDel (targets : (listof PyExpr))]
   [PyHolder (expr : CExp)] ;;only used to pass CExps aroudn the desugarer
+  [PySlice (lower : PyExpr) (upper : PyExpr) (step : PyExpr)]
   
   ;; loops
   [PyWhile (test : PyExpr) (body : PyExpr) (orelse : PyExpr)]

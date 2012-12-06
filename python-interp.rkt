@@ -1612,7 +1612,7 @@
                                (lambda () -10090))])
            (if (equal? _location -10090)
                (interp-env (CError (CApp (CId 'NameError)
-                                                    (list)
+                                                    (list (CStr (string-append ": " (symbol->string x))))
                                                     (list)
                                                     (CHash (hash (list)) (cType "list" (CId 'list)))))
                                       env
@@ -2042,6 +2042,8 @@
                                                                           (Empty-list)))))
               (CPass)))
 
+;(define (add-try-except [body : CExp] [exn : symbol] [catch : CExp]) : CExp
+;  (CTryExcept body (list (CExcHandler 'e (CId exn) catch)) (CPass)))
 
 ;; regular interpret
 (define (interp (expr : CExp)) : CVal
