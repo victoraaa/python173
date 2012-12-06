@@ -1502,7 +1502,25 @@
     
     
     [CId (x) 
-         (ValueA (lookupStore (lookupVar x env) store) store)]
+         (let ([_location (try (lookupVar x env)
+                               (lambda () -10090))])
+           (if (equal? _location -10090)
+               (interp-env (CError (CApp (CId 'NameError)
+                                                    (list)
+                                                    (list)
+                                                    (CHash (hash (list)) (cType "list" (CNone)))))
+                                      env
+                                      store)
+               (let ([_val (try (lookupStore (lookupVar x env) store)
+                                (lambda () (VNum -10090)))])
+                 (if (equal? _val (VNum -10090))
+                     (interp-env (CError (CApp (CId 'UnboundLocalError)
+                                                          (list)
+                                                          (list)
+                                                          (CHash (hash (list)) (cType "list" (CNone)))))
+                                            env
+                                            store)
+                     (ValueA (lookupStore (lookupVar x env) store) store)))))]
     
     [CLet (id scopeType bind body)
           (type-case AnswerC (interp-env bind env store)
