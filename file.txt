@@ -1,4 +1,5 @@
-print(any([1,2]))
+print(any([None,None,[],1]))
+print(all([None, None, [], 1]))
 
 #def test():
 #    method_and_var = "var"
