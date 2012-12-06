@@ -1,28 +1,15 @@
-# test_sinkstate_list
-# This used to fail
-a = list(range(5))
-b = iter(a)
+def f(x):
+    def g(y):
+        def h(z):
+            return y + z
+        w = x + y
+        y += 3
+        return locals()
+    return g
 
-___assertEqual(list(b), list(range(5)))
-
-a.extend(range(5, 10))
-___assertEqual(list(b), [])
-
-
-#x=0
-
-#def spem():
-#    global x
-#    i = x
-#    x = i+1
-#    if i == 10:
-#        raise AssertionError("shouldn't have gotten this far")
-#    return i
-
-#c = iter(spem, 5)
-#c.__next__()
-
-#next(c)
+d = f(2)(4)
+print(d.keys())
+print(d.values())
 
 
 

@@ -1603,6 +1603,13 @@ that calls the primitive `print`.
          (list)
          'no-vararg))
 
+;;locals() method
+(define python-locals
+  (CFunc (list)
+         (CPrim1 '_locals (CNone))
+         (list)
+         (list)
+         'no-vararg))
 
 (define make-range
   (CFunc (list 'e-1 'e-2 'e-3)
@@ -2022,6 +2029,8 @@ that calls the primitive `print`.
         (bind 'filter python-filter)
         (bind '_oldIterator python-oldIterator-class)
         (bind '_doubleIterator python-doubleIterator-class)
+        (bind 'varLocals (Empty-list))
+        (bind 'locals python-locals)
       ;  (bind 'iter (CNone)) ;; helps with recursion...
         (bind 'iter call-iter)
         (bind 'next call-next)

@@ -60,6 +60,7 @@ ParselTongue.
   
   [CHolder (hold : CVal)]
   
+  
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
 
@@ -76,6 +77,7 @@ ParselTongue.
   [CExcHandler (name : symbol) (type : CExp) (body : CExp)])
 
 (define-type CVal
+  [VSymbolList (lst : (listof symbol))]
   [VNum (n : number)]
   [VStr (s : string)]
   [VTrue]

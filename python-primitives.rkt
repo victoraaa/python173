@@ -30,6 +30,7 @@ primitives here.
     ;[VTuple (h uid) "VTuple - for now. We'll make it recursive later. "]
     [VHash (h uid type) (string-append (Type-name type) (to-string h))]
     [VClass (elts type) (Type-name type)]
+    [VSymbolList (lst) "should never be printed"]
     ))
   
 
