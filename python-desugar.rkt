@@ -175,6 +175,18 @@
     ))
 
 
+;; separate get-vars for inside of a class...
+;; ADDED for freevar-in-method
+(define (get-vars-class [expr : PyExpr]) : (listof (ScopeType * symbol))
+  (type-case PyExpr expr
+    [PySeq (es) (foldl (lambda (a b) (append b a))
+                       (list)
+                       (map (lambda (e) (get-vars-class e)) es))]
+    [PyDef (name args body)
+           (append (list (values (Instance) name))
+                   (get-vars args))]
+    [else (get-vars expr)])) ;; I hope this works...
+
 
 (define (desugar expr)
   (type-case PyExpr expr
@@ -291,13 +303,13 @@
                         (CLet 'some-class 
                               (Local) 
                               (CHash (hash (list (values (CStr "__name__") (CStr (symbol->string name)))
-                                                 (values (CStr "super") (CFunc (list)
-                                                                               (if (empty? bases)
-                                                                                   (CId '_Object)
-                                                                                   (desugar (first bases)))
-                                                                               (list)
-                                                                               (list)
-                                                                               'no-vararg))
+                                               ;  (values (CStr "super") (CFunc (list)
+                                               ;                                (if (empty? bases)
+                                               ;                                    (CId '_Object)
+                                               ;                                    (desugar (first bases)))
+                                               ;                                (list)
+                                               ;                                (list)
+                                               ;                                'no-vararg))
                                                  )) 
                                      (cType "class" (if (empty? bases)
                                                        (CId '_Object)
@@ -305,7 +317,7 @@
                               ;;body of the CLet:
                               (CSeq
                                (CSet (CId name) (CId 'some-class))
-                               (CCreateClass name (desugar body) (get-vars body))))))]
+                               (CCreateClass name (desugar body) (get-vars-class body))))))] ;; ADDED for freevar-in-method
                              ;  (CCreateClass (desugar-class-innards name body  )))))]
     
     

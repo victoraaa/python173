@@ -65,7 +65,21 @@
              [none () (error 'keepOldEnv "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
              [some (v) (local [(define-values (t l) v)]
                          (type-case ScopeType t
+                           [Instance () newEnv]
                            [Local () (augmentEnv key (values (NonLocal) l) newEnv)]
+                           [Global () newEnv]
+                           [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
+         (hash (list))
+         (hash-keys env)))
+
+(define (keepOldEnvClass [env : Env]) : Env
+  (foldl (lambda (key newEnv) 
+           (type-case (optionof SLTuple) (hash-ref env key)
+             [none () (error 'keepOldEnvClass "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
+             [some (v) (local [(define-values (t l) v)]
+                         (type-case ScopeType t
+                           [Instance () (augmentEnv key (values (Instance) l) newEnv)]
+                           [Local () (augmentEnv key (values (Local) l) newEnv)]
                            [Global () newEnv]
                            [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
          (hash (list))
@@ -131,6 +145,28 @@
                            (rest localList) 
                            othersList)))]))
 
+;; addInstanceVars takes an environment and a list of variables. 
+;; it adds the instance variables to the env. 
+(define (addInstanceVars [env : Env]
+                   [localList : (listof (ScopeType * symbol))]
+                   [othersList : (listof (ScopeType * symbol))]) : Env
+  (cond
+    [(empty? localList) env]
+    [else (local [(define-values (t id) (first localList))]
+            (if (foldl (lambda (l result) (or l result))
+                       false
+                       (map (lambda (st-id) (local [(define-values (t2 id2) st-id)]
+                                              (if (equal? id id2)
+                                                  true
+                                                  false)))
+                            othersList))
+                (addInstanceVars env (rest localList) othersList)
+                (addInstanceVars (augmentEnv id 
+                                       (values (Instance) (new-loc))
+                                       env)
+                           (rest localList) 
+                           othersList)))]))
+
 ;;addArgs just appends the args to a list of (ScopeType * symbol), 
 ;;with the ScopeType 'Local'
 (define (addArgs [lst : (listof (ScopeType * symbol))]
@@ -159,6 +195,42 @@
                           (append args (list vararg))))
              (filter (lambda (x) (local [(define-values (t id) x)]
                                    (if (Local? t)
+                                       false
+                                       true)))
+                     vlist)))
+
+
+;; version for classdefs...
+(define (newEnvScopeClass [env : Env]
+                     [vlist : (listof (ScopeType * symbol))]
+                     [args : (listof symbol)]
+                     [vararg : symbol]) : Env
+  (addInstanceVars (addLocals (addNonLocals (addGlobalVars (keepOldEnvClass env) 
+                                          vlist)
+                           vlist)
+             (addArgs (filter (lambda (x) (local [(define-values (t id) x)]
+                                            (if (Local? t)
+                                                true
+                                                false)))
+                              vlist)
+                      (if (equal? 'no-vararg vararg)
+                          args
+                          (append args (list vararg))))
+             (filter (lambda (x) (local [(define-values (t id) x)]
+                                   (if (Local? t)
+                                       false
+                                       true)))
+                     vlist))
+                   (addArgs (filter (lambda (x) (local [(define-values (t id) x)]
+                                            (if (Instance? t)
+                                                true
+                                                false)))
+                              vlist)
+                      (if (equal? 'no-vararg vararg)
+                          args
+                          (append args (list vararg))))
+                   (filter (lambda (x) (local [(define-values (t id) x)]
+                                   (if (Instance? t)
                                        false
                                        true)))
                      vlist)))
@@ -1331,13 +1403,20 @@
   (CHash (create-hash (cnum-range (length exps)) exps) (cType "list" (CId 'list))))
 
 
+(define (interp-inside-class [expr : CExp] [envInstance : Env] [env : Env] [store : Store]) : AnswerC
+  (type-case CExp expr
+    [CFunc (args body vlist defargs vararg) (interp-func args vararg body vlist defargs (list) env store)]
+    [else (interp-env expr envInstance store)]))
+
+
 ;; create a new class
 ;; THIS IS A VERY IMPORTANT FUNCTION!
 (define (interp-create-class [name : symbol]
                              [body : CExp]
                              [env : Env]
+                             [envWithout : Env]
                              [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env body env store)
+  (type-case AnswerC (interp-inside-class body env envWithout store)
     [ValueA (v s) (fill-class-object name env s)]
     [BreakA (v s) (error 'interp-create-class "Break!")]
     [ContinueA (s) (error 'interp-create-class "Continue!")] ;; TODO really?
@@ -1356,9 +1435,9 @@
                    (begin (set-box! elts (hash-set (unbox elts)
                                                    (VStr "__dict__") ;;this just creates __dict__, but we never really work with this again
                                                    (ValueA-value (interp-env (desugar (PyDict (map (lambda (e) (PyStr (symbol->string e)))
-                                                                                                   (getLocals env)) 
+                                                                                                   (getInstanceVars env)) 
                                                                                               (map (lambda (e) (PyStr (symbol->string e)))
-                                                                                                   (getLocals env))))
+                                                                                                   (getInstanceVars env))))
                                                                              env
                                                                              store))))
                    (foldl (lambda (localVar s)
@@ -1374,9 +1453,22 @@
                           ;           type)
                           ;    s))
                           store
-                          (getLocals env))))] 
+                          (getInstanceVars env))))] ;; ADDED for freevar-in-method
     [else (error 'fill-class-object "when filling a class object, it should be a VHash, not anything else")]))
   
+
+;; get instance vars
+;; ADDED for freevar-in-method
+(define (getInstanceVars [env : Env]) : (listof symbol)
+  (filter (lambda (key)
+            (type-case (optionof SLTuple) (hash-ref env key)
+              [some (v) (local [(define-values (t l) v)]
+                          (type-case ScopeType t
+                            [Instance () true]
+                            [Local () true]
+                            [else false]))]
+              [none () (error 'fill-class-object "something terrible has happened. ")]))
+          (hash-keys env)))
 
 ;;getLocals
 (define (getLocals [env : Env]) : (listof symbol)
@@ -1557,7 +1649,7 @@
                                 (lambda () (VNum -10090)))])
                  (if (equal? _val (VNum -10090))
                      (interp-env (CError (CApp (CId 'UnboundLocalError)
-                                                          (list)
+                                                          (list (CStr (string-append ": " (symbol->string x))))
                                                           (list)
                                                           (CHash (hash (list)) (cType "list" (CId 'list)))))
                                             env
@@ -1910,8 +2002,12 @@
     
     
     ;; Create a new class!!!!!!!!!!!!!
-    [CCreateClass (name body vlist) 
-                  (interp-create-class name body (newEnvScope env vlist (list) 'no-vararg) store)]
+    [CCreateClass (name body vlist) ;; CHANGED for freevar-in-method
+                  (interp-create-class name 
+                                       body 
+                                       (newEnvScopeClass env vlist (list) 'no-vararg)
+                                       (newEnvScope env vlist (list) 'no-vararg)
+                                       store)]
     
     ;; exception handling
     [CTryExcept (body handlers orelse) 

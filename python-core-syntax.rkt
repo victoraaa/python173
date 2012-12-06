@@ -100,6 +100,7 @@ ParselTongue.
 
 (define-type-alias Location number)
 (define-type ScopeType
+  [Instance] ;; ADDED for freevar-in-method
   [Local]
   [NonLocal]
   [Global])

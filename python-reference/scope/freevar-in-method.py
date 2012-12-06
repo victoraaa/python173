@@ -12,6 +12,7 @@ def test():
     return Test()
 
 t = test()
+print("We got to here...")
 ___assertEqual(t.test(), "var")
 ___assertEqual(t.method_and_var(), "method")
 ___assertEqual(t.actual_global(), "global")
