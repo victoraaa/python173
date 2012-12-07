@@ -352,14 +352,14 @@ that calls the primitive `print`.
          (list)
          false
          'no-vararg))
-  
-  
-  
- ; (CFunc (list 'e-1 'e-2)
- ;        (CError (Make-throw 'Exception "Bitwise and not implemented yet!"))
- ;        (list)
-  ;       (list)
- ;        'no-vararg))
+
+
+
+; (CFunc (list 'e-1 'e-2)
+;        (CError (Make-throw 'Exception "Bitwise and not implemented yet!"))
+;        (list)
+;       (list)
+;        'no-vararg))
 
 (define python-bitor ;; This can be simplified; we don't really need to iterator. Just concat and setify. 
   (CFunc (list 'e-1 'e-2)
@@ -413,10 +413,10 @@ that calls the primitive `print`.
          false
          'no-vararg))
 ;;  (CFunc (list 'e-1 'e-2)
- ;        (CError (Make-throw 'Exception "Bitwise or not implemented yet!"))
- ;        (list)
- ;        (list)
- ;        'no-vararg))
+;        (CError (Make-throw 'Exception "Bitwise or not implemented yet!"))
+;        (list)
+;        (list)
+;        'no-vararg))
 
 (define python-bitxor
   (CFunc (list 'e-1 'e-2)
@@ -753,7 +753,7 @@ that calls the primitive `print`.
                       (CPrim2 'or 
                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "tuple"))
                               (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "dict")))
-              )
+                      )
               (CSeq (Create-for-loop 'e-curr 
                                      (CIf (CPrim2 'eq (CPrim1 'tagof (CId 'e-2)) (CStr "dict"))
                                           (CApp (CAttribute 'keys (CId 'e-2))
@@ -964,7 +964,7 @@ that calls the primitive `print`.
                                      (CPass))))))
 
    |#
-              
+
 ;; Callable
 ;; may need to re-write this in the future - it depends. I don't know yet. 
 (define callable
@@ -1000,7 +1000,7 @@ that calls the primitive `print`.
                           (CPass)
                           (list)
                           (list (CFalse))
-         false
+                          false
                           'no-vararg)) 
          (cType "class" (CNone))))
 
@@ -1013,7 +1013,7 @@ that calls the primitive `print`.
                           (CPrim1 'to-bool (CId 'e-1))
                           (list)
                           (list (CFalse))
-         false
+                          false
                           'no-vararg)) 
          (cType "primitive-class" (CId '_Object))))
 
@@ -1026,7 +1026,7 @@ that calls the primitive `print`.
                           (CPrim1 'to-int (CId 'e-1))
                           (list)
                           (list (CNum 0))
-         false
+                          false
                           'no-vararg)) 
          (cType "primitive-class" (CId '_Object))))
 
@@ -1039,7 +1039,7 @@ that calls the primitive `print`.
                           (CPrim1 'to-float (CId 'e-1))
                           (list)
                           (list (CNum 0.0))
-         false
+                          false
                           'no-vararg)) 
          (cType "primitive-class" (CId '_Object))))
 
@@ -1056,7 +1056,7 @@ that calls the primitive `print`.
                                           (Empty-list))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "__convert__") 
                              (CFunc (list 'e-1)
@@ -1068,7 +1068,7 @@ that calls the primitive `print`.
                                          (CPrim1 'to-string (CId 'e-1)))
                                     (list)
                                     (list (CStr ""))
-         false
+                                    false
                                     'no-vararg)))) 
          (cType "primitive-class" (CId '_Object))))
 
@@ -1079,7 +1079,7 @@ that calls the primitive `print`.
                                     (CReturn (CSubscript (CId 'self) (CId 'e-1)))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "__name__") 
                              (CStr "list")) 
@@ -1116,7 +1116,7 @@ that calls the primitive `print`.
                                               (CError (Make-throw 'TypeError "Cannot convert this type to a list")))) ;; TODO be more specific!
                                     (list)
                                     (list (CStr ""))
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "append") 
                              (CFunc (list 'self 'e-1)
@@ -1127,7 +1127,7 @@ that calls the primitive `print`.
                                           (CId 'e-1))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "extend") 
                              (CFunc (list 'self 'e-1)
@@ -1139,7 +1139,7 @@ that calls the primitive `print`.
                                                            (Empty-list)))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "tostring") 
                              (CFunc (list 'self)
@@ -1160,10 +1160,10 @@ that calls the primitive `print`.
                                                 (CReturn (CPrim2 'string+ (CId 'build-str) (CStr "]")))))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      ))
-                     (cType "primitive-class" (CId '_Object))))
+         (cType "primitive-class" (CId '_Object))))
 
 
 (define tuple-primitive-class
@@ -1173,7 +1173,7 @@ that calls the primitive `print`.
                                     (CReturn (CSubscript (CId 'self) (CId 'e-1)))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg) )
                      (values (CStr "__name__") 
                              (CStr "tuple")) 
@@ -1205,7 +1205,7 @@ that calls the primitive `print`.
                                                 (CReturn (CPrim2 'string+ (CId 'build-str) (CStr ")")))))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      )) 
          (cType "primitive-class" (CId '_Object))))
@@ -1221,7 +1221,7 @@ that calls the primitive `print`.
                                      (CPass))
                                     (list)
                                     (list (CNone))
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "__getitem__") 
                              (CFunc (list 'self 'e-1 'e-2)
@@ -1231,7 +1231,7 @@ that calls the primitive `print`.
                                      (CPass))
                                     (list)
                                     (list (CNone))
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "__iter__")
                              (CFunc (list 'self)
@@ -1244,7 +1244,7 @@ that calls the primitive `print`.
                                           (Empty-list))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      ;;(values (CStr "update") ())
                      (values (CStr "keys") 
@@ -1252,7 +1252,7 @@ that calls the primitive `print`.
                                     (CAttribute '__keys__ (CId 'self))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "values") 
                              (CFunc (list 'self)
@@ -1294,7 +1294,7 @@ that calls the primitive `print`.
                                                       )))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      
                      (values (CStr "update") ;; TODO test!
@@ -1338,7 +1338,7 @@ that calls the primitive `print`.
                                                                  (CPass)))))
                                     (list)
                                     (list (CNone))
-         false
+                                    false
                                     'no-vararg))
                      
                      ;; I did this wrong. It needs to create key, value tuples...
@@ -1381,10 +1381,10 @@ that calls the primitive `print`.
                                                                           (CPass)
                                                                           (list))
                                                                   (CReturn (CId 'build-list)))))))
-                                                              
+                                    
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      
                      (values (CStr "clear") ;; deletes everything in the dictionary
@@ -1419,11 +1419,11 @@ that calls the primitive `print`.
                                                       )))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      
-                ;     (values (CStr "update") ;; updates dictionary by adding contents of other dictionary
-                 ;            ())
+                     ;     (values (CStr "update") ;; updates dictionary by adding contents of other dictionary
+                     ;            ())
                      ))
          (cType "primitive-class" (CId '_Object)))) ;; If we need a __convert__ method, we'll write one later. 
 
@@ -1441,7 +1441,7 @@ that calls the primitive `print`.
                                           (Empty-list))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "__convert__") 
                              (CFunc (list 'e-1)
@@ -1454,7 +1454,7 @@ that calls the primitive `print`.
                                               (CError (Make-throw 'TypeError "Cannot convert this type to a set"))))
                                     (list)
                                     (list (Empty-list))
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "tostring") 
                              (CFunc (list 'self)
@@ -1475,7 +1475,7 @@ that calls the primitive `print`.
                                                 (CReturn (CPrim2 'string+ (CId 'build-str) (CStr "}")))))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      ))
          (cType "primitive-class" (CId '_Object))))
@@ -1507,7 +1507,7 @@ that calls the primitive `print`.
                                                                                    (CId 'anObject)))) ;set self.n=0 and self.obj=anObject
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "__next__")
                              (CFunc (list 'self) ; 1 argument: self
@@ -1537,14 +1537,14 @@ that calls the primitive `print`.
                                     ;     raise StopIteration
                                     (list)
                                     (list) ;; default args? 
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "__iter__")
                              (CFunc (list 'self) ;1 argument: self
                                     (CReturn (CId 'self)) ;return self
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      ))
          (cType "class" (CId '_Object))))
@@ -1561,7 +1561,7 @@ that calls the primitive `print`.
                                                 (CSet (CAttribute '_i (CId 'self)) (CNone)))) ;set self.func=func and self.val=value
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "__next__")
                              (CFunc (list 'self) ; 1 argument: self
@@ -1588,7 +1588,7 @@ that calls the primitive `print`.
                                     ;     if (i==value) then raise StopIteration else return i
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      #|
                      (values (CStr "__next__")
@@ -1616,7 +1616,7 @@ that calls the primitive `print`.
                                     (CReturn (CId 'self)) ;return self
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      ))
          (cType "class" (CId '_Object))))
@@ -1867,7 +1867,7 @@ that calls the primitive `print`.
                                         )))
                      (list)
                      (list)
-         false
+                     false
                      'no-vararg))))
 
 
@@ -1981,7 +1981,7 @@ that calls the primitive `print`.
                           (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
                      (list)
                      (list)
-         false
+                     false
                      'no-vararg))))
 
 
@@ -2063,7 +2063,7 @@ that calls the primitive `print`.
                                     (CSet (CAttribute 'message (CId 'self)) (CId 'e-1))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "message") (CStr "RuntimeError"))
                      )) 
@@ -2105,14 +2105,14 @@ that calls the primitive `print`.
                                                           (Empty-list))))
                                     (list)
                                     (list)
-         false
+                                    false
                                     'no-vararg))
                      (values (CStr "__init__")
                              (CFunc (list 'self 'e-1)
                                     (CSet (CAttribute 'message (CId 'self)) (CId 'e-1))
                                     (list)
                                     (list (CNone))
-         false
+                                    false
                                     'no-vararg))
                      )) 
          (cType "class" (CId '_Object))))
@@ -2132,7 +2132,7 @@ that calls the primitive `print`.
                                                (CPrim1 'print (CStr "An Exception has been thrown. "))
                                                (list)
                                                (list)
-         false
+                                               false
                                                'no-vararg))
                      ;(hash (list)) (list) 'no-vararg (CPrim1 'print (CStr "printing")) (list) -1))
                      (values (CStr "__name__") (CStr "Exception")))) (cType "class" (CId '_Object))))
@@ -2212,7 +2212,7 @@ that calls the primitive `print`.
         (bind '_doubleIterator python-doubleIterator-class)
         (bind 'varLocals (Empty-list))
         (bind 'locals python-locals)
-      ;  (bind 'iter (CNone)) ;; helps with recursion...
+        ;  (bind 'iter (CNone)) ;; helps with recursion...
         (bind 'iter call-iter)
         (bind 'next call-next)
         
@@ -2222,10 +2222,10 @@ that calls the primitive `print`.
         (bind 'all python-all)
         
         ;; iterator functions and classes
-     ;   (bind 'next call-next)
-     ;   (bind 'iter call-iter)
-      ;  (bind 'oldIterator python-oldIterator-class)
-      ;  (bind 'doubleIterator python-doubleIterator-class)
+        ;   (bind 'next call-next)
+        ;   (bind 'iter call-iter)
+        ;  (bind 'oldIterator python-oldIterator-class)
+        ;  (bind 'doubleIterator python-doubleIterator-class)
         
         ;; exceptions (prelim...)
         (bind 'Exception Exception)
