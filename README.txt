@@ -1,33 +1,33 @@
 Tests: 
 
-So far we pass 45 tests of the provided 90:
+So far we pass 88 of 90 tests.
 
-
+Come on, give a smile.
 
 Design: 
 
-We have defined a type, in racket, to represent types. It has, as fields, the name of the type and its base types.
+About Desugaring:
 
-Our core language consists of a set of types similar to that provided in parseltongue when we deal with the 'primitive types'.
-For everything that doesn't look "too primitive" (as lists, tuples, dicts, objects...), we use a VHash, which has a hash of fields,
-an "Uid" so that we can check if one object 'is' another, and a type.
+	We have a near to 1-on-1 correspondence of PyExpr's and structures from the AST python specification.
+	Our desugarer has two important functions: get-vars and desugar.
+	Desugar works just like the ones used in the Parseltongue assignments, although a bit more of the work was done at the interpreter.
+	get-vars lifts variables just as done in the parseltongue-extended-javascript assignment. However, instead of just getting the variables, 
+it also gets the ScopeTypes that each variable should have (Local, NonLocal or Global).
 
-For now, we have something called VClass, but its just a stub.
+About our Core Language:
 
-What works in exceptions is the try-except-else-finally logic. We don't have re-raise working yet.
-For functions, we are near to get keyword arguments. Although the user can't use default values when declaring a function yet, the interpreter 
-already accounts it, and we can write the lib functions that depend on this.
+	We have a few primitive types (VNum, VStr, VTrue, VNone, VPass...), VUnbound for the situation in which a variable has been defined but not assigned,
+and VHash: maybe the most important type. It represents objects (and lists, tuples, sets, dicts and classes are dealt as objects in our language).
+	A VHash has a box with hashs from CVals to CVals (because an object is basically a dictionary), a uid (unique identifier) that we use to check the 'is' 
+operator, and a Type (with the name and the object representing its class). The basetype of an instance object is the class from which it is created, 
+and the basetype of an object class is the one from which it inherits. Every class, at the end, inherits from _Object. And every object, when is created, 
+executes the __init__ method in itself.
 
-Since we don't have methods working yet, we can't pass all the tests in dict yet.
-We also haven't done anything related to 'for... in .' yet, so we have no tests in the "iter" fold.
-Although we don't have the tests at 'range' working, we have all of the base to do this. We just need to implement the range function as a builtin.
+About our scope:
 
-Our syntax language has something close to one type for each of the types in the AST python specification. Basically, everything that is parsed as a different type goes to a different clause in the desugarer.
-
-After analyzing how python scope works, we chose to implement ours with an environment and a store. Our store is just as the one taught in class, but our environment goes from an identifier to a (ScopeType * Location), with ScopeType being either 'Local', 'NonLocal' or 'Global'. This information is useful because there's a lot of perks related to this in python.
-
-We've also implemented a "VUnbound" type, which represents an unbound variable (but is never actually returned --- it is used for error checking) --- we want to discuss this as well, to make sure that it is a viable choice. 
-
+After analyzing how python scope works, we chose to implement ours with an environment and a store. Our store is just as the one taught in class, 
+but our environment goes from an identifier to a (ScopeType * Location), with ScopeType being either 'Local', 'NonLocal' or 'Global'. 
+This information is useful because there's a lot of perks related to this in python.
 
 How Scope Works:
 
@@ -52,3 +52,19 @@ When creating a new scope, we do it by the following steps. (look at the 'newEnv
 One important thing to notice is function application. In the last assignments, we just created the new environment during the application. Here, we create it 
 when creating the closure. Because of this, we need to allocate a new position for all of the local variables when we apply the function.
 
+About the 2 tests not passing:
+  Both of them are in Scope.
+  freevar-in-method does not work because we didn't expect, when first designing our scope, all of the specific nuances of scope in class definitions. 
+  We have put some significant effort into trying to fix this, and if we do, we will probably re-submit the assignment. 
+  local-functions does not work because we assumed that local variables should be the ones that are 1)assigned in the scope block, 2)names of functions declared 
+in the scope block, 3)names of classes defined in the scope block or 4) arguments of the function. However, it seems that if a variable is just used, it should 
+be also a Locals.
+
+The file "Lib" contains the definitions of primitive classes corresponding to tuples, lists, sets, dicts, and the other primitive datatypes. 
+It also holds a lot of Python functions (range, filter, etc). 
+
+Exceptions and breaks/continues/returns are handled in a manner similar to that used in parselextend - there is a variant type to AnswerC for 
+each of them, and on receipt of those variants we perform the ncessary operation. For instance, an exception should be passed through a function
+call, but would be caught by an TryExcept. 
+
+We've used iterators for a lot of functionality, including string slices. 

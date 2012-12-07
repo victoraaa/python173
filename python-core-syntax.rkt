@@ -42,15 +42,7 @@ ParselTongue.
   [CUnbound]
   [CGlobalEnv]
   
-  ;; lists and dicts become hashes
-  ;[CList (elts : (hashof CExp CExp))]
-  ;[CDict (elts : (hashof CExp CExp))]
-  ;[CTuple (elts : (hashof CExp CExp))]
-  
   [CHash (elts : (hashof CExp CExp)) (type : CType)]
-  
-  ;; TEMPORARY class
-  [CClass (elts : (hashof CVal CVal)) (type : VType)]
   
   ;; type to help create a new class
   [CCreateClass (name : symbol) (body : CExp) (vlist : (listof (ScopeType * symbol)))]
@@ -83,16 +75,14 @@ ParselTongue.
   [VStr (s : string)]
   [VTrue]
   [VClosure (env : Env) (args : (listof symbol)) (vararg : symbol) (body : CExp) (defargs : (listof CVal)) (uid : Uid) (classmethod : boolean)]
-  ;;I ADDED;;
+  
   [VNone]
   [VFalse]
   [VPass]
   [VUnbound]
-  ;[VList (elts : (hashof CVal CVal)) (uid : Uid)] ;; lists must be keyed byintegers, though...
-  ;[VDict (elts : (hashof CVal CVal)) (uid : Uid)]
-  ;[VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
+  
   [VHash (elts : (boxof (hashof CVal CVal))) (uid : Uid) (type : VType)]
-  [VClass (elts : (hashof CVal CVal)) (type : VType)]  ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE
+  
   )
 
 (define-type VType
