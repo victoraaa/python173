@@ -105,6 +105,7 @@ ParselTongue.
 (define-type ScopeType
  ; [Instance] ;; ADDED for freevar-in-method
   [Local]
+  ;[NotReallyLocal]
   [NonLocal]
   [Global])
 

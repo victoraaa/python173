@@ -67,6 +67,7 @@
                          (type-case ScopeType t
                          ;  [Instance () newEnv]
                            [Local () (augmentEnv key (values (NonLocal) l) newEnv)]
+                           ;[NotReallyLocal () (augmentEnv key (values (NonLocal) l) newEnv)]
                            [Global () newEnv]
                            [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
          (hash (list))
@@ -1034,6 +1035,7 @@
                [else (error 'interp-to-set "Unsupported Type")])]
     ['_locals (make-localsfunc-dict arg env store)];(lookupStore (lookupVar 'varLocals env) store)]
     ['_localsClass (make-localsclass-list arg env store)]
+    ['_super (Type-baseType (VHash-type (lookupStore (lookupVar (string->symbol (VStr-s arg)) env) store)))]
     [else (error prim "handle-unary: Case not handled yet")]))
 
 ;; wrapper around unary operations
@@ -1628,13 +1630,11 @@
 (define (make-localsfunc-dict [arg : CVal]
                               [env : Env]
                               [store : Store]) : CVal
-  (begin (display (getLocals env))
-         (display (VSymbolList-lst arg))
   (ValueA-value (interp-env (desugar (PyDict (map (lambda (arg) (PyHolder (CHolder arg))) (fill-localsfunc-dict-keys (list) (VSymbolList-lst arg)))
                                              (map (lambda (arg) (PyHolder (CHolder arg))) (fill-localsfunc-dict-values (list) (VSymbolList-lst arg) env store))))
                                              
                             env 
-                            store))))
+                            store)))
   #|
   (VHash (box (hash (append (list (values (VStr "__size__") (VNum (length (getLocals env)))))
                             (fill-localsfunc-dict (list) (getLocals env) 0)
@@ -2082,22 +2082,28 @@
 ;                                       store)]
 
     [CCreateClass (name body vlist)
-                  (let ([_newLoc (new-loc)])
-                    (let ([_newEnv (newEnvScope (augmentEnv 'locals (values (Local) _newLoc) env) vlist (list) 'no-vararg)])
-                      (type-case CVal (lookupStore (lookupVar  name env) store)
-                        [VHash (elts uid type)
-                               (begin (set-box! elts (hash-set (unbox elts)
-                                                               (VStr "__dict__") ;;this just creates __dict__, but we never really work with this again
-                                                               (ValueA-value (interp-env (desugar (PyList (map (lambda (e) (PyStr (symbol->string e)))
-                                                                                                               (getLocals _newEnv)))) 
-                                                                                                          ;(map (lambda (e) (PyStr (symbol->string e)))
-                                                                                                          ;     (getLocals _newEnv))))
-                                                                                         _newEnv
-                                                                                         store))))
-                                      (interp-create-class name body _newEnv (augmentStore _newLoc 
-                                                                           (VClosure _newEnv (list) 'no-vararg (CPrim1 '_localsClass (CStr (symbol->string name))) (list) (new-uid) false)  ;; TODO ???
-                                                                           store)))]
-                        [else (error 'CCreateClass "a class should be a VHash")])))]
+                  (let ([_newLoc-locals (new-loc)])
+                    (let ([_newLoc-super (new-loc)])
+                      (let ([_newEnv (newEnvScope (augmentEnv 'super (values (Local) _newLoc-super) (augmentEnv 'locals (values (Local) _newLoc-locals) env)) vlist (list) 'no-vararg)])
+                        (type-case CVal (lookupStore (lookupVar  name env) store)
+                          [VHash (elts uid type)
+                                 (begin (set-box! elts (hash-set (unbox elts)
+                                                                 (VStr "__dict__") ;;this just creates __dict__, but we never really work with this again
+                                                                 (ValueA-value (interp-env (desugar (PyList (map (lambda (e) (PyStr (symbol->string e)))
+                                                                                                                 (getLocals _newEnv)))) 
+                                                                                           ;(map (lambda (e) (PyStr (symbol->string e)))
+                                                                                           ;     (getLocals _newEnv))))
+                                                                                           _newEnv
+                                                                                           store))))
+                                        (interp-create-class name 
+                                                             body 
+                                                             _newEnv 
+                                                             (augmentStore _newLoc-super
+                                                                           (VClosure _newEnv (list) 'no-vararg (CPrim1 '_super (CStr (symbol->string name))) (list) (new-uid) false)
+                                                                           (augmentStore _newLoc-locals 
+                                                                                         (VClosure _newEnv (list) 'no-vararg (CPrim1 '_localsClass (CStr (symbol->string name))) (list) (new-uid) false)  ;; TODO ???
+                                                                                         store))))]
+                          [else (error 'CCreateClass "a class should be a VHash")]))))]
                     
                   ;old ccreateclass has just this:
                   ;(interp-create-class name body (newEnvScope env vlist (list) 'no-vararg) store)]
