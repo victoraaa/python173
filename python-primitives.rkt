@@ -19,7 +19,7 @@ primitives here.
     [VNum (n) (to-string n)]
     [VStr (s) s]
     [VTrue () "True"]
-    [VClosure (env args varg body defargs uid) "function"] ;;TODO try and print...
+    [VClosure (env args varg body defargs uid classmethod) "function"] ;;TODO try and print...
     ;;Non-TA code:
     [VNone () "None"]
     [VFalse () "False"]
@@ -30,6 +30,7 @@ primitives here.
     ;[VTuple (h uid) "VTuple - for now. We'll make it recursive later. "]
     [VHash (h uid type) (string-append (Type-name type) (to-string h))]
     [VClass (elts type) (Type-name type)]
+    [VSymbolList (lst) "should never be printed"]
     ))
   
 

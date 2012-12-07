@@ -40,7 +40,7 @@
   [PyGlobalEnv]
   
   [PyLambda (arguments : PyExpr) (body : PyExpr)]
-  [PyDef (name : symbol) (arguments : PyExpr) (body : PyExpr)] ;; deffun
+  [PyDef (name : symbol) (arguments : PyExpr) (body : PyExpr) (classmethod : boolean)] ;; deffun
   
   [PyClassDef (name : symbol) (bases : (listof PyExpr)) (body : PyExpr)]
   

@@ -205,7 +205,10 @@ structure that you define in python-syntax.rkt
                  ('returns returns))
      (PyDef (string->symbol name) 
             (get-structured-python args)
-            (PySeq (map get-structured-python body)))]
+            (PySeq (map get-structured-python body))
+            (if (equal? decorator-list #\nul)
+                false
+                true))]
     
     ;; return case
     [(hash-table ('nodetype "Return")

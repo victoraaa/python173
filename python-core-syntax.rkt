@@ -21,6 +21,7 @@ ParselTongue.
          (body : CExp) 
          (vlist : (listof (ScopeType * symbol))) 
          (defargs : (listof CExp))
+         (classmethod : boolean)
          (vararg : symbol)]
   [CPrim1 (prim : symbol) (arg : CExp)]
   [CPrim2 (op : symbol) (e1 : CExp) (e2 : CExp)]
@@ -60,6 +61,7 @@ ParselTongue.
   
   [CHolder (hold : CVal)]
   
+  
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
 
@@ -76,10 +78,11 @@ ParselTongue.
   [CExcHandler (name : symbol) (type : CExp) (body : CExp)])
 
 (define-type CVal
+  [VSymbolList (lst : (listof symbol))]
   [VNum (n : number)]
   [VStr (s : string)]
   [VTrue]
-  [VClosure (env : Env) (args : (listof symbol)) (vararg : symbol) (body : CExp) (defargs : (listof CVal)) (uid : Uid)]
+  [VClosure (env : Env) (args : (listof symbol)) (vararg : symbol) (body : CExp) (defargs : (listof CVal)) (uid : Uid) (classmethod : boolean)]
   ;;I ADDED;;
   [VNone]
   [VFalse]
@@ -100,7 +103,7 @@ ParselTongue.
 
 (define-type-alias Location number)
 (define-type ScopeType
-  [Instance] ;; ADDED for freevar-in-method
+ ; [Instance] ;; ADDED for freevar-in-method
   [Local]
   [NonLocal]
   [Global])

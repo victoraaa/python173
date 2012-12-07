@@ -99,7 +99,7 @@
     [PyNone () (list)]
     [PyHolder (expr) (list)]
     [PyLambda (args body) (get-vars args)]
-    [PyDef (name args body)
+    [PyDef (name args body classmethod)
            (append (list (values (Local) name))
                    (get-vars args))]
     
@@ -177,15 +177,15 @@
 
 ;; separate get-vars for inside of a class...
 ;; ADDED for freevar-in-method
-(define (get-vars-class [expr : PyExpr]) : (listof (ScopeType * symbol))
-  (type-case PyExpr expr
-    [PySeq (es) (foldl (lambda (a b) (append b a))
-                       (list)
-                       (map (lambda (e) (get-vars-class e)) es))]
-    [PyDef (name args body)
-           (append (list (values (Instance) name))
-                   (get-vars args))]
-    [else (get-vars expr)])) ;; I hope this works...
+;(define (get-vars-class [expr : PyExpr]) : (listof (ScopeType * symbol))
+;  (type-case PyExpr expr
+;    [PySeq (es) (foldl (lambda (a b) (append b a))
+;                       (list)
+;                       (map (lambda (e) (get-vars-class e)) es))]
+;    [PyDef (name args body)
+;           (append (list (values (Instance) name))
+;                   (get-vars args))]
+;    [else (get-vars expr)])) ;; I hope this works...
 
 
 (define (desugar expr)
@@ -247,7 +247,7 @@
     
     [PyPass () (CPass)]
     [PyNone () (CNone)]
-    [PyLambda (args body) (CFunc (PyArguments-args args) (desugar body) (list) (map desugar (PyArguments-defaults args)) (PyArguments-vararg args))]
+    [PyLambda (args body) (CFunc (PyArguments-args args) (desugar body) (list) (map desugar (PyArguments-defaults args)) false (PyArguments-vararg args))]
     [PyArguments (args defaults vararg) (CPass)] ;just used within PyLambda and PyDef
     
     [PyRaise (exc) (CError (desugar exc))]
@@ -284,15 +284,16 @@
                                                                            ;separate global environment
                                                       (list exprs)))))))] ;executes the program
     
-    [PyDef (name args body) 
+    [PyDef (name args body classmethod) 
            (begin (CSeq
-                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list) 'no-vararg))
+                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list) false 'no-vararg))
                    (CLet 'some-func 
                          (Local) 
                          (CFunc (PyArguments-args args) 
                                 (desugar body) 
                                 (get-vars body) 
-                                (map desugar (PyArguments-defaults args)) 
+                                (map desugar (PyArguments-defaults args))
+                                classmethod
                                 (PyArguments-vararg args))
                          (CSet (CId name) (CId 'some-func)))))]
     
@@ -317,7 +318,7 @@
                               ;;body of the CLet:
                               (CSeq
                                (CSet (CId name) (CId 'some-class))
-                               (CCreateClass name (desugar body) (get-vars-class body))))))] ;; ADDED for freevar-in-method
+                               (CCreateClass name (desugar body) (get-vars body))))))] ;; ADDED for freevar-in-method
                              ;  (CCreateClass (desugar-class-innards name body  )))))]
     
     
