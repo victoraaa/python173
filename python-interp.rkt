@@ -65,8 +65,22 @@
              [none () (error 'keepOldEnv "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
              [some (v) (local [(define-values (t l) v)]
                          (type-case ScopeType t
+                         ;  [Instance () newEnv]
                            [Local () (augmentEnv key (values (NonLocal) l) newEnv)]
                            ;[NotReallyLocal () (augmentEnv key (values (NonLocal) l) newEnv)]
+                           [Global () newEnv]
+                           [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
+         (hash (list))
+         (hash-keys env)))
+
+(define (keepOldEnvClass [env : Env]) : Env
+  (foldl (lambda (key newEnv) 
+           (type-case (optionof SLTuple) (hash-ref env key)
+             [none () (error 'keepOldEnvClass "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
+             [some (v) (local [(define-values (t l) v)]
+                         (type-case ScopeType t
+                          ; [Instance () (augmentEnv key (values (Instance) l) newEnv)]
+                           [Local () (augmentEnv key (values (Local) l) newEnv)]
                            [Global () newEnv]
                            [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
          (hash (list))
@@ -132,6 +146,28 @@
                            (rest localList) 
                            othersList)))]))
 
+;; addInstanceVars takes an environment and a list of variables. 
+;; it adds the instance variables to the env. 
+;(define (addInstanceVars [env : Env]
+;                   [localList : (listof (ScopeType * symbol))]
+;                   [othersList : (listof (ScopeType * symbol))]) : Env
+;  (cond
+;    [(empty? localList) env]
+;    [else (local [(define-values (t id) (first localList))]
+;            (if (foldl (lambda (l result) (or l result))
+;                       false
+;                       (map (lambda (st-id) (local [(define-values (t2 id2) st-id)]
+;                                              (if (equal? id id2)
+;                                                  true
+;                                                  false)))
+;                            othersList))
+;                (addInstanceVars env (rest localList) othersList)
+;                (addInstanceVars (augmentEnv id 
+;                                       (values (Instance) (new-loc))
+;                                       env)
+;                           (rest localList) 
+;                           othersList)))]))
+
 ;;addArgs just appends the args to a list of (ScopeType * symbol), 
 ;;with the ScopeType 'Local'
 (define (addArgs [lst : (listof (ScopeType * symbol))]
@@ -163,6 +199,44 @@
                                        false
                                        true)))
                      vlist)))
+
+
+;; version for classdefs...
+#|
+(define (newEnvScopeClass [env : Env]
+                     [vlist : (listof (ScopeType * symbol))]
+                     [args : (listof symbol)]
+                     [vararg : symbol]) : Env
+  (addInstanceVars (addLocals (addNonLocals (addGlobalVars (keepOldEnvClass env) 
+                                          vlist)
+                           vlist)
+             (addArgs (filter (lambda (x) (local [(define-values (t id) x)]
+                                            (if (Local? t)
+                                                true
+                                                false)))
+                              vlist)
+                      (if (equal? 'no-vararg vararg)
+                          args
+                          (append args (list vararg))))
+             (filter (lambda (x) (local [(define-values (t id) x)]
+                                   (if (Local? t)
+                                       false
+                                       true)))
+                     vlist))
+                   (addArgs (filter (lambda (x) (local [(define-values (t id) x)]
+                                            (if (Instance? t)
+                                                true
+                                                false)))
+                              vlist)
+                      (if (equal? 'no-vararg vararg)
+                          args
+                          (append args (list vararg))))
+                   (filter (lambda (x) (local [(define-values (t id) x)]
+                                   (if (Instance? t)
+                                       false
+                                       true)))
+                     vlist)))
+|#
 
 ;;Adds a new identifier to our environment, with its location
 (define (augmentEnv [id : symbol]
@@ -385,7 +459,7 @@
                                                       _newEnv
                                                       (augmentStore _newLoc 
                                                                     (VClosure (newEnvScope _newEnv (list) (list) 'no-vararg) 
-                                                                              (list) 'no-vararg (CPrim1 '_locals (CHolder (VSymbolList (getLocals _newEnv)))) (list) (new-uid))
+                                                                              (list) 'no-vararg (CPrim1 '_locals (CHolder (VSymbolList (getLocals _newEnv)))) (list) (new-uid) false)
                                                                     store))
                          [ValueA (v s) (ValueA v s)]
                          [BreakA (v s) (error 'interp-CApp "Should not be a break in function call")]
@@ -432,7 +506,7 @@
             [(fixnum? n) "int"]
             [(flonum? n) "float"])]
     [VStr (s) "string"]
-    [VClosure (e a varg b defargs uid) "function"]
+    [VClosure (e a varg b defargs uid classmethod) "function"]
     [VTrue () "bool"]
     [VFalse () "bool"]
     [VNone () "NoneType"] ;; TODO this looks like a class name. Maybe we should make it so?
@@ -656,7 +730,7 @@
 ;;  get-uid returns the uid for any type that has one
 (define (get-uid [v : CVal]) : Uid
   (type-case CVal v
-    [VClosure (e a varg b defargs uid) uid]
+    [VClosure (e a varg b defargs uid classmethod) uid]
     ;[VList (elts uid) uid]
     ;[VDict (elts uid) uid]
     [VHash (elts uid type) uid]
@@ -825,7 +899,7 @@
                                                                                                       (to-string value)))]
                                                              [some (s) (= (VNum-n s) 0)])) false]
              [else true])]
-    [VClosure (e a varg body defargs uid) true]
+    [VClosure (e a varg body defargs uid classmethod) true]
     #|
     [VList (elts uid)-keys 
            (if (empty? (hash-keys elts))
@@ -1157,6 +1231,7 @@
                      [vlist : (listof (ScopeType * symbol))]
                      [defargs : (listof CExp)] 
                      [defvals : (listof CVal)]
+                     [classmethod : boolean]
                      [env : Env]
                      [store : Store]) : AnswerC
   (cond 
@@ -1169,10 +1244,11 @@
                        vararg
                        body 
                        (reverse defvals) 
-                       (new-uid)) 
+                       (new-uid)
+                       classmethod) 
              store)]
     [else (type-case AnswerC (interp-env (first defargs) env store)
-            [ValueA (v s) (interp-func args vararg body vlist (rest defargs) (cons v defvals) env s)]
+            [ValueA (v s) (interp-func args vararg body vlist (rest defargs) (cons v defvals) classmethod env s)]
             [BreakA (v s) (error 'interp-func "Break!")]
             [ContinueA (s) (error 'interp-func "Continue!")]
             [ExceptionA (v s) (ExceptionA v s)]
@@ -1345,11 +1421,18 @@
   (CHash (create-hash (cnum-range (length exps)) exps) (cType "list" (CId 'list))))
 
 
+(define (interp-inside-class [expr : CExp] [envInstance : Env] [env : Env] [store : Store]) : AnswerC
+  (type-case CExp expr
+    [CFunc (args body vlist defargs classmethod vararg) (interp-func args vararg body vlist defargs (list) classmethod env store)]
+    [else (interp-env expr envInstance store)]))
+
+
 ;; create a new class
 ;; THIS IS A VERY IMPORTANT FUNCTION!
 (define (interp-create-class [name : symbol]
                              [body : CExp]
                              [env : Env]
+                         ;    [envWithout : Env]
                              [store : Store]) : AnswerC
   (type-case AnswerC (interp-env body env store)
     [ValueA (v s) (fill-class-object name env s)]
@@ -1370,9 +1453,9 @@
           #|         (begin (set-box! elts (hash-set (unbox elts)
                                                    (VStr "__dict__") ;;this just creates __dict__, but we never really work with this again
                                                    (ValueA-value (interp-env (desugar (PyDict (map (lambda (e) (PyStr (symbol->string e)))
-                                                                                                   (getLocals env)) 
+                                                                                                   (getInstanceVars env)) 
                                                                                               (map (lambda (e) (PyStr (symbol->string e)))
-                                                                                                   (getLocals env))))
+                                                                                                   (getInstanceVars env))))
                                                                              env
                                                                              store))))
 |#
@@ -1389,9 +1472,23 @@
                           ;           type)
                           ;    s))
                           store
-                          (getLocals env)))];)] 
+                          (getLocals env)))] ;; ADDED for freevar-in-method
+                         ;; (getLocals env)))];)] 
     [else (error 'fill-class-object "when filling a class object, it should be a VHash, not anything else")]))
   
+
+;; get instance vars
+;; ADDED for freevar-in-method
+(define (getInstanceVars [env : Env]) : (listof symbol)
+  (filter (lambda (key)
+            (type-case (optionof SLTuple) (hash-ref env key)
+              [some (v) (local [(define-values (t l) v)]
+                          (type-case ScopeType t
+                          ;  [Instance () true]
+                            [Local () true]
+                            [else false]))]
+              [none () (error 'fill-class-object "something terrible has happened. ")]))
+          (hash-keys env)))
 
 ;;getLocals
 (define (getLocals [env : Env]) : (listof symbol)
@@ -1622,7 +1719,7 @@
                                 (lambda () (VNum -10090)))])
                  (if (equal? _val (VNum -10090))
                      (interp-env (CError (CApp (CId 'UnboundLocalError)
-                                                          (list)
+                                                          (list (CStr (string-append ": " (symbol->string x))))
                                                           (list)
                                                           (CHash (hash (list)) (cType "list" (CId 'list)))))
                                             env
@@ -1758,14 +1855,16 @@
           (type-case AnswerC (interp-env func env store)
             [ValueA (vf sf)
                     (type-case CVal vf
-                      [VClosure (e a varg b defargs uid) 
+                      [VClosure (e a varg b defargs uid classmethod) 
                                 (type-case CExp func
                                   [CAttribute (attr value)
                                               (type-case AnswerC (interp-env value env sf)
                                                 [ValueA (v s) (type-case CVal v
                                                                 [VHash (elts uid type) 
                                                                        (if (or (equal? (Type-name type) "class") (equal? (Type-name type) "primitive-class"))
-                                                                           (interp-VClosure-App e a varg b defargs args keywargs star env sf) ;we pass sf because we don't want modifications to be passed
+                                                                           (interp-VClosure-App e a varg b defargs (if classmethod
+                                                                                                                       (append (list value) args)
+                                                                                                                       args) keywargs star env sf) ;we pass sf because we don't want modifications to be passed
                                                                            (interp-VClosure-App e a varg b defargs (append (list value) args) keywargs star env sf))]
                                                                 [else (interp-env (CError (Make-throw 'TypeError "tried to get an attribute from a non-hash")) env s)])]
                                                 [BreakA (v s) (error 'CApp "Should not have a break here")]
@@ -1802,13 +1901,13 @@
                                   [none () (error 'interp-env:CApp:VHash "Primitive class lacks __convert__ field")]
                                   [some (so)
                                         (type-case CVal so
-                                          [VClosure (e a varg b defargs uid) 
+                                          [VClosure (e a varg b defargs uid classmethod) 
                                                     (interp-VClosure-App e a varg b defargs args keywargs star env sf)]
                                           [else (error 'interp-env:CApp:VHash "Primitive class has non-VClosure as __convert__ field")])])]
                                
                                
                                [else (type-case CVal (getAttr (VStr "__call__") vf env sf) ;; TODO mutation? This is non-mutative...
-                                       [VClosure (e a varg b defargs uid) ;; CNone in line below is to remind us that we need to
+                                       [VClosure (e a varg b defargs uid classmethod) ;; CNone in line below is to remind us that we need to
                                                          ;; modify this portion of the code to allow mutation of object...
                                                          (interp-VClosure-App e a varg b defargs (cons (CNone) args) keywargs star env sf)]
                                        [else (error 'interp-env:CApp:VHash "Class has non-VClosure as __call__ field")])])]
@@ -1863,8 +1962,8 @@
               [ExceptionA (v s) (ExceptionA v s)]
               [ReturnA (v s) (error 'interp-CWhile "Why are we returning from the test in interp CWhile?")])]
     
-    [CFunc (args body vlist defargs vararg) 
-           (interp-func args vararg body vlist defargs (list) env store)]
+    [CFunc (args body vlist defargs classmethod vararg) 
+           (interp-func args vararg body vlist defargs (list) classmethod env store)]
     [CDel (targets)
           (ValueA (VPass) (interp-delete targets env store))]
     ;(ValueA (VClosure (newEnvScope env vlist args) args body () (new-uid)) store)] ;; TODO use vlist...
@@ -1975,6 +2074,14 @@
     
     
     ;; Create a new class!!!!!!!!!!!!!
+
+;    [CCreateClass (name body vlist) ;; CHANGED for freevar-in-method
+;                  (interp-create-class name 
+;                                       body 
+;                                       (newEnvScopeClass env vlist (list) 'no-vararg)
+;                                       (newEnvScope env vlist (list) 'no-vararg)
+;                                       store)]
+
     [CCreateClass (name body vlist)
                   (let ([_newLoc (new-loc)])
                     (let ([_newEnv (newEnvScope (augmentEnv 'locals (values (Local) _newLoc) env) vlist (list) 'no-vararg)])
@@ -1989,7 +2096,7 @@
                                                                                          _newEnv
                                                                                          store))))
                                       (interp-create-class name body _newEnv (augmentStore _newLoc 
-                                                                           (VClosure _newEnv (list) 'no-vararg (CPrim1 '_localsClass (CStr (symbol->string name))) (list) (new-uid))
+                                                                           (VClosure _newEnv (list) 'no-vararg (CPrim1 '_localsClass (CStr (symbol->string name))) (list) (new-uid) false)  ;; TODO ???
                                                                            store)))]
                         [else (error 'CCreateClass "a class should be a VHash")])))]
                     

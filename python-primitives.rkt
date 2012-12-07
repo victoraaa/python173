@@ -19,7 +19,7 @@ primitives here.
     [VNum (n) (to-string n)]
     [VStr (s) s]
     [VTrue () "True"]
-    [VClosure (env args varg body defargs uid) "function"] ;;TODO try and print...
+    [VClosure (env args varg body defargs uid classmethod) "function"] ;;TODO try and print...
     ;;Non-TA code:
     [VNone () "None"]
     [VFalse () "False"]
