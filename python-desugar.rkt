@@ -43,7 +43,7 @@
     [PyReturn (value) (get-vars value)]
     [PyBreak () (list)]
     [PyContinue () (list)]
-    [PyId (id) (list)]
+    [PyId (id) (list)]; (values (NotReallyLocal) id))]
     [PyStr (s) (list)]
     [PyBinOp (op left right)
              (append
@@ -99,9 +99,8 @@
     [PyNone () (list)]
     [PyHolder (expr) (list)]
     [PyLambda (args body) (get-vars args)]
-    [PyDef (name args body)
-           (append (list (values (Local) name))
-                   (get-vars args))]
+    [PyDef (name args body) (append (list (values (Local) name))
+                                    (get-vars args))]
     
     
     [PyClassDef (name bases body) (list (values (Local) name))]
@@ -520,7 +519,7 @@
   (not (foldl (lambda (list-el result) (and list-el result))
               true
               (map (lambda (e) (local ([define-values (st id) e])
-                                 (Local? st)))
+                                 (Local? st) ))
                    vars))))
 
 

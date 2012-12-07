@@ -103,6 +103,7 @@ ParselTongue.
 (define-type-alias Location number)
 (define-type ScopeType
   [Local]
+  ;[NotReallyLocal]
   [NonLocal]
   [Global])
 

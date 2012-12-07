@@ -66,6 +66,7 @@
              [some (v) (local [(define-values (t l) v)]
                          (type-case ScopeType t
                            [Local () (augmentEnv key (values (NonLocal) l) newEnv)]
+                           ;[NotReallyLocal () (augmentEnv key (values (NonLocal) l) newEnv)]
                            [Global () newEnv]
                            [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
          (hash (list))
