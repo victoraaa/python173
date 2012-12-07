@@ -65,17 +65,20 @@ that calls the primitive `print`.
                     (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))
                     )
               (CPass) 
-              (CError (CPrim2 'string+ 
-                              (CStr "Assert failed: values are not Equal: ")
-                              (CPrim2 'string+ 
-                                      (CApp (CId 'str) 
-                                            (list (CId 'e-1))
-                                            (list)
-                                            (Empty-list))
-                                      (CApp (CId 'str) 
-                                            (list (CId 'e-2))
-                                            (list)
-                                            (Empty-list)))))
+              (CError (CApp (CId 'Exception)
+                            (list (CPrim2 'string+ 
+                                          (CStr "Assert failed: values are not Equal: ")
+                                          (CPrim2 'string+ 
+                                                  (CApp (CId 'str) 
+                                                        (list (CId 'e-1))
+                                                        (list)
+                                                        (Empty-list))
+                                                  (CApp (CId 'str) 
+                                                        (list (CId 'e-2))
+                                                        (list)
+                                                        (Empty-list)))))
+                            (list)
+                            (Empty-list)))
               ) 
          (list)
          (list)
@@ -1417,6 +1420,39 @@ that calls the primitive `print`.
                                                               (list))
                                                       ;(CPass)
                                                       )))
+                                    (list)
+                                    (list)
+                                    false
+                                    'no-vararg))
+                     (values (CStr "tostring") 
+                             (CFunc (list 'self)
+                                    (CLet 'build-str
+                                          (Local)
+                                          (CStr "{ ")
+                                          (CSeq (Create-for-loop 'e-curr 
+                                                                 (CApp (CAttribute 'keys (CId 'self))
+                                                                       (list)
+                                                                       (list)
+                                                                       (Empty-list))
+                                                                 (CSet (CId 'build-str)
+                                                                       (CPrim2 'string+ 
+                                                                               (CId 'build-str) 
+                                                                               (CPrim2 'string+
+                                                                                       (CPrim2 'string+
+                                                                                       (CApp (CId 'str)
+                                                                                             (list (CId 'e-curr))
+                                                                                             (list)
+                                                                                             (Empty-list))
+                                                                                       (CStr ":"))
+                                                                                       (CPrim2 'string+
+                                                                                       (CApp (CId 'str)
+                                                                                             (list (CSubscript (CId 'self) 
+                                                                                                               (CId 'e-curr)))
+                                                                                             (list)
+                                                                                             (Empty-list))
+                                                                                       (CStr " ")))
+                                                                                       )))
+                                                (CReturn (CPrim2 'string+ (CId 'build-str) (CStr "}")))))
                                     (list)
                                     (list)
                                     false

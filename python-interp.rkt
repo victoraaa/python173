@@ -2165,7 +2165,15 @@
   (begin (set-box! exn-to-reraise (VUnbound)) ;; clean up exception to reraise
          (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
     [ValueA (v s) v]
-    [ExceptionA (v s) (error 'exception (pretty v))] ;; really? 
+    [ExceptionA (v s) (type-case AnswerC (interp-env (CApp (CId 'str)
+                                                           (list (CHolder v))
+                                                           (list)
+                                                           (Empty-list)) 
+                                                     (hash (list)) 
+                                                     s)
+                        [ValueA (vv ss) (error 'exception (pretty vv))] ;; really? 
+                        [ExceptionA (vv ss) (error 'exception "-ception!")]
+                        [else (error 'interp "Should not be getting breaks, continues, or returns here. ")])]
     [BreakA (v s) (error 'exception "A break got to the surface!")]
     [ContinueA (s) (error 'exception "A continue got to the surface!")]
     [ReturnA (v s) (VStr "Error: Return outside of function.")])))
