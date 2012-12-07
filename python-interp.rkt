@@ -1864,7 +1864,9 @@
                                                                            (interp-VClosure-App e a varg b defargs (if classmethod
                                                                                                                        (append (list value) args)
                                                                                                                        args) keywargs star env sf) ;we pass sf because we don't want modifications to be passed
-                                                                           (interp-VClosure-App e a varg b defargs (append (list value) args) keywargs star env sf))]
+                                                                           (interp-VClosure-App e a varg b defargs (append (list (if classmethod
+                                                                                                                                     (CHolder (Type-baseType type))
+                                                                                                                                     value)) args) keywargs star env sf))]
                                                                 [else (interp-env (CError (Make-throw 'TypeError "tried to get an attribute from a non-hash")) env s)])]
                                                 [BreakA (v s) (error 'CApp "Should not have a break here")]
                                                 [ContinueA (s) (error 'CApp "Should not have a continue here")]
