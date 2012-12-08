@@ -36,8 +36,14 @@
              (foldl (lambda (a b) (append b a))
                     (list)
                     (map (lambda (e) (get-vars e)) elts))]
+    [PyCollectionSet (elts)
+                     (foldl (lambda (a b) (append b a))
+                            (list)
+                            (map (lambda (e) (get-vars e)) elts))]
     [PyReturn (value) (get-vars value)]
-    [PyId (id) (list)]
+    [PyBreak () (list)]
+    [PyContinue () (list)]
+    [PyId (id) (list)]; (values (NotReallyLocal) id))]
     [PyStr (s) (list)]
     [PyBinOp (op left right)
              (append
@@ -48,6 +54,27 @@
     [PySubscript (value attr)
                  (append (get-vars value)
                          (get-vars attr))]
+    [PySlice (lower upper step)
+             (append (get-vars lower)
+                     (append (get-vars upper)
+                             (get-vars step)))]
+    [PyDel (targets) (list)]
+    
+    ;; loops
+    [PyWhile (test body orelse) (append (get-vars test)
+                                        (get-vars body))] ;; really?
+    [PyFor (target iter body)
+           (append (type-case PyExpr target
+                               [PyId (id) (list (values (Local) id))]
+                               [else (get-vars target)])
+                             (get-vars body))]
+    [PyListComp (elt generators) (foldl (lambda (a b) (append b a))
+                                        (list)
+                                        (map (lambda (e) (get-vars e)) generators))]
+    [PyComprehension (target iter) (type-case PyExpr target
+                                     [PyId (id) (list (values (Local) id))]
+                                     [else (get-vars target)])]
+    
     [PyIf (test then orelse)
           (append
            (get-vars test)
@@ -70,10 +97,13 @@
                                    (map (lambda (e) (get-vars e)) comparators)))]
     [PyPass () (list)]
     [PyNone () (list)]
+    [PyHolder (expr) (list)]
     [PyLambda (args body) (get-vars args)]
-    [PyDef (name args body)
+
+    [PyDef (name args body classmethod)
            (append (list (values (Local) name))
                    (get-vars args))]
+
     
     
     [PyClassDef (name bases body) (list (values (Local) name))]
@@ -85,6 +115,7 @@
     [PyRaise (exc) (get-vars exc)]
     [Py-NotExist () (list)]
     [PyUnaryOp (op arg) (get-vars arg)]
+    
     [PySet (lhs value) ;;PySet case may need to change, because it never actually appears since it only exists from use in PyAssign
            (append
                (get-vars value)
@@ -98,6 +129,12 @@
                       (list)
                       (map (lambda (e) (type-case PyExpr e
                                          [PyId (id) (list (values (Local) id))]
+                                         [PyTuple (tuple-elts) (foldl (lambda (a b) (append b a))
+                                                                (list)
+                                                                (map (lambda (e) (type-case PyExpr e
+                                                                                   [PyId (id) (list (values (Local) id))]
+                                                                                   [else (list)])) 
+                                                                     tuple-elts))]
                                          [else (list)])) 
                            targets)))]
     
@@ -139,6 +176,18 @@
     ;[else (error 'get-vars "Case not implemented")]
     ))
 
+
+;; separate get-vars for inside of a class...
+;; ADDED for freevar-in-method
+;(define (get-vars-class [expr : PyExpr]) : (listof (ScopeType * symbol))
+;  (type-case PyExpr expr
+;    [PySeq (es) (foldl (lambda (a b) (append b a))
+;                       (list)
+;                       (map (lambda (e) (get-vars-class e)) es))]
+;    [PyDef (name args body)
+;           (append (list (values (Instance) name))
+;                   (get-vars args))]
+;    [else (get-vars expr)])) ;; I hope this works...
 
 
 (define (desugar expr)
@@ -200,13 +249,15 @@
     
     [PyPass () (CPass)]
     [PyNone () (CNone)]
-    [PyLambda (args body) (CFunc (PyArguments-args args) (desugar body) (list) (map desugar (PyArguments-defaults args)) (PyArguments-vararg args))]
+    [PyLambda (args body) (CFunc (PyArguments-args args) (desugar body) (list) (map desugar (PyArguments-defaults args)) false (PyArguments-vararg args))]
     [PyArguments (args defaults vararg) (CPass)] ;just used within PyLambda and PyDef
     
     [PyRaise (exc) (CError (desugar exc))]
     [PyAssign (targets value) 
-              (CLet 'assign-value (Local) (desugar value)
-                    (desugar (PySeq (map (lambda (e) (PySet e (PyId 'assign-value))) targets))))]
+              (if (PyTuple? (first targets))
+                  (desugar-assign-tuple targets value)
+                  (CLet 'assign-value (Local) (desugar value)
+                        (desugar (PySeq (map (lambda (e) (PySet e (PyId 'assign-value))) targets)))))]
     [PyAugAssign (target op value)
                  (CLet 'aug-value (Local) (desugar value)
                        (CLet 'orig-value (Local) (desugar target)
@@ -235,15 +286,16 @@
                                                                            ;separate global environment
                                                       (list exprs)))))))] ;executes the program
     
-    [PyDef (name args body) 
+    [PyDef (name args body classmethod) 
            (begin (CSeq
-                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list) 'no-vararg))
+                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list) false 'no-vararg))
                    (CLet 'some-func 
                          (Local) 
                          (CFunc (PyArguments-args args) 
                                 (desugar body) 
                                 (get-vars body) 
-                                (map desugar (PyArguments-defaults args)) 
+                                (map desugar (PyArguments-defaults args))
+                                classmethod
                                 (PyArguments-vararg args))
                          (CSet (CId name) (CId 'some-func)))))]
     
@@ -253,24 +305,114 @@
                         (CSet (CId name) (CHash (hash (list)) (cType "dummy" (CUnbound))))
                         (CLet 'some-class 
                               (Local) 
-                              (CHash (hash-set (hash (list)) (CStr "__name__") (CStr (symbol->string name))) 
+                              (CHash (hash (list (values (CStr "__name__") (CStr (symbol->string name)))
+                                               ;  (values (CStr "super") (CFunc (list)
+                                               ;                                (if (empty? bases)
+                                               ;                                    (CId '_Object)
+                                               ;                                    (desugar (first bases)))
+                                               ;                                (list)
+                                               ;                                (list)
+                                               ;                                'no-vararg))
+                                                 )) 
                                      (cType "class" (if (empty? bases)
-                                                       (CNone)
+                                                       (CId '_Object)
                                                        (desugar (first bases)))))
                               ;;body of the CLet:
                               (CSeq
                                (CSet (CId name) (CId 'some-class))
-                               (CCreateClass name (desugar body) (get-vars body))))))]
+                               (CCreateClass name (desugar body) (get-vars body))))))] ;; ADDED for freevar-in-method
                              ;  (CCreateClass (desugar-class-innards name body  )))))]
     
     
-    [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (cType "list" (CId 'list)))]
-    [PyDict (keys vals) (CHash (desugar-hash keys vals) (cType "dict" (CId 'dict)))]
-    [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (cType "tuple" (CId 'tuple)))]
+    [PyList (elts) (CHash (hash-set (desugar-hash (pynum-range (length elts)) elts) (CStr "__size__") (CNum (length elts))) (cType "list" (CId 'list)))]
+    [PyDict (keys vals) (CHash (hash-set (hash-set (desugar-hash keys vals) 
+                                                   (CStr "__size__") 
+                                                   (CNum (length keys)))
+                                         (CStr "__keys__") 
+                                         (desugar (PyCollectionSet keys))) 
+                               (cType "_dict" (CId '_dict)))]
+    [PyTuple (elts) (CHash (hash-set (desugar-hash (pynum-range (length elts)) elts) (CStr "__size__") (CNum (length elts))) (cType "tuple" (CId 'tuple)))]
+    [PyCollectionSet (elts) (CHash (desugar-hash elts elts) (cType "set" (CId 'set)))]
     
     [PyAttribute (attr value) (CAttribute attr (desugar value))]
-    [PySubscript (value attr) (CSubscript (desugar value) (desugar attr))]
+    [PySubscript (value attr) 
+                 (type-case PyExpr attr
+                   [PySlice (lower upper step) (CApp (CId 'make-slice)
+                                                     (list (CApp (CId 'list)
+                                                                 (list (desugar value))
+                                                                 (list)
+                                                                 (Empty-list)) 
+                                                           (desugar lower) 
+                                                           (desugar upper) 
+                                                           (desugar step))
+                                                     (list)
+                                                     (Empty-list))]
+            ;                (CLet 'build-string
+            ;                      (Local)
+            ;                      (CStr "")
+            ;                      (CLet 'e-elem
+            ;                            (Local)
+            ;                            (CNum 0)
+            ;                            (desugar (PySeq 
+            ;                                      (list (PyFor (PyId 'e-elem)
+            ;                                                   (PyApp (PyId 'range) 
+            ;                                                          (list lower 
+            ;                                                                (PyIf (PyCompare upper 
+            ;                                                                                 (list 'python-lte) 
+            ;                                                                                 (list (PyNum 0)))
+            ;                                                                      (list (PyApp (PyId 'len)
+            ;                                                                                   (list value)
+            ;                                                                                   (list)
+            ;                                                                                   (PyList (list))))
+            ;                                                                      (list upper))
+            ;                                                                step) 
+            ;                                                          (list) 
+            ;                                                          (PyList (list)))
+            ;                                                   (PyAugAssign (PyId 'build-string) 
+            ;                                                                'python-add 
+           ;                                                                 (PySubscript value (PyId 'e-elem))))
+            ;                                            (PyReturn (PyId 'build-string)))))))]
+                   [else (CSubscript (desugar value) (desugar attr))])]
+    [PySlice (lower upper step) (error 'desugar "lone, wandering PySlice...")]
+    [PyDel (target)
+           (CDel (map desugar target))]
+    ;; loops
+    [PyWhile (test body orelse) (CWhile (desugar test) (desugar body) (desugar orelse) (list))]
     
+    [PyFor (target iter body)
+           (CLet '_it
+                 (Local)
+                 (CApp (CId 'iter) 
+                       (list (desugar iter))
+                       (list)
+                       (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                 (CTryExcept (CWhile (CTrue)
+                                     (CSeq (CSet (desugar target)
+                                                 (CApp (CId 'next)
+                                                       (list (CId '_it))
+                                                       (list)
+                                                       (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))
+                                           (desugar body))
+                                     (CPass)
+                                     (list))
+                             (list (CExcHandler 'no-name
+                                                (CId 'StopIteration)
+                                                (CPass))) ;[CExcHandler (name : symbol) (type : CExp) (body : CExp)]
+                             (CPass)))]
+
+    [PyListComp (elt generators)
+                ;create an empty list (LST),
+                ;create a loop with the fors
+                ;the inner-most body of the loop will be (LST.append(elt))
+                (CLet '_lst
+                      (Local)
+                      (CApp (CId 'list)
+                            (list)
+                            (list)
+                            (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                      (CSeq (desugar (loop-listcomp elt generators))
+                            (CId '_lst)))]
+   
     ;; exceptions
     [PyTryExcept (body handlers orelse) (CTryExcept (desugar body) (map desugar-handler handlers) (desugar orelse))]
     [PyTryFinally (body finalbody) (CTryFinally (desugar body) (desugar finalbody))]
@@ -278,9 +420,52 @@
     
     ;; return
     [PyReturn (value) (CReturn (desugar value))]
+    [PyBreak () (CBreak)]
+    [PyContinue () (CContinue)]
+    [PyHolder (exp) exp]
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
+
+(define (desugar-assign-tuple [targets : (listof PyExpr)]
+                              [value : PyExpr]) : CExp
+  (CLet 'assign-value 
+        (Local) 
+        (desugar value)
+        (desugar (PySeq
+                  (list (PySet (first (PyTuple-elts (first targets))) (PySubscript (PyId 'assign-value) (PyNum 0))) 
+                        (PySet (second (PyTuple-elts (first targets))) (PySubscript (PyId 'assign-value) (PyNum 1))))))))
+  #|
+  (type-case PyExpr value
+    [PyTuple (elts) (desugar (PySeq (desugar-tuple-pysets (PyTuple-elts (first targets)) elts)))]
+    [else (CError (CApp (CId 'TypeError)
+                        (list)
+                        (list)
+                        (Empty-list)))]))
+|#
+
+(define (desugar-tuple-pysets [targets : (listof PyExpr)]
+                              [vals : (listof PyExpr)]) : (listof PyExpr)
+  (cond
+    [(or (empty? targets) (empty? vals)) (list)]
+    [else (cons (PySet (first targets) (first vals)) (desugar-tuple-pysets (rest targets) (rest vals)))]))
+
+
+(define (loop-listcomp [elt : PyExpr]
+                       [generators : (listof PyExpr)]) : PyExpr
+  (cond
+    [(empty? generators) (PyApp (PyAttribute 'append (PyId '_lst)) ;the _lst identifier comes from the declared list in the [PyListComp] case in the desugarer
+                                (list elt)
+                                (list)
+                                (PyHolder (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))))]
+    [else (type-case PyExpr (first generators)
+            [PyComprehension (target iter) 
+                             (PyFor target iter (loop-listcomp elt (rest generators)))]
+            [else (error 'desugar-listcomp "every generator should be a PyComprehension")])]))
+     
+
+
+
 #|
 ;; desugar class innards
 (define (desugar-class-innards (name : symbol) (body : (listof PyExpr)) ) : CExp
@@ -350,7 +535,7 @@
   (not (foldl (lambda (list-el result) (and list-el result))
               true
               (map (lambda (e) (local ([define-values (st id) e])
-                                 (Local? st)))
+                                 (Local? st) ))
                    vars))))
 
 

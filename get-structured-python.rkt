@@ -188,6 +188,13 @@ structure that you define in python-syntax.rkt
               (get-structured-python left)
               (get-structured-python right))]
     
+    [(hash-table ('nodetype "Delete")
+                 ('targets targets))
+     (PyDel (map get-structured-python targets))]
+    
+    [(hash-table ('nodetype "Set")
+                 ('elts elts))
+     (PyCollectionSet (map get-structured-python elts))]
     
     ;; def
     [(hash-table ('nodetype "FunctionDef")
@@ -198,12 +205,22 @@ structure that you define in python-syntax.rkt
                  ('returns returns))
      (PyDef (string->symbol name) 
             (get-structured-python args)
-            (PySeq (map get-structured-python body)))]
+            (PySeq (map get-structured-python body))
+            (if (equal? decorator-list #\nul)
+                false
+                true))]
     
     ;; return case
     [(hash-table ('nodetype "Return")
                  ('value value))
      (PyReturn (get-structured-python value))]
+    
+    ;; break and continue
+    [(hash-table ('nodetype "Break"))
+     (PyBreak)]
+    
+    [(hash-table ('nodetype "Continue"))
+     (PyContinue)]
     
     
     ;; global variable
@@ -231,6 +248,20 @@ structure that you define in python-syntax.rkt
                  ('ctx ctx))
      (PySubscript (get-structured-python value)
                   (get-structured-python slice))]
+    
+    [(hash-table ('nodetype "Slice")
+                 ('lower lower)
+                 ('upper upper)
+                 ('step step))
+     (PySlice (if (equal? lower #\nul)
+                  (PyNone)
+                  (get-structured-python lower))
+              (if (equal? upper #\nul)
+                  (PyNone)
+                  (get-structured-python upper))
+              (if (equal? step #\nul)
+                  (PyNum 1)
+                  (get-structured-python step)))]
     
     ;; Index (this is only used in subscripts
     [(hash-table ('nodetype "Index")
@@ -305,6 +336,44 @@ structure that you define in python-syntax.rkt
                  ('attr attr)
                  ('ctx ctx))
      (PyPass)]
+    
+    
+    ;; Loops
+    [(hash-table ('nodetype "While")
+                 ('body body)
+                 ('orelse orelse)
+                 ('test test))
+     (PyWhile (get-structured-python test)
+              (PySeq (map get-structured-python body))
+              (PySeq (cons (PyPass) (map get-structured-python orelse))))]
+    
+    [(hash-table ('nodetype "For")
+                 ('target target)
+                 ('iter iter)
+                 ('body body)
+                 ('orelse orelse))
+     (PyFor (get-structured-python target)
+            (get-structured-python iter)
+            (PySeq (map get-structured-python body)))]
+    
+    [(hash-table ('nodetype "ListComp")
+                 ('elt elt)
+                 ('generators generators))
+     (PyListComp (get-structured-python elt)
+                 (map get-structured-python generators))]
+    
+    [(hash-table ('nodetype "GeneratorExp")
+                 ('elt elt)
+                 ('generators generators))
+     (PyListComp (get-structured-python elt)
+                 (map get-structured-python generators))]
+    
+    [(hash-table ('nodetype "comprehension")
+                 ('target target)
+                 ('iter iter)
+                 ('ifs ifs))
+     (PyComprehension (get-structured-python target)
+                      (get-structured-python iter))]
                  
     ;;THE ONES THAT RETURN PRIMITIVES (symbols, numbers, strings, etc):
     
@@ -348,6 +417,12 @@ structure that you define in python-syntax.rkt
      'python-in]
     [(hash-table ('nodetype "NotIn"))
      'python-notIn]
+    [(hash-table ('nodetype "BitAnd"))
+     'python-bitand]
+    [(hash-table ('nodetype "BitOr"))
+     'python-bitor]
+    [(hash-table ('nodetype "BitXor"))
+     'python-bitxor]
 
     
     ;; Unary

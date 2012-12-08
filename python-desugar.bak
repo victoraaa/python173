@@ -23,15 +23,26 @@
                        (list)
                        (map (lambda (e) (get-vars e)) es))]
     [PyNum (n) (list)]
-    [PyApp (f args) (append (get-vars f)
-                            (foldl (lambda (a b) (append b a))
-                                   (list)
-                                   (map (lambda (e) (get-vars e)) args)))]
+    [PyApp (f args keywordArguments star) (append (get-vars star) 
+                                                      (append (get-vars f)
+                                                              (foldl (lambda (a b) (append b a))
+                                                                     (list)
+                                                                     (map (lambda (e) (get-vars e)) 
+                                                                          (append args
+                                                                                  (map (lambda (kwarg) (type-case keywargHelperType kwarg
+                                                                                                         [keywarghelpertype (id value) value]))
+                                                                                       keywordArguments))))))]
     [PyTuple (elts) 
              (foldl (lambda (a b) (append b a))
                     (list)
                     (map (lambda (e) (get-vars e)) elts))]
+    [PyCollectionSet (elts)
+                     (foldl (lambda (a b) (append b a))
+                            (list)
+                            (map (lambda (e) (get-vars e)) elts))]
     [PyReturn (value) (get-vars value)]
+    [PyBreak () (list)]
+    [PyContinue () (list)]
     [PyId (id) (list)]
     [PyStr (s) (list)]
     [PyBinOp (op left right)
@@ -40,6 +51,16 @@
               (get-vars right))]
     [PyAttribute (attr value)
                  (get-vars value)]
+    [PySubscript (value attr)
+                 (append (get-vars value)
+                         (get-vars attr))]
+    [PyDel (targets) (list)]
+    
+    ;; loops
+    [PyWhile (test body orelse) (list)] ;; really?
+    [PyFor (target iter body orelse) (get-vars (PySeq (cons target (PySeq-es body))))]
+    
+    
     [PyIf (test then orelse)
           (append
            (get-vars test)
@@ -62,19 +83,28 @@
                                    (map (lambda (e) (get-vars e)) comparators)))]
     [PyPass () (list)]
     [PyNone () (list)]
-    [PyLambda (args body) (list)]
+    [PyLambda (args body) (get-vars args)]
     [PyDef (name args body)
-           (list (values (Local) name))]
+           (append (list (values (Local) name))
+                   (get-vars args))]
+    
+    
+    [PyClassDef (name bases body) (list (values (Local) name))]
+    
+    
+    [PyArguments (args defaults vararg)          ;-------------------------------------------check if declarations in defaults should be caught
+                 (list)]
     
     [PyRaise (exc) (get-vars exc)]
     [Py-NotExist () (list)]
     [PyUnaryOp (op arg) (get-vars arg)]
+    
     [PySet (lhs value) ;;PySet case may need to change, because it never actually appears since it only exists from use in PyAssign
            (append
                (get-vars value)
                (type-case PyExpr lhs
                  [PyId (id) (list (values (Local) id))]
-                 [else (error 'get-vars-PySet "PySet should not be getting non-ids yet")]))]
+                 [else (list)]))]
     [PyAssign (targets value)
               (append
                (get-vars value)
@@ -82,7 +112,7 @@
                       (list)
                       (map (lambda (e) (type-case PyExpr e
                                          [PyId (id) (list (values (Local) id))]
-                                         [else (error 'get-vars-PyAssign "PyAssign should not be getting non-ids yet")])) 
+                                         [else (list)])) 
                            targets)))]
     
     [PyAugAssign (target op value)
@@ -127,10 +157,17 @@
 
 (define (desugar expr)
   (type-case PyExpr expr
- ;   #|
+    ;   #|
     [PySeq (es) (foldl (lambda (e1 e2) (CSeq e2 (desugar e1))) (desugar (first es)) (rest es))]
     [PyNum (n) (CNum n)]
-    [PyApp (f args) (CApp (desugar f) (map desugar args))]
+    [PyApp (f args keywordArguments star) (CApp (desugar f) 
+                                                    (map desugar args)
+                                                    (map (lambda (keyArg) (type-case keywargHelperType keyArg
+                                                                            [keywarghelpertype (arg value) (values arg (desugar value))]))
+                                                         keywordArguments)
+                                                   ; (CHash (hash (list)) (cType "list" (list)))
+                                                    (desugar star)
+                                                    )]
     [PyId (x) (CId x)]
     ;;Under this, Non-TA code
     [PyStr (s) (CStr s)]
@@ -149,16 +186,27 @@
                 ['or (foldl (lambda (expr result) (CPrim2 'or result (desugar expr))) (desugar (first exprs)) (rest exprs))]
                 ['and (foldl (lambda (expr result) (CPrim2 'and result (desugar expr))) (desugar (first exprs)) (rest exprs))])]
     [PyUnaryOp (op arg)
-               (CApp (CId op) (list (desugar arg)))] ;; TODO this needs to desugar to a function application
+               (CApp (CId op) 
+                     (list (desugar arg)) 
+                     (list) 
+                     (CHash (hash (list)) (cType "list" (CId 'list)))
+                     )] ;; TODO this needs to desugar to a function application
     [PyBinOp (op left right)
-             (CApp (CId op) (list (desugar left) (desugar right)))]
+             (CApp (CId op) 
+                   (list (desugar left) (desugar right)) 
+                   (list) 
+                   (CHash (hash (list)) (cType "list" (CId 'list)))
+                   )]
     [PyCompare (left ops comparators)
                (if (equal? 0 (length comparators))
                    (CTrue)
                    (CLet 'left-comp (Local) (desugar left)
                      (CLet 'right-comp (Local) (desugar (first comparators))
                        (CIf (CApp (CId (first ops))
-                                    (list (CId 'left-comp) (CId 'right-comp)))
+                                  (list (CId 'left-comp) (CId 'right-comp))
+                                  (list)
+                                  (CHash (hash (list)) (cType "list" (CId 'list)))
+                                  )
                             (desugar (PyCompare (PyId 'right-comp)
                                                 (rest ops)
                                                 (rest comparators)))
@@ -166,7 +214,8 @@
     
     [PyPass () (CPass)]
     [PyNone () (CNone)]
-    [PyLambda (args body) (CFunc args (desugar body) (list) (list))]
+    [PyLambda (args body) (CFunc (PyArguments-args args) (desugar body) (list) (map desugar (PyArguments-defaults args)) (PyArguments-vararg args))]
+    [PyArguments (args defaults vararg) (CPass)] ;just used within PyLambda and PyDef
     
     [PyRaise (exc) (CError (desugar exc))]
     [PyAssign (targets value) 
@@ -176,12 +225,16 @@
                  (CLet 'aug-value (Local) (desugar value)
                        (CLet 'orig-value (Local) (desugar target)
                              (CSet (desugar target) (CApp (CId op) 
-                                                          (list (CId 'orig-value) (CId 'aug-value))))))] 
+                                                          (list (CId 'orig-value) (CId 'aug-value))
+                                                          (list)
+                                                          (CHash (hash (list)) (cType "list" (CId 'list)))
+                                                          ))))] 
                               ;; may or may not work - side effects?
     
     
     [PySet (lhs value) 
            (CSet (desugar lhs) (desugar value))]
+           
     [PyGlobalEnv () (CGlobalEnv)]
     [PyModule (exprs) 
               (let ([global-vars (get-vars exprs)]) ;gets all of the assignments in the global scope
@@ -198,15 +251,69 @@
     
     [PyDef (name args body) 
            (begin (CSeq
-                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list)))
-                   (CLet 'some-func (Local) (CFunc (PyArguments-args args) (desugar body) (get-vars body) (map desugar (PyArguments-defaults args)))
+                   (CSet (CId name) (CFunc (list) (CError (CStr "dummy function was called!")) (list) (list) 'no-vararg))
+                   (CLet 'some-func 
+                         (Local) 
+                         (CFunc (PyArguments-args args) 
+                                (desugar body) 
+                                (get-vars body) 
+                                (map desugar (PyArguments-defaults args)) 
+                                (PyArguments-vararg args))
                          (CSet (CId name) (CId 'some-func)))))]
     
-    [PyList (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "list" (list)))]
-    [PyDict (keys vals) (CHash (desugar-hash keys vals) (Type "dict" (list)))]
-    [PyTuple (elts) (CHash (desugar-hash (pynum-range (length elts)) elts) (Type "tuple" (list)))]
+   ; c.f
+    [PyClassDef (name bases body) 
+                (begin (CSeq
+                        (CSet (CId name) (CHash (hash (list)) (cType "dummy" (CUnbound))))
+                        (CLet 'some-class 
+                              (Local) 
+                              (CHash (hash-set (hash (list)) (CStr "__name__") (CStr (symbol->string name))) 
+                                     (cType "class" (if (empty? bases)
+                                                       (CNone)
+                                                       (desugar (first bases)))))
+                              ;;body of the CLet:
+                              (CSeq
+                               (CSet (CId name) (CId 'some-class))
+                               (CCreateClass name (desugar body) (get-vars body))))))]
+                             ;  (CCreateClass (desugar-class-innards name body  )))))]
+    
+    
+    [PyList (elts) (CHash (hash-set (desugar-hash (pynum-range (length elts)) elts) (CStr "__size__") (CNum (length elts))) (cType "list" (CId 'list)))]
+    [PyDict (keys vals) (CHash (hash-set (hash-set (desugar-hash keys vals) 
+                                                   (CStr "__size__") 
+                                                   (CNum (length keys)))
+                                         (CStr "__keys__") 
+                                         (desugar (PyCollectionSet keys))) 
+                               (cType "dict" (CId 'dict)))]
+    [PyTuple (elts) (CHash (hash-set (desugar-hash (pynum-range (length elts)) elts) (CStr "__size__") (CNum (length elts))) (cType "tuple" (CId 'tuple)))]
+    [PyCollectionSet (elts) (CHash (desugar-hash elts elts) (cType "set" (CId 'set)))]
     
     [PyAttribute (attr value) (CAttribute attr (desugar value))]
+    [PySubscript (value attr) (CSubscript (desugar value) (desugar attr))]
+    [PyDel (target)
+           (CDel (map desugar target))]
+    ;; loops
+    [PyWhile (test body orelse) (CWhile (desugar test) (desugar body) (desugar orelse) (list))]
+    [PyFor (target iter body orelse) (CLet 'index-counter
+                                           (Local)
+                                           (CNum -1)
+                                           (CLet 'iter-list
+                                                 (Local)
+                                                 (desugar iter)
+                                             ;    (CSeq (CSet (desugar target) (CUnbound))
+                                                 (CWhile (CSeq (CSet (CId 'index-counter) (CPrim2 'num+ (CId 'index-counter) (CNum 1))) 
+                                                               (CPrim2 'num-lt 
+                                                                       (CId 'index-counter) 
+                                                                       (CAttribute '__size__ (CId 'iter-list)))) ;; TODO check field name
+                                                         ;  (CApp (CId )
+                                                         ;        (list (CId 'iter-list))
+                                                         ;        (list)
+                                                         ;        (CHash (hash (list)) (cType "list" (CNone))))
+                                                         ; )) 
+                                                         (CSeq (CSet (desugar target) (CSubscript (CId 'iter-list) (CId 'index-counter)))
+                                                               (desugar body)) 
+                                                         (desugar orelse)
+                                                         (get-vars (PySeq (cons target (PySeq-es body)))))))]
     
     ;; exceptions
     [PyTryExcept (body handlers orelse) (CTryExcept (desugar body) (map desugar-handler handlers) (desugar orelse))]
@@ -215,9 +322,25 @@
     
     ;; return
     [PyReturn (value) (CReturn (desugar value))]
+    [PyBreak () (CBreak)]
+    [PyContinue () (CContinue)]
                 
     [else (error 'desugar (string-append "Haven't desugared a case yet:\n"
                                        (to-string expr)))]))
+#|
+;; desugar class innards
+(define (desugar-class-innards (name : symbol) (body : (listof PyExpr)) ) : CExp
+  (CCreateClass name (foldl (lambda (e1 e2) (CSeq e2 (desugar e1))) (desugar (first body)) (rest body))))
+;  (cond 
+;    [(empty? body) ...]
+;    [(= (length body) 1) ()]
+;    [else (CSeq () (desugar-class-innards name (rest body)))]))
+|#
+
+;; desugar class body
+;(define (desugar-class-body (body : (listof PyExpr))) : (hashof CExp CExp)
+;  (
+
 
 ;; desugars handlers
 (define (desugar-handler [handler : PyExceptHandler]) : CExceptionHandler

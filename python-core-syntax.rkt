@@ -21,6 +21,7 @@ ParselTongue.
          (body : CExp) 
          (vlist : (listof (ScopeType * symbol))) 
          (defargs : (listof CExp))
+         (classmethod : boolean)
          (vararg : symbol)]
   [CPrim1 (prim : symbol) (arg : CExp)]
   [CPrim2 (op : symbol) (e1 : CExp) (e2 : CExp)]
@@ -28,23 +29,20 @@ ParselTongue.
   [CNone]
   [CPass]
   [CReturn (value : CExp)]
+  [CBreak]
+  [CContinue]
   [CSet (id : CExp) (value : CExp)]
   [CAttribute (attr : symbol) (value : CExp)]
   [CSubscript (value : CExp) (attr : CExp)]
+  [CDel (targets : (listof CExp))]
+  ;; loops
+  [CWhile (test : CExp) (body : CExp) (orelse : CExp) (vlist : (listof (ScopeType * symbol)))]
   
   ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.
   [CUnbound]
   [CGlobalEnv]
   
-  ;; lists and dicts become hashes
-  ;[CList (elts : (hashof CExp CExp))]
-  ;[CDict (elts : (hashof CExp CExp))]
-  ;[CTuple (elts : (hashof CExp CExp))]
-  
   [CHash (elts : (hashof CExp CExp)) (type : CType)]
-  
-  ;; TEMPORARY class
-  [CClass (elts : (hashof CVal CVal)) (type : VType)]
   
   ;; type to help create a new class
   [CCreateClass (name : symbol) (body : CExp) (vlist : (listof (ScopeType * symbol)))]
@@ -53,28 +51,38 @@ ParselTongue.
   [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler)) (orelse : CExp)]
   [CTryFinally (body : CExp) (finalbody : CExp)]
   
+  [CHolder (hold : CVal)]
+  
   
   [C-NotExist (a : number)] ;;THIS IS HERE ONLY SO THAT python-interp won't complain about having completed all of the expressions
   )
+
+(define (Empty-list) : CExp
+  (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list)))) ;; convenience function
+
+(define (Make-throw [ex : symbol] [msg : string]) : CExp
+  (CApp (CId ex)
+        (list (CStr msg))
+        (list)
+        (Empty-list)))
 
 (define-type CExceptionHandler
   [CExcHandler (name : symbol) (type : CExp) (body : CExp)])
 
 (define-type CVal
+  [VSymbolList (lst : (listof symbol))]
   [VNum (n : number)]
   [VStr (s : string)]
   [VTrue]
-  [VClosure (env : Env) (args : (listof symbol)) (vararg : symbol) (body : CExp) (defargs : (listof CVal)) (uid : Uid)]
-  ;;I ADDED;;
+  [VClosure (env : Env) (args : (listof symbol)) (vararg : symbol) (body : CExp) (defargs : (listof CVal)) (uid : Uid) (classmethod : boolean)]
+  
   [VNone]
   [VFalse]
   [VPass]
   [VUnbound]
-  ;[VList (elts : (hashof CVal CVal)) (uid : Uid)] ;; lists must be keyed byintegers, though...
-  ;[VDict (elts : (hashof CVal CVal)) (uid : Uid)]
-  ;[VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
+  
   [VHash (elts : (boxof (hashof CVal CVal))) (uid : Uid) (type : VType)]
-  [VClass (elts : (hashof CVal CVal)) (type : VType)]  ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE
+  
   )
 
 (define-type VType
@@ -85,7 +93,9 @@ ParselTongue.
 
 (define-type-alias Location number)
 (define-type ScopeType
+ ; [Instance] ;; ADDED for freevar-in-method
   [Local]
+  ;[NotReallyLocal]
   [NonLocal]
   [Global])
 
@@ -99,7 +109,7 @@ ParselTongue.
   [ValueA (value : CVal) (store : Store)]
   [ExceptionA (value : CVal) (store : Store)]
   [ReturnA (value : CVal) (store : Store)]
- ; [BreakA (value : CVal) (store : Store)]
- ; [ContinueA (store : Store)]
+  [BreakA (value : CVal) (store : Store)]
+  [ContinueA (store : Store)]
   )
  

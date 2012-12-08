@@ -1,6 +1,7 @@
 #lang plai-typed
 
 (require "python-core-syntax.rkt"
+         "python-syntax.rkt"
          "python-primitives.rkt"
          "python-desugar.rkt")
 
@@ -19,6 +20,11 @@
 (require (typed-in racket/list [argmax : [('a -> number) (listof 'a) -> 'a]]))
 (require (typed-in racket/list [drop-right : [(listof 'a) number -> (listof 'a)]]))
 (require (typed-in racket/list [last : [(listof 'a) -> 'a]]))
+(require (typed-in racket/base [substring : [string number number -> string]]))
+
+;;Holds the exception to be reraised
+(define exn-to-reraise
+  (box (VUnbound)))
 
 ;;Returns a new memory address to be used
 (define new-loc
@@ -59,7 +65,22 @@
              [none () (error 'keepOldEnv "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
              [some (v) (local [(define-values (t l) v)]
                          (type-case ScopeType t
+                         ;  [Instance () newEnv]
                            [Local () (augmentEnv key (values (NonLocal) l) newEnv)]
+                           ;[NotReallyLocal () (augmentEnv key (values (NonLocal) l) newEnv)]
+                           [Global () newEnv]
+                           [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
+         (hash (list))
+         (hash-keys env)))
+
+(define (keepOldEnvClass [env : Env]) : Env
+  (foldl (lambda (key newEnv) 
+           (type-case (optionof SLTuple) (hash-ref env key)
+             [none () (error 'keepOldEnvClass "Cannot find key inside hash with this key in hash-keys: something is very wrong")]
+             [some (v) (local [(define-values (t l) v)]
+                         (type-case ScopeType t
+                          ; [Instance () (augmentEnv key (values (Instance) l) newEnv)]
+                           [Local () (augmentEnv key (values (Local) l) newEnv)]
                            [Global () newEnv]
                            [NonLocal () (augmentEnv key (values (NonLocal) l) newEnv)]))]))
          (hash (list))
@@ -125,6 +146,28 @@
                            (rest localList) 
                            othersList)))]))
 
+;; addInstanceVars takes an environment and a list of variables. 
+;; it adds the instance variables to the env. 
+;(define (addInstanceVars [env : Env]
+;                   [localList : (listof (ScopeType * symbol))]
+;                   [othersList : (listof (ScopeType * symbol))]) : Env
+;  (cond
+;    [(empty? localList) env]
+;    [else (local [(define-values (t id) (first localList))]
+;            (if (foldl (lambda (l result) (or l result))
+;                       false
+;                       (map (lambda (st-id) (local [(define-values (t2 id2) st-id)]
+;                                              (if (equal? id id2)
+;                                                  true
+;                                                  false)))
+;                            othersList))
+;                (addInstanceVars env (rest localList) othersList)
+;                (addInstanceVars (augmentEnv id 
+;                                       (values (Instance) (new-loc))
+;                                       env)
+;                           (rest localList) 
+;                           othersList)))]))
+
 ;;addArgs just appends the args to a list of (ScopeType * symbol), 
 ;;with the ScopeType 'Local'
 (define (addArgs [lst : (listof (ScopeType * symbol))]
@@ -156,6 +199,44 @@
                                        false
                                        true)))
                      vlist)))
+
+
+;; version for classdefs...
+#|
+(define (newEnvScopeClass [env : Env]
+                     [vlist : (listof (ScopeType * symbol))]
+                     [args : (listof symbol)]
+                     [vararg : symbol]) : Env
+  (addInstanceVars (addLocals (addNonLocals (addGlobalVars (keepOldEnvClass env) 
+                                          vlist)
+                           vlist)
+             (addArgs (filter (lambda (x) (local [(define-values (t id) x)]
+                                            (if (Local? t)
+                                                true
+                                                false)))
+                              vlist)
+                      (if (equal? 'no-vararg vararg)
+                          args
+                          (append args (list vararg))))
+             (filter (lambda (x) (local [(define-values (t id) x)]
+                                   (if (Local? t)
+                                       false
+                                       true)))
+                     vlist))
+                   (addArgs (filter (lambda (x) (local [(define-values (t id) x)]
+                                            (if (Instance? t)
+                                                true
+                                                false)))
+                              vlist)
+                      (if (equal? 'no-vararg vararg)
+                          args
+                          (append args (list vararg))))
+                   (filter (lambda (x) (local [(define-values (t id) x)]
+                                   (if (Instance? t)
+                                       false
+                                       true)))
+                     vlist)))
+|#
 
 ;;Adds a new identifier to our environment, with its location
 (define (augmentEnv [id : symbol]
@@ -189,7 +270,7 @@
 (define (lookupEnv [id : symbol]
                    [env : Env]) : Location
   (type-case (optionof SLTuple) (hash-ref env id)
-    [none () (error 'lookupEnv (string-append "Unbound indentifier error: " (symbol->string id)))]
+    [none () (error 'lookupEnv (string-append "Unbound identifier error: " (symbol->string id)))]
     [some (v) (local [(define-values (t l) v)]
                 ;(begin (display (string-append (string-append (symbol->string id) " ") (to-string l)))l))]))
                 l)]))
@@ -211,14 +292,14 @@
     [none () (interp-env (CApp (CId 'UnboundLocalError)
                                (list)
                                (list)
-                               (CHash (hash (list)) (cType "list" (CNone)))) env store)]
+                               (CHash (hash (list)) (cType "list" (CId 'list)))) env store)]
     [some (loc) (type-case (optionof CVal) (hash-ref store (local [(define-values (t l) loc)] l))
                 [none () (error 'lookupEnvStore "Something is missing from the store")]
                 [some (v) (type-case CVal v
                             [VUnbound () (interp-env (CApp (CId 'UnboundLocalError)
                                                            (list)
                                                            (list)
-                                                           (CHash (hash (list)) (cType "list" (CNone)))) env store)]
+                                                           (CHash (hash (list)) (cType "list" (CId 'list)))) env store)]
                             [else (ValueA v store)])])]))
 
 ;;lookupVar searches for the identifier first at the given environment, then at the globalEnv.
@@ -227,7 +308,6 @@
   (type-case (optionof SLTuple) (hash-ref env id)
     [none () (lookupEnv id globalEnv)]
     [some (v) (local [(define-values (t l) v)]
-                ;(begin (display (string-append (string-append (symbol->string id) " -- ") (to-string l)))l))]))
                 l)]))
 
 
@@ -244,29 +324,6 @@
          (append (add-default-args (drop-right args 1)
                                    defaults)
                  (list (last args))))]))
-
-
-;(define (interp-starargs-CApp [body : CExp]
-;                              [env : Env]
-;                              [closEnv : Env]
-;                              [store : Store]
-;                              [argsIds : (listof symbol)]
-;                              [interpretedArgs : (listof CVal)]
-;                              [defargs : (listof CVal)]
-;                              [star : CExp]) : AnswerC
-;  (type-case AnswerC (interp-env star env store)
-;    [ValueA (v s) (type-case CVal v
-;                    [VHash (elts uid t) (interp-CApp body
-;                                                     (allocateLocals closEnv)
-;                                                     s
-;                                                     argsIds
-;                                                     (add-default-args (append
-;                                                                        (reverse interpretedArgs)
-;                                                                        (collapse-vhash-args v 0)) 
-;                                                                       defargs))]
-;                    [else (error 'interp-starargs-CApp "non-hash")])]
-;    [ExceptionA (v s) (ExceptionA v s)]
-;    [ReturnA (v s) (ReturnA v s)]))
 
 
 
@@ -294,29 +351,12 @@
                           ) : AnswerC
   (cond
     [(empty? args) 
-     
-     ;(interp-starargs-CApp body
-     ;                                    env
-     ;                                    closEnv
-     ;                                    store
-     ;                                    argsIds
-     ;                                    interpretedArgs
-     ;                                    defargs
-     ;                                    star)]
-     
      (interp-CApp body
                   (allocateLocals closEnv)
                   store
                   argsIds
                   (add-default-args (reverse interpretedArgs)
                                     defargs))]
-    #|
-                              (append (reverse interpretedArgs)
-                                      (list-tail defargs 
-                                                 (- (length defargs)
-                                                    (- (length argsIds) 
-                                                       (length interpretedArgs))))))]     
-|#
     [else 
      (type-case AnswerC (interp-env (first args) env store)
        [ValueA (v s)
@@ -330,6 +370,8 @@
                                  defargs
                                  ;star
                                  )]
+       [BreakA (v s) (error 'interp-args-CApp "Why a break?")]
+       [ContinueA (s) (error 'interp-args-CApp "Why a continue?")]
        [ExceptionA (v s) (ExceptionA v s)]
        [ReturnA (v s) (ReturnA v s)])]))
 
@@ -355,30 +397,24 @@
                      [args : (listof CVal)]) : AnswerC
   (cond
     [(not (equal? (length argsIds) (length args)))
-     (interp-env (CError (CApp (CId 'TypeError)
-                               (list)
-                               (list)
-                               (CHash (hash (list)) (cType "list" (CNone)))))
+     (interp-env (CError (Make-throw 'TypeError "(interp-CApp) Arity mismatch"))
                  env
                  store)]
-    #|
-     (ExceptionA (VStr (string-append 
-                        "error in interp-CApp : " 
-                        (string-append 
-                         (string-append
-                          "number of expected arguments:"
-                          (to-string (length argsIds)))
-                         (string-append
-                          "number of received arguments:"
-                          (to-string (length args))))))
-                 store)]
-    ;|#
-    [(empty? args) (type-case AnswerC (interp-env body 
-                                                  closEnv
-                                                  store)
-                     [ValueA (v s) (ValueA v s)]
-                     [ExceptionA (v s) (ExceptionA v s)]
-                     [ReturnA (v s) (ValueA v s)])]
+    
+    [(empty? args) (let ([_newLoc (new-loc)])
+                     (let ([_newEnv (augmentEnv 'locals (values (NonLocal) _newLoc) closEnv)]) 
+                       (type-case AnswerC (interp-env body 
+                                                      _newEnv
+                                                      (augmentStore _newLoc 
+                                                                    (VClosure (newEnvScope _newEnv (list) (list) 'no-vararg) 
+                                                                              (list) 'no-vararg (CPrim1 '_locals (CHolder (VSymbolList (getLocals _newEnv)))) (list) (new-uid) false)
+                                                                    store))
+                         [ValueA (v s) (ValueA v s)]
+                         [BreakA (v s) (error 'interp-CApp "Should not be a break in function call")]
+                         [ContinueA (s) (error 'interp-CApp "Should not be a continue in function call")]
+                         [ExceptionA (v s) (ExceptionA v s)]
+                         [ReturnA (v s) (ValueA v s)])
+                       ))]
     [else 
      (interp-CApp body
                   closEnv
@@ -387,23 +423,13 @@
                                 store)
                   (rest argsIds)
                   (rest args))]))
-#|
-     (let ([newLocation (new-loc)])
-       (interp-CApp body
-                    (augmentEnv (first argsIds)
-                                (values (Local) newLocation)
-                                closEnv)
-                    (augmentStore newLocation
-                                  (first args)
-                                  store)
-                    (rest argsIds)
-                    (rest args)))]))
-|#
 
 ;; tagof wrapper
 (define (interp-tagof [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
     [ValueA (v s) (ValueA (VStr (get-tag v)) s)]
+    [BreakA (v s) (error 'interp-tagof "Should not be a break in input to tagof")]
+    [ContinueA (s) (error 'interp-tagof "Should not be a continue in input to tagof")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
@@ -416,27 +442,18 @@
             [(fixnum? n) "int"]
             [(flonum? n) "float"])]
     [VStr (s) "string"]
-    [VClosure (e a varg b defargs uid) "function"]
+    [VClosure (e a varg b defargs uid classmethod) "function"]
     [VTrue () "bool"]
     [VFalse () "bool"]
     [VNone () "NoneType"] ;; TODO this looks like a class name. Maybe we should make it so?
     [VPass () "pass"] ;; should never be reached. 
     [VUnbound () "unbound"]
-    ;[VList (elts uid) "list"]
-    ;[VDict (elts uid) "dict"]
-    ;[VTuple (elts uid) "tuple"]
+    
     [VHash (elts uid type) 
            (Type-name type)]
-           #|
-           (if (or (equal? (Type-name type) "class") (equal? (Type-name type) "primitive-class"))
-               (type-case (optionof CVal) (hash-ref elts (VStr "__name__"))
-                 [some (v) (type-case CVal v
-                             [VStr (str) str]
-                             [else (error 'get-attr "the name of a class should be a VStr")])]
-                 [none () (error 'get-tag "every class or primitive-class should have the __name__ field")])
-               (Type-name type))]
-;|#
-    [VClass (elts type) (Type-name type)]))
+    [VSymbolList (lst) "no one should be getting the tag of this thing, seriously"]
+    
+    ))
 
 
 ;; This is going to be an interp function that works on arbitrary CExps.
@@ -444,9 +461,19 @@
 (define (interp-binop [op : symbol] [e1 : CExp] [e2 : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env e1 env store)
     [ValueA (v1 s1) (type-case AnswerC (interp-env e2 env s1)
-                      [ValueA (v2 s2) (ValueA (handle-op op v1 v2) s2)]
+                      [ValueA (v2 s2) (ValueA (case op
+                                                ['has-field (type-case CVal v1
+                                                              [VHash (elts uid t) (try (begin (getAttr v2 v1 env store)
+                                                                                              (VTrue))
+                                                                                       (lambda () (VFalse)))]
+                                                              [else (VFalse)])]
+                                                [else (handle-op op v1 v2)]) s2)]
+                      [BreakA (v2 s2) (error 'interp-binop "Why is there a break in second arg?")]
+                      [ContinueA (s) (error 'interp-binop "Why is there a continue in second arg?")]
                       [ExceptionA (v s) (ExceptionA v s)]
                       [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [BreakA (v2 s2) (error 'interp-binop "Why is there a break in first arg?")]
+    [ContinueA (s) (error 'interp-binop "Why is there a continue in first arg?")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
@@ -469,30 +496,67 @@
     [(flonum? n) (error 'duplicate-tuple "does not work with floats...")]
     [(<= n 0) (hash (list))]
     [else (make-new-map (map (lambda (x) (VNum x)) 
-                             (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
+                             (range (* n 
+                                       ;(argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) 
+                                       (type-case (optionof CVal) 
+                                         (hash-ref tup (VStr "__size__"))
+                                         [some (s) (VNum-n s)]
+                                         [none () (error 'duple "no size field")]))))
                         (repeat-list (hash-values tup) n))]))
+
+(define (cval-range [n : number]) : (listof CVal)
+  (map (lambda (x) (VNum x)) (range n)))
 
 ;; Assumes we are dealing with VHashs
 (define (merge-python-lists (l1 : CVal) (l2 : CVal)) : (hashof CVal CVal)
   (local ([define h1 (unbox (VHash-elts l1))]
           [define h2 (unbox (VHash-elts l2))]
-          [define keylenh (length (hash-keys h1))])
-    (foldl (lambda (x h) (hash-set h (VNum (+ (VNum-n x) keylenh)) 
-                                   (type-case (optionof CVal) (hash-ref h2 x)
-                                     [some (s) s]
-                                     [none () (error 'merge-python-lists "???")])))
-           h1
-           (hash-keys h2))))
+          [define len2 (type-case (optionof CVal) (hash-ref h2 (VStr "__size__"))
+                         [some (s) (VNum-n s)]
+                         [none () (error 'merge-python-lists (string-append "?? "
+                                                                            (to-string h2)))])]
+          [define keylenh (type-case (optionof CVal) (hash-ref h1 (VStr "__size__"))
+                            [some (s) (VNum-n s)]
+                            [none () (error 'merge-python-lists "???1")])])
+    (hash-set (foldl (lambda (x h) (hash-set h (VNum (+ (VNum-n x) keylenh)) 
+                                             (type-case (optionof CVal) (hash-ref h2 x)
+                                               [some (s) s]
+                                               [none () (error 'merge-python-lists "???")])))
+                     h1
+                     (cval-range len2)) 
+              (VStr "__size__") 
+              (VNum (+ keylenh len2)))))
+
+(define (fold-equality [h1 : (hashof CVal CVal)] [h2 : (hashof CVal CVal)]) : boolean
+  (cond
+    [(not (= (length (hash-keys h1)) (length (hash-keys h2)))) #f]
+    [else (foldl (lambda (x y) (and y (type-case (optionof CVal) (hash-ref h1 x)
+                                        [some (s1) (type-case (optionof CVal) (fold-eq-contains (hash-keys h2) x)
+                                                     [some (vk) (type-case (optionof CVal) (hash-ref h2 vk)
+                                                                  [some (s2) (check-equality s1 s2)]
+                                                                  [none () #f])]
+                                                     [none () #f])]
+                                        [none () (error 'fold-equality "something is terribly wrong here...")]))) 
+                 #t 
+                 (hash-keys h1))]))
+
+(define (fold-eq-contains [lst : (listof CVal)] [val : CVal]) : (optionof CVal)
+  (cond
+    [(empty? lst) (none)]
+    [(check-equality val (first lst)) (some (first lst))]
+    [else (fold-eq-contains (rest lst) val)]))
 
 
-
-;;  (lambda (x) (hash-set h1 (VNum (+ (VNum-n x) keylenh)) (hash-ref h2 x)))
-
-;(make-new-map (map (lambda (x) (VNum x)) 
-;                  (range (* n (argmax (lambda (x) x) (map (lambda (x) (VNum-n x)) (hash-keys tup))))))
-;             (repeat-list (hash-values tup) n))
-
-
+;; check-equality
+(define (check-equality [v1 : CVal] [v2 : CVal]) : boolean
+  (type-case CVal v1
+    [VHash (elts1 uid1 type1) 
+           (type-case CVal v2
+             [VHash (elts2 uid2 type2) (if (equal? (Type-name type1) (Type-name type2))
+                                           (fold-equality (unbox elts1) (unbox elts2))
+                                           false)]
+             [else false])]
+    [else (equal? v1 v2)]))
 
 ;; this function handles binary operations
 ;; it does NO TYPE CHECKING! We will need to check types in library functions. 
@@ -501,16 +565,6 @@
 ;; Need a "tagof" unary operator. Doesn't python have "type"?
 
 ;; We need separate float and intger values. 
-
-;; check-equality
-(define (check-equality [v1 : CVal] [v2 : CVal]) : boolean
-  (type-case CVal v1
-    [VHash (elts1 uid1 type1) (type-case CVal v2
-                                [VHash (elts2 uid2 type2) (if (equal? (Type-name type1) (Type-name type2))
-                                                              (equal? (unbox elts1) (unbox elts2)) ;; TODO recur!
-                                                              false)]
-                                [else false])]
-    [else (equal? v1 v2)]))
 
 
 ;; Also, this function should be in the "primitives" file. 
@@ -548,6 +602,8 @@
     [ValueA (v s) (if (isTruthy v)
                       (ValueA v s)
                       (interp-env e2 env s))]
+    [BreakA (v s) (error 'interp-or "Break!")]
+    [ContinueA (s) (error 'interp-or "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
@@ -561,15 +617,15 @@
     [ValueA (v s) (if (not (isTruthy v))
                       (ValueA v s)
                       (interp-env e2 env s))]
+    [BreakA (v s) (error 'interp-and "Break!")]
+    [ContinueA (s) (error 'interp-and "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
 ;;  get-uid returns the uid for any type that has one
 (define (get-uid [v : CVal]) : Uid
   (type-case CVal v
-    [VClosure (e a varg b defargs uid) uid]
-    ;[VList (elts uid) uid]
-    ;[VDict (elts uid) uid]
+    [VClosure (e a varg b defargs uid classmethod) uid]
     [VHash (elts uid type) uid]
     [else (error 'get-uid "should not use get-uid for types that do not have Uid's")]))
 
@@ -600,33 +656,16 @@
                         [VStr (str1) (if (equal? v1 v2)
                                          (ValueA (VTrue) s2)
                                          (ValueA (VFalse) s2))]
-                        [else (if (equal? (get-uid v1) (get-uid v2))
-                                  (ValueA (VTrue) s2)
-                                  (ValueA (VFalse) s2))])]
+                        [else (try (if (equal? (get-uid v1) (get-uid v2))
+                                       (ValueA (VTrue) s2)
+                                       (ValueA (VFalse) s2))
+                                   (lambda () (ValueA (VFalse) s2)))])]
+              [BreakA (v s) (error 'interp-is "Break!")]
+              [ContinueA (s) (error 'interp-is "Continue!")]
               [ExceptionA (v s) (ExceptionA v s)]
               [ReturnA (v2 s2) (ReturnA v2 s2)])]
-    [ExceptionA (v s) (ExceptionA v s)]
-    [ReturnA (v1 s1) (ReturnA v1 s1)]))
-
-;;'is not' returns true if e1 and e2 are not the same object in python
-(define (interp-isNot [e1 : CExp]
-                      [e2 : CExp]
-                      [env : Env]
-                      [store : Store]) : AnswerC
-  (type-case AnswerC (interp-env e1 env store)
-    [ValueA (v1 s1)
-            (type-case AnswerC (interp-env e2 env s1)
-              [ValueA (v2 s2)
-                      (type-case CVal v1
-                        [VNum (n1) (type-case CVal v2
-                                     [VNum (n2) (if (equal? n1 n2)
-                                                    (ValueA (VFalse) s2)
-                                                    (ValueA (VTrue) s2))]
-                                     [else (ValueA (VTrue) s2)])]
-                        [else (error 'interp-isNot (string-append "comparison not valid for arguments of this type" 
-                                                                  (string-append (to-string v1) (to-string v2))))])]
-              [ExceptionA (v s) (ExceptionA v s)]
-              [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [BreakA (v s) (error 'interp-is "Break!")]
+    [ContinueA (s) (error 'interp-is "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
@@ -637,6 +676,14 @@
                      [none () (error 'hash-values "This exists...")]
                      [some (v) v])) (hash-keys h)))
 
+;; convenience function
+(define (is-substring (str1 : string) (str2 : string) (index : number)) : boolean
+  (cond
+    [(>= (+ index (string-length str1)) (string-length str2)) (equal? (substring str2 index (+ (string-length str1) index)) str1)]
+    [else (if (equal? (substring str2 index (+ (string-length str1) index)) str1)
+              #t
+              (is-substring str1 str2 (+ index 1)))]))
+
 
 ;; interp-in
 (define (interp-in (left : CExp) (right : CExp) (env : Env) (store : Store)) : AnswerC
@@ -646,30 +693,27 @@
               [ValueA (v2 s2)
                       (type-case CVal v2
                         [VStr (str2) (type-case CVal v1
-                                       [VStr (str1) (if false ;; False, so that it typechecks. Need actual
-                                                        (ValueA (VTrue) s2) ;; condition. 
+                                       [VStr (str1) (if (is-substring str1 str2 0) ;;
+                                                        (ValueA (VTrue) s2)  
                                                         (ValueA (VFalse) s2))]
                                        [else (error 'interp-in "\"in\" not valid for these (differing?) types")])]
-                        #|
-                        [VList (elts uid) (if (member v1 (hash-values elts))
-                                              (ValueA (VTrue) s2)
-                                              (ValueA (VFalse) s2))]
-                        [VDict (elts uid) (if (member v1 (hash-keys elts))
-                                              (ValueA (VTrue) s2)
-                                              (ValueA (VFalse) s2))]
-                        |#
                         [VHash (elts-box uid type) 
                                (cond 
-                                 [(equal? (Type-name type) "dict") (if (member v1 (hash-keys (unbox elts-box)))
+                                 [(equal? (Type-name type) "_dict") (if (member v1 (hash-keys (unbox elts-box)))
                                                                        (ValueA (VTrue) s2)
                                                                        (ValueA (VFalse) s2))]
                                  [(or (equal? (Type-name type) "list")
-                                      (equal? (Type-name type) "tuple")) (if (member v1 (hash-values (unbox elts-box)))
+                                      (equal? (Type-name type) "tuple")
+                                      (equal? (Type-name type) "set")) (if (member v1 (hash-values (unbox elts-box)))
                                                                              (ValueA (VTrue) s2)
                                                                              (ValueA (VFalse) s2))])]
                         [else (error 'interp-in "\"in\" is not valid for arguments of this type (yet?)")])]
+              [BreakA (v s) (error 'interp-in "Break!")]
+              [ContinueA (s) (error 'interp-in "Continue!")]
               [ExceptionA (v s) (ExceptionA v s)]
               [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [BreakA (v s) (error 'interp-in "Break!")]
+    [ContinueA (s) (error 'interp-in "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
@@ -681,9 +725,14 @@
                                         [VHash (elts-box1 uid1 type1) (type-case CVal v2
                                                  [VHash (elts-box2 uid2 type2) (ValueA (VHash (box (merge-python-lists v1 v2)) (new-uid) type1) s2)]
                                                  [else (error 'merge-listy-things "This also should never happen. ")])]
-                                        [else (error 'merge-listy-things "This should never happen. ")])]
+                                        [else (error 'merge-listy-things (string-append "This should never happen. "
+                                                                                        (to-string v1)))])]
+                      [BreakA (v s) (error 'merge-listy-things "Break!")]
+                      [ContinueA (s) (error 'merge-listy-things "Continue!")]
                       [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                       [ReturnA (v2 s2) (ReturnA v2 s2)])]
+    [BreakA (v s) (error 'merge-listy-things "Break!")]
+    [ContinueA (s) (error 'merge-listy-things "Continue!")]
     [ExceptionA (v1 s1) (ExceptionA v1 s1)]
     [ReturnA (v1 s1) (ReturnA v1 s1)]))
 
@@ -692,7 +741,7 @@
 ;; isTruthy returns false if the CVal value is False to python
 ;; and true otherwise
 (define (isTruthy [value : CVal]) : boolean
-  ;;JUST A STUB!!!!!!!!!!! - We need to finish this ----------------------------------------------;;;;;;;;;;;;;;;;;;;;;;;;
+  ;;We need to finish this ----------
   (type-case CVal value
     [VTrue () true]
     [VNum (n)
@@ -707,30 +756,14 @@
            (cond
              [(and (or (equal? (Type-name t) "list")
                        (or (equal? (Type-name t) "tuple")
-                           (equal? (Type-name t) "dict"))) (empty? (hash-keys (unbox elts)))) false]
+                           (equal? (Type-name t) "_dict"))) (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
+                                                             [none () (error 'isTruthy (string-append "Does not have size field:"
+                                                                                                      (to-string value)))]
+                                                             [some (s) (= (VNum-n s) 0)])) false]
              [else true])]
-    [VClosure (e a varg body defargs uid) true]
-    #|
-    [VList (elts uid)-keys 
-           (if (empty? (hash-keys elts))
-               false
-               true)]
-    [VDict (elts uid)
-           (if (empty? (hash-keys elts))
-               false
-               true)]
-    |#
+    [VClosure (e a varg body defargs uid classmethod) true]
     [else false]))
 
-
-;; TODO should just import these from desugar...
-;(define (range [n : number]) : (listof number)
-;  (reverse (range-backwards n)))
-
-;(define (range-backwards [n : number]) : (listof number)
-;  (cond
-;    [(<= n 0) empty]
-;    [else (cons (- n 1) (range-backwards (- n 1)))]))
 
 (define (make-new-map [keys : (listof CVal)] [vals : (listof CVal)]) : (hashof CVal CVal)
   (cond 
@@ -744,10 +777,21 @@
                 (map (lambda (x) (VStr (list->string (list x)))) (string->list s))))
 
 
+;; adds an element to set's hash map only if it isn't already there
+(define (set-no-duplicates [lst : (listof CVal)]) : (hashof CVal CVal)
+  (cond
+    [(empty? lst) (hash (list))]
+    [else (local [(define rec (set-no-duplicates (rest lst)))]
+            (if (foldl (lambda (x y) (or y (check-equality x (first lst)))) #f (hash-values rec))
+                rec
+                (hash-set (set-no-duplicates (rest lst)) (first lst) (first lst))))]))
+    
+
+
 ;; handle unary operations - akin to handle-op
 (define (handle-unary [prim : symbol] [arg : CVal] [env : Env] [store : Store]) : CVal
   (case prim
-    ['print (begin (display (pretty arg)) arg)]
+    ['print (begin (display (string-append (pretty arg) "\n")) arg)]
     ['not (if (isTruthy arg) (VFalse) (VTrue))]
     ['negative (type-case CVal arg
                  [VNum (n) (VNum (- 0 n))] ;; gotta be a better way...
@@ -758,9 +802,6 @@
     ['tagof (VStr (get-tag arg))]
     ['length (type-case CVal arg
                [VStr (str) (VNum (string-length str))]
-               ;[VList (elts uid) (VNum (length (hash-keys elts)))]
-               ;[VDict (elts uid) (VNum (length (hash-keys elts)))]
-               ;[VTuple (elts uid) (VNum (length (hash-keys elts)))]
                [VHash (elts uid t) (VNum (length (hash-keys (unbox elts))))]
                [else (error 'interp-length "Should only be called on strings, lists, dicts and tuples.")])]
     ['to-bool (if (isTruthy arg) (VTrue) (VFalse))]
@@ -778,25 +819,68 @@
                [VStr (s) (error 'interp-to-num "String to Num not implemented yet.")]
                [else (error 'interp-to-num "Should not be called on this type.")])]
     ['to-list (type-case CVal arg
-                [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
-                                      ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
-                                           (VHash (box (unbox elts)) (new-uid) (transform-ctype (cType "list" (CId 'list)) env store))
-                                           (error 'interp-to-list "arguments of this type are not supported"))]
-                [VStr (s) (VHash (box (change-string-to-list s)) (new-uid) (transform-ctype (cType "list" (CId 'list)) env store))] ;; string to list
+                [VHash (elts uid type) (cond 
+                                         [(or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
+                                           ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
+                                           (VHash (box (hash-set (unbox elts) 
+                                                                 (VStr "__size__") 
+                                                                 (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
+                                                                   [some (s) s]
+                                                                   [none () (error 'interp-to-list "no __size__ field")]))) 
+                                                  (new-uid) 
+                                                  (transform-ctype (cType "list" (CId 'list)) env store))]
+                                         [(equal? (get-tag arg) "set") 
+                                          (VHash (box (hash-set (make-new-map (vnum-range (+ 0 (length (hash-keys (unbox elts)))))
+                                                                              (hash-values (unbox elts)))
+                                                                (VStr "__size__")
+                                                                (VNum (length (hash-keys (unbox elts))))))
+                                                 (new-uid)
+                                                 (transform-ctype (cType "list" (CId 'list)) env store))]
+                                           [else (error 'interp-to-list "arguments of this type are not supported")])]
+                [VStr (s) (VHash (box (hash-set (change-string-to-list s) (VStr "__size__") (VNum (string-length s)))) 
+                                 (new-uid) 
+                                 (transform-ctype (cType "list" (CId 'list)) env store))] ;; string to list
                 [else (error 'interp-to-list "Unsupported Type")])]
     ['to-tuple (type-case CVal arg
                  [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
-                                       ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
-                                            (VHash (box (unbox elts)) (new-uid) (transform-ctype (cType "tuple" (CId 'tuple)) env store))
-                                            (error 'interp-to-list "arguments of this type are not supported"))]
-                 [VStr (s) (VHash (box (change-string-to-list s)) (new-uid) (transform-ctype (cType "tuple" (CId 'tuple)) env store))] ;; string to list
+                                            ;(if (or (isInstanceOf arg (Type "list" (CNone))) (isInstanceOf arg (Type "tuple" (CNone))))
+                                            (VHash (box (hash-set (unbox elts) 
+                                                                  (VStr "__size__") 
+                                                                  (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
+                                                                    [some (s) s]
+                                                                    [none () (error 'interp-to-tuple "no __size__ field")])))
+                                                   (new-uid) 
+                                                   (transform-ctype (cType "tuple" (CId 'tuple)) env store))
+                                            (error 'interp-to-tuple "arguments of this type are not supported"))]
+                 [VStr (s) (VHash (box (hash-set (change-string-to-list s) (VStr "__size__") (VNum (string-length s)))) 
+                                  (new-uid) 
+                                  (transform-ctype (cType "tuple" (CId 'tuple)) env store))] ;; string to list
                  [else (error 'interp-to-list "Unsupported Type")])]
+    ['to-set (type-case CVal arg
+               [VHash (elts uid type) (if (or (equal? (get-tag arg) "list") (equal? (get-tag arg) "tuple"))
+                                          (VHash (box (local [(define sz (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__size__"))
+                                                                           [some (s) (VNum-n s)] ;; TODO could be unsafe...
+                                                                           [none () (error 'interp-to-set "List without a size field")]))] ;; TODO don't add duplicates by check-equality!
+                                                        (set-no-duplicates (map (lambda (x) (local [(define v (type-case (optionof CVal) (hash-ref (unbox elts) x)
+                                                                                                                [some (sv) sv]
+                                                                                                                [none () (error 'interp-to-set "List or tuple with a missing element")]))]
+                                                                                              v)) (vnum-range sz)))))
+                                                 (new-uid)
+                                                 (transform-ctype (cType "set" (CId 'set)) env store))
+                                          (error 'interp-to-set "Arguments of this type aren't supported here. "))]
+               [VStr (s) (error 'interp-to-set "We weren't expecting to need this case...")]
+               [else (error 'interp-to-set "Unsupported Type")])]
+    ['_locals (make-localsfunc-dict arg env store)];(lookupStore (lookupVar 'varLocals env) store)]
+    ['_localsClass (make-localsclass-list arg env store)]
+    ['_super (Type-baseType (VHash-type (lookupStore (lookupVar (string->symbol (VStr-s arg)) env) store)))]
     [else (error prim "handle-unary: Case not handled yet")]))
 
 ;; wrapper around unary operations
 (define (interp-unary [prim : symbol] [arg : CExp] [env : Env] [store : Store]) : AnswerC
   (type-case AnswerC (interp-env arg env store)
     [ValueA (v s) (ValueA (handle-unary prim v env s) s)]
+    [BreakA (v s) (error 'interp-unary "Break!")]
+    [ContinueA (s) (error 'interp-unary "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
 
@@ -820,10 +904,16 @@
                                                                           (VHash-uid v3) 
                                                                           type) 
                                                                    s3)]
+                                           [BreakA (v s) (error 'interp-CHash "Break!")]
+                                           [ContinueA (s) (error 'interp-CHash "Continue!")]
                                            [ExceptionA (v3 s3) (ExceptionA v3 s3)]
                                            [ReturnA (v3 s3) (error 'interp-CHash "Shouldn't see a return here...")])]
+                         [BreakA (v s) (error 'interp-CHash "Break!")]
+                         [ContinueA (s) (error 'interp-CHash "Continue!")]
                          [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                          [ReturnA (v2 s2) (error 'interp-CHash "This should never be a return.")])])]
+       [BreakA (v s) (error 'interp-CHash "Break!")]
+       [ContinueA (s) (error 'interp-CHash "Continue!")]
        [ExceptionA (v1 s1) (ExceptionA v1 s1)]
        [ReturnA (v1 s1) (error 'interp-CHash "This should never be a return!!")])]))
 
@@ -848,8 +938,6 @@
                  [none () (error 'get-typesList "a class should have a name")]))]
     [else (list (get-tag obj))]))
 
-;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
-;; -------------------------------------------------------------HAVE TO ADAPT THIS TO INHERITANCE WHEN IT COMES THE TIME-------------------------
 ;; isInstanceOf checks whether 'obj' is of the same type or of one of the base types of 'type'
 (define (isInstanceOf [obj : CVal]
                       [type : string]
@@ -870,19 +958,15 @@
                                                        (ValueA (VTrue) s2)
                                                        (ValueA (VFalse) s2))]
                                         [else (error 'interp-isinstance "This error should not appear.")])]
+                      [BreakA (v s) (error 'interp-isi-instance "Break!")]
+                      [ContinueA (s) (error 'interp-is-instance "Continue!")]
                       [ExceptionA (v s) (ExceptionA v s)]
                       [ReturnA (v s) (ReturnA v s)])]
+    [BreakA (v s) (error 'interp-is-instance "Break!")]
+    [ContinueA (s) (error 'interp-is-instance "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
                            
-
-;; NOT NECSSARY ANYMORE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-;; helper function that interps a CExp (that is supposed to be a VHash) to a type
-(define (CExpToType [type : CExp]
-                    [env : Env]
-                    [store : Store]) : VType
-  (VHash-type (lookupStore (lookupVar (CId-x type) env) store)))
-
 ;; TODO This needs to be adapted to work with integers and other primitive types as well...
 
 ;; hasMatchingException checks whether any of the except clauses deal with the raised object
@@ -906,10 +990,6 @@
              (hasMatchingException exc (rest handlers) env store)))]))
 
 
-
-;; THIS DOES NOT CATCH THE CORRECT EXCEPTION YET!!!!! WE NEED TO IMPLEMENT TYPES BEFORE WE DO THIS. FOR NOW, WE JUST MATCH THE FIRST RESULT
-;; THIS ALSO DOES NOT IMPLEMENT THE BINDING OF THE NAME WITH THE TYPE
-;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 (define (interp-handlers [handlers : (listof CExceptionHandler)] [val : CVal] [env : Env] [store : Store]) : AnswerC 
   (cond
     [(empty? handlers) (ExceptionA val store)]
@@ -919,11 +999,7 @@
                             (interp-env (CExcHandler-body (first handlers)) 
                                       (augmentEnv (CExcHandler-name (first handlers)) (values (Local) location) env) 
                                       (augmentStore location val store))))]))
-     
-     
-     
-     
-  ;   (interp-env (CExcHandler-body (first handlers)) env store)]))
+
 
 ;; getAttr gets the attribute from an object (VHash) -----------------------------------------------------------throw an exception instead of an error
 (define (getAttr [attr : CVal]
@@ -941,32 +1017,10 @@
                                                  [VNone () (error 'getAttr (string-append "non-existent attribute, Unbound Identifier: " (to-string attr)))]
                                                  [VHash (elts uid t) (Type-baseType type)]
                                                  [else (error 'getAttr "a class has something other than a VNone or a VHash as its baseType")])
-                                               ;|#
-                                               #|
-                                               (if (not (equal? (Type-name type) "class"))
-                                                   ;;if we're not looking in a 'class object', we search for the attribute in the class of the object
-                                                   (lookupStore (lookupVar (string->symbol (Type-name type)) env) store)
-                                                   ;;else, we check if we're in a top-level class or if it inherits from another class
-                                                   (if (equal? (Type-baseType type) (VNone))
-                                                       (error 'getAttr (string-append "non-existent attribute, Unbound Identifier: " (symbol->string attr)))
-                                                       ;;here, we assume that the tests just pass CId's to class constructors.
-                                                       (type-case CExp (Type-baseType type)
-                                                         [CId (id) (lookupStore (lookupVar id env) store)]
-                                                         [else (error 'getAttr "a class has something other than a CId as its baseType")])))
-                                               ;|#
                                                env
                                                store)])]
-    ;[VClass (elts type) (type-case (optionof CVal) (hash-ref elts (VStr (symbol->string attr)))
-    ;                      [none () (error 'getAttr "non-existent attribute")]
-    ;                      [some (v) v])]
+    
     [else (error 'getAttr "tried to get attribute from non-object")]))
-
-
-;(define-type DefArgHolder
-
-
-;; 
-;(define (interp-defargs [defargs : (listof CExp)] [env : Env] [store : Store]) : DefArgHolder
 
 
 (define (interp-func [args : (listof symbol)]
@@ -975,18 +1029,23 @@
                      [vlist : (listof (ScopeType * symbol))]
                      [defargs : (listof CExp)] 
                      [defvals : (listof CVal)]
+                     [classmethod : boolean]
                      [env : Env]
                      [store : Store]) : AnswerC
   (cond 
-    [(empty? defargs) (ValueA (VClosure (newEnvScope env vlist args vararg) 
-                                        args 
-                                        vararg
-                                        body 
-                                        (reverse defvals) 
-                                        (new-uid)) 
-                              store)]
+    [(empty? defargs) 
+     (ValueA (VClosure (newEnvScope env vlist args vararg) 
+                       args 
+                       vararg
+                       body 
+                       (reverse defvals) 
+                       (new-uid)
+                       classmethod) 
+             store)]
     [else (type-case AnswerC (interp-env (first defargs) env store)
-            [ValueA (v s) (interp-func args vararg body vlist (rest defargs) (cons v defvals) env s)]
+            [ValueA (v s) (interp-func args vararg body vlist (rest defargs) (cons v defvals) classmethod env s)]
+            [BreakA (v s) (error 'interp-func "Break!")]
+            [ContinueA (s) (error 'interp-func "Continue!")]
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (error 'interp-func "I don't think this should even happen.")])]))
 
@@ -1039,8 +1098,7 @@
   (if (member (CUnbound) (drop-right argsList nDefArgs))
       false
       true))
-      ;(error 'group-arguments "missing argument: throw TypeError exception")
-      ;argsList))
+      
 
 ;; group-arguments create a list of arguments in the correct order from the list of positional args, keyword args and the number of existing default args.
 ;; if varargid is different from 'no-vararg, adds a new argument to the list of arguments, that is a list containing the positional arguments in excess
@@ -1083,57 +1141,15 @@
                                      groupedArgs
                                      (drop-right groupedArgs 1)))
            groupedArgs
-           ;(try
-            (error 'group-arguments "arity mismatch - missing argument: throw TypeError exception")))]))
-            ;(lambda () (error 'group-arguments "pegou essa porra")))))]))
-#|
-(define (group-arguments [ids : (listof symbol)]
-                         [varargid : symbol]
-                         [args : (listof CExp)]
-                         [keywargs : (listof (symbol * CExp))]
-                         [nDefArgs : number]
-                         [nStarArgs : number]
-                         [argList : (hashof symbol CExp)]
-                         [varargs : (listof CExp)]) : (listof CExp)
-  (cond
-    [(and (< (length ids) (length args)) (equal? varargid 'no-vararg))
-     (error 'group-arguments "arity mismatch: more arguments than function can handle. Should throw TypeError exception.")]
-    [(not (empty? args))
-     (group-arguments ids
-                      varargid
-                      (list)
-                      keywargs
-                      nDefArgs
-                      nStarArgs
-                      (group-positional-arguments ids args)
-                      (if (< (length ids) (length args))
-                          (list-tail args (length ids))
-                          (list)))]
-    [(not (empty? keywargs))
-     (group-arguments ids
-                      varargid
-                      (list)
-                      (list)
-                      nDefArgs
-                      nStarArgs
-                      (group-keyword-arguments ids keywargs argList)
-                      varargs)]
-    [else
-     (let [(groupedArgs (group-all-arguments ids
-                                             argList
-                                             varargid
-                                             varargs))]
-       (group-check-defaults ids
-                             nDefArgs
-                             (drop-right (if (equal? varargid 'no-vararg)
-                                             groupedArgs
-                                             (drop-right groupedArgs 1)) nStarArgs)))]))
-
-|#
+           (error 'group-arguments "arity mismatch - missing argument: throw TypeError exception")))]))
+            
 ;; helper functions to create ranges of numbers
 ;###########################
 (define (cnum-range [n : number]) : (listof CExp)
   (map (lambda (x) (CNum x)) (range2 n)))
+
+(define (vnum-range [n : number]) : (listof CVal)
+  (map (lambda (x) (VNum x)) (range2 n)))
 
 (define (range2 [n : number]) : (listof number)
   (reverse (range-backwards n)))
@@ -1154,14 +1170,23 @@
   (CHash (create-hash (cnum-range (length exps)) exps) (cType "list" (CId 'list))))
 
 
+(define (interp-inside-class [expr : CExp] [envInstance : Env] [env : Env] [store : Store]) : AnswerC
+  (type-case CExp expr
+    [CFunc (args body vlist defargs classmethod vararg) (interp-func args vararg body vlist defargs (list) classmethod env store)]
+    [else (interp-env expr envInstance store)]))
+
+
 ;; create a new class
 ;; THIS IS A VERY IMPORTANT FUNCTION!
 (define (interp-create-class [name : symbol]
                              [body : CExp]
                              [env : Env]
+                         ;    [envWithout : Env]
                              [store : Store]) : AnswerC
   (type-case AnswerC (interp-env body env store)
     [ValueA (v s) (fill-class-object name env s)]
+    [BreakA (v s) (error 'interp-create-class "Break!")]
+    [ContinueA (s) (error 'interp-create-class "Continue!")] ;; TODO really?
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ExceptionA (VStr "A class should not return") s)]))
 
@@ -1176,20 +1201,26 @@
            (ValueA (VUnbound)
                    (foldl (lambda (localVar s)
                             (begin (set-box! elts (hash-set (unbox elts)
-                                                           (VStr (symbol->string localVar)) 
-                                                           (lookupStore (lookupEnv localVar env) s))) 
+                                                            (VStr (symbol->string localVar)) 
+                                                            (lookupStore (lookupEnv localVar env) s))) 
                                    s))
-                           ; (augmentStore (lookupVar name env)
-                                      ;    (VHash (hash-set (unbox (VHash-elts (lookupStore (lookupVar name env) s)))
-                                      ;                     (VStr (symbol->string localVar)) 
-                                      ;                     (lookupStore (lookupEnv localVar env) s))
-                                      ;           uid 
-                                      ;           type)
-                                      ;    s))
                           store
-                          (getLocals env)))] ;; TODO methods aren't working. 
+                          (getLocals env)))] ;; ADDED for freevar-in-method
     [else (error 'fill-class-object "when filling a class object, it should be a VHash, not anything else")]))
   
+
+;; get instance vars
+;; ADDED for freevar-in-method
+(define (getInstanceVars [env : Env]) : (listof symbol)
+  (filter (lambda (key)
+            (type-case (optionof SLTuple) (hash-ref env key)
+              [some (v) (local [(define-values (t l) v)]
+                          (type-case ScopeType t
+                          ;  [Instance () true]
+                            [Local () true]
+                            [else false]))]
+              [none () (error 'fill-class-object "something terrible has happened. ")]))
+          (hash-keys env)))
 
 ;;getLocals
 (define (getLocals [env : Env]) : (listof symbol)
@@ -1202,6 +1233,16 @@
               [none () (error 'fill-class-object "this is just plain wrong, I always should find a value for keys from hash-keys")]))
           (hash-keys env)))
    
+;;getNonLocals
+(define (getNonLocals [env : Env]) : (listof symbol)
+  (filter (lambda (key) 
+            (type-case (optionof SLTuple) (hash-ref env key)
+              [some (v) (local [(define-values (t l) v)]
+                          (type-case ScopeType t
+                            [NonLocal () true]
+                            [else false]))]
+              [none () (error 'fill-class-object "this is just plain wrong, I always should find a value for keys from hash-keys")]))
+          (hash-keys env)))
 
 ;; interp application
 (define (interp-VClosure-App [e : Env] 
@@ -1220,12 +1261,10 @@
                              (let ([_grouped-args (try (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
                                                        (lambda () (list (CId '__group-arguments-exception))))])
                                (if (and (not (empty? _grouped-args)) (CId? (first _grouped-args)) (equal? (CId-x (first _grouped-args)) '__group-arguments-exception))
-                                   (interp-env (CError (CApp (CId 'TypeError)
-                                                             (list)
-                                                             (list)
-                                                             (CHash (hash (list)) (cType "list" (CNone)))))
+                                   (interp-env (CError (Make-throw 'TypeError "Something is up with the arguments..."))
                                                env
                                                sh)
+
                                    (interp-args-CApp b   
                                                      env
                                                      e
@@ -1235,33 +1274,15 @@
                                                          (append a (list varg))
                                                          a)
                                                      (group-arguments a varg args keywargs (length defargs) (hash (list)) (list))
-                                                     #|
-                                                                             (group-arguments a 
-                                                                                              varg 
-                                                                                              args
-                                                                                              ;(append args (collapse-chash-args star 0))
-                                                                                              keywargs 
-                                                                                              (length defargs)
-                                                                                              (length (reverse (collapse-vhash-args vh 0)))
-                                                                                              (hash (list)) 
-                                                                                              (list-tail args (- (length a) (length defargs))))
-                                                                             |#
                                                      (list)
                                                      defargs
                                                      ;star
                                                      )))]
                       [else (error 'interp-args-CApp "needs a hash, because star should be a list")])]
+    [BreakA (v s) (error 'interp-VClosure-App "Break!")]
+    [ContinueA (s) (error 'interp-VClosure-App "Continue!")]
     [ExceptionA (v s) (ExceptionA v s)]
     [ReturnA (v s) (ReturnA v s)]))
-
-;(define (collapse-and-interp [chash : CExp] 
-;                             [n : number] 
-;                             [env : Env] 
-;                             [store : Store]) : (listof CVal)
-;  (type-case 
-
-
-;   [else (cons (hash-ref (CHash-elts chash) (CNum n)) (collapse-chash-args chash (+ n 1)))]))
 
 (define (transform-ctype [ctype : CType]
                          [env : Env]
@@ -1288,6 +1309,62 @@
             [else (error 'correct-list-subscript "non-Int passed as subscript for a list")])]
     [else (error 'correct-list-subscript "non-VNum passed as subscript for a list")]))
 
+(define (interp-delete [targets : (listof CExp)]
+                       [env : Env]
+                       [store : Store]) : Store
+  (cond
+    [(empty? targets) store]
+    [else
+     (type-case CExp (first targets)
+       [CId (id) (interp-delete (rest targets) env (augmentStore (lookupEnv id env) (VUnbound) store))]
+       [CSubscript (value attr)
+                   (type-case AnswerC (interp-env value env store)
+                     [ValueA (v1 s1) (type-case AnswerC (interp-env attr env s1)
+                                       [ValueA (v2 s2) (if (isInstanceOf v1 "_dict" env s2)
+                                                           (begin (set-box! (VHash-elts v1) (hash-set (hash-remove (unbox (VHash-elts v1)) v2)
+                                                                                                      (VStr "__size__")
+                                                                                                      (VNum (- (VNum-n (getAttr (VStr "__size__") v1 env s2)) 1))))
+                                                                  (set-box! (VHash-elts (getAttr (VStr "__keys__") v1 env s2))
+                                                                            (hash-remove (unbox (VHash-elts (getAttr (VStr "__keys__") v1 env s2)))
+                                                                                         v2))
+                                                                  (interp-delete (rest targets) env s2))
+                                                           (error 'interp-delete "we're not expecting to get anything but dictionaries and ids for delete"))]
+                                       [else (error 'interp-delete "we expect that all attributes being deleted in the tests to be ValueA's")])]
+                     [else (error 'interp-delete "we expect that all values being deleted in the tests to be ValueA's")])]
+       [else (error 'interp-delete "we expect that delete will only receive CId's or dictionaries (CSubscript's)")])]))
+
+(define (make-localsclass-list [arg : CVal]
+                               [env : Env]
+                               [store : Store]) : CVal
+  (getAttr (VStr "__dict__") (lookupStore (lookupVar (string->symbol (VStr-s arg)) env) store) env store))
+
+(define (make-localsfunc-dict [arg : CVal]
+                              [env : Env]
+                              [store : Store]) : CVal
+  (ValueA-value (interp-env (desugar (PyDict (map (lambda (arg) (PyHolder (CHolder arg))) (fill-localsfunc-dict-keys (list) (VSymbolList-lst arg)))
+                                             (map (lambda (arg) (PyHolder (CHolder arg))) (fill-localsfunc-dict-values (list) (VSymbolList-lst arg) env store))))
+                                             
+                            env 
+                            store)))
+
+(define (fill-localsfunc-dict-values [currentList : (listof CVal)]
+                                     [localsList : (listof symbol)]
+                                     [env : Env]
+                                     [store : Store]) : (listof CVal)
+  (cond
+    [(empty? localsList) currentList]
+    [else (fill-localsfunc-dict-values (append currentList (list (lookupStore (lookupEnv (first localsList) env) store)))
+                                       (rest localsList)
+                                       env
+                                       store)]))
+
+(define (fill-localsfunc-dict-keys [currentList : (listof CVal)]
+                                   [localsList : (listof symbol)]) : (listof CVal)
+  (cond
+    [(empty? localsList) currentList]
+    [else (fill-localsfunc-dict-keys (append currentList (list (VStr (symbol->string (first localsList)))))
+                                     (rest localsList))]))
+
 ;; interp-env
 (define (interp-env [expr : CExp] 
                     [env : Env] 
@@ -1298,19 +1375,59 @@
     [CTrue () (ValueA (VTrue) store)]
     
     [CError (e) (type-case AnswerC (interp-env e env store)
-                  [ValueA (v s) (ExceptionA v s)]
+                  [ValueA (v s) (type-case CVal v
+                                  [VNone () (type-case CVal (unbox exn-to-reraise)
+                                                          [VUnbound () (interp-env (CError (CApp (CId 'RuntimeError)
+                                                                                                 (list (CStr "No active exception")) ;; TODO this needs to take an argument...
+                                                                                                 (list)
+                                                                                                 (Empty-list))) 
+                                                                                   env 
+                                                                                   s)]
+                                                          [else (ExceptionA (unbox exn-to-reraise) s)])]
+                                  [VUnbound () (interp-env (CError (CApp (CId 'RuntimeError)
+                                                                         (list (CStr "No active exception")) ;; TODO this needs to take an argument...
+                                                                         (list)
+                                                                         (Empty-list))) 
+                                                           env 
+                                                           s)]
+                                  [else (begin (set-box! exn-to-reraise v)
+                                               (ExceptionA v s))])]
+                  [BreakA (v s) (error 'CError "Should not have a break here")]
+                  [ContinueA (s) (error 'CError "Should not have a continue here")]
                   [ExceptionA (v s) (ExceptionA v s)]
                   [ReturnA (v s) (error 'CError "should not get a Return statement when raising something")])]
-    ;(error 'interp (pretty (ValueA-value (interp-env e env store))))] ;; exception
     
     [CReturn (value) (type-case AnswerC (interp-env value env store)
                        [ValueA (v s) (ReturnA v s)]
+                       [BreakA (v s) (error 'CReturn "Should not have a break here")]
+                       [ContinueA (s) (error 'CReturn "Should not have a continue here")]
                        [ExceptionA (v s) (ExceptionA v s)]
                        [ReturnA (v s) (error 'interp "Return statement inside of Return...")])]
     
+    [CBreak () (BreakA (VPass) store)] ;; TODO change this?
+    [CContinue () (ContinueA store)]
+    
     
     [CId (x) 
-         (ValueA (lookupStore (lookupVar x env) store) store)]
+         (let ([_location (try (lookupVar x env)
+                               (lambda () -10090))])
+           (if (equal? _location -10090)
+               (interp-env (CError (CApp (CId 'NameError)
+                                                    (list (CStr (string-append ": " (symbol->string x))))
+                                                    (list)
+                                                    (CHash (hash (list)) (cType "list" (CId 'list)))))
+                                      env
+                                      store)
+               (let ([_val (try (lookupStore (lookupVar x env) store)
+                                (lambda () (VNum -10090)))])
+                 (if (equal? _val (VNum -10090))
+                     (interp-env (CError (CApp (CId 'UnboundLocalError)
+                                                          (list (CStr (string-append ": " (symbol->string x))))
+                                                          (list)
+                                                          (CHash (hash (list)) (cType "list" (CId 'list)))))
+                                            env
+                                            store)
+                     (ValueA (lookupStore (lookupVar x env) store) store)))))]
     
     [CLet (id scopeType bind body)
           (type-case AnswerC (interp-env bind env store)
@@ -1321,6 +1438,8 @@
                                   (augmentStore newLocation 
                                                 v
                                                 s)))]
+            [BreakA (v s) (BreakA v s)]
+            [ContinueA (s) (ContinueA s)] ;; TODO really?
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (ReturnA v s)])] ;; This is a bit suspicious...
     
@@ -1329,6 +1448,8 @@
           (type-case AnswerC (interp-env e1 env store)
             [ValueA (v s)
                     (interp-env e2 env s)]
+            [BreakA (v s) (BreakA v s)]
+            [ContinueA (s) (ContinueA s)]
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (ReturnA v s)])]
     
@@ -1336,9 +1457,11 @@
           (type-case CExp id
             [CId (id-symbol) (type-case AnswerC (interp-env value env store)
                                [ValueA (v s)
-                                       (ValueA v (augmentStore (lookupEnv id-symbol env)
-                                                               v
-                                                               s))]
+                                        (ValueA v (augmentStore (lookupEnv id-symbol env)
+                                                                v
+                                                                s))]
+                               [BreakA (v s) (error 'CSet:CId "Should not have a break here")]
+                               [ContinueA (s) (error 'CSet:CId "Should not have a continue here")]
                                [ExceptionA (v s) (ExceptionA v s)]
                                [ReturnA (v s) (ReturnA v s)])]
             [CAttribute (attr objExpr) 
@@ -1353,13 +1476,14 @@
                                                             (ValueA v2 
                                                                     (begin (set-box! elts (hash-set (unbox elts) (VStr (symbol->string attr)) v2))
                                                                            s2))]
-                                                                    ;
-                                                                    ;(augmentStore (lookupEnv id-symbol env)
-                                                                    ;                 (VHash (set-box! elts (hash-set (unbox elts) (VStr (symbol->string attr)) v2)) uid type)
-                                                                    ;                 s2))]
+                                                                    
+                                                    [BreakA (v s) (error 'CSet:CAttribute "Should not have a break here")]
+                                                    [ContinueA (s) (error 'CSet:CAttribute "Should not have a continue here")]
                                                     [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                                     [ReturnA (v2 s2) (ReturnA v2 s2)])]
                                            [else (error 'CSet "trying to set field of non-object")])]
+                                 [BreakA (v s) (error 'CSet:CAttribute "Should not have a break here")]
+                                 [ContinueA (s) (error 'CSet:CAttribute "Should not have a continue here")]
                                  [ExceptionA (v1 s1) (ExceptionA v1 s1)]
                                  [ReturnA (v1 s1) (ReturnA v1 s1)])]
                           [else (error 'CSet "CAttribute has an expression in the object position")])]
@@ -1375,105 +1499,158 @@
                                                              (type-case CVal v-obj
                                                                [VHash (elts uid type) 
                                                                       (cond
-                                                                        [(isInstanceOf v-obj "list" env s3)
-                                                                         (let ([_listLen (VNum-n (getAttr (VStr "_size_") v-obj env s3))])
+                                                                        [(or (isInstanceOf v-obj "list" env s3) (isInstanceOf v-obj "tuple" env s3))
+                                                                         (let ([_listLen (VNum-n (getAttr (VStr "__size__") v-obj env s3))])
                                                                            (let ([_index (VNum-n (correct-list-subscript v-attr _listLen))])
                                                                              (if (< _listLen _index)
                                                                                  (interp-env (CError (CApp (CId 'IndexError)
                                                                                                            (list)
                                                                                                            (list)
-                                                                                                           (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                                           (Empty-list)))
                                                                                              env
                                                                                              s3)
                                                                                  (ValueA v-value 
                                                                                          (begin (set-box! elts (hash-set (unbox elts) (VNum _index) v-value))
+                                                                                                (set-box! elts (hash-set (unbox elts) (VStr "__size__") (VNum (if (= _listLen _index)
+                                                                                                                                                                  (+ _listLen 1)
+                                                                                                                                                                  _listLen))))
                                                                                                 s3)))))]
-                                                                        [(isInstanceOf v-obj "dict" env s3)
+                                                                        [(isInstanceOf v-obj "_dict" env s3) ;;TODO TODO TODO handle size here...
                                                                          (try (ValueA v-value 
-                                                                                      (begin (set-box! elts (hash-set (unbox elts) v-attr v-value))
-                                                                                             s3))
+                                                                                      (let ([_dictlen (VNum-n (getAttr (VStr "__size__") v-obj env s3))])
+                                                                                        (begin (set-box! elts (hash-set (hash-set (unbox elts) v-attr v-value)
+                                                                                                                        (VStr "__size__")
+                                                                                                                        (type-case (optionof CVal) (hash-ref (unbox elts) v-attr)
+                                                                                                                          [some (s) (VNum _dictlen)]
+                                                                                                                          [none () (VNum (+ _dictlen 1))])))
+                                                                                               (set-box! (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))
+                                                                                                         (hash-set (unbox (VHash-elts (getAttr (VStr "__keys__") v-obj env s3))) 
+                                                                                                                   v-attr
+                                                                                                                   v-attr))
+                                                                                               s3)))
                                                                               (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
                                                                                                                    (list)
                                                                                                                    (list)
-                                                                                                                   (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                                                   (CHash (hash (list)) (cType "list" (CId 'list)))))
                                                                                                      env
                                                                                                      s3)))]
                                                                         [else (interp-env (CError (CStr "tried to get a subscript from a non-list, non-dictionary")) env s3)])]
                                                                [else (error 'CSet "trying to set field of non-object")])]
+                                                     [BreakA (v s) (error 'CSet:CSubscript "Should not have a break here")]
+                                                     [ContinueA (s) (error 'CSet:CSubscript "Should not have a continue here")]
                                                      [ExceptionA (v3 s3) (ExceptionA v3 s3)]
                                                      [ReturnA (v3 s3) (error 'CSubscript "should not get a return statement when evaluating the assigned value")])]
+                                           [BreakA (v s) (error 'CSet:CSubscript "Should not have a break here")]
+                                           [ContinueA (s) (error 'CSet:CSubscript "Should not have a continue here")]
                                            [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                            [ReturnA (v2 s2) (error 'CSubscript "should not get a return statement when evaluating the attribute")])]
+                                 [BreakA (v s) (error 'CSet:CSubscript "Should not have a break here")]
+                                 [ContinueA (s) (error 'CSet:CSubscript "Should not have a continue here")]
                                  [ExceptionA (v1 s1) (ExceptionA v1 s1)]
                                  [ReturnA (v1 s1) (error 'CSubscript "should not get a return statement when evaluating an object")])]
                           [else (error 'CSet "CSubscript has an expression in the object position")])]
-            [else (error 'interp-CSet "For now, CSet only support ids that are symbols or CAttributes or CSubscripts")])]
+            [else (error 'interp-CSet "For now, CSet only support ids that are symbols or CAttributes or CSubscripts or Tuples")])]
     
     [CApp (func args keywargs star)
           (type-case AnswerC (interp-env func env store)
             [ValueA (vf sf)
                     (type-case CVal vf
-                      [VClosure (e a varg b defargs uid) 
+                      [VClosure (e a varg b defargs uid classmethod) 
                                 (type-case CExp func
                                   [CAttribute (attr value)
                                               (type-case AnswerC (interp-env value env sf)
                                                 [ValueA (v s) (type-case CVal v
                                                                 [VHash (elts uid type) 
                                                                        (if (or (equal? (Type-name type) "class") (equal? (Type-name type) "primitive-class"))
-                                                                           (interp-VClosure-App e a varg b defargs args keywargs star env sf) ;we pass sf because we don't want modifications to be passed
-                                                                           (interp-VClosure-App e a varg b defargs (append (list value) args) keywargs star env sf))]
-                                                                [else (interp-env (CError (CStr "tried to get an attribute from a non-hash")) env s)])]
+                                                                           (interp-VClosure-App e a varg b defargs (if classmethod
+                                                                                                                       (append (list value) args)
+                                                                                                                       args) keywargs star env sf) ;we pass sf because we don't want modifications to be passed
+                                                                           (interp-VClosure-App e a varg b defargs (append (list (if classmethod
+                                                                                                                                     (CHolder (Type-baseType type))
+                                                                                                                                     value)) args) keywargs star env sf))]
+                                                                [else (interp-env (CError (Make-throw 'TypeError "tried to get an attribute from a non-hash")) env s)])]
+                                                [BreakA (v s) (error 'CApp "Should not have a break here")]
+                                                [ContinueA (s) (error 'CApp "Should not have a continue here")]
                                                 [ExceptionA (v s) (ExceptionA v s)]
                                                 [ReturnA (v s) (error 'CAttribute "should not get an attribute from a return expression")])]
+                                  ;;the new store for every function application:
                                   [else (interp-VClosure-App e a varg b defargs args keywargs star env sf)])]
                       
                       [VHash (elts uid type) 
                              (cond 
                                [(equal? (Type-name type) "class")
-                                (ValueA (VHash (box (hash (list)))
-                                               (new-uid)
-                                               (Type (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__name__"))
-                                                       [none () (error 'interp-env:CApp:VHash "Class lacks __name__ field")]
-                                                       [some (so) (type-case CVal so
-                                                                    [VStr (s) s]
-                                                                    [else (error 'interp-env:CApp:VHash "Non-string as name of class")])]) 
-                                                     vf))
-                                        sf)] ;; TODO inheritance...
+                                (let ([new-obj (VHash (box (hash (list (values (VStr "__class__") vf) )))
+                                                      (new-uid)
+                                                      (Type (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__name__"))
+                                                              [none () (error 'interp-env:CApp:VHash "Class lacks __name__ field")]
+                                                              [some (so) (type-case CVal so
+                                                                           [VStr (s) s]
+                                                                           [else (error 'interp-env:CApp:VHash "Non-string as name of class")])]) 
+                                                            vf))])
+                                  (begin
+                                    ;;we call init and then return the new object
+                                    (type-case AnswerC (interp-env (CApp (CAttribute '__init__ (CHolder new-obj)) 
+                                                                         args 
+                                                                         (list) 
+                                                                         (CHash (hash (list (values (CStr "__size__") (CNum 0)))) (cType "list" (CId 'list))))
+                                                                   env 
+                                                                   sf)
+                                      [ValueA (v-init s-init) (ValueA new-obj s-init)]
+                                      [ExceptionA (v-init s-init) (ExceptionA v-init s-init)]
+                                      [else (error 'interp-env:CApp:VHash:__init__ "should not receive anything that is not a ValueA or an ExceptionA")])))]
                                [(equal? (Type-name type) "primitive-class")
                                 (type-case (optionof CVal) (hash-ref (unbox elts) (VStr "__convert__"))
                                   [none () (error 'interp-env:CApp:VHash "Primitive class lacks __convert__ field")]
                                   [some (so)
                                         (type-case CVal so
-                                          [VClosure (e a varg b defargs uid) 
+                                          [VClosure (e a varg b defargs uid classmethod) 
                                                     (interp-VClosure-App e a varg b defargs args keywargs star env sf)]
                                           [else (error 'interp-env:CApp:VHash "Primitive class has non-VClosure as __convert__ field")])])]
                                
                                
                                [else (type-case CVal (getAttr (VStr "__call__") vf env sf) ;; TODO mutation? This is non-mutative...
-                                       [VClosure (e a varg b defargs uid) ;; CNone in line below is to remind us that we need to
+                                       [VClosure (e a varg b defargs uid classmethod) ;; CNone in line below is to remind us that we need to
                                                          ;; modify this portion of the code to allow mutation of object...
                                                          (interp-VClosure-App e a varg b defargs (cons (CNone) args) keywargs star env sf)]
                                        [else (error 'interp-env:CApp:VHash "Class has non-VClosure as __call__ field")])])]
                       
-                      ;;TEMPORARY CASE FOR APPLICATION
-                      [VClass (elts type) (ValueA (VClass elts type) store)]
-                      
-                      [else (error 'CApp (string-append "Applied a non-function and non-hash: " (pretty vf)))])]
+                      [else (interp-env (CError (CApp (CId 'TypeError)
+                                                      (list)
+                                                      (list)
+                                                      (CHash (hash (list)) (cType "list" (CId 'list)))))
+                                        env
+                                        sf)])]
+            [BreakA (v s) (error 'CApp "Should not have a break here")]
+            [ContinueA (s) (error 'CApp "Should not have a continue here")]
             [ExceptionA (v s) (ExceptionA v s)]
             [ReturnA (v s) (ReturnA v s)] ;; or pass???
             )]
-    #|
-    (type-case CVal (interp-env fun env)
-       [VClosure (env argxs body)
-         (local [(define argvs (map (lambda (e) (interp-env e env)) arges))]
-          (interp-env body (bind-args argxs argvs env)))]
-       [else (error 'interp "Not a closure")])]
-    |#
     
-    [CFunc (args body vlist defargs vararg) 
-           (interp-func args vararg body vlist defargs (list) env store)]
-    ;(ValueA (VClosure (newEnvScope env vlist args) args body () (new-uid)) store)] ;; TODO use vlist...
+    [CHolder (hold) (ValueA hold store)]
+    [CWhile (test body orelse vlist)
+            (type-case AnswerC (interp-env test 
+                                           env
+                                           store)
+              [ValueA (v s) (if (isTruthy v)
+                                (type-case AnswerC (interp-env body 
+                                                               env
+                                                               s)
+                                  [ValueA (v2 s2) (interp-env expr env s2)]
+                                  [BreakA (v2 s2) (ValueA v2 s2)]
+                                  [ContinueA (s2) (interp-env expr env s2)] ;; TODO maybe...
+                                  [ExceptionA (v2 s2) (ExceptionA v2 s2)]
+                                  [ReturnA (v2 s2) (ReturnA v2 s2)])
+                                (ValueA (VPass) s))]
+              [BreakA (v s) (error 'interp-CWhile "Why are we breaking from the test in interp CWhile?")]
+              [ContinueA (s) (error 'interp-CWhile "Why are we continuing from the test in interp CWhile?")]
+              [ExceptionA (v s) (ExceptionA v s)]
+              [ReturnA (v s) (error 'interp-CWhile "Why are we returning from the test in interp CWhile?")])]
     
+    [CFunc (args body vlist defargs classmethod vararg) 
+           (interp-func args vararg body vlist defargs (list) classmethod env store)]
+    [CDel (targets)
+          (ValueA (VPass) (interp-delete targets env store))]
+
     [CPrim1 (prim arg) (interp-unary prim arg env store)]
     
     [CPrim2 (op e1 e2)
@@ -1483,7 +1660,7 @@
               ['or (interp-or e1 e2 env store)]
               ['and (interp-and e1 e2 env store)]
               ['is (interp-is e1 e2 env store)] ;; might want to think about these...
-              ['isNot (interp-isNot e1 e2 env store)]
+              ;  ['isNot (interp-isNot e1 e2 env store)]
               ['in (interp-in e1 e2 env store)]
               ['list+ (merge-listy-things e1 e2 env store)]
               ['tuple+ (merge-listy-things e1 e2 env store)]
@@ -1497,6 +1674,8 @@
                    (if (isTruthy v)
                        (interp-env t env s)
                        (interp-env e env s))]
+           [BreakA (v s) (error 'CIf "Should not have a break here")]
+           [ContinueA (s) (error 'CIf "Should not have a continue here")]
            [ExceptionA (v s) (ExceptionA v s)]
            [ReturnA (v s) (ReturnA v s)])]
     [CNone () (ValueA (VNone) store)]
@@ -1511,8 +1690,9 @@
                 (type-case AnswerC (interp-env value env store)
                   [ValueA (v s) (type-case CVal v
                                   [VHash (elts uid type) (ValueA (getAttr (VStr (symbol->string attr)) v env store) s)]
-                                  ;[VClass (elts type) (ValueA (getAttr (VStr (symbol->string attr)) v env store) s)]
-                                  [else (interp-env (CError (CStr "tried to get an attribute from a non-hash")) env s)])]
+                                  [else (interp-env (CError (Make-throw 'TypeError "tried to get an attribute from a non-hash")) env s)])]
+                  [BreakA (v s) (error 'CAttribute "Should not have a break here")]
+                  [ContinueA (s) (error 'CAttribute "Should not have a continue here")]
                   [ExceptionA (v s) (ExceptionA v s)]
                   [ReturnA (v s) (error 'CAttribute "should not get an attribute from a return expression")])]
     [CSubscript (value attr)
@@ -1523,61 +1703,74 @@
                                     (type-case CVal v1
                                       [VHash (elts uid type)
                                              (cond
-                                               [(isInstanceOf v1 "list" env s2)
-                                                (let ([_listLen (VNum-n (getAttr (VStr "_size_") v1 env s2))])
+                                               [(or (isInstanceOf v1 "list" env s2) (isInstanceOf v1 "tuple" env s2))
+                                                (let ([_listLen (VNum-n (getAttr (VStr "__size__") v1 env s2))])
                                                   (let ([_index (VNum-n (correct-list-subscript v2 _listLen))])
-                                                    (if (< _listLen _index)
+                                                    (if 
+                                                     ;(begin (display (string-append (string-append (to-string _listLen) " e index: ") (to-string _index)))
+                                                     (<= _listLen _index);)
                                                         (interp-env (CError (CApp (CId 'IndexError)
                                                                                   (list)
                                                                                   (list)
-                                                                                  (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                  (CHash (hash (list)) (cType "list" (CId 'list)))))
                                                                     env
                                                                     s2)
                                                         (ValueA (getAttr (VNum _index) v1 env s2) s2))))]
-                                               [(isInstanceOf v1 "dict" env s2)
+                                               [(isInstanceOf v1 "_dict" env s2)
                                                 (try (ValueA (getAttr v2 v1 env s2) s2)
                                                      (lambda () (interp-env (CError (CApp (CId 'UnboundLocalError)
                                                                                           (list)
                                                                                           (list)
-                                                                                          (CHash (hash (list)) (cType "list" (CNone)))))
+                                                                                          (CHash (hash (list)) (cType "list" (CId 'list)))))
                                                                             env
                                                                             s2)))]
                                                [else (interp-env (CError (CStr "tried to get a subscript from a non-list, non-dictionary")) env s2)])]
                                       [else (interp-env (CError (CStr "tried to get a subscript from a non-hash CVal")) env s2)])]
+                            [BreakA (v s) (error 'CSubscript "Should not have a break here")]
+                            [ContinueA (s) (error 'CSubscript "Should not have a continue here")]
                             [ExceptionA (v s) (ExceptionA v s)]
                             [ReturnA (v s) (error 'CSubscript "should not get a return expression from a subscript attr")])]
+                  [BreakA (v s) (error 'CSubscript "Should not have a break here")]
+                  [ContinueA (s) (error 'CSubscript "Should not have a continue here")]
                   [ExceptionA (v s) (ExceptionA v s)]
                   [ReturnA (v s) (error 'CSubscript "should not get a return expression from a subscript value")])]
-    #|
-    [CDict (dict) (type-case AnswerC (interp-dict-insides (hash-keys dict) dict env store)
-                    [ValueA (v s) (ValueA v s)]
-                    [ExceptionA (v s) (ExceptionA v s)]
-                    [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a dict. ")])]
     
-    [CList (l) (type-case AnswerC (interp-list-insides (hash-keys l) l env store)
-                 [ValueA (v s) (ValueA v s)]
-                 [ExceptionA (v s) (ExceptionA v s)]
-                 [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a list. ")])]
-    [CTuple (elts) (type-case AnswerC (interp-list-insides (hash-keys elts) elts env store)
-                 [ValueA (v s) (ValueA v s)]
-                 [ExceptionA (v s) (ExceptionA v s)]
-                 [ReturnA (v s) (error 'interp "Something is wrong here - shuldn't be a return inside a tuple. ")])]
-|#
     [CHash (h type) (interp-CHash (hash-keys h) h (transform-ctype type env store) env store)]
     
-    ;;This class is just temporary, so that we can pass exception tests
-    [CClass (elts type) (ValueA (VClass elts type) store)]
-    
-    
-    
     ;; Create a new class!!!!!!!!!!!!!
-    [CCreateClass (name body vlist) 
-                  (interp-create-class name body (newEnvScope env vlist (list) 'no-vararg) store)]
+    [CCreateClass (name body vlist)
+                  (let ([_newLoc-locals (new-loc)])
+                    (let ([_newLoc-super (new-loc)])
+                      (let ([_newEnv (newEnvScope (augmentEnv 'super (values (Local) _newLoc-super) (augmentEnv 'locals (values (Local) _newLoc-locals) env)) vlist (list) 'no-vararg)])
+                        (type-case CVal (lookupStore (lookupVar  name env) store)
+                          [VHash (elts uid type)
+                                 (begin (set-box! elts (hash-set (unbox elts)
+                                                                 (VStr "__dict__") ;;this just creates __dict__, but we never really work with this again
+                                                                 (ValueA-value (interp-env (desugar (PyList (map (lambda (e) (PyStr (symbol->string e)))
+                                                                                                                 (getLocals _newEnv)))) 
+                                                                                           ;(map (lambda (e) (PyStr (symbol->string e)))
+                                                                                           ;     (getLocals _newEnv))))
+                                                                                           _newEnv
+                                                                                           store))))
+                                        (interp-create-class name 
+                                                             body 
+                                                             _newEnv 
+                                                             (augmentStore _newLoc-super
+                                                                           (VClosure _newEnv (list) 'no-vararg (CPrim1 '_super (CStr (symbol->string name))) (list) (new-uid) false)
+                                                                           (augmentStore _newLoc-locals 
+                                                                                         (VClosure _newEnv (list) 'no-vararg (CPrim1 '_localsClass (CStr (symbol->string name))) (list) (new-uid) false)  ;; TODO ???
+                                                                                         store))))]
+                          [else (error 'CCreateClass "a class should be a VHash")]))))]
+                    
+                  ;old ccreateclass has just this:
+                  ;(interp-create-class name body (newEnvScope env vlist (list) 'no-vararg) store)]
     
     ;; exception handling
     [CTryExcept (body handlers orelse) 
                 (type-case AnswerC (interp-env body env store)
                   [ValueA (v s) (interp-env orelse env s)]
+                  [BreakA (v s) (BreakA v s)]
+                  [ContinueA (s) (ContinueA s)]
                   [ExceptionA (v s) (if (hasMatchingException v handlers env s)
                                         (interp-handlers handlers v env s)
                                         (interp-env orelse env s))]
@@ -1586,10 +1779,16 @@
                                     [ValueA (v s) (interp-env finalbody env s)]
                                     [ExceptionA (v s) (type-case AnswerC (interp-env finalbody env s)
                                                         [ValueA (v2 s2) (ExceptionA v s2)]
+                                                        [BreakA (v s) (error 'CTryFinally "Should not have a break here (???)")]
+                                                        [ContinueA (s) (error 'CTryFinally "Should not have a continue here (???)")]
                                                         [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                                         [ReturnA (v2 s2) (ReturnA v2 s2)])]
+                                    [BreakA (v s) (BreakA v s)]
+                                    [ContinueA (s) (ContinueA s)]
                                     [ReturnA (v s) (type-case AnswerC (interp-env finalbody env s)
                                                      [ValueA (v2 s2) (ReturnA v s2)]
+                                                     [BreakA (v s) (error 'CTryFinally "Should not have a break here (???)")]
+                                                     [ContinueA (s) (error 'CTryFinally "Should not have a continue here (???)")]
                                                      [ExceptionA (v2 s2) (ExceptionA v2 s2)]
                                                      [ReturnA (v2 s2) (ReturnA v2 s2)])])]
     
@@ -1605,17 +1804,35 @@
          (hash-set (bind-args (rest args) (rest vals) env)
                    (first args) (first vals))]))
 
+(define (wrap (exp : CExp)) : CExp
+  (CTryExcept exp 
+              (list (CExcHandler 'e (CId 'Exception) (CPrim1 'print (CApp (CId 'str)
+                                                                          (list (CId 'e))
+                                                                          (list)
+                                                                          (Empty-list)))))
+              (CPass)))
+
+;(define (add-try-except [body : CExp] [exn : symbol] [catch : CExp]) : CExp
+;  (CTryExcept body (list (CExcHandler 'e (CId exn) catch)) (CPass)))
 
 ;; regular interpret
 (define (interp (expr : CExp)) : CVal
-  (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
+  (begin (set-box! exn-to-reraise (VUnbound)) ;; clean up exception to reraise
+         (type-case AnswerC (interp-env expr (hash (list)) (hash (list)))
     [ValueA (v s) v]
-    [ExceptionA (v s) (error 'exception (pretty v))] ;; really? 
-    [ReturnA (v s) (VStr "Error: Return outside of function.")]))
+    [ExceptionA (v s) (type-case AnswerC (interp-env (CApp (CId 'str)
+                                                           (list (CHolder v))
+                                                           (list)
+                                                           (Empty-list)) 
+                                                     (hash (list)) 
+                                                     s)
+                        [ValueA (vv ss) (error 'exception (pretty vv))] ;; really? 
+                        [ExceptionA (vv ss) (error 'exception "-ception!")]
+                        [else (error 'interp "Should not be getting breaks, continues, or returns here. ")])]
+    [BreakA (v s) (error 'exception "A break got to the surface!")]
+    [ContinueA (s) (error 'exception "A continue got to the surface!")]
+    [ReturnA (v s) (VStr "Error: Return outside of function.")])))
 
-
-;; basic test cases
-;;(interp (CTrue))
 
 (define env (hash (list (values 'a (values (Local) 1)) (values 'b (values (NonLocal) 2)) (values 'c (values (Global) 3)))))
 (define h (hash (list (values 'x (values (Local) 1)) (values 'y (values (NonLocal) 2)))))

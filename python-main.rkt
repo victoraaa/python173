@@ -15,11 +15,13 @@
   (run-python port))
 
 (define (run-python port)
+  (define python-ast (parse-python/port port python-path))
+  ;(printf "The Python was:\n~a\n" python-ast)
   (interp
     (python-lib
       (desugar
-        (get-structured-python
-          (parse-python/port port python-path))))))
+        (get-structured-python python-ast
+          )))))
 
 (define python-path "/home/joe/bin/python")
 

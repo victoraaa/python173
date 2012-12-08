@@ -1,12 +1,63 @@
-class C:
-  def d(self):
-    print(1)
+class A:
+    def f(self):
+        return 'A'
+    @classmethod
+    def cm(cls):
+        return (cls, 'A')
 
-c=C()
-c.d()
+class B(A):
+    def f(self):
+        return super().f() + 'B'
+    @classmethod
+    def cm(cls):
+        return (cls, super().cm(), 'B')
+
+class C(A):
+    def f(self):
+        return super().f() + 'C'
+    @classmethod
+    def cm(cls):
+        return (cls, super().cm(), 'C')
+
+class G(A):
+    pass
+
+#___assertEqual(A.cm(), (A, 'A'))
+___assertEqual(A().cm(), (A, 'A'))
+#___assertEqual(G.cm(), (G, 'A'))
+#___assertEqual(G().cm(), (G, 'A'))
+
+#def f(x):
+#    def g(y):
+#        def h(z):
+#            return y + z
+#        w = x + y
+#        y += 3
+#        return locals()
+#    return g
+
+#d = f(2)(4)
+#print(d.keys())
+#print(d.values())
 
 
-#TO DO:
 
-#subscript
-#exceptions
+#def test():
+#    method_and_var = "var"
+#    class Test:
+#        def method_and_var(self):
+#            return "method"
+#        def test(self):
+#            return method_and_var
+#    return Test()
+
+#t=test()
+#print(t.test())
+
+
+
+
+#a = {1:1, 2:2}
+
+#for b in iter(a), a.keys(), a.items():
+#    print(b)

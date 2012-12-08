@@ -16,19 +16,26 @@ ParselTongue.
   [CIf (test : CExp) (then : CExp) (else : CExp)]
   [CId (x : symbol)]
   [CLet (id : symbol) (scopeType : ScopeType) (bind : CExp) (body : CExp)]
-  [CApp (fun : CExp) (args : (listof CExp)) (keywordArguments : (listof (symbol * CExp)))]
+  [CApp (fun : CExp) (args : (listof CExp)) (keywordArguments : (listof (symbol * CExp))) (star : CExp)]
   [CFunc (args : (listof symbol)) 
          (body : CExp) 
          (vlist : (listof (ScopeType * symbol))) 
-         (defargs : (listof CExp))]
+         (defargs : (listof CExp))
+         (vararg : symbol)]
   [CPrim1 (prim : symbol) (arg : CExp)]
   [CPrim2 (op : symbol) (e1 : CExp) (e2 : CExp)]
   [CFalse]
   [CNone]
   [CPass]
   [CReturn (value : CExp)]
+  [CBreak]
+  [CContinue]
   [CSet (id : CExp) (value : CExp)]
   [CAttribute (attr : symbol) (value : CExp)]
+  [CSubscript (value : CExp) (attr : CExp)]
+  [CDel (targets : (listof CExp))]
+  ;; loops
+  [CWhile (test : CExp) (body : CExp) (orelse : CExp) (vlist : (listof (ScopeType * symbol)))]
   
   ;[CBind (bind : (ScopeType * symbol))] ;;puts an identifier in the environment but does nothing in the store.
   [CUnbound]
@@ -38,10 +45,14 @@ ParselTongue.
   ;[CList (elts : (hashof CExp CExp))]
   ;[CDict (elts : (hashof CExp CExp))]
   ;[CTuple (elts : (hashof CExp CExp))]
-  [CHash (elts : (hashof CExp CExp)) (type : VType)]
+  
+  [CHash (elts : (hashof CExp CExp)) (type : CType)]
   
   ;; TEMPORARY class
   [CClass (elts : (hashof CVal CVal)) (type : VType)]
+  
+  ;; type to help create a new class
+  [CCreateClass (name : symbol) (body : CExp) (vlist : (listof (ScopeType * symbol)))]
   
   ;; Exception handling types
   [CTryExcept (body : CExp) (handlers : (listof CExceptionHandler)) (orelse : CExp)]
@@ -58,7 +69,7 @@ ParselTongue.
   [VNum (n : number)]
   [VStr (s : string)]
   [VTrue]
-  [VClosure (env : Env) (args : (listof symbol)) (body : CExp) (defargs : (listof CVal)) (uid : Uid)]
+  [VClosure (env : Env) (args : (listof symbol)) (vararg : symbol) (body : CExp) (defargs : (listof CVal)) (uid : Uid)]
   ;;I ADDED;;
   [VNone]
   [VFalse]
@@ -67,12 +78,15 @@ ParselTongue.
   ;[VList (elts : (hashof CVal CVal)) (uid : Uid)] ;; lists must be keyed byintegers, though...
   ;[VDict (elts : (hashof CVal CVal)) (uid : Uid)]
   ;[VTuple (elts : (hashof CVal CVal)) (uid : Uid)]
-  [VHash (elts : (hashof CVal CVal)) (uid : Uid) (type : VType)]
+  [VHash (elts : (boxof (hashof CVal CVal))) (uid : Uid) (type : VType)]
   [VClass (elts : (hashof CVal CVal)) (type : VType)]  ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE ;;INCOMPLETE
   )
 
 (define-type VType
-  [Type (name : string) (baseTypes : (listof VType))])
+  [Type (name : string) (baseType : CVal)])
+
+(define-type CType
+  [cType (name : string) (basetype : CExp)]) ;;this is used to create a VType from the desugarer
 
 (define-type-alias Location number)
 (define-type ScopeType
@@ -90,7 +104,7 @@ ParselTongue.
   [ValueA (value : CVal) (store : Store)]
   [ExceptionA (value : CVal) (store : Store)]
   [ReturnA (value : CVal) (store : Store)]
- ; [BreakA (value : CVal) (store : Store)]
- ; [ContinueA (store : Store)]
+  [BreakA (value : CVal) (store : Store)]
+  [ContinueA (store : Store)]
   )
  
