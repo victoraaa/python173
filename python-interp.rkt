@@ -1409,6 +1409,7 @@
     
     
     [CId (x) 
+       ;  (begin (display x)
          (let ([_location (try (lookupVar x env)
                                (lambda () -10090))])
            (if (equal? _location -10090)
@@ -1422,12 +1423,24 @@
                                 (lambda () (VNum -10090)))])
                  (if (equal? _val (VNum -10090))
                      (interp-env (CError (CApp (CId 'UnboundLocalError)
-                                                          (list (CStr (string-append ": " (symbol->string x))))
+                                               (list (CStr (string-append ": " (symbol->string x))))
                                                           (list)
                                                           (CHash (hash (list)) (cType "list" (CId 'list)))))
                                             env
                                             store)
-                     (ValueA (lookupStore (lookupVar x env) store) store)))))]
+                     (local [(define locat (try (lookupVar 'locals env) (lambda () (new-loc))))
+                             (define newClosure (let [(oldClos (try (lookupStore locat store)
+                                                                    (lambda () (VUnbound))))]
+                                                  (type-case CVal oldClos
+                                                    [VClosure (e a v b d u c) (if (or (member "#\\-" (map to-string (string->list (symbol->string x))))
+                                                                                            (not (CHolder? (CPrim1-arg b))))
+                                                                                  oldClos
+                                                                                  (VClosure e a v (CPrim1 '_locals (CHolder (VSymbolList (cons x (VSymbolList-lst (CHolder-hold (CPrim1-arg b))))))) d u c))]
+                                                    [else oldClos])))]
+                       (ValueA (lookupStore (lookupVar x env) store) (augmentStore locat newClosure 
+                                                                                   store)
+                               );)
+                       )))))] ;; Should be a case in here to update locals...
     
     [CLet (id scopeType bind body)
           (type-case AnswerC (interp-env bind env store)

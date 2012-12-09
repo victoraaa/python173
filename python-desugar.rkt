@@ -264,7 +264,7 @@
                              (CSet (desugar target) (CApp (CId op) 
                                                           (list (CId 'orig-value) (CId 'aug-value))
                                                           (list)
-                                                          (CHash (hash (list)) (cType "list" (CId 'list)))
+                                                          (Empty-list)
                                                           ))))] 
                               ;; may or may not work - side effects?
     
@@ -327,7 +327,7 @@
     [PyList (elts) (CHash (hash-set (desugar-hash (pynum-range (length elts)) elts) (CStr "__size__") (CNum (length elts))) (cType "list" (CId 'list)))]
     [PyDict (keys vals) (CHash (hash-set (hash-set (desugar-hash keys vals) 
                                                    (CStr "__size__") 
-                                                   (CNum (length keys)))
+                                                   (CNum (length (hash-keys (desugar-hash keys vals)))))
                                          (CStr "__keys__") 
                                          (desugar (PyCollectionSet keys))) 
                                (cType "_dict" (CId '_dict)))]

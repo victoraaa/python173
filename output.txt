@@ -1,1 +1,14 @@
+89 tests succeeded.
+1 tests failed.
+== Output of failed tests ==
+=====================================================
+= Results for freevar-in-method.py =
+=====================================================
+=== Expected stdout ===
 
+=== Actual stdout ===
+
+=== Expected stderr ===
+
+=== Actual stderr ===
+exception: Exception: Assert failed: values are not Equal: functionvar

@@ -1715,7 +1715,7 @@ that calls the primitive `print`.
 ;;locals() method
 (define python-locals
   (CFunc (list)
-         (CPrim1 '_locals (CNone))
+         (CPrim1 '_locals (CHolder (VSymbolList (list))))
          (list)
          (list)
          false
